@@ -1,0 +1,64 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* Engineering Lab Aesthetic Enhancements */
+@layer base {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Prose styles for artifact content */
+@layer components {
+  .prose {
+    color: rgb(38, 38, 38);
+  }
+  
+  .prose h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(23, 23, 23);
+  }
+  
+  .prose h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: rgb(23, 23, 23);
+  }
+  
+  .prose h4 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgb(23, 23, 23);
+  }
+  
+  .prose p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+  
+  .prose ul, .prose ol {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+  
+  .prose li {
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+  }
+  
+  .prose strong {
+    font-weight: 600;
+    color: rgb(23, 23, 23);
+  }
+}
