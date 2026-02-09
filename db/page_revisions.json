@@ -1,0 +1,3842 @@
+[
+  {
+    "revision_id": "rev-2026-02-07-0001",
+    "page_id": "page-001",
+    "parent_revision_id": null,
+    "created_at": "2026-02-07T00:00:00.000Z",
+    "author": "system",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 1,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h3",
+        "order": 2,
+        "hash": "349c977db1378db951748e173657115db45dfa47c1161387b7e9d3239bb3eec0",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 3,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h3",
+        "order": 4,
+        "hash": "4b6dc5dbebdee626ab3b24897bf47e0e79a6adcd7591ee9d5d13e1944a435324",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 5,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h3",
+        "order": 6,
+        "hash": "b020780ccdf941ae3fc0ef7ecea72010d405daf65410a5ad2bf61e11deb747c4",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 7,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h3",
+        "order": 8,
+        "hash": "7d33a8427b05a164040dbc3ecc23931d79e9dae25fe6cd578f510bb6e203d9e4",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 9,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h3",
+        "order": 10,
+        "hash": "a2b7da7e2bea42015e314bc8f63f2badc373bbc32ddd1c9ef5c3b9cd8207ae67",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 11,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h3",
+        "order": 12,
+        "hash": "a9e40ee00fce672dad93cdb5a0ee12e6ec30787304df118a80c3ddc67a110859",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 13,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h3",
+        "order": 14,
+        "hash": "61f0505ea25e618b69be95dfcbe1268ced4784da633888e9005807739335ab87",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 15,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h3",
+        "order": 16,
+        "hash": "68a00eb90f2dedaf77f3533911f0e335ad32e3edf7447923a9c7b91212151662",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 17,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "717bea08de5caa76a1c29bc4cf65212bfbe3269bc9467a882416dff4c485ad2c",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "1e87a3c0-5398-4cca-b044-7575c1ef9dbc",
+    "page_id": "page-001",
+    "parent_revision_id": "rev-2026-02-07-0001",
+    "created_at": "2026-02-08T04:52:28.002Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 1"
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h3",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h3",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h3",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h3",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h3",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h3",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h3",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h3",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "cee73e2dcfe2782846725cab4cc440a66b34a8525aedeed4d7eb35f79b50ba4c",
+        "text_preview": "Test change. Change nonce: 1"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h3",
+        "order": 3,
+        "hash": "349c977db1378db951748e173657115db45dfa47c1161387b7e9d3239bb3eec0",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h3",
+        "order": 5,
+        "hash": "4b6dc5dbebdee626ab3b24897bf47e0e79a6adcd7591ee9d5d13e1944a435324",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h3",
+        "order": 7,
+        "hash": "b020780ccdf941ae3fc0ef7ecea72010d405daf65410a5ad2bf61e11deb747c4",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h3",
+        "order": 9,
+        "hash": "7d33a8427b05a164040dbc3ecc23931d79e9dae25fe6cd578f510bb6e203d9e4",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h3",
+        "order": 11,
+        "hash": "a2b7da7e2bea42015e314bc8f63f2badc373bbc32ddd1c9ef5c3b9cd8207ae67",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h3",
+        "order": 13,
+        "hash": "a9e40ee00fce672dad93cdb5a0ee12e6ec30787304df118a80c3ddc67a110859",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h3",
+        "order": 15,
+        "hash": "61f0505ea25e618b69be95dfcbe1268ced4784da633888e9005807739335ab87",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h3",
+        "order": 17,
+        "hash": "68a00eb90f2dedaf77f3533911f0e335ad32e3edf7447923a9c7b91212151662",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "466aef841348be3dd54c2e7c0ea726089d80b4bf0572a7a185dec69fac899cb0",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "6fdc5b12-f706-4da8-9e7c-3da6eb9b90de",
+    "page_id": "page-001",
+    "parent_revision_id": "1e87a3c0-5398-4cca-b044-7575c1ef9dbc",
+    "created_at": "2026-02-08T04:57:38.648Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 2"
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h3",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h3",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h3",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h3",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h3",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h3",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h3",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h3",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "ad47420abb96d02b6f06e430ae04e4d1f6f6e93a8852fe69957dd5e0e5f5b563",
+        "text_preview": "Test change. Change nonce: 2"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h3",
+        "order": 3,
+        "hash": "349c977db1378db951748e173657115db45dfa47c1161387b7e9d3239bb3eec0",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h3",
+        "order": 5,
+        "hash": "4b6dc5dbebdee626ab3b24897bf47e0e79a6adcd7591ee9d5d13e1944a435324",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h3",
+        "order": 7,
+        "hash": "b020780ccdf941ae3fc0ef7ecea72010d405daf65410a5ad2bf61e11deb747c4",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h3",
+        "order": 9,
+        "hash": "7d33a8427b05a164040dbc3ecc23931d79e9dae25fe6cd578f510bb6e203d9e4",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h3",
+        "order": 11,
+        "hash": "a2b7da7e2bea42015e314bc8f63f2badc373bbc32ddd1c9ef5c3b9cd8207ae67",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h3",
+        "order": 13,
+        "hash": "a9e40ee00fce672dad93cdb5a0ee12e6ec30787304df118a80c3ddc67a110859",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h3",
+        "order": 15,
+        "hash": "61f0505ea25e618b69be95dfcbe1268ced4784da633888e9005807739335ab87",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h3",
+        "order": 17,
+        "hash": "68a00eb90f2dedaf77f3533911f0e335ad32e3edf7447923a9c7b91212151662",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "0c1b53c8722e7da15d884f42dbccf3cbe74b5fd69709454e81ab8c1665c8cca7",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "54d0d3ea-a9a2-4845-bb77-17440f748fdf",
+    "page_id": "page-001",
+    "parent_revision_id": "6fdc5b12-f706-4da8-9e7c-3da6eb9b90de",
+    "created_at": "2026-02-08T05:31:13.740Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h3",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 3"
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h3",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h3",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h3",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h3",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h3",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h3",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h3",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h3",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h3",
+        "order": 0,
+        "hash": "581b649675837cafda903233a3c478e21fe888498a48f666868d6a85557fb5e9",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "138c0be64d55dc9b8a1f8922086dfcfae3b77695ad95879514d5072e468ce183",
+        "text_preview": "Test change. Change nonce: 3"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h3",
+        "order": 3,
+        "hash": "349c977db1378db951748e173657115db45dfa47c1161387b7e9d3239bb3eec0",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h3",
+        "order": 5,
+        "hash": "4b6dc5dbebdee626ab3b24897bf47e0e79a6adcd7591ee9d5d13e1944a435324",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h3",
+        "order": 7,
+        "hash": "b020780ccdf941ae3fc0ef7ecea72010d405daf65410a5ad2bf61e11deb747c4",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h3",
+        "order": 9,
+        "hash": "7d33a8427b05a164040dbc3ecc23931d79e9dae25fe6cd578f510bb6e203d9e4",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h3",
+        "order": 11,
+        "hash": "a2b7da7e2bea42015e314bc8f63f2badc373bbc32ddd1c9ef5c3b9cd8207ae67",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h3",
+        "order": 13,
+        "hash": "a9e40ee00fce672dad93cdb5a0ee12e6ec30787304df118a80c3ddc67a110859",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h3",
+        "order": 15,
+        "hash": "61f0505ea25e618b69be95dfcbe1268ced4784da633888e9005807739335ab87",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h3",
+        "order": 17,
+        "hash": "68a00eb90f2dedaf77f3533911f0e335ad32e3edf7447923a9c7b91212151662",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "c55ac6e1aa4c25f08c5cfddfefcbef3b05c03ef67f200764f074e0f9e5446dd7",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "09e1316f-4ee8-4a50-86f2-0c9d1cfb33f2",
+    "page_id": "page-001",
+    "parent_revision_id": "54d0d3ea-a9a2-4845-bb77-17440f748fdf",
+    "created_at": "2026-02-08T05:58:24.747Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 4"
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "8ea6324b943e1209c40d6fee49c21fbbef2e23dd44f3f23b0fb1f3f926c0abc1",
+        "text_preview": "Test change. Change nonce: 4"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 3,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 5,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 7,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 9,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 11,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 13,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 15,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 17,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "a783216fde42aa7996c38e8f0a89b3b856ccd69bc176ae6aac489ae4314550a7",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "0a803395-4bd3-4801-a86b-fd858b0bc76e",
+    "page_id": "page-001",
+    "parent_revision_id": "09e1316f-4ee8-4a50-86f2-0c9d1cfb33f2",
+    "created_at": "2026-02-08T05:59:00.240Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 4\n$"
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "c59e222b1fd09f99df280119b89397efa2b0fdb704e8af9fb9c89b0dc17dd53b",
+        "text_preview": "Test change. Change nonce: 4\n$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 3,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 5,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 7,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 9,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 11,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 13,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 15,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 17,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "14f0c16a3387af057ba15334dd88e8162b6add9da718a4510e952a27e6a66463",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "d18d60eb-335b-4c3b-8ad0-17987e1545ec",
+    "page_id": "page-001",
+    "parent_revision_id": "0a803395-4bd3-4801-a86b-fd858b0bc76e",
+    "created_at": "2026-02-08T06:04:26.046Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 4\n\\$"
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "78cf147cfd15d7e9576248befd68168c257bae9ad6267ddc471cdd84b7a2c4e7",
+        "text_preview": "Test change. Change nonce: 4\n\\$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 3,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 5,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 7,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 9,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 11,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 13,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 15,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 17,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "7b1397378ef53adf0a49c6fdd1944411f9ab8d2340e31715e2779bb45d6c4e55",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "81889cc6-17a9-43e6-a08d-fd7d5770d304",
+    "page_id": "page-001",
+    "parent_revision_id": "d18d60eb-335b-4c3b-8ad0-17987e1545ec",
+    "created_at": "2026-02-08T18:04:31.941Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 4\n$E = mc^2$"
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "98d2fa11fb71ccd7f65498590b77ad6b407b24df348ccb0c2d8bf8618debaf1a",
+        "text_preview": "Test change. Change nonce: 4\n$E = mc^2$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 3,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 5,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 7,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 9,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 11,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 13,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 15,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 17,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "ae72588c59f14833e18803d6f87fd9d1f06bb3ccc307dd64b0a91869cb29e016",
+    "schema_version": 1
+  },
+  {
+    "revision_id": "212cacc7-157f-446b-bb44-c7fdb9251537",
+    "page_id": "page-001",
+    "parent_revision_id": "81889cc6-17a9-43e6-a08d-fd7d5770d304",
+    "created_at": "2026-02-09T05:08:38.225Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 2,
+        "hash": "aba586b1810236b7c1348076b3ad9031410ec20b81bba68b2ba883bfdb5c52de",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 3,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 4,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 5,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 6,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 7,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 8,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 9,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 10,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 11,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 12,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 13,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 14,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 15,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 16,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 17,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 18,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "239730eed58a4a3b74fde48a93dbb8344c8be97450890bd9780a1adf8c65c8c3",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "5acecf67-a108-4fcb-82f4-ce2cd3578f31",
+    "page_id": "page-001",
+    "parent_revision_id": "212cacc7-157f-446b-bb44-c7fdb9251537",
+    "created_at": "2026-02-09T05:59:50.600Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 2,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 3,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 4,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 5,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 6,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 7,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 8,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 9,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 10,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 11,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 12,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 13,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 14,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 15,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 16,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 17,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 18,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 19,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 20,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 21,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "5c672129f1164714163cbe7d15099420058792d95f3bfe9a4f7ccf1c2338552c",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "79d9e813-a028-4376-84e8-861d44d2e074",
+    "page_id": "page-001",
+    "parent_revision_id": "5acecf67-a108-4fcb-82f4-ce2cd3578f31",
+    "created_at": "2026-02-09T06:22:20.312Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "code_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 2,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 3,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 4,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "code_block",
+        "order": 5,
+        "hash": "25616f03a240b9f8c10c072fd6e4d8689028e0ca02e17b02107dae09da380470",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 6,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 7,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 8,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 9,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 10,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 11,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 12,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 13,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 14,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 15,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 16,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 17,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 18,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 19,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 20,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 21,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 22,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 23,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "85ee4b3dbfc2c0a3f33245654446f21b0a76d4c0deb2cff31226a1f46e8cdc8c",
+    "schema_version": 2
+  }
+]

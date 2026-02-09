@@ -1,6 +1,12 @@
+import { Header } from "../components/header";
+import { SidebarNav } from "../components/sidebar-nav";
+import { LaneBadge, StatusBadge } from "../components/badges";
+import { ArtifactCard } from "../components/cards";
+import { Card } from "../components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Button } from "../components/ui/button";
 import { User, Clock, Tag } from "lucide-react";
 import { useParams, Link } from "react-router";
-import { Button } from "../components/ui/button";
 
 export function DossierOverview() {
   const { id } = useParams();

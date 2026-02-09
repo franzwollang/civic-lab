@@ -27,34 +27,28 @@ export function Header() {
 
           <nav className="flex items-center gap-6 text-sm">
             <Link
-              to="/"
+              to="/about"
+              className="text-neutral-600 transition-colors hover:text-neutral-900"
+            >
+              About
+            </Link>
+            <Link
+              to="/dossier/canon-1"
               className="text-neutral-600 transition-colors hover:text-neutral-900"
             >
               Canon
             </Link>
             <Link
-              to="/"
+              to="/dossier/manual-us-1"
               className="text-neutral-600 transition-colors hover:text-neutral-900"
             >
               Manuals
             </Link>
             <Link
-              to="/"
+              to="/docs"
               className="text-neutral-600 transition-colors hover:text-neutral-900"
             >
-              Dossiers
-            </Link>
-            <Link
-              to="/"
-              className="text-neutral-600 transition-colors hover:text-neutral-900"
-            >
-              Threads
-            </Link>
-            <Link
-              to="/spec-compliance"
-              className="text-neutral-600 transition-colors hover:text-neutral-900"
-            >
-              Spec ✓
+              Docs
             </Link>
           </nav>
         </div>

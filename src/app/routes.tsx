@@ -7,7 +7,12 @@ import { Dashboard } from "./pages/dashboard";
 import { ThreadPage } from "./pages/thread-page";
 import { RfcThreadPage } from "./pages/rfc-thread-page";
 import { RedTeamReview } from "./pages/red-team-review";
-import { SpecCompliance } from "./pages/spec-compliance";
+import { TestEditor } from "./pages/test-editor";
+import { TestPreview } from "./pages/test-preview";
+import { About } from "./pages/about";
+import { Faq } from "./pages/faq";
+import { Constitution } from "./pages/constitution";
+import { Docs } from "./pages/docs";
 
 export const router = createBrowserRouter([
   {
@@ -15,8 +20,32 @@ export const router = createBrowserRouter([
     Component: Home,
   },
   {
-    path: "/spec-compliance",
-    Component: SpecCompliance,
+    path: "/home",
+    Component: Home,
+  },
+  {
+    path: "/about",
+    Component: About,
+  },
+  {
+    path: "/faq",
+    Component: Faq,
+  },
+  {
+    path: "/constitution",
+    Component: Constitution,
+  },
+  {
+    path: "/docs/*",
+    Component: Docs,
+  },
+  {
+    path: "/test/editor",
+    Component: TestEditor,
+  },
+  {
+    path: "/test/preview/:pageId",
+    Component: TestPreview,
   },
   {
     path: "/dossier/:id",

@@ -1,5 +1,7 @@
 @import './fonts.css';
 @import './tailwind.css';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
 @import './theme.css';
 
 /* Engineering Lab Aesthetic Enhancements */
@@ -9,12 +11,77 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Tailwind preflight sets `svg { display: block; }`, but MathJax SVG output
+     uses multiple sibling <svg> elements that must flow inline (mjx-break
+     elements control actual line breaks). */
+  mjx-container[jax="SVG"] svg {
+    display: inline;
+  }
+
+  mjx-container[jax="SVG"] {
+    display: inline-block;
+  }
 }
 
 /* Prose styles for artifact content */
 @layer components {
   .prose {
     color: rgb(38, 38, 38);
+  }
+
+  /* Minimal Prism token theme (light) for json/yaml/toml/csv previews. */
+  .code-prism .token.comment,
+  .code-prism .token.prolog,
+  .code-prism .token.doctype,
+  .code-prism .token.cdata {
+    color: rgb(115, 115, 115);
+  }
+
+  .code-prism .token.punctuation {
+    color: rgb(64, 64, 64);
+  }
+
+  .code-prism .token.property,
+  .code-prism .token.tag,
+  .code-prism .token.boolean,
+  .code-prism .token.number,
+  .code-prism .token.constant,
+  .code-prism .token.symbol,
+  .code-prism .token.deleted {
+    color: rgb(147, 51, 234);
+  }
+
+  .code-prism .token.selector,
+  .code-prism .token.attr-name,
+  .code-prism .token.string,
+  .code-prism .token.char,
+  .code-prism .token.builtin,
+  .code-prism .token.inserted {
+    color: rgb(21, 128, 61);
+  }
+
+  .code-prism .token.operator,
+  .code-prism .token.entity,
+  .code-prism .token.url,
+  .code-prism .token.variable {
+    color: rgb(37, 99, 235);
+  }
+
+  .code-prism .token.atrule,
+  .code-prism .token.attr-value,
+  .code-prism .token.keyword {
+    color: rgb(2, 132, 199);
+  }
+
+  .code-prism .token.function,
+  .code-prism .token.class-name {
+    color: rgb(202, 138, 4);
+  }
+
+  .code-prism .token.regex,
+  .code-prism .token.important {
+    color: rgb(220, 38, 38);
   }
   
   .prose h2 {
