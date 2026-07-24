@@ -38,6 +38,11 @@ import {
   type LaneRuleError,
   type SoftLaneLabel,
 } from "../src/lib/artifactLanes";
+import {
+  computeEmpiricalQuality,
+  computeForecastAccuracy,
+  computeRequirementSatisfactionSnapshot,
+} from "../src/lib/claimMetrics";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
 
 let prisma: PrismaClient | null = null;
@@ -127,6 +132,39 @@ export type CollectionDashboardDossier = DossierRow & {
   lane_hint: "Descriptive" | "Prescriptive" | "Alignment";
 };
 
+export type CollectionEmpiricalQuality = {
+  total: number;
+  open: number;
+  resolved: number;
+  invalidated: number;
+  ambiguous_or_conflict: number;
+  invalidated_rate: number | null;
+  ambiguity_rate: number | null;
+  mean_citation_density: number | null;
+  mean_days_to_resolution: number | null;
+};
+
+export type CollectionForecastAccuracy = {
+  n: number;
+  mean_brier: number | null;
+  mean_log_score: number | null;
+  mean_skill_vs_baseline: number | null;
+  baseline_p: number;
+  baseline_label: string;
+  public_board_eligible: boolean;
+};
+
+export type RequirementSatisfactionSnapshot = {
+  open: number;
+  accepted: number;
+  satisfied: number;
+  failed: number;
+  superseded: number;
+  invalidated: number;
+  disputed: number;
+  other: number;
+};
+
 export type CollectionDashboard = {
   collection: CollectionRow;
   stats: {
@@ -139,14 +177,12 @@ export type CollectionDashboard = {
   open_threads: {
     count: number;
     critical_findings: number;
-    /** RFC promotion / RevSets still incomplete within M5. */
-    deferred: "M5";
+    deferred: "M7";
   };
-  /** Stub until Claim scoring (M6). */
+  /** CONCEPT §5.5–5.9 claim quality + forecast accuracy (Collection-scoped). */
   claims: {
-    empirical_quality: null;
-    forecast_accuracy: null;
-    deferred: "M6";
+    empirical_quality: CollectionEmpiricalQuality;
+    forecast_accuracy: CollectionForecastAccuracy;
   };
   /** Manuals — tallies of artifact lanes (CONCEPT §4). */
   lane_coverage: null | {
@@ -154,12 +190,11 @@ export type CollectionDashboard = {
     Prescriptive: number;
     Alignment: number;
   };
-  /** Manuals — requirement claim counts until adjudication (M6). */
+  /** Manuals — requirement claim satisfaction snapshot (M6). */
   requirement_satisfaction: null | {
     open: number;
     total: number;
-    deferred: "M6";
-    snapshot: null;
+    snapshot: RequirementSatisfactionSnapshot;
   };
   /** Stub until Findings (M7). */
   red_team: {
@@ -441,7 +476,7 @@ function laneHintForDossier(d: DossierRow): "Descriptive" | "Prescriptive" | "Al
 
 /**
  * CONCEPT §11 Collection dashboard payload.
- * Real dossier health + open thread counts; claim/RT panels stubbed until M6–M7.
+ * Real dossier health, open threads, claim quality/forecast panels; RT still M7.
  */
 export async function getCollectionDashboard(
   collectionId: string,
@@ -466,9 +501,39 @@ export async function getCollectionDashboard(
   let lane_coverage: CollectionDashboard["lane_coverage"] = null;
   let requirement_satisfaction: CollectionDashboard["requirement_satisfaction"] =
     null;
+
+  const dossierIds = withHealth.map((d) => d.dossier_id);
+
+  const claimRows =
+    dossierIds.length === 0
+      ? []
+      : await getPrisma().claim.findMany({
+          where: { artifact: { dossierId: { in: dossierIds } } },
+          select: {
+            profile: true,
+            status: true,
+            empiricalType: true,
+            probability: true,
+            preferredSources: true,
+            canonCitations: true,
+            createdAt: true,
+            adjudicatedAt: true,
+          },
+        });
+
+  const metricInputs = claimRows.map((c) => ({
+    profile: c.profile,
+    status: c.status,
+    empirical_type: c.empiricalType,
+    probability: c.probability,
+    preferred_sources: c.preferredSources,
+    canon_citations: c.canonCitations,
+    created_at: c.createdAt.toISOString(),
+    adjudicated_at: c.adjudicatedAt?.toISOString() ?? null,
+  }));
+
   if (isManual) {
     lane_coverage = { Descriptive: 0, Prescriptive: 0, Alignment: 0 };
-    const dossierIds = dossiers.map((d) => d.dossier_id);
     if (dossierIds.length > 0) {
       const artRows = await getPrisma().artifact.findMany({
         where: { dossierId: { in: dossierIds } },
@@ -479,26 +544,16 @@ export async function getCollectionDashboard(
         else if (a.lane === "prescriptive") lane_coverage.Prescriptive += 1;
         else if (a.lane === "alignment") lane_coverage.Alignment += 1;
       }
-      const reqWhere = {
-        profile: "requirement",
-        artifact: { dossierId: { in: dossierIds } },
-      };
-      const [reqTotal, reqOpen] = await Promise.all([
-        getPrisma().claim.count({ where: reqWhere }),
-        getPrisma().claim.count({
-          where: { ...reqWhere, status: "open" },
-        }),
-      ]);
-      requirement_satisfaction = {
-        open: reqOpen,
-        total: reqTotal,
-        deferred: "M6",
-        snapshot: null,
-      };
     }
+    const reqClaims = metricInputs.filter((c) => c.profile === "requirement");
+    const snapshot = computeRequirementSatisfactionSnapshot(reqClaims);
+    requirement_satisfaction = {
+      open: snapshot.open,
+      total: reqClaims.length,
+      snapshot,
+    };
   }
 
-  const dossierIds = withHealth.map((d) => d.dossier_id);
   const openThreadCount =
     dossierIds.length === 0
       ? 0
@@ -520,12 +575,11 @@ export async function getCollectionDashboard(
     open_threads: {
       count: openThreadCount,
       critical_findings: 0,
-      deferred: "M5",
+      deferred: "M7",
     },
     claims: {
-      empirical_quality: null,
-      forecast_accuracy: null,
-      deferred: "M6",
+      empirical_quality: computeEmpiricalQuality(metricInputs),
+      forecast_accuracy: computeForecastAccuracy(metricInputs),
     },
     lane_coverage,
     requirement_satisfaction,

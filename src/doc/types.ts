@@ -80,6 +80,41 @@ export type CollectionDashboardDossier = DossierRow & {
   lane_hint: "Descriptive" | "Prescriptive" | "Alignment";
 };
 
+/** CONCEPT §5.5 quality panel (Collection-scoped). */
+export type CollectionEmpiricalQuality = {
+  total: number;
+  open: number;
+  resolved: number;
+  invalidated: number;
+  ambiguous_or_conflict: number;
+  invalidated_rate: number | null;
+  ambiguity_rate: number | null;
+  mean_citation_density: number | null;
+  mean_days_to_resolution: number | null;
+};
+
+/** CONCEPT §5.4–5.9 forecast accuracy panel (advisory). */
+export type CollectionForecastAccuracy = {
+  n: number;
+  mean_brier: number | null;
+  mean_log_score: number | null;
+  mean_skill_vs_baseline: number | null;
+  baseline_p: number;
+  baseline_label: string;
+  public_board_eligible: boolean;
+};
+
+export type RequirementSatisfactionSnapshot = {
+  open: number;
+  accepted: number;
+  satisfied: number;
+  failed: number;
+  superseded: number;
+  invalidated: number;
+  disputed: number;
+  other: number;
+};
+
 export type CollectionDashboard = {
   collection: CollectionRow;
   stats: {
@@ -91,13 +126,12 @@ export type CollectionDashboard = {
   open_threads: {
     count: number;
     critical_findings: number;
-    /** RFC promotion / RevSets still incomplete within M5. */
-    deferred: "M5";
+    /** Critical findings count still M7. */
+    deferred: "M7";
   };
   claims: {
-    empirical_quality: null;
-    forecast_accuracy: null;
-    deferred: "M6";
+    empirical_quality: CollectionEmpiricalQuality;
+    forecast_accuracy: CollectionForecastAccuracy;
   };
   lane_coverage: null | {
     Descriptive: number;
@@ -107,8 +141,7 @@ export type CollectionDashboard = {
   requirement_satisfaction: null | {
     open: number;
     total: number;
-    deferred: "M6";
-    snapshot: null;
+    snapshot: RequirementSatisfactionSnapshot;
   };
   red_team: {
     recent_count: number;
