@@ -24,21 +24,21 @@
     "dossier_id": "ca-elections-1",
     "collection_id": "collection-ca",
     "title": "Canadian Federal Elections",
-    "summary": "Seed stub for Elections Canada procedures and federal riding workflows.",
+    "summary": "Elections Canada procedures and federal riding workflows for Canadian federal elections.",
     "tags": ["elections", "Canada", "prescriptive"]
   },
   {
     "dossier_id": "gb-elections-1",
     "collection_id": "collection-gb",
     "title": "UK Electoral Administration",
-    "summary": "Seed stub for UK parliamentary elections and returning-officer practice.",
+    "summary": "UK parliamentary elections and returning-officer practice.",
     "tags": ["elections", "UK", "prescriptive"]
   },
   {
     "dossier_id": "de-elections-1",
     "collection_id": "collection-de",
     "title": "German Federal Elections",
-    "summary": "Seed stub for Bundestag elections and Bundeswahlleiter coordination.",
+    "summary": "Bundestag elections and Bundeswahlleiter coordination with Land and Kreis authorities.",
     "tags": ["elections", "Germany", "prescriptive"]
   }
 ]

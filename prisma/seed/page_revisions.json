@@ -8595,5 +8595,857 @@
     "doc_root_hash": "seed-root-us-provisional",
     "schema_version": 1,
     "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-ca-overview-1",
+    "page_id": "ca-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-02T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "ca-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals and scope for the Canadian Federal Elections Manual, covering Elections Canada procedures and federal riding workflows."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p2",
+        "children": [
+          {
+            "text": "Give returning officers, Elections Canada staff, and Civic Lab contributors a shared Manual for federal elections that can support Manual Alignment claims against Canon voting ideals."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p3",
+        "children": [
+          {
+            "text": "Covers federal general elections and by-elections. Provincial and territorial practice is noted only where it intersects federal electors-list coordination."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p4",
+        "children": [
+          {
+            "text": "Returning officers, poll supervisors, and contributors documenting Canadian electoral procedures in Civic Lab."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "ca-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-ca-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "ca-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-ca-ov-p1",
+        "text_preview": "High-level goals and scope for the Canadian Federal Elections Manual, covering E"
+      },
+      {
+        "block_id": "ca-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-ca-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "ca-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-ca-ov-p2",
+        "text_preview": "Give returning officers, Elections Canada staff, and Civic Lab contributors a sh"
+      },
+      {
+        "block_id": "ca-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-ca-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "ca-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-ca-ov-p3",
+        "text_preview": "Covers federal general elections and by-elections. Provincial and territorial pr"
+      },
+      {
+        "block_id": "ca-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-ca-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "ca-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-ca-ov-p4",
+        "text_preview": "Returning officers, poll supervisors, and contributors documenting Canadian elec"
+      }
+    ],
+    "doc_root_hash": "seed-root-ca-overview",
+    "schema_version": 1,
+    "note": "CA Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-ca-list-mgmt-1",
+    "page_id": "ca-list-mgmt",
+    "parent_revision_id": null,
+    "created_at": "2026-07-02T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "ca-lm-h1",
+        "children": [
+          {
+            "text": "Electors List Management"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p1",
+        "children": [
+          {
+            "text": "Workflows for building, revising, and polling-day use of the list of electors under Elections Canada guidance."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-lm-h2",
+        "children": [
+          {
+            "text": "Preliminary list"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p2",
+        "children": [
+          {
+            "text": "Produce the preliminary list from the National Register of Electors. Distribute revision materials to returning officers before the revision period opens."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-lm-h3",
+        "children": [
+          {
+            "text": "Revision period"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p3",
+        "children": [
+          {
+            "text": "Accept additions, corrections, and removals during the statutory revision window. Record proof of identity and address when an elector is added at the returning office."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-lm-h4",
+        "children": [
+          {
+            "text": "Polling-day list"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p4",
+        "children": [
+          {
+            "text": "Issue the official list to each polling station. Route electors missing from the list through the appropriate registration or special ballot path rather than refusing a ballot."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "ca-lm-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-ca-lm-h1",
+        "text_preview": "Electors List Management"
+      },
+      {
+        "block_id": "ca-lm-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-ca-lm-p1",
+        "text_preview": "Workflows for building, revising, and polling-day use of the list of electors un"
+      },
+      {
+        "block_id": "ca-lm-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-ca-lm-h2",
+        "text_preview": "Preliminary list"
+      },
+      {
+        "block_id": "ca-lm-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-ca-lm-p2",
+        "text_preview": "Produce the preliminary list from the National Register of Electors. Distribute "
+      },
+      {
+        "block_id": "ca-lm-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-ca-lm-h3",
+        "text_preview": "Revision period"
+      },
+      {
+        "block_id": "ca-lm-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-ca-lm-p3",
+        "text_preview": "Accept additions, corrections, and removals during the statutory revision window"
+      },
+      {
+        "block_id": "ca-lm-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-ca-lm-h4",
+        "text_preview": "Polling-day list"
+      },
+      {
+        "block_id": "ca-lm-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-ca-lm-p4",
+        "text_preview": "Issue the official list to each polling station. Route electors missing from the"
+      }
+    ],
+    "doc_root_hash": "seed-root-ca-list-mgmt",
+    "schema_version": 1,
+    "note": "CA Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-gb-overview-1",
+    "page_id": "gb-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-03T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "gb-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals and scope for UK Electoral Administration, covering parliamentary elections and returning-officer practice."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p2",
+        "children": [
+          {
+            "text": "Document actionable Manual procedures for UK parliamentary polls so administrators and Civic Lab contributors can align practice with Canon electoral criteria."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p3",
+        "children": [
+          {
+            "text": "Covers UK parliamentary general elections and by-elections. Devolved elections are out of scope except where returning-officer duties overlap."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p4",
+        "children": [
+          {
+            "text": "Returning officers, electoral services teams, and Civic Lab Manual contributors."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "gb-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-gb-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "gb-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-gb-ov-p1",
+        "text_preview": "High-level goals and scope for UK Electoral Administration, covering parliamenta"
+      },
+      {
+        "block_id": "gb-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-gb-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "gb-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-gb-ov-p2",
+        "text_preview": "Document actionable Manual procedures for UK parliamentary polls so administrato"
+      },
+      {
+        "block_id": "gb-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-gb-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "gb-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-gb-ov-p3",
+        "text_preview": "Covers UK parliamentary general elections and by-elections. Devolved elections a"
+      },
+      {
+        "block_id": "gb-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-gb-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "gb-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-gb-ov-p4",
+        "text_preview": "Returning officers, electoral services teams, and Civic Lab Manual contributors."
+      }
+    ],
+    "doc_root_hash": "seed-root-gb-overview",
+    "schema_version": 1,
+    "note": "GB Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-gb-returning-officer-1",
+    "page_id": "gb-returning-officer",
+    "parent_revision_id": null,
+    "created_at": "2026-07-03T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "gb-ro-h1",
+        "children": [
+          {
+            "text": "Returning Officer Practice"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p1",
+        "children": [
+          {
+            "text": "Core duties of the Returning Officer from notice of election through declaration of result."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ro-h2",
+        "children": [
+          {
+            "text": "Notice and nominations"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p2",
+        "children": [
+          {
+            "text": "Publish the notice of election, receive nomination papers, and publish the statement of persons nominated within statutory deadlines."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ro-h3",
+        "children": [
+          {
+            "text": "Polling arrangements"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p3",
+        "children": [
+          {
+            "text": "Appoint presiding officers and poll clerks, designate polling places, and ensure ballot papers and corresponding number lists are issued securely."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ro-h4",
+        "children": [
+          {
+            "text": "Count and declaration"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p4",
+        "children": [
+          {
+            "text": "Conduct the verification and count, allow agents to observe, and declare the result. Preserve ballot papers and documentation for the statutory retention period."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "gb-ro-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-gb-ro-h1",
+        "text_preview": "Returning Officer Practice"
+      },
+      {
+        "block_id": "gb-ro-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-gb-ro-p1",
+        "text_preview": "Core duties of the Returning Officer from notice of election through declaration"
+      },
+      {
+        "block_id": "gb-ro-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-gb-ro-h2",
+        "text_preview": "Notice and nominations"
+      },
+      {
+        "block_id": "gb-ro-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-gb-ro-p2",
+        "text_preview": "Publish the notice of election, receive nomination papers, and publish the state"
+      },
+      {
+        "block_id": "gb-ro-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-gb-ro-h3",
+        "text_preview": "Polling arrangements"
+      },
+      {
+        "block_id": "gb-ro-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-gb-ro-p3",
+        "text_preview": "Appoint presiding officers and poll clerks, designate polling places, and ensure"
+      },
+      {
+        "block_id": "gb-ro-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-gb-ro-h4",
+        "text_preview": "Count and declaration"
+      },
+      {
+        "block_id": "gb-ro-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-gb-ro-p4",
+        "text_preview": "Conduct the verification and count, allow agents to observe, and declare the res"
+      }
+    ],
+    "doc_root_hash": "seed-root-gb-returning-officer",
+    "schema_version": 1,
+    "note": "GB Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-de-overview-1",
+    "page_id": "de-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-04T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "de-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals and scope for German Federal Elections, covering Bundestag elections and Bundeswahlleiter coordination."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p2",
+        "children": [
+          {
+            "text": "Provide a Manual baseline for federal election administration so Länder practice and Civic Lab Alignment claims share a common procedural reference."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p3",
+        "children": [
+          {
+            "text": "Covers Bundestag elections under the federal election act. Landtag and municipal elections are referenced only where federal coordination interfaces apply."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p4",
+        "children": [
+          {
+            "text": "Kreiswahlleiter, municipal election offices, and Civic Lab contributors documenting German federal procedures."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "de-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-de-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "de-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-de-ov-p1",
+        "text_preview": "High-level goals and scope for German Federal Elections, covering Bundestag elec"
+      },
+      {
+        "block_id": "de-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-de-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "de-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-de-ov-p2",
+        "text_preview": "Provide a Manual baseline for federal election administration so Länder practice"
+      },
+      {
+        "block_id": "de-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-de-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "de-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-de-ov-p3",
+        "text_preview": "Covers Bundestag elections under the federal election act. Landtag and municipal"
+      },
+      {
+        "block_id": "de-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-de-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "de-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-de-ov-p4",
+        "text_preview": "Kreiswahlleiter, municipal election offices, and Civic Lab contributors document"
+      }
+    ],
+    "doc_root_hash": "seed-root-de-overview",
+    "schema_version": 1,
+    "note": "DE Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-de-bundeswahl-1",
+    "page_id": "de-bundeswahl",
+    "parent_revision_id": null,
+    "created_at": "2026-07-04T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "de-bw-h1",
+        "children": [
+          {
+            "text": "Federal Election Coordination"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p1",
+        "children": [
+          {
+            "text": "How the Bundeswahlleiter coordinates with Land and Kreis election authorities across the federal election calendar."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-bw-h2",
+        "children": [
+          {
+            "text": "Calendar and instructions"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p2",
+        "children": [
+          {
+            "text": "Issue the federal election calendar and binding instructions to Landeswahlleiter. Confirm constituency boundaries and seat allocations before nominations open."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-bw-h3",
+        "children": [
+          {
+            "text": "Reporting chain"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p3",
+        "children": [
+          {
+            "text": "Aggregate preliminary and final results from Kreis through Land to the federal level. Publish national totals only after statutory verification steps complete."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-bw-h4",
+        "children": [
+          {
+            "text": "Complaint routing"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p4",
+        "children": [
+          {
+            "text": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document open Critical findings before any Manual merge that depends on disputed procedure."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "de-bw-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-de-bw-h1",
+        "text_preview": "Federal Election Coordination"
+      },
+      {
+        "block_id": "de-bw-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-de-bw-p1",
+        "text_preview": "How the Bundeswahlleiter coordinates with Land and Kreis election authorities ac"
+      },
+      {
+        "block_id": "de-bw-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-de-bw-h2",
+        "text_preview": "Calendar and instructions"
+      },
+      {
+        "block_id": "de-bw-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-de-bw-p2",
+        "text_preview": "Issue the federal election calendar and binding instructions to Landeswahlleiter"
+      },
+      {
+        "block_id": "de-bw-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-de-bw-h3",
+        "text_preview": "Reporting chain"
+      },
+      {
+        "block_id": "de-bw-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-de-bw-p3",
+        "text_preview": "Aggregate preliminary and final results from Kreis through Land to the federal l"
+      },
+      {
+        "block_id": "de-bw-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-de-bw-h4",
+        "text_preview": "Complaint routing"
+      },
+      {
+        "block_id": "de-bw-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-de-bw-p4",
+        "text_preview": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document"
+      }
+    ],
+    "doc_root_hash": "seed-root-de-bundeswahl",
+    "schema_version": 1,
+    "note": "DE Manual dossier stub seed"
   }
 ]

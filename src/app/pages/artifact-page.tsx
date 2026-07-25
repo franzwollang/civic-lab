@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Header } from "../components/header";
 import { SidebarNav } from "../components/sidebar-nav";
 import { LaneBadge } from "../components/badges";
@@ -18,18 +18,45 @@ import {
   useArtifactDocument,
 } from "@/doc/ArtifactDocumentBody";
 import { artifactIdOf } from "@/doc/types";
-
-/** Related Manual artifacts for us-voting-1 (seeded slugs). */
-const US_VOTING_RELATED = [
-  { slug: "overview", title: "Overview and Purpose" },
-  { slug: "voter-reg", title: "Voter Registration Procedures" },
-  { slug: "polling", title: "Polling Place Operations" },
-  { slug: "provisional", title: "Provisional Ballot Handling" },
-];
+import type { ArtifactRow, DossierRow } from "@/doc/types";
+import { getDossier, getDossierArtifacts } from "@/api/client";
+import { laneForDossier } from "../lib/dossier-display";
 
 export function ArtifactPage() {
   const { dossierId, artifactId } = useParams();
   const doc = useArtifactDocument(artifactId);
+  const [dossier, setDossier] = useState<DossierRow | null>(null);
+  const [related, setRelated] = useState<ArtifactRow[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadRelated() {
+      if (!dossierId) {
+        setDossier(null);
+        setRelated([]);
+        return;
+      }
+      try {
+        const [d, artifacts] = await Promise.all([
+          getDossier(dossierId),
+          getDossierArtifacts(dossierId),
+        ]);
+        if (!cancelled) {
+          setDossier(d);
+          setRelated(artifacts);
+        }
+      } catch {
+        if (!cancelled) {
+          setDossier(null);
+          setRelated([]);
+        }
+      }
+    }
+    void loadRelated();
+    return () => {
+      cancelled = true;
+    };
+  }, [dossierId]);
 
   const title = useMemo(() => {
     if (doc.status === "ready") return doc.artifact.title;
@@ -45,13 +72,18 @@ export function ArtifactPage() {
   }, [doc]);
 
   const showLive = doc.status === "ready";
+  const lane = dossier ? laneForDossier(dossier) : null;
 
   const relatedFiltered = useMemo(() => {
-    if (dossierId !== "us-voting-1") return [];
     const currentSlug =
       doc.status === "ready" ? doc.artifact.slug : artifactId;
-    return US_VOTING_RELATED.filter((r) => r.slug !== currentSlug);
-  }, [dossierId, doc, artifactId]);
+    const currentId =
+      doc.status === "ready" ? artifactIdOf(doc.artifact) : artifactId;
+    return related.filter((r) => {
+      const id = artifactIdOf(r);
+      return r.slug !== currentSlug && id !== currentId;
+    });
+  }, [related, doc, artifactId]);
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -73,28 +105,30 @@ export function ArtifactPage() {
                   / Artifact
                 </div>
                 <div className="mb-4 flex items-center gap-3">
-                  {dossierId === "us-voting-1" && (
-                    <LaneBadge lane="Prescriptive" />
+                  {lane && (
+                    <>
+                      <LaneBadge lane={lane} />
+                      {lane === "Prescriptive" && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="h-4 w-4 text-neutral-400" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p className="text-xs">
+                                <strong>Prescriptive Lane:</strong> Contains
+                                objective-conditional strategy and procedures
+                                attributed to an actor/owner. Focus on actionable
+                                plans.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    </>
                   )}
                   {showLive && (
                     <Badge variant="secondary">Live revision</Badge>
-                  )}
-                  {dossierId === "us-voting-1" && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="h-4 w-4 text-neutral-400" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p className="text-xs">
-                            <strong>Prescriptive Lane:</strong> Contains
-                            objective-conditional strategy and procedures
-                            attributed to an actor/owner. Focus on actionable
-                            plans.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
                   )}
                 </div>
                 <h1 className="mb-4 text-3xl font-bold text-neutral-900">
@@ -215,7 +249,7 @@ export function ArtifactPage() {
                         to={`/dossier/${dossierId}`}
                         className="text-neutral-600 hover:text-neutral-900"
                       >
-                        {dossierId}
+                        {dossier?.title ?? dossierId}
                       </Link>
                     </div>
                     {showLive && (
@@ -269,7 +303,7 @@ export function ArtifactPage() {
                     <div className="space-y-3">
                       {relatedFiltered.map((r) => (
                         <Link
-                          key={r.slug}
+                          key={artifactIdOf(r)}
                           to={`/dossier/${dossierId}/artifact/${r.slug}`}
                           className="block text-sm text-neutral-600 hover:text-neutral-900"
                         >

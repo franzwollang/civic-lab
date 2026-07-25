@@ -38,5 +38,53 @@
     "current_revision_id": "rev-us-provisional-1",
     "created_at": "2026-07-01T00:30:00.000Z",
     "dossier_id": "us-voting-1"
+  },
+  {
+    "page_id": "ca-overview",
+    "title": "Overview and Purpose",
+    "slug": "overview",
+    "current_revision_id": "rev-ca-overview-1",
+    "created_at": "2026-07-02T00:00:00.000Z",
+    "dossier_id": "ca-elections-1"
+  },
+  {
+    "page_id": "ca-list-mgmt",
+    "title": "Electors List Management",
+    "slug": "list-mgmt",
+    "current_revision_id": "rev-ca-list-mgmt-1",
+    "created_at": "2026-07-02T00:10:00.000Z",
+    "dossier_id": "ca-elections-1"
+  },
+  {
+    "page_id": "gb-overview",
+    "title": "Overview and Purpose",
+    "slug": "overview",
+    "current_revision_id": "rev-gb-overview-1",
+    "created_at": "2026-07-03T00:00:00.000Z",
+    "dossier_id": "gb-elections-1"
+  },
+  {
+    "page_id": "gb-returning-officer",
+    "title": "Returning Officer Practice",
+    "slug": "returning-officer",
+    "current_revision_id": "rev-gb-returning-officer-1",
+    "created_at": "2026-07-03T00:10:00.000Z",
+    "dossier_id": "gb-elections-1"
+  },
+  {
+    "page_id": "de-overview",
+    "title": "Overview and Purpose",
+    "slug": "overview",
+    "current_revision_id": "rev-de-overview-1",
+    "created_at": "2026-07-04T00:00:00.000Z",
+    "dossier_id": "de-elections-1"
+  },
+  {
+    "page_id": "de-bundeswahl",
+    "title": "Federal Election Coordination",
+    "slug": "bundeswahl",
+    "current_revision_id": "rev-de-bundeswahl-1",
+    "created_at": "2026-07-04T00:10:00.000Z",
+    "dossier_id": "de-elections-1"
   }
 ]
