@@ -49,7 +49,7 @@ export function About() {
               to="/constitution"
               className="ml-6 inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 hover:text-neutral-700"
             >
-              Read the Constitution
+              Read the Charter
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -96,9 +96,10 @@ export function About() {
               Not a Neutral Platform
             </h2>
             <p className="text-sm text-neutral-600">
-              Civic Lab has an explicit constitution and a clear editor-in-chief
-              model. The trade is simple: higher signal, stronger standards, and
-              an auditable trail of reasoning.
+              Civic Lab has an explicit living Charter (Owner-gated Canon
+              artifact) and a clear editor-in-chief model. The trade is simple:
+              higher signal, stronger standards, and an auditable trail of
+              reasoning.
             </p>
           </Card>
           <Card className="border border-neutral-200 bg-white p-6">

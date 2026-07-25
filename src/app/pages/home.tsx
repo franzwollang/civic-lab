@@ -98,9 +98,9 @@ export function Home() {
                     Not Neutral by Design
                   </div>
                   <p className="text-sm text-neutral-600">
-                    Civic Lab has an explicit constitution and a clear
-                    editor-in-chief model. The trade: higher signal, stronger
-                    standards, and an auditable trail of reasoning.
+                    Civic Lab has an explicit living Charter (Owner-gated Canon
+                    artifact) and a clear editor-in-chief model. The trade: higher
+                    signal, stronger standards, and an auditable trail of reasoning.
                   </p>
                 </Card>
                 <Card className="border border-neutral-200 bg-white/90 p-6">
@@ -136,7 +136,7 @@ export function Home() {
                       to="/constitution"
                       className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 hover:text-neutral-700"
                     >
-                      Read the Constitution
+                      Read the Charter
                       <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </div>

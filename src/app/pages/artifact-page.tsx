@@ -5,7 +5,7 @@ import { LaneBadge } from "../components/badges";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
-import { ExternalLink, MessageSquare, GitBranch, Info, Pencil } from "lucide-react";
+import { ExternalLink, MessageSquare, GitBranch, Info, Pencil, Shield } from "lucide-react";
 import { useParams, Link } from "react-router";
 import {
   Tooltip,
@@ -27,10 +27,14 @@ import {
   areaKindFromCollection,
   buildHierarchyCrumbs,
 } from "../lib/object-nav";
+import { useActingUser } from "../lib/acting-user";
+import { userHasCapability } from "../lib/role-affordances";
+import { CHARTER_ARTIFACT_ID } from "@/lib/charter";
 
 export function ArtifactPage() {
   const { dossierId, artifactId } = useParams();
   const doc = useArtifactDocument(artifactId);
+  const { user } = useActingUser();
   const [dossier, setDossier] = useState<DossierRow | null>(null);
   const [related, setRelated] = useState<ArtifactRow[]>([]);
 
@@ -88,6 +92,14 @@ export function ArtifactPage() {
     doc.status === "ready" && doc.artifact.lane_soft_label === "composite"
       ? "composite"
       : null;
+  const ownerMergeOnly =
+    doc.status === "ready" && Boolean(doc.artifact.owner_merge_only);
+  const canEditRestricted = userHasCapability(user, "merge_canon_restricted");
+  const showEdit =
+    showLive && (!ownerMergeOnly || canEditRestricted);
+  const isCharter =
+    doc.status === "ready" &&
+    artifactIdOf(doc.artifact) === CHARTER_ARTIFACT_ID;
 
   const relatedFiltered = useMemo(() => {
     const currentSlug =
@@ -171,6 +183,15 @@ export function ArtifactPage() {
                   {showLive && (
                     <Badge variant="secondary">Live revision</Badge>
                   )}
+                  {ownerMergeOnly && (
+                    <Badge
+                      variant="outline"
+                      className="border border-neutral-400 bg-neutral-100 text-xs font-medium text-neutral-800"
+                    >
+                      <Shield className="mr-1 h-3 w-3" />
+                      {isCharter ? "Charter · Owner merge only" : "Owner merge only"}
+                    </Badge>
+                  )}
                 </div>
                 <h1 className="mb-4 text-3xl font-bold text-neutral-900">
                   {title}
@@ -196,15 +217,37 @@ export function ArtifactPage() {
               </div>
 
               {showLive && (
-                <div className="mb-8 flex gap-3">
-                  <Link
-                    to={`/dossier/${dossierId}/artifact/${artifactIdOf(doc.artifact)}/edit`}
-                  >
-                    <Button variant="default" size="sm">
-                      <Pencil className="mr-2 h-4 w-4" />
-                      Edit
-                    </Button>
-                  </Link>
+                <div className="mb-8 flex flex-wrap items-center gap-3">
+                  {showEdit ? (
+                    <Link
+                      to={`/dossier/${dossierId}/artifact/${artifactIdOf(doc.artifact)}/edit`}
+                    >
+                      <Button variant="default" size="sm">
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit
+                      </Button>
+                    </Link>
+                  ) : ownerMergeOnly ? (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Button variant="outline" size="sm" disabled>
+                              <Shield className="mr-2 h-4 w-4" />
+                              Owner edit only
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p className="text-xs">
+                            Restricted Canon (`owner_merge_only`). Switch to an
+                            Owner persona to open the editor; merges still go
+                            through leaf RFC + Owner decide.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : null}
                   <Link to="/thread/thread-1">
                     <Button variant="outline" size="sm">
                       <MessageSquare className="mr-2 h-4 w-4" />
@@ -289,6 +332,17 @@ export function ArtifactPage() {
                         </div>
                         <div className="text-neutral-600">
                           {doc.artifact.slug}
+                        </div>
+                      </div>
+                    )}
+                    {ownerMergeOnly && (
+                      <div>
+                        <div className="mb-1 font-medium text-neutral-900">
+                          Merge gate
+                        </div>
+                        <div className="text-neutral-600">
+                          Owner only (`owner_merge_only`)
+                          {isCharter ? " · living Charter" : ""}
                         </div>
                       </div>
                     )}

@@ -66,6 +66,8 @@ import {
   areaKindFromCollection,
   buildHierarchyCrumbs,
 } from "../lib/object-nav";
+import { useActingUserOptional } from "../lib/acting-user";
+import { userHasCapability } from "../lib/role-affordances";
 
 const DEFAULT_ARTIFACT_ID = "page-001";
 
@@ -103,6 +105,7 @@ function TestEditorInner() {
   );
   const hasInitializedCollapse = useRef(false);
   const evidenceRegistry = useEvidenceRegistry();
+  const acting = useActingUserOptional();
 
   const savedSelectionForInsert = useRef<Range | null>(null);
 
@@ -185,6 +188,13 @@ function TestEditorInner() {
 
   const latestRevision = revisions[0];
   const previousRevision = revisions[1];
+  const ownerMergeOnly = Boolean(page?.owner_merge_only);
+  const canEditRestricted = userHasCapability(
+    acting.user,
+    "merge_canon_restricted",
+  );
+  const saveBlocked =
+    inProductChrome && ownerMergeOnly && !canEditRestricted;
 
   const diffSummary = useMemo(() => {
     if (!latestRevision || !previousRevision) return null;
@@ -319,6 +329,12 @@ function TestEditorInner() {
 
   const handleSave = async () => {
     if (!page) return;
+    if (saveBlocked) {
+      setError(
+        "Restricted Canon (`owner_merge_only`) — switch to an Owner persona to save.",
+      );
+      return;
+    }
     setStatus("saving");
     setError(null);
 
@@ -1076,9 +1092,18 @@ function TestEditorInner() {
                   <Button
                     size="sm"
                     onClick={handleSave}
-                    disabled={status === "saving" || hasErrors}
+                    disabled={status === "saving" || hasErrors || saveBlocked}
+                    title={
+                      saveBlocked
+                        ? "Owner persona required for owner_merge_only artifacts"
+                        : undefined
+                    }
                   >
-                    {status === "saving" ? "Saving..." : "Save revision"}
+                    {status === "saving"
+                      ? "Saving..."
+                      : saveBlocked
+                        ? "Owner save only"
+                        : "Save revision"}
                   </Button>
                 </div>
               </div>

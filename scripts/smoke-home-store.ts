@@ -42,9 +42,9 @@ async function main() {
 
     const electoral = dossiers.find((d) => d.dossier_id === "electoral-1");
     if (!electoral) throw new Error("electoral-1 missing");
-    if (electoral.artifact_count !== 2) {
+    if (electoral.artifact_count !== 1) {
       throw new Error(
-        `electoral-1 artifact_count expected 2 (page-001 + canon-charter), got ${electoral.artifact_count}`,
+        `electoral-1 artifact_count expected 1 (page-001; Charter in governance), got ${electoral.artifact_count}`,
       );
     }
     if (electoral.collection_title !== "Canon") {
