@@ -27,7 +27,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - [ ] **Make product routes data-driven**
   - Done: `/canon`, `/manuals`, `/collection/:id`, `/dossier/:id` load Prisma records; header/home CTAs point at Area entry routes.
   - Done: home **Trending Dossiers** from `/api/dossiers` (artifact_count + collection join).
-  - Done: Collection splash loads **`/api/collections/:id/dashboard`** (CONCEPT §11 chrome; claim quality/forecast live; Critical findings / Red Team still M7).
+  - Done: Collection splash loads **`/api/collections/:id/dashboard`** (CONCEPT §11 chrome; claim quality/forecast + Critical/Red Team counts live).
   - Remaining: dossier tabs show live threads (M5 first cut); home RFC/Red Team panels still fixture until RFC/Findings tables mature.
 
 - [ ] **Unify artifact body with revisioned editor documents**
@@ -53,8 +53,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - States seeded: `open` | `rfc` (also model `review` | `decided` | `archived`).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
-  - Done (leaf + wrapper + decide + §3.4 authority): Prisma `RevSet`; seed `revsets.json` + proposal revision on `thread-us-voter-reg-rfc`; seed multi-artifact open `thread-us-multi-open`; `POST /api/threads/:id/promote` (1:1 leaf **or** same-Collection wrapper + sub-RFCs; cross-Collection → `cross_collection`); `GET|POST /api/threads/:id/revsets` (leaf only; proposals do not flip `current_revision_id` until merge); `POST /api/threads/:id/decide` (`merged`|`rejected`|`parked`) on leaves — merge applies latest RevSet → `current_revision_id` + Section sync; wrappers reject direct decide (`wrapper_not_direct`); parent cascades to `decided` when all children decided (mixed outcomes → `parked`); **Collection merge authority** (CONCEPT §3.4): Manual → steward (+ Owner), Canon routine → editor (+ Owner), Canon `owner_merge_only` → Owner; `forbidden` 403; `merge_authority` on leaf `GET /api/threads/:id`; seed `canon-charter` + `user-eve` owner; smokes `smoke-merge-authority.ts` + `smoke-revsets.ts`.
-  - Remaining: Accepted Risk on leaf (M7).
+  - Done (leaf + wrapper + decide + §3.4 authority + §7.6 Critical gate): Prisma `RevSet`; seed `revsets.json` + proposal revision on `thread-us-voter-reg-rfc`; seed multi-artifact open `thread-us-multi-open`; `POST /api/threads/:id/promote` (1:1 leaf **or** same-Collection wrapper + sub-RFCs; cross-Collection → `cross_collection`); `GET|POST /api/threads/:id/revsets` (leaf only; proposals do not flip `current_revision_id` until merge); `POST /api/threads/:id/decide` (`merged`|`rejected`|`parked`) on leaves — merge applies latest RevSet → `current_revision_id` + Section sync; wrappers reject direct decide (`wrapper_not_direct`); parent cascades to `decided` when all children decided (mixed outcomes → `parked`); **Collection merge authority** (CONCEPT §3.4): Manual → steward (+ Owner), Canon routine → editor (+ Owner), Canon `owner_merge_only` / Critical-AR path → Owner; `forbidden` 403; `critical_unaccepted` 409 without Accepted Risk; `merge_authority` on leaf `GET /api/threads/:id`; seed `canon-charter` + `user-eve` owner; smokes `smoke-merge-authority.ts` + `smoke-revsets.ts` + `smoke-accepted-risk.ts`.
+  - Remaining: typed Finding/Mitigation posts + Findings timeline UX (M7 residual).
   - RevSet → `ArtifactRevision` (propose ✓; merge apply ✓).
 
 ---
@@ -69,12 +69,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 ## F. Red Team + oversight (CONCEPT §§7–8)
 
 - [ ] **Findings (thread-required context)**
-  - Done: Prisma `Finding` / `FindingTarget`; seed (`prisma/seed/findings.json`); API `GET|POST /api/findings`, `GET /api/findings/:id`, `GET /api/threads/:id/findings`; Red Team-only create (`user-dave`); Collection dashboard `critical_findings` + `red_team.recent_count` live; `listOpenCriticalFindingsForMerge` helper for gate.
+  - Done: Prisma `Finding` / `FindingTarget`; seed (`prisma/seed/findings.json`); API `GET|POST /api/findings`, `GET /api/findings/:id`, `GET /api/threads/:id/findings`; Red Team-only create (`user-dave`); Collection dashboard `critical_findings` + `red_team.recent_count` live; Accepted Risk + Critical merge gate in `decideThread` (CONCEPT §7.6).
   - Remaining: Candidate → Finding promotion (can stay stubbed); Findings timeline UX / filters on thread pages.
-
-- [ ] **Accepted Risk + merge gating**
-  - Attaches to **merging** (1:1) RFC; signer = impersonated user.
-  - Gate: no merge with open Critical finding unless Accepted Risk exists (blocker list helper ready; wire into `decideThread`).
 
 - [ ] **Role separation via impersonation**
   - Seed users/roles include Owner (`user-eve`), editor, steward, red_team, contributor (`src/app/lib/prototype-users.ts`); reply composer + decide paths use acting id.
@@ -141,4 +137,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (23 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (24 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.

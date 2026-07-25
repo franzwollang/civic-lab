@@ -2652,11 +2652,22 @@ export async function createAcceptedRisk(
     mergeArtifactId: thread.mergeArtifactId,
   });
 
+  // Only flip Findings whose context is this leaf RFC (originating thread or
+  // explicit thread target). Artifact-targeted Criticals stay open so other
+  // leaves merging the same artifact still need their own Accepted Risk.
+  const findingsToAccept = blockers.filter(
+    (f) =>
+      f.thread_id === input.thread_id ||
+      f.targets.some(
+        (t) => t.target_kind === "thread" && t.target_id === input.thread_id,
+      ),
+  );
+
   const acceptedRiskId =
     input.accepted_risk_id?.trim() || `ar-${randomUUID()}`;
   const signedAt = input.signed_at ? new Date(input.signed_at) : new Date();
 
-  const findingIds = blockers.map((f) => f.finding_id);
+  const findingIds = findingsToAccept.map((f) => f.finding_id);
 
   await prisma.$transaction(async (tx) => {
     await tx.acceptedRisk.create({

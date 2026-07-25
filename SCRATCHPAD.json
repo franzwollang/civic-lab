@@ -1,23 +1,23 @@
 {
-  "updated_at": "2026-07-25T14:10Z",
-  "turn": 40,
+  "updated_at": "2026-07-25T14:30Z",
+  "turn": 41,
   "focus": {
     "milestone": "M7",
-    "issue": "Accepted Risk + merge gating",
-    "goal": "AcceptedRisk on leaf RFC + block Critical merge without AR"
+    "issue": "Findings timeline / Candidate→Finding",
+    "goal": "Thread Findings UX or Candidate promotion stub"
   },
   "recent": [
-    "Merged M6 metrics PR onto cron branch",
-    "M7 Findings: Prisma Finding/FindingTarget + seed + API",
-    "Dashboard Critical/recent counts live; smoke-findings"
+    "Merged PR #27 (M6 metrics + Findings) onto cron branch",
+    "AcceptedRisk model + API + decideThread Critical gate",
+    "Canon Critical/AR → Owner-only; RFC Sign AR UI; 24/24 smokes"
   ],
   "discoveries": [
-    "listOpenCriticalFindingsForMerge ready for decideThread gate"
+    "AR flips only thread-scoped Criticals; artifact-targeted stay open for other leaves"
   ],
   "open_threads": [
     "Candidate→Finding promotion still stubbed",
     "Global impersonation chrome → M8"
   ],
-  "next_step": "M7: AcceptedRisk model + wire Critical gate into decideThread merge",
+  "next_step": "M7: Findings timeline/filters on thread pages, or Candidate→Finding stub; else start M8 Search",
   "blockers": []
 }

@@ -293,6 +293,20 @@ async function main() {
       throw new Error("wrapper should stay rfc until all children decided");
     }
 
+    // Child A merges into us-voter-reg, which has a seeded Critical Finding —
+    // Accepted Risk on this leaf clears the §7.6 gate.
+    const childAr = await createAcceptedRisk({
+      thread_id: childA,
+      description: "Accept residual risk for wrapper child merge into us-voter-reg.",
+      rationale: "Clears artifact-targeted Critical for this leaf only.",
+      signer_id: "user-alice",
+    });
+    if (!childAr.ok) {
+      throw new Error(
+        `Accepted Risk on wrapper child failed: ${JSON.stringify(childAr.error)}`,
+      );
+    }
+
     const mergeA = await decideThread({
       thread_id: childA,
       outcome: "merged",

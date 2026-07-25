@@ -71,9 +71,9 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (23/23) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (24/24) |
 
-**Next build:** **M7 Red Team** (`in progress` — Finding table + dashboard Critical counts landed). Next: Accepted Risk on leaf + Critical merge gate in `decideThread`.
+**Next build:** **M7 Red Team** (`in progress` — Findings + Accepted Risk + Critical merge gate landed). Remaining: Candidate→Finding promotion / Findings timeline UX; then M8 Discovery.
 
 ---
 
@@ -88,7 +88,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |
 | **M5 — Threads + RFC** | `done` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer ✓; Collection merge authority (§3.4) ✓ |
 | **M6 — Claims + lanes** | `done` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; Collection quality/forecast metrics ✓ |
-| **M7 — Red Team** | `in progress` | Finding + FindingTarget ✓; dashboard Critical/recent counts ✓; Accepted Risk on leaf + Critical merge gate remaining |
+| **M7 — Red Team** | `in progress` | Finding + FindingTarget ✓; dashboard Critical/recent counts ✓; Accepted Risk on leaf + Critical merge gate ✓; Candidate→Finding / timeline UX remaining |
 | **M8 — Discovery** | `not started` | Search; breadcrumbs; impersonation role UX |
 | **M9 — Policy** | `not started` | Real auth; reputation; Charter artifact; anti-gaming |
 
