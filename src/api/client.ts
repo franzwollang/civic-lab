@@ -6,6 +6,7 @@ import type {
   CollectionDashboard,
   CollectionRow,
   DossierRow,
+  FindingRow,
   PageRevisionRow,
   PageRow,
   RevSetRow,
@@ -379,6 +380,54 @@ export async function createClaim(body: {
     body: JSON.stringify(body),
   });
   return handleResponse<ClaimRow>(response);
+}
+
+export async function getFindings(opts?: {
+  threadId?: string;
+  collectionId?: string;
+  severity?: string;
+  status?: string;
+}): Promise<FindingRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.threadId) params.set("thread_id", opts.threadId);
+  if (opts?.collectionId) params.set("collection_id", opts.collectionId);
+  if (opts?.severity) params.set("severity", opts.severity);
+  if (opts?.status) params.set("status", opts.status);
+  const qs = params.toString();
+  const response = await fetch(`${API_BASE}/findings${qs ? `?${qs}` : ""}`);
+  return handleResponse<FindingRow[]>(response);
+}
+
+export async function getFinding(findingId: string): Promise<FindingRow> {
+  const response = await fetch(`${API_BASE}/findings/${findingId}`);
+  return handleResponse<FindingRow>(response);
+}
+
+export async function getThreadFindings(
+  threadId: string,
+): Promise<FindingRow[]> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/findings`);
+  return handleResponse<FindingRow[]>(response);
+}
+
+export async function createFinding(body: {
+  finding_id?: string;
+  thread_id: string;
+  title: string;
+  severity: "low" | "med" | "high" | "critical";
+  likelihood?: string | null;
+  status?: "open" | "mitigated" | "accepted_risk" | "disputed";
+  evidence?: string | null;
+  attack_path?: string | null;
+  author_id: string;
+  targets?: { target_kind: string; target_id: string }[];
+}): Promise<FindingRow> {
+  const response = await fetch(`${API_BASE}/findings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<FindingRow>(response);
 }
 
 export async function getAdjudicationQueue(): Promise<ClaimRow[]> {

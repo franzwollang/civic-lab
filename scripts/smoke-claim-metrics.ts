@@ -165,8 +165,11 @@ async function main() {
         throw new Error("seed n < 20 must not be board-eligible");
       }
     }
-    if (canon.open_threads.deferred !== "M7") {
-      throw new Error("open_threads Critical findings defer to M7");
+    if (canon.open_threads.critical_findings !== 0) {
+      throw new Error("Canon seed Finding is med, not Critical");
+    }
+    if ("deferred" in canon.open_threads) {
+      throw new Error("open_threads should no longer defer Critical findings");
     }
 
     const us = await getCollectionDashboard("collection-us");

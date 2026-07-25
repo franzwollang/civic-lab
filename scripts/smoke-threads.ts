@@ -93,13 +93,16 @@ async function main() {
     if (!canonDash || canonDash.open_threads.count < 1) {
       throw new Error("canon dashboard should count seeded open threads");
     }
-    if (canonDash.open_threads.deferred !== "M7") {
-      throw new Error("Critical findings still deferred to M7");
+    if ("deferred" in canonDash.open_threads) {
+      throw new Error("Critical findings should no longer defer to M7");
     }
 
     const usDash = await getCollectionDashboard("collection-us");
     if (!usDash || usDash.open_threads.count < 2) {
       throw new Error("US dashboard should count open+rfc threads");
+    }
+    if (usDash.open_threads.critical_findings < 1) {
+      throw new Error("US dashboard should count seeded Critical Finding");
     }
 
     const missing = await getThread("thread-nope");

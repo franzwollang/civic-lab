@@ -39,3 +39,5 @@
 {"ts":"2026-07-25T13:50Z","focus":"M6 metrics","summary":"Collection claim quality/forecast panels live; M6 exit; next M7 Findings","next":"Finding model + Critical merge gate"}
 {"ts":"2026-07-25T18:25Z","focus":"M6 metrics","summary":"Collection claim quality/forecast panels on ac2e; M6 exit; next M7 Findings","next":"Finding model + Critical merge gate"}
 {"ts":"2026-07-25T18:45Z","focus":"M6 claim metrics","summary":"Cherry-picked Collection quality/forecast panels from ac2e onto aed0","next":"M7 Finding model + Critical dashboard counts"}
+{"ts":"2026-07-25T14:10Z","focus":"M7 Findings","summary":"Finding model/API/dashboard counts landed; handoff to Accepted Risk merge gate","next":"AcceptedRisk + decideThread Critical gate"}
+{"ts":"2026-07-25T18:55Z","focus":"M7 Findings","summary":"Finding model/API/dashboard counts landed on aed0; handoff to Accepted Risk merge gate","next":"AcceptedRisk + decideThread Critical gate"}

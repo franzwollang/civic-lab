@@ -1,4 +1,4 @@
-// Civic Lab M6 — Claims + Manual lanes (CONCEPT §§4–5).
+// Civic Lab M7 — Findings (CONCEPT §7); M6 Claims + Manual lanes retained.
 // M5 Threads + posts + flexible targets retained.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
@@ -72,11 +72,49 @@ model Thread {
   posts           ThreadPost[]
   targets         ThreadTarget[]
   revSets         RevSet[]
+  findings        Finding[]
 
   @@index([homeDossierId])
   @@index([state])
   @@index([parentThreadId])
   @@map("threads")
+}
+
+/// CONCEPT §7.3 — Red Team Finding; always tied to originating thread.
+/// severity: low | med | high | critical
+/// status: open | mitigated | accepted_risk | disputed
+model Finding {
+  findingId  String          @id @map("finding_id")
+  threadId   String          @map("thread_id")
+  title      String
+  severity   String
+  likelihood String?
+  status     String          @default("open")
+  evidence   String?
+  attackPath String?         @map("attack_path")
+  authorId   String          @map("author_id")
+  createdAt  DateTime        @map("created_at")
+  thread     Thread          @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+  targets    FindingTarget[]
+
+  @@index([threadId])
+  @@index([severity])
+  @@index([status])
+  @@index([createdAt])
+  @@map("findings")
+}
+
+/// CONCEPT §7.3 — Finding targets (artifact | claim | section | thread | dossier).
+model FindingTarget {
+  id         Int     @id @default(autoincrement())
+  findingId  String  @map("finding_id")
+  targetKind String  @map("target_kind")
+  targetId   String  @map("target_id")
+  finding    Finding @relation(fields: [findingId], references: [findingId], onDelete: Cascade)
+
+  @@unique([findingId, targetKind, targetId])
+  @@index([targetKind, targetId])
+  @@map("finding_targets")
 }
 
 /// CONCEPT §3.3 / Appendix A — proposed ArtifactRevision on a merging (leaf) RFC.

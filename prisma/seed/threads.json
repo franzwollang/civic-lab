@@ -36,7 +36,7 @@
     "title": "RFC: clarify voter registration procedure steps",
     "state": "rfc",
     "decision_outcome": null,
-    "is_redteam": false,
+    "is_redteam": true,
     "parent_thread_id": null,
     "merge_artifact_id": "us-voter-reg",
     "created_at": "2026-07-12T10:00:00.000Z",

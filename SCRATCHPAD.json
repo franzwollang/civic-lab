@@ -1,23 +1,23 @@
 {
-  "updated_at": "2026-07-25T18:45Z",
-  "turn": 40,
+  "updated_at": "2026-07-25T18:55Z",
+  "turn": 41,
   "focus": {
     "milestone": "M7",
-    "issue": "Findings (thread-required context)",
-    "goal": "Prisma Finding + seed + API; Critical counts on dashboard"
+    "issue": "Accepted Risk + merge gating",
+    "goal": "AcceptedRisk on leaf RFC + block Critical merge without AR"
   },
   "recent": [
-    "Re-applied M6 claim metrics from ac2e onto aed0 (Hono base)",
-    "claimMetrics + dashboard panels + seeds + smoke-claim-metrics",
-    "M6 done; next M7 Findings"
+    "Re-applied M6 claim metrics onto aed0 (Hono base)",
+    "M7 Findings: Prisma Finding/FindingTarget + seed + API",
+    "Dashboard Critical/recent counts live; smoke-findings"
   ],
   "discoveries": [
-    "PR #39 ac2e shares Hono tip \u2014 cherry-pick cleanly onto fresh cron branches"
+    "listOpenCriticalFindingsForMerge ready for decideThread gate"
   ],
   "open_threads": [
-    "Accepted Risk on leaf deferred to M7",
-    "Global impersonation chrome \u2192 M8"
+    "Candidate→Finding promotion still stubbed",
+    "Global impersonation chrome → M8"
   ],
-  "next_step": "M7: Finding model + thread link + Critical merge gate scaffolding",
+  "next_step": "M7: AcceptedRisk model + wire Critical gate into decideThread merge",
   "blockers": []
 }
