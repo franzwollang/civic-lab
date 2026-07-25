@@ -25,7 +25,7 @@
         "post_id": "post-us-prov-2",
         "author_id": "user-bob",
         "type": "comment",
-        "body": "Agree — keep this open until the Overview artifact cites the same definitions.",
+        "body": "Agree — keep this open until the Overview artifact cites the same definitions. Also: state rejection-rate definitions look inconsistent — flagging as candidate for Red Team.",
         "created_at": "2026-07-10T15:30:00.000Z"
       }
     ]
@@ -50,6 +50,13 @@
         "type": "comment",
         "body": "Promoting to RFC so we can attach a RevSet against us-voter-reg (leaf merge).",
         "created_at": "2026-07-12T10:00:00.000Z"
+      },
+      {
+        "post_id": "post-us-reg-mitigation-1",
+        "author_id": "user-alice",
+        "type": "mitigation",
+        "body": "Proposed mitigation: add an explicit provisional→registration cure-window subsection citing the Descriptive brief before merge.",
+        "created_at": "2026-07-13T14:00:00.000Z"
       }
     ]
   },

@@ -1,4 +1,5 @@
-// Civic Lab M7 — Findings + Accepted Risk merge gate (CONCEPT §7); M6 Claims retained.
+// Civic Lab M7 — Findings + Accepted Risk + Candidate→Finding / timeline (CONCEPT §7).
+// M6 Claims retained.
 // M5 Threads + posts + flexible targets retained.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
@@ -69,11 +70,12 @@ model Thread {
   homeDossier     Dossier        @relation(fields: [homeDossierId], references: [dossierId], onDelete: Cascade)
   parentThread    Thread?        @relation("ThreadTree", fields: [parentThreadId], references: [threadId], onDelete: SetNull)
   childThreads    Thread[]       @relation("ThreadTree")
-  posts           ThreadPost[]
-  targets         ThreadTarget[]
-  revSets         RevSet[]
-  findings        Finding[]
-  acceptedRisk    AcceptedRisk?
+  posts              ThreadPost[]
+  targets            ThreadTarget[]
+  revSets            RevSet[]
+  findings           Finding[]
+  candidateFindings  CandidateFinding[]
+  acceptedRisk       AcceptedRisk?
 
   @@index([homeDossierId])
   @@index([state])
@@ -101,24 +103,47 @@ model AcceptedRisk {
 /// severity: low | med | high | critical
 /// status: open | mitigated | accepted_risk | disputed
 model Finding {
-  findingId  String          @id @map("finding_id")
-  threadId   String          @map("thread_id")
-  title      String
-  severity   String
-  likelihood String?
-  status     String          @default("open")
-  evidence   String?
-  attackPath String?         @map("attack_path")
-  authorId   String          @map("author_id")
-  createdAt  DateTime        @map("created_at")
-  thread     Thread          @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
-  targets    FindingTarget[]
+  findingId         String          @id @map("finding_id")
+  threadId          String          @map("thread_id")
+  title             String
+  severity          String
+  likelihood        String?
+  status            String          @default("open")
+  evidence          String?
+  attackPath        String?         @map("attack_path")
+  authorId          String          @map("author_id")
+  createdAt         DateTime        @map("created_at")
+  /// CONCEPT §7.4 provenance when promoted from a candidate flag.
+  sourcePostId      String?         @map("source_post_id")
+  sourceCandidateId String?         @map("source_candidate_id")
+  thread            Thread          @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+  targets           FindingTarget[]
 
   @@index([threadId])
   @@index([severity])
   @@index([status])
   @@index([createdAt])
+  @@index([sourceCandidateId])
   @@map("findings")
+}
+
+/// CONCEPT §7.4 — Candidate Finding flagged on a thread post; Red Team may promote.
+/// status: open | promoted | dismissed
+model CandidateFinding {
+  candidateId       String     @id @map("candidate_id")
+  threadId          String     @map("thread_id")
+  postId            String     @unique @map("post_id")
+  flaggerId         String     @map("flagger_id")
+  note              String?
+  status            String     @default("open")
+  promotedFindingId String?    @map("promoted_finding_id")
+  createdAt         DateTime   @map("created_at")
+  thread            Thread     @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+  post              ThreadPost @relation(fields: [postId], references: [postId], onDelete: Cascade)
+
+  @@index([threadId])
+  @@index([status])
+  @@map("candidate_findings")
 }
 
 /// CONCEPT §7.3 — Finding targets (artifact | claim | section | thread | dossier).
@@ -152,15 +177,16 @@ model RevSet {
   @@map("revsets")
 }
 
-/// CONCEPT §3 — timeline posts (typed later: comment / finding / mitigation).
+/// CONCEPT §3 / §7.5 — timeline posts: comment | mitigation (Findings are first-class rows).
 model ThreadPost {
-  postId    String   @id @map("post_id")
-  threadId  String   @map("thread_id")
-  authorId  String   @map("author_id")
-  type      String
-  body      String
-  createdAt DateTime @map("created_at")
-  thread    Thread   @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+  postId            String             @id @map("post_id")
+  threadId          String             @map("thread_id")
+  authorId          String             @map("author_id")
+  type              String
+  body              String
+  createdAt         DateTime           @map("created_at")
+  thread            Thread             @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+  candidateFinding  CandidateFinding?
 
   @@index([threadId])
   @@map("thread_posts")

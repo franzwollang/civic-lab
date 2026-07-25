@@ -171,6 +171,41 @@ export type ThreadPostRow = {
   created_at: string;
 };
 
+/** CONCEPT §7.4 Candidate Finding wire shape. */
+export type CandidateFindingRow = {
+  candidate_id: string;
+  thread_id: string;
+  post_id: string;
+  flagger_id: string;
+  note: string | null;
+  status: string;
+  promoted_finding_id: string | null;
+  created_at: string;
+};
+
+/** CONCEPT §7.3 Finding target join. */
+export type FindingTargetRow = {
+  target_kind: string;
+  target_id: string;
+};
+
+/** CONCEPT §7.3 Finding wire shape. */
+export type FindingRow = {
+  finding_id: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood: string | null;
+  status: string;
+  evidence: string | null;
+  attack_path: string | null;
+  author_id: string;
+  created_at: string;
+  targets: FindingTargetRow[];
+  source_post_id?: string | null;
+  source_candidate_id?: string | null;
+};
+
 export type ThreadRow = {
   thread_id: string;
   home_dossier_id: string;
@@ -266,27 +301,6 @@ export type ClaimRow = {
   adjudicated_by: string | null;
   adjudicated_at: string | null;
   adjudication_pending?: boolean;
-};
-
-/** CONCEPT §7.3 Finding target join. */
-export type FindingTargetRow = {
-  target_kind: string;
-  target_id: string;
-};
-
-/** CONCEPT §7.3 Finding wire shape. */
-export type FindingRow = {
-  finding_id: string;
-  thread_id: string;
-  title: string;
-  severity: string;
-  likelihood: string | null;
-  status: string;
-  evidence: string | null;
-  attack_path: string | null;
-  author_id: string;
-  created_at: string;
-  targets: FindingTargetRow[];
 };
 
 /** @deprecated Prefer ArtifactRow */

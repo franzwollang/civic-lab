@@ -3,6 +3,7 @@ import type {
   AreaRow,
   ArtifactRevisionRow,
   ArtifactRow,
+  CandidateFindingRow,
   ClaimRow,
   CollectionDashboard,
   CollectionRow,
@@ -429,6 +430,62 @@ export async function createFinding(body: {
     body: JSON.stringify(body),
   });
   return handleResponse<FindingRow>(response);
+}
+
+export async function getThreadCandidates(
+  threadId: string,
+  opts?: { status?: string },
+): Promise<CandidateFindingRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.status) params.set("status", opts.status);
+  const qs = params.toString();
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/candidates${qs ? `?${qs}` : ""}`,
+  );
+  return handleResponse<CandidateFindingRow[]>(response);
+}
+
+export async function flagCandidateFinding(
+  threadId: string,
+  body: {
+    candidate_id?: string;
+    post_id: string;
+    flagger_id: string;
+    note?: string | null;
+  },
+): Promise<CandidateFindingRow> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/candidates`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<CandidateFindingRow>(response);
+}
+
+export async function promoteCandidateFinding(
+  candidateId: string,
+  body: {
+    author_id: string;
+    title?: string;
+    severity: "low" | "med" | "high" | "critical";
+    likelihood?: string | null;
+    evidence?: string | null;
+    attack_path?: string | null;
+    targets?: { target_kind: string; target_id: string }[];
+  },
+): Promise<{ finding: FindingRow; candidate: CandidateFindingRow }> {
+  const response = await fetch(
+    `${API_BASE}/candidates/${candidateId}/promote`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+  return handleResponse<{
+    finding: FindingRow;
+    candidate: CandidateFindingRow;
+  }>(response);
 }
 
 export async function getAcceptedRisk(

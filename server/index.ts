@@ -13,10 +13,12 @@ import {
   createRevSet,
   createThreadPost,
   decideThread,
+  flagCandidateFinding,
   getAcceptedRiskForThread,
   getArtifact,
   getAttributions,
   getAreaByKind,
+  getCandidateFinding,
   getClaim,
   getCollection,
   getCollectionDashboard,
@@ -30,6 +32,7 @@ import {
   listArtifactRevisions,
   listArtifacts,
   listArtifactsByDossier,
+  listCandidateFindings,
   listClaims,
   listCollections,
   listDossiers,
@@ -37,6 +40,7 @@ import {
   listRevSets,
   listSections,
   listThreads,
+  promoteCandidateFinding,
   promoteThreadToRfc,
   putAttributions,
   putTerms,
@@ -220,9 +224,44 @@ const termsRegistrySchema = z.object({
 const threadPostBodySchema = z.object({
   post_id: z.string().min(1).optional(),
   author_id: z.string().min(1),
-  type: z.string().min(1).optional(),
+  type: z.enum(["comment", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
+});
+
+const flagCandidateBodySchema = z.object({
+  candidate_id: z.string().min(1).optional(),
+  post_id: z.string().min(1),
+  flagger_id: z.string().min(1),
+  note: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+});
+
+const promoteCandidateBodySchema = z.object({
+  author_id: z.string().min(1),
+  title: z.string().min(1).optional(),
+  severity: z.enum(["low", "med", "high", "critical"]),
+  likelihood: z.string().nullable().optional(),
+  evidence: z.string().nullable().optional(),
+  attack_path: z.string().nullable().optional(),
+  status: z
+    .enum(["open", "mitigated", "accepted_risk", "disputed"])
+    .optional(),
+  finding_id: z.string().min(1).optional(),
+  targets: z
+    .array(
+      z.object({
+        target_kind: z.enum([
+          "artifact",
+          "claim",
+          "section",
+          "thread",
+          "dossier",
+        ]),
+        target_id: z.string().min(1),
+      }),
+    )
+    .optional(),
 });
 
 const promoteBodySchema = z.object({
@@ -730,6 +769,84 @@ app.post("/api/findings", async (c) => {
     return c.json({ error: result.error }, status);
   }
   return c.json(result.finding, 201);
+});
+
+// M7 Candidate Findings (CONCEPT §7.4) — flag post → RT promote
+app.get("/api/candidates", async (c) => {
+  const threadId = c.req.query("thread_id");
+  const status = c.req.query("status");
+  return c.json(await listCandidateFindings({ threadId, status }));
+});
+
+app.get("/api/threads/:threadId/candidates", async (c) => {
+  const threadId = c.req.param("threadId");
+  const thread = await getThread(threadId);
+  if (!thread) {
+    return c.json({ error: "Thread not found" }, 404);
+  }
+  const status = c.req.query("status");
+  return c.json(await listCandidateFindings({ threadId, status }));
+});
+
+app.get("/api/candidates/:candidateId", async (c) => {
+  const candidate = await getCandidateFinding(c.req.param("candidateId"));
+  if (!candidate) {
+    return c.json({ error: "Candidate Finding not found" }, 404);
+  }
+  return c.json(candidate);
+});
+
+app.post("/api/threads/:threadId/candidates", async (c) => {
+  const parsed = flagCandidateBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid candidate flag payload" }, 400);
+  }
+  const result = await flagCandidateFinding({
+    thread_id: c.req.param("threadId"),
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden"
+          ? 403
+          : result.error.code === "already_flagged"
+            ? 409
+            : 422;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(result.candidate, 201);
+});
+
+app.post("/api/candidates/:candidateId/promote", async (c) => {
+  const parsed = promoteCandidateBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid promote payload" }, 400);
+  }
+  const result = await promoteCandidateFinding({
+    candidate_id: c.req.param("candidateId"),
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden"
+          ? 403
+          : result.error.code === "not_open"
+            ? 409
+            : 422;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(
+    { finding: result.finding, candidate: result.candidate },
+    201,
+  );
 });
 
 // M7 Accepted Risk (CONCEPT §7.6) — leaf RFC Critical merge gate

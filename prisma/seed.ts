@@ -149,6 +149,19 @@ type FindingSeedRow = {
   author_id: string;
   created_at: string;
   targets?: FindingTargetSeed[];
+  source_post_id?: string | null;
+  source_candidate_id?: string | null;
+};
+
+type CandidateSeedRow = {
+  candidate_id: string;
+  thread_id: string;
+  post_id: string;
+  flagger_id: string;
+  note?: string | null;
+  status?: string;
+  promoted_finding_id?: string | null;
+  created_at: string;
 };
 
 async function readSeedJson<T>(name: string): Promise<T> {
@@ -166,6 +179,8 @@ export async function seedIfEmpty(
   }
 
   if (options.force) {
+    await prisma.candidateFinding.deleteMany();
+    await prisma.acceptedRisk.deleteMany();
     await prisma.findingTarget.deleteMany();
     await prisma.finding.deleteMany();
     await prisma.claim.deleteMany();
@@ -193,6 +208,7 @@ export async function seedIfEmpty(
   const revsets = await readSeedJson<RevSetSeedRow[]>("revsets.json");
   const claims = await readSeedJson<ClaimSeedRow[]>("claims.json");
   const findings = await readSeedJson<FindingSeedRow[]>("findings.json");
+  const candidates = await readSeedJson<CandidateSeedRow[]>("candidates.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
@@ -390,6 +406,8 @@ export async function seedIfEmpty(
           attackPath: f.attack_path ?? null,
           authorId: f.author_id,
           createdAt: new Date(f.created_at),
+          sourcePostId: f.source_post_id ?? null,
+          sourceCandidateId: f.source_candidate_id ?? null,
         },
       });
       for (const target of f.targets ?? []) {
@@ -401,6 +419,22 @@ export async function seedIfEmpty(
           },
         });
       }
+    }
+
+    // CONCEPT §7.4 Candidate Findings (after posts exist).
+    for (const c of candidates) {
+      await tx.candidateFinding.create({
+        data: {
+          candidateId: c.candidate_id,
+          threadId: c.thread_id,
+          postId: c.post_id,
+          flaggerId: c.flagger_id,
+          note: c.note ?? null,
+          status: c.status ?? "open",
+          promotedFindingId: c.promoted_finding_id ?? null,
+          createdAt: new Date(c.created_at),
+        },
+      });
     }
 
     await tx.termsRegistry.create({

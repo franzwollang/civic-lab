@@ -26,15 +26,19 @@ type ReplyComposerProps = {
   /** When false, hide/disable (e.g. thread still loading). Default true. */
   enabled?: boolean;
   onPosted?: (post: ThreadPostRow) => void;
+  /** CONCEPT §7.5 — allow mitigation response type (default false). */
+  allowMitigation?: boolean;
 };
 
 export function ReplyComposer({
   threadId,
   enabled = true,
   onPosted,
+  allowMitigation = false,
 }: ReplyComposerProps) {
   const [authorId, setAuthorId] = useState(DEFAULT_PROTOTYPE_USER_ID);
   const [body, setBody] = useState("");
+  const [postType, setPostType] = useState<"comment" | "mitigation">("comment");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,7 +62,7 @@ export function ReplyComposer({
       const post = await createThreadPost(threadId, {
         author_id: authorId,
         body: trimmed,
-        type: "comment",
+        type: allowMitigation ? postType : "comment",
       });
       setBody("");
       onPosted?.(post);
@@ -97,6 +101,31 @@ export function ReplyComposer({
               </SelectContent>
             </Select>
           </div>
+          {allowMitigation && (
+            <div className="min-w-[160px] space-y-1.5">
+              <Label
+                htmlFor="reply-type"
+                className="text-xs uppercase tracking-wider text-neutral-500"
+              >
+                Post type
+              </Label>
+              <Select
+                value={postType}
+                onValueChange={(v) =>
+                  setPostType(v === "mitigation" ? "mitigation" : "comment")
+                }
+                disabled={!enabled || submitting}
+              >
+                <SelectTrigger id="reply-type" className="w-full bg-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="comment">Comment</SelectItem>
+                  <SelectItem value="mitigation">Mitigation response</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           {author && (
             <p className="text-xs text-neutral-500">
               Acting as <span className="font-medium text-neutral-700">{author.id}</span>
@@ -112,7 +141,11 @@ export function ReplyComposer({
             id="reply-body"
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            placeholder="Write a reply…"
+            placeholder={
+              postType === "mitigation"
+                ? "Write a mitigation response…"
+                : "Write a reply…"
+            }
             rows={4}
             disabled={!enabled || submitting}
             className="bg-white"

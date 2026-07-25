@@ -3,11 +3,7 @@ import { Header } from "../components/header";
 import { SidebarNav } from "../components/sidebar-nav";
 import { StatusBadge } from "../components/badges";
 import { RevSetRow } from "../components/revset-row";
-import {
-  ReplyComposer,
-  authorDisplayName,
-  authorInitials,
-} from "../components/reply-composer";
+import { ThreadTimeline } from "../components/thread-timeline";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Info } from "lucide-react";
@@ -502,44 +498,12 @@ export function RfcThreadPage() {
                 )}
               </Card>
 
-              <div className="mt-8">
-                <h2 className="mb-4 text-xl font-semibold text-neutral-900">
-                  Discussion
-                </h2>
-                <div className="space-y-4">
-                  {(thread.posts ?? []).map((post) => (
-                    <Card
-                      key={post.post_id}
-                      className="border border-neutral-200 bg-white p-6"
-                    >
-                      <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-700 text-white">
-                          <span className="text-xs font-semibold">
-                            {authorInitials(post.author_id)}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-medium text-neutral-900">
-                            {authorDisplayName(post.author_id)}
-                          </div>
-                          <div className="text-sm text-neutral-500">
-                            {post.author_id} ·{" "}
-                            {new Date(post.created_at).toLocaleString()}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="whitespace-pre-wrap text-sm text-neutral-800">
-                        {post.body}
-                      </p>
-                    </Card>
-                  ))}
-
-                  <ReplyComposer
-                    threadId={thread.thread_id}
-                    onPosted={onPosted}
-                  />
-                </div>
-              </div>
+              <ThreadTimeline
+                threadId={thread.thread_id}
+                posts={thread.posts ?? []}
+                onPosted={onPosted}
+                heading="Discussion"
+              />
             </>
           )}
         </div>
