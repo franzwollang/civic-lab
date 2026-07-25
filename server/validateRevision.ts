@@ -2,6 +2,7 @@
  * Server-side revision validation for POST /api/artifacts/:id/revisions
  * (and legacy /api/pages/:pageId/revisions).
  * Zod envelope (pageRevisionSchema) + structural document checks.
+ * Accepts dual-emit `artifact_id` / `page_id` (same value after normalize).
  */
 import { pageRevisionSchema } from "../src/api/schemas";
 import {
@@ -17,13 +18,29 @@ export type RevisionValidationFailure = {
   issues: StructuralIssue[];
 };
 
-export type RevisionValidationSuccess = {
-  ok: true;
-  revision: ReturnType<typeof pageRevisionSchema.parse>;
+/** Normalized revision after Zod transform (both id fields present). */
+export type NormalizedRevision = {
+  revision_id: string;
+  artifact_id: string;
+  page_id: string;
+  parent_revision_id: string | null;
+  created_at: string;
+  author: string;
+  content_json: unknown[];
+  blocks: Array<{
+    block_id: string;
+    type: string;
+    order: number;
+    hash: string;
+    text_preview: string;
+  }>;
+  doc_root_hash: string;
+  note?: string;
+  schema_version: number;
 };
 
 export type RevisionValidationResult =
-  | RevisionValidationSuccess
+  | { ok: true; revision: NormalizedRevision }
   | RevisionValidationFailure;
 
 async function loadRegistry(): Promise<StructuralValidationRegistry> {
@@ -62,7 +79,7 @@ async function loadRegistry(): Promise<StructuralValidationRegistry> {
  * Warnings do not fail (matches client save gating on errors only).
  */
 export async function validateRevisionPayload(
-  pageId: string,
+  routeArtifactId: string,
   body: unknown,
 ): Promise<RevisionValidationResult> {
   const parsed = pageRevisionSchema.safeParse(body);
@@ -80,16 +97,16 @@ export async function validateRevisionPayload(
     };
   }
 
-  const revision = parsed.data;
-  if (revision.page_id !== pageId) {
+  const revision = parsed.data as NormalizedRevision;
+  if (revision.artifact_id !== routeArtifactId) {
     return {
       ok: false,
       error: "Invalid revision payload",
       issues: [
         {
           code: "custom",
-          message: "page_id must match URL parameter",
-          path: ["page_id"],
+          message: "artifact_id (or page_id) must match URL parameter",
+          path: ["artifact_id"],
           severity: "error",
         },
       ],

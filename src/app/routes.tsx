@@ -7,7 +7,7 @@ import { Dashboard } from "./pages/dashboard";
 import { ThreadPage } from "./pages/thread-page";
 import { RfcThreadPage } from "./pages/rfc-thread-page";
 import { RedTeamReview } from "./pages/red-team-review";
-import { TestEditor } from "./pages/test-editor";
+import { TestEditor, ArtifactEditorPage } from "./pages/test-editor";
 import { TestPreview } from "./pages/test-preview";
 import { About } from "./pages/about";
 import { Faq } from "./pages/faq";
@@ -62,6 +62,10 @@ export const router = createBrowserRouter([
   {
     path: "/dossier/:dossierId/artifact/:artifactId",
     Component: ArtifactPage,
+  },
+  {
+    path: "/dossier/:dossierId/artifact/:artifactId/edit",
+    Component: ArtifactEditorPage,
   },
   {
     path: "/dossier/:dossierId/artifact-descriptive/:artifactId",

@@ -1,7 +1,8 @@
 /**
  * Prisma-backed data access for the Express API.
  * Domain models are Artifact / ArtifactRevision; SQLite tables remain
- * `pages` / `page_revisions` via Prisma @@map. Wire JSON still uses `page_id`.
+ * `pages` / `page_revisions` via Prisma @@map. Wire JSON dual-emits
+ * `artifact_id` (preferred) and legacy `page_id` (same value).
  */
 import type { PrismaClient } from "@prisma/client";
 
@@ -18,8 +19,9 @@ export function getPrisma(): PrismaClient {
   return prisma;
 }
 
-/** Wire shape — `page_id` ≡ artifact id until clients migrate to `artifact_id`. */
+/** Wire shape — dual-emits `artifact_id` + legacy `page_id`. */
 export type ArtifactRow = {
+  artifact_id: string;
   page_id: string;
   title: string;
   slug: string;
@@ -32,6 +34,7 @@ export type PageRow = ArtifactRow;
 
 export type ArtifactRevisionRow = {
   revision_id: string;
+  artifact_id: string;
   page_id: string;
   parent_revision_id: string | null;
   created_at: string;
@@ -55,6 +58,7 @@ function mapArtifact(row: {
   createdAt: Date;
 }): ArtifactRow {
   return {
+    artifact_id: row.artifactId,
     page_id: row.artifactId,
     title: row.title,
     slug: row.slug,
@@ -73,6 +77,7 @@ function mapRevision(row: {
 }): ArtifactRevisionRow {
   return {
     revision_id: row.revisionId,
+    artifact_id: row.artifactId,
     page_id: row.artifactId,
     parent_revision_id: row.parentRevisionId,
     created_at: row.createdAt.toISOString(),
@@ -147,16 +152,22 @@ export const listRevisions = listArtifactRevisions;
 
 export async function createArtifactRevision(payload: {
   revision_id: string;
-  page_id: string;
+  /** Preferred; falls back to page_id. */
+  artifact_id?: string;
+  page_id?: string;
   parent_revision_id?: string | null;
   created_at?: string;
   author: string;
   content_json: unknown;
 }): Promise<ArtifactRevisionRow> {
+  const artifactId = payload.artifact_id || payload.page_id;
+  if (!artifactId) {
+    throw new Error("createArtifactRevision requires artifact_id or page_id");
+  }
   const row = await getPrisma().artifactRevision.create({
     data: {
       revisionId: payload.revision_id,
-      artifactId: payload.page_id,
+      artifactId,
       parentRevisionId: payload.parent_revision_id ?? null,
       createdAt: payload.created_at
         ? new Date(payload.created_at)

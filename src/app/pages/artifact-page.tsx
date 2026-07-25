@@ -17,6 +17,7 @@ import {
   ArtifactDocumentBody,
   useArtifactDocument,
 } from "@/doc/ArtifactDocumentBody";
+import { artifactIdOf } from "@/doc/types";
 
 function StaticProvisionalBody() {
   return (
@@ -210,7 +211,7 @@ export function ArtifactPage() {
                       <span>Author: {doc.revision.author}</span>
                       <span>·</span>
                       <Link
-                        to={`/test/preview/${doc.artifact.page_id}`}
+                        to={`/test/preview/${artifactIdOf(doc.artifact)}`}
                         className="text-neutral-700 underline-offset-2 hover:underline"
                       >
                         Open test preview
@@ -222,7 +223,9 @@ export function ArtifactPage() {
 
               <div className="mb-8 flex gap-3">
                 {showLive && (
-                  <Link to={`/test/editor/${doc.artifact.page_id}`}>
+                  <Link
+                    to={`/dossier/${dossierId}/artifact/${artifactIdOf(doc.artifact)}/edit`}
+                  >
                     <Button variant="default" size="sm">
                       <Pencil className="mr-2 h-4 w-4" />
                       Edit
@@ -338,7 +341,7 @@ export function ArtifactPage() {
                         Artifact ID
                       </div>
                       <div className="text-neutral-600">
-                        {showLive ? doc.artifact.page_id : artifactId}
+                        {showLive ? artifactIdOf(doc.artifact) : artifactId}
                       </div>
                     </div>
                     {showLive && (

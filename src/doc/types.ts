@@ -7,11 +7,14 @@ export type BlockRow = {
 };
 
 /**
- * Wire revision row. `page_id` is the artifact id (Prisma `Artifact.artifactId`
- * mapped to column `page_id`). Prefer Artifact* names in new code.
+ * Wire revision row. Dual-emits `artifact_id` (preferred) and legacy `page_id`
+ * (same value = Prisma `Artifact.artifactId` @map `page_id`).
  */
 export type ArtifactRevisionRow = {
   revision_id: string;
+  /** Preferred CONCEPT id on the wire. */
+  artifact_id: string;
+  /** @deprecated Prefer artifact_id — kept for cutover clients. */
   page_id: string;
   parent_revision_id: string | null;
   created_at: string;
@@ -26,8 +29,11 @@ export type ArtifactRevisionRow = {
 /** @deprecated Prefer ArtifactRevisionRow */
 export type PageRevisionRow = ArtifactRevisionRow;
 
-/** Wire artifact meta. `page_id` ≡ artifact id until clients migrate. */
+/** Wire artifact meta. Dual-emits `artifact_id` + legacy `page_id`. */
 export type ArtifactRow = {
+  /** Preferred CONCEPT id on the wire. */
+  artifact_id: string;
+  /** @deprecated Prefer artifact_id — kept for cutover clients. */
   page_id: string;
   title: string;
   slug: string;
@@ -38,7 +44,13 @@ export type ArtifactRow = {
 /** @deprecated Prefer ArtifactRow */
 export type PageRow = ArtifactRow;
 
-/** `page_id` on the wire is the artifact id. */
-export function artifactIdOf(row: { page_id: string }): string {
-  return row.page_id;
+/**
+ * Resolve the artifact id from a wire row that may carry either field
+ * (older responses may only have `page_id`).
+ */
+export function artifactIdOf(row: {
+  artifact_id?: string | null;
+  page_id?: string | null;
+}): string {
+  return row.artifact_id || row.page_id || "";
 }

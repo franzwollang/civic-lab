@@ -1,7 +1,7 @@
 // Civic Lab M3 — editor store entities.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
-// Wire JSON still uses `page_id` (≡ artifact id); `/api/artifacts` is primary.
+// Wire JSON dual-emits `artifact_id` (preferred) + `page_id` (same value).
 // Prototype sync: `prisma db push` (no migration history yet).
 
 generator client {

@@ -2,7 +2,8 @@ import { ok } from 'dullahan-web/client';
 import type { RemoteHandler } from 'dullahan-web/remote';
 import { serverActionValidationFail } from 'dullahan-web/client';
 
-import type { PageRevisionRow, PageRow } from '@/doc/types';
+import type { ArtifactRevisionRow, ArtifactRow } from '@/doc/types';
+import { artifactIdOf } from '@/doc/types';
 
 import { saveRevisionInput, type SaveRevisionInput } from './schemas';
 
@@ -17,10 +18,10 @@ async function readJson<T>(response: Response): Promise<T> {
 }
 
 /**
- * Committed finalizer for editor save — chains revision POST + page PATCH.
- * Express returns raw JSON today; wrapped into DullahanResult here.
+ * Committed finalizer for editor save — chains revision POST + artifact PATCH.
+ * Prefers `/api/artifacts`; Express returns dual-emit JSON.
  */
-export const saveRevisionRemote: RemoteHandler<SaveRevisionInput, PageRow> = async (
+export const saveRevisionRemote: RemoteHandler<SaveRevisionInput, ArtifactRow> = async (
   rawInput
 ) => {
   const parsed = saveRevisionInput.safeParse(rawInput);
@@ -28,26 +29,31 @@ export const saveRevisionRemote: RemoteHandler<SaveRevisionInput, PageRow> = asy
     return serverActionValidationFail(parsed.error);
   }
 
-  const { pageId, revision, nextCurrentRevisionId } = parsed.data;
+  const { artifactId, revision, nextCurrentRevisionId } = parsed.data;
 
   try {
-    const created = await readJson<PageRevisionRow>(
-      await fetch(`${API_BASE}/pages/${pageId}/revisions`, {
+    const created = await readJson<ArtifactRevisionRow>(
+      await fetch(`${API_BASE}/artifacts/${artifactId}/revisions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(revision)
       })
     );
 
-    const updated = await readJson<PageRow>(
-      await fetch(`${API_BASE}/pages/${pageId}`, {
+    const updated = await readJson<ArtifactRow>(
+      await fetch(`${API_BASE}/artifacts/${artifactId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ current_revision_id: nextCurrentRevisionId })
       })
     );
 
-    return ok({ ...updated, current_revision_id: created.revision_id });
+    return ok({
+      ...updated,
+      artifact_id: artifactIdOf(updated) || artifactId,
+      page_id: artifactIdOf(updated) || artifactId,
+      current_revision_id: created.revision_id
+    });
   } catch (error) {
     return {
       ok: false,

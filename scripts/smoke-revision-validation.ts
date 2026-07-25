@@ -79,6 +79,20 @@ const revision = {
 
 const parsed = pageRevisionSchema.safeParse(revision);
 assert.equal(parsed.success, true, "valid revision envelope");
+if (parsed.success) {
+  assert.equal(parsed.data.artifact_id, "page-1", "dual-emit artifact_id");
+  assert.equal(parsed.data.page_id, "page-1", "legacy page_id kept");
+}
+
+const preferred = pageRevisionSchema.safeParse({
+  ...revision,
+  page_id: undefined,
+  artifact_id: "page-1",
+});
+assert.equal(preferred.success, true, "artifact_id-only envelope");
+if (preferred.success) {
+  assert.equal(preferred.data.page_id, "page-1");
+}
 
 const missingAuthor = pageRevisionSchema.safeParse({
   ...revision,

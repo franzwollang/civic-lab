@@ -10,6 +10,7 @@ import {
 } from "@/doc/DocumentReader";
 import { extractSectionsFromContent, type SectionDraft } from "@/doc/sections";
 import type { ArtifactRevisionRow, ArtifactRow } from "@/doc/types";
+import { artifactIdOf } from "@/doc/types";
 import {
   EvidenceRegistryProvider,
   useEvidenceRegistry,
@@ -73,7 +74,7 @@ export function useArtifactDocument(ref: string | undefined): ArtifactDocumentLo
           if (!cancelled) setState({ status: "missing" });
           return;
         }
-        const revisions = await getArtifactRevisions(artifact.page_id);
+        const revisions = await getArtifactRevisions(artifactIdOf(artifact));
         const currentId = artifact.current_revision_id;
         const revision =
           revisions.find((r) => r.revision_id === currentId) ?? revisions[0];

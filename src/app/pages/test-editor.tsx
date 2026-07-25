@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Editor, Range, Transforms } from "slate";
 
 import { Header } from "../components/header";
+import { SidebarNav } from "../components/sidebar-nav";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Separator } from "../components/ui/separator";
@@ -56,6 +57,7 @@ import { extractBlockIndex } from "@/doc/blockIndex";
 import { merkleRoot } from "@/doc/merkle";
 import { diffBlocks } from "@/doc/diff";
 import type { ArtifactRevisionRow, ArtifactRow } from "@/doc/types";
+import { artifactIdOf } from "@/doc/types";
 import { getArtifact, getArtifactRevisions } from "@/api/client";
 import { editorPageModel } from "@/app/models/editorPageModel";
 import { ClientPageProvider, toUserMessage } from "dullahan-web/client";
@@ -73,9 +75,16 @@ export function TestEditor() {
   );
 }
 
+/** Product-chrome alias — same Plate editor under dossier routes. */
+export const ArtifactEditorPage = TestEditor;
+
 function TestEditorInner() {
-  const { artifactId: artifactIdParam } = useParams();
+  const { artifactId: artifactIdParam, dossierId } = useParams();
   const artifactId = artifactIdParam || DEFAULT_ARTIFACT_ID;
+  const inProductChrome = Boolean(dossierId);
+  const artifactViewPath = dossierId
+    ? `/dossier/${dossierId}/artifact/${artifactId}`
+    : `/test/preview/${artifactId}`;
   const [value, setValue] = useState(initialValue);
   const [page, setPage] = useState<ArtifactRow | null>(null);
   const [revisions, setRevisions] = useState<ArtifactRevisionRow[]>([]);
@@ -326,9 +335,11 @@ function TestEditorInner() {
       const docRootHash = merkleRoot(blocks.map((block) => block.hash));
       const revisionId = uuidv4();
 
+      const id = artifactIdOf(page);
       const revision: ArtifactRevisionRow = {
         revision_id: revisionId,
-        page_id: page.page_id,
+        artifact_id: id,
+        page_id: id,
         parent_revision_id: page.current_revision_id,
         created_at: new Date().toISOString(),
         author: "local",
@@ -339,7 +350,8 @@ function TestEditorInner() {
       };
 
       const result = await saveRevision({
-        pageId: page.page_id,
+        artifactId: id,
+        pageId: id,
         revision,
         nextCurrentRevisionId: revisionId,
       });
@@ -433,6 +445,9 @@ function TestEditorInner() {
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
+      {inProductChrome && (
+        <SidebarNav dossierId={dossierId} currentPage="artifact" />
+      )}
 
       <TermSearchDialog
         open={termSearchOpen}
@@ -550,17 +565,34 @@ function TestEditorInner() {
         }}
       />
 
-      <main className="mx-auto flex h-[calc(100vh-4rem)] max-w-[1400px] min-h-0 gap-6 px-8 py-6 overflow-hidden">
+      <main
+        className={
+          "mx-auto flex h-[calc(100vh-4rem)] max-w-[1400px] min-h-0 gap-6 px-8 py-6 overflow-hidden " +
+          (inProductChrome ? "ml-64" : "")
+        }
+      >
         <aside className="flex w-1/4 min-h-0 flex-col gap-6">
           <div className="pb-4">
+            {inProductChrome && (
+              <div className="mb-2 text-sm text-neutral-500">
+                <Link
+                  to={artifactViewPath}
+                  className="hover:text-neutral-700"
+                >
+                  ← Back to artifact
+                </Link>
+              </div>
+            )}
             <div className="text-xs uppercase tracking-wider text-neutral-500">
-              Editing
+              {inProductChrome ? "Product editor" : "Editing"}
             </div>
             <h1 className="text-3xl font-semibold text-neutral-900">
               {page?.title || "Voting Systems"}
             </h1>
             <p className="text-sm text-neutral-500">
-              MVP Plate editor with block hashes and revision tracking.
+              {inProductChrome
+                ? "Plate editor in dossier chrome — save writes ArtifactRevision."
+                : "MVP Plate editor with block hashes and revision tracking."}
             </p>
           </div>
 
@@ -1013,10 +1045,14 @@ function TestEditorInner() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Link
-                    to={`/test/preview/${page?.page_id ?? artifactId}`}
+                    to={
+                      inProductChrome
+                        ? artifactViewPath
+                        : `/test/preview/${artifactIdOf(page ?? { page_id: artifactId }) || artifactId}`
+                    }
                     className="text-[11px] font-medium text-neutral-600 hover:text-neutral-900"
                   >
-                    Preview
+                    {inProductChrome ? "Done" : "Preview"}
                   </Link>
                   <Button
                     size="sm"

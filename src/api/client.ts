@@ -103,7 +103,7 @@ export async function updateArtifact(
 }
 
 /**
- * Resolve a route param that may be a page/artifact id or a slug
+ * Resolve a route param that may be an artifact id or a slug
  * (e.g. `page-001` or `voting-systems`).
  */
 export async function resolveArtifactRef(
@@ -116,7 +116,12 @@ export async function resolveArtifactRef(
   }
   const artifacts = await getArtifacts();
   return (
-    artifacts.find((a) => a.slug === ref || a.page_id === ref) ?? null
+    artifacts.find(
+      (a) =>
+        a.slug === ref ||
+        a.artifact_id === ref ||
+        a.page_id === ref,
+    ) ?? null
   );
 }
 
