@@ -1,11 +1,15 @@
 /**
- * Smoke: Section extraction from artifact content_json (M3 section plan).
+ * Smoke: Section extraction from artifact content_json (M3) + API surface (M5).
  * Run: pnpm exec tsx scripts/smoke-sections.ts
+ * DB sync: scripts/smoke-section-sync.ts
  */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { extractSectionsFromContent } from "../src/doc/sections.ts";
+import {
+  extractSectionsFromContent,
+  sectionIdFor,
+} from "../src/doc/sections.ts";
 
 const revisions = JSON.parse(
   readFileSync("prisma/seed/page_revisions.json", "utf8"),
@@ -26,6 +30,11 @@ assert.ok(goals, "seed h3 block-003 present");
 assert.equal(goals.level, 3);
 assert.match(goals.title, /Goals/i);
 
+assert.equal(
+  sectionIdFor("page-001", "block-003"),
+  "sec_page-001__block-003",
+);
+
 // Missing id → skipped
 assert.deepEqual(
   extractSectionsFromContent([
@@ -42,13 +51,19 @@ assert.deepEqual(extractSectionsFromContent({}), []);
 const typesSrc = readFileSync("src/doc/types.ts", "utf8");
 assert.match(typesSrc, /export type ArtifactRow/);
 assert.match(typesSrc, /export type ArtifactRevisionRow/);
+assert.match(typesSrc, /export type SectionRow/);
 
 const clientSrc = readFileSync("src/api/client.ts", "utf8");
 assert.match(clientSrc, /export async function getArtifact/);
 assert.match(clientSrc, /\/artifacts/);
+assert.match(clientSrc, /getArtifactSections/);
 
 const serverSrc = readFileSync("server/index.ts", "utf8");
 assert.match(serverSrc, /\/api\/artifacts/);
+assert.match(serverSrc, /\/api\/artifacts\/:artifactId\/sections/);
+
+const schemaSrc = readFileSync("prisma/schema.prisma", "utf8");
+assert.match(schemaSrc, /model Section/);
 
 const artifactPage = readFileSync("src/app/pages/artifact-page.tsx", "utf8");
 assert.match(artifactPage, /ArtifactDocumentBody|useArtifactDocument/);

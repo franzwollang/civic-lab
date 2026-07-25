@@ -76,5 +76,32 @@
         "created_at": "2026-07-08T09:00:00.000Z"
       }
     ]
+  },
+  {
+    "thread_id": "thread-canon-goals-section",
+    "home_dossier_id": "electoral-1",
+    "title": "Goals section — Canon baseline scope",
+    "state": "open",
+    "decision_outcome": null,
+    "is_redteam": false,
+    "parent_thread_id": null,
+    "merge_artifact_id": null,
+    "created_at": "2026-07-09T11:00:00.000Z",
+    "targets": [
+      { "target_kind": "artifact", "target_id": "page-001" },
+      {
+        "target_kind": "section",
+        "target_id": "sec_page-001__block-003"
+      }
+    ],
+    "posts": [
+      {
+        "post_id": "post-canon-goals-1",
+        "author_id": "user-alice",
+        "type": "comment",
+        "body": "Anchoring discussion to the Goals heading (stable_key block-003) so we can cite the section without text offsets.",
+        "created_at": "2026-07-09T11:00:00.000Z"
+      }
+    ]
   }
 ]

@@ -7,6 +7,7 @@ import type {
   DossierRow,
   PageRevisionRow,
   PageRow,
+  SectionRow,
   ThreadPostRow,
   ThreadRow,
 } from "../doc/types";
@@ -94,6 +95,20 @@ export async function createArtifactRevision(
     },
   );
   return handleResponse<ArtifactRevisionRow>(response);
+}
+
+export async function getArtifactSections(
+  artifactId: string,
+): Promise<SectionRow[]> {
+  const response = await fetch(
+    `${API_BASE}/artifacts/${artifactId}/sections`,
+  );
+  return handleResponse<SectionRow[]>(response);
+}
+
+export async function getSection(sectionId: string): Promise<SectionRow> {
+  const response = await fetch(`${API_BASE}/sections/${sectionId}`);
+  return handleResponse<SectionRow>(response);
 }
 
 export async function updateArtifact(

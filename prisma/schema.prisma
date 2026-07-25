@@ -114,9 +114,27 @@ model Artifact {
   dossierId         String?            @map("dossier_id")
   dossier           Dossier?           @relation(fields: [dossierId], references: [dossierId], onDelete: SetNull)
   revisions         ArtifactRevision[]
+  sections          Section[]
 
   @@index([dossierId])
   @@map("pages")
+}
+
+/// CONCEPT §2.3 — stable Section identities synced from heading block ids.
+/// `stable_key` = heading block `id` (survives title edits; not text offsets).
+/// ThreadTarget uses `target_kind=section` + this row's `section_id`.
+model Section {
+  sectionId  String   @id @map("section_id")
+  artifactId String   @map("artifact_id")
+  stableKey  String   @map("stable_key")
+  title      String
+  level      Int
+  order      Int      @map("sort_order")
+  artifact   Artifact @relation(fields: [artifactId], references: [artifactId], onDelete: Cascade)
+
+  @@unique([artifactId, stableKey])
+  @@index([artifactId])
+  @@map("sections")
 }
 
 model ArtifactRevision {

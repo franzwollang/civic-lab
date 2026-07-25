@@ -6,6 +6,10 @@ import { PrismaClient } from "@prisma/client";
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import {
+  extractSectionsFromContent,
+  sectionIdFor,
+} from "../src/doc/sections";
 
 const SEED_ID = "default";
 const SEED_DIR = path.join(
@@ -103,6 +107,7 @@ export async function seedIfEmpty(
     await prisma.threadTarget.deleteMany();
     await prisma.threadPost.deleteMany();
     await prisma.thread.deleteMany();
+    await prisma.section.deleteMany();
     await prisma.artifactRevision.deleteMany();
     await prisma.artifact.deleteMany();
     await prisma.dossier.deleteMany();
@@ -181,6 +186,27 @@ export async function seedIfEmpty(
           contentJson: rev.content_json as object,
         },
       });
+    }
+
+    // Sync Section rows from each artifact's current revision (heading ids).
+    for (const page of pages) {
+      const currentId = page.current_revision_id;
+      if (!currentId) continue;
+      const rev = revisions.find((r) => r.revision_id === currentId);
+      if (!rev) continue;
+      const drafts = extractSectionsFromContent(rev.content_json);
+      for (const draft of drafts) {
+        await tx.section.create({
+          data: {
+            sectionId: sectionIdFor(page.page_id, draft.stable_key),
+            artifactId: page.page_id,
+            stableKey: draft.stable_key,
+            title: draft.title,
+            level: draft.level,
+            order: draft.order,
+          },
+        });
+      }
     }
 
     // Parent threads first (null parent_thread_id), then children.

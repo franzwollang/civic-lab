@@ -108,6 +108,16 @@ export type CollectionDashboard = {
   };
 };
 
+/** CONCEPT §2.3 Section wire shape (persisted; synced from headings). */
+export type SectionRow = {
+  section_id: string;
+  artifact_id: string;
+  stable_key: string;
+  title: string;
+  level: number;
+  order: number;
+};
+
 /** CONCEPT §3 Thread wire shapes. */
 export type ThreadTargetRow = {
   target_kind: string;

@@ -81,7 +81,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M2 — Editor solidity** | `done` | Void nav ✓; clipboard ✓; a11y ✓; full preview ✓; server validate ✓ |
 | **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |
-| **M5 — Threads + RFC** | `in progress` | Thread/Post/Target ✓ seed+API; remaining: Section DB sync, leaf/wrapper RFC, RevSet→revision, authority rules |
+| **M5 — Threads + RFC** | `in progress` | Thread/Post/Target ✓; Section DB sync ✓; remaining: leaf/wrapper RFC, RevSet→revision, authority rules, reply composer |
 | **M6 — Claims + lanes** | `not started` | Claim table + profiles; lane immutability; adjudication scaffolding |
 | **M7 — Red Team** | `not started` | Findings; Accepted Risk on leaf; Critical merge gate |
 | **M8 — Discovery** | `not started` | Search; breadcrumbs; impersonation role UX |

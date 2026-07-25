@@ -1,25 +1,26 @@
 {
-  "updated_at": "2026-07-25T09:35Z",
-  "turn": 25,
+  "updated_at": "2026-07-25T09:55Z",
+  "turn": 26,
   "focus": {
     "milestone": "M5",
-    "issue": "Section entities for anchoring",
-    "goal": "Prisma Section rows + sync-on-save for thread targets"
+    "issue": "RFC promotion + parent/sub-RFC + RevSets",
+    "goal": "RevSet table + leaf RFC promotion scaffolding"
   },
   "recent": [
-    "Merged PR #14 (M4) onto cron branch 5819",
-    "Prisma Thread/ThreadPost/ThreadTarget + seed + API",
-    "Dossier Threads/RFCs tabs + dashboard open counts",
-    "smoke-threads green"
+    "Merged PR #15 (M5 first cut) onto cron branch db4e",
+    "Prisma Section + sync-on-save on revision create",
+    "Seed section ThreadTarget; GET /api/artifacts/:id/sections",
+    "smoke-section-sync + smoke-threads updated"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
-    "Prisma --force-reset blocked; use fresh SQLite file for smokes"
+    "Prisma --force-reset blocked; use fresh SQLite file for smokes",
+    "section_id = sec_{artifactId}__{stableKey} for seedable targets"
   ],
   "open_threads": [
     "RFC promotion + RevSets still open within M5",
     "Home RFC/Red Team panels still fixtures until M5/M7"
   ],
-  "next_step": "Add Prisma Section + sync-on-save; enable section ThreadTargets",
+  "next_step": "Add RevSet model + leaf RFC promotion API/UX; keep wrapper RFC deferred if needed",
   "blockers": []
 }

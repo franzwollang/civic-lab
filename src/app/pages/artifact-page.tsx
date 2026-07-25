@@ -289,8 +289,8 @@ export function ArtifactPage() {
                       ))}
                     </ul>
                     <p className="mt-3 text-xs text-neutral-500">
-                      Stable keys from heading block ids (Section plan; DB sync
-                      deferred).
+                      Stable keys from heading block ids; Prisma Section rows
+                      sync on save (`GET /api/artifacts/:id/sections`).
                     </p>
                   </Card>
                 )}

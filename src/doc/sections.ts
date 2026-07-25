@@ -1,10 +1,10 @@
 /**
- * Section plan (M3): extract stable Section drafts from artifact content_json.
+ * Section extraction + id helper (CONCEPT §2.3 / Appendix A).
  *
- * CONCEPT §2.3 / Appendix A: Section { id, artifact_id, stable_key, title }
- * synced from document structure (headings). Persistence (Prisma Section rows
- * + sync-on-save) waits until ThreadTarget needs them (M5). Until then,
- * `stable_key` = heading block `id` is the contract.
+ * `stable_key` = heading block `id` (durable across title edits; not text
+ * offsets). Prisma `Section` rows are synced on revision save / seed via
+ * `syncSectionsForArtifact` in `server/db.ts`. ThreadTarget uses
+ * `target_kind=section` + deterministic `section_id`.
  */
 
 export type SectionLevel = 2 | 3 | 4;
@@ -16,6 +16,11 @@ export type SectionDraft = {
   level: SectionLevel;
   order: number;
 };
+
+/** Deterministic Section primary key for seed + ThreadTarget wiring. */
+export function sectionIdFor(artifactId: string, stableKey: string): string {
+  return `sec_${artifactId}__${stableKey}`;
+}
 
 function getNodeText(node: unknown): string {
   if (!node || typeof node !== "object") return "";

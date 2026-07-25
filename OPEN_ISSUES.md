@@ -48,13 +48,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 ## D. Thread-first + RFC (CONCEPT §§3)
 
 - [ ] **Thread + posts + flexible anchors**
-  - Done: Prisma `Thread` / `ThreadPost` / `ThreadTarget`; seed (`prisma/seed/threads.json`); API `GET /api/threads`, `GET /api/threads/:id`, `GET /api/dossiers/:id/threads`, `POST …/posts`; dossier Threads/RFCs tabs list store data; Collection dashboard open-thread counts live.
-  - Remaining: reply composer UI (impersonated author); section target kind once Section rows exist; typed posts (finding/mitigation) later.
+  - Done: Prisma `Thread` / `ThreadPost` / `ThreadTarget`; seed (`prisma/seed/threads.json`); API `GET /api/threads`, `GET /api/threads/:id`, `GET /api/dossiers/:id/threads`, `POST …/posts`; dossier Threads/RFCs tabs list store data; Collection dashboard open-thread counts live; section targets via persisted `Section` rows.
+  - Remaining: reply composer UI (impersonated author); typed posts (finding/mitigation) later.
   - States seeded: `open` | `rfc` (also model `review` | `decided` | `archived`).
-
-- [ ] **Section entities for anchoring**
-  - Extractor exists (`src/doc/sections.ts`; `stable_key` = heading block id).
-  - Remaining: Prisma `Section` rows + sync-on-save; threads target via `stable_key` (no text offsets).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
   - Seed includes one leaf RFC stub (`merge_artifact_id`); promotion UX + RevSet table not built.

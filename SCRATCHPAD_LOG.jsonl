@@ -23,3 +23,4 @@
 {"ts":"2026-07-25T08:55Z","focus":"M4 us-voting seed retirement","summary":"merged PR#12; seeded 4 US Manual artifacts; removed FIXTURE_ARTIFACTS + StaticProvisionalBody","next":"seed CA/GB/DE artifacts or start M5"}
 {"ts":"2026-07-25T09:15Z","focus":"M4 CA/GB/DE Manual seeds","summary":"merged PR#13; seeded 6 Manual stubs; M4 done; smokes green","next":"start M5 Thread/Post/Target Prisma+API"}
 {"ts":"2026-07-25T09:35Z","focus":"M5 Thread/Post/Target","summary":"Landed Thread schema seed API smoke; M5 in progress; next Section sync","next":"Prisma Section rows + sync-on-save"}
+{"ts":"2026-07-25T09:55Z","focus":"M5 Section sync","summary":"Section DB + sync-on-save + section ThreadTarget seed/API","next":"RFC promotion + RevSet table"}

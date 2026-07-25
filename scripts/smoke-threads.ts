@@ -41,8 +41,8 @@ async function main() {
     }
 
     const all = await listThreads();
-    if (all.length < 3) {
-      throw new Error(`expected ≥3 seeded threads, got ${all.length}`);
+    if (all.length < 4) {
+      throw new Error(`expected ≥4 seeded threads, got ${all.length}`);
     }
 
     const us = await listThreads({ homeDossierId: "us-voting-1" });
@@ -65,6 +65,15 @@ async function main() {
     const kinds = new Set(detail.targets.map((t) => t.target_kind));
     if (!kinds.has("dossier") || !kinds.has("artifact")) {
       throw new Error(`bad target kinds: ${[...kinds].join(",")}`);
+    }
+
+    const sectionThread = await getThread("thread-canon-goals-section");
+    if (!sectionThread) throw new Error("section thread missing");
+    const sectionKinds = new Set(
+      (sectionThread.targets ?? []).map((t) => t.target_kind),
+    );
+    if (!sectionKinds.has("section")) {
+      throw new Error("section-targeted thread should include section target");
     }
 
     const reply = await createThreadPost({

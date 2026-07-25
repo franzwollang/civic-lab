@@ -11,6 +11,7 @@ import {
   getCollection,
   getCollectionDashboard,
   getDossier,
+  getSection,
   getTerms,
   getThread,
   listAreas,
@@ -19,6 +20,7 @@ import {
   listArtifactsByDossier,
   listCollections,
   listDossiers,
+  listSections,
   listThreads,
   putAttributions,
   putTerms,
@@ -113,6 +115,25 @@ app.get("/api/pages/:pageId", handleGetArtifact);
 
 app.get("/api/artifacts/:artifactId/revisions", handleListRevisions);
 app.get("/api/pages/:pageId/revisions", handleListRevisions);
+
+app.get("/api/artifacts/:artifactId/sections", async (req, res) => {
+  const id = req.params.artifactId;
+  const artifact = await getArtifact(id);
+  if (!artifact) {
+    res.status(404).json({ error: "Artifact not found" });
+    return;
+  }
+  res.json(await listSections(id));
+});
+
+app.get("/api/sections/:sectionId", async (req, res) => {
+  const section = await getSection(req.params.sectionId);
+  if (!section) {
+    res.status(404).json({ error: "Section not found" });
+    return;
+  }
+  res.json(section);
+});
 
 app.get("/api/attributions", async (_req, res) => {
   const attributions = await getAttributions();

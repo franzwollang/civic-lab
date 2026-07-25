@@ -5,6 +5,10 @@
  * `artifact_id` (preferred) and legacy `page_id` (same value).
  */
 import type { PrismaClient } from "@prisma/client";
+import {
+  extractSectionsFromContent,
+  sectionIdFor,
+} from "../src/doc/sections";
 
 let prisma: PrismaClient | null = null;
 
@@ -121,6 +125,16 @@ export type CollectionDashboard = {
     recent_count: number;
     deferred: "M7";
   };
+};
+
+/** CONCEPT §2.3 Section wire shape. */
+export type SectionRow = {
+  section_id: string;
+  artifact_id: string;
+  stable_key: string;
+  title: string;
+  level: number;
+  order: number;
 };
 
 /** CONCEPT §3 Thread wire shapes. */
@@ -470,6 +484,93 @@ export async function listArtifactRevisions(
 /** @deprecated Prefer listArtifactRevisions */
 export const listRevisions = listArtifactRevisions;
 
+function mapSection(row: {
+  sectionId: string;
+  artifactId: string;
+  stableKey: string;
+  title: string;
+  level: number;
+  order: number;
+}): SectionRow {
+  return {
+    section_id: row.sectionId,
+    artifact_id: row.artifactId,
+    stable_key: row.stableKey,
+    title: row.title,
+    level: row.level,
+    order: row.order,
+  };
+}
+
+/**
+ * Sync Prisma Section rows from artifact content_json headings.
+ * Upserts by (artifact_id, stable_key); deletes removed headings and any
+ * ThreadTargets that pointed at those section ids.
+ */
+export async function syncSectionsForArtifact(
+  artifactId: string,
+  contentJson: unknown,
+): Promise<SectionRow[]> {
+  const drafts = extractSectionsFromContent(contentJson);
+  const prisma = getPrisma();
+  const existing = await prisma.section.findMany({ where: { artifactId } });
+  const nextKeys = new Set(drafts.map((d) => d.stable_key));
+
+  const removed = existing.filter((row) => !nextKeys.has(row.stableKey));
+  if (removed.length > 0) {
+    const removedIds = removed.map((row) => row.sectionId);
+    await prisma.threadTarget.deleteMany({
+      where: {
+        targetKind: "section",
+        targetId: { in: removedIds },
+      },
+    });
+    await prisma.section.deleteMany({
+      where: { sectionId: { in: removedIds } },
+    });
+  }
+
+  const synced: SectionRow[] = [];
+  for (const draft of drafts) {
+    const sectionId = sectionIdFor(artifactId, draft.stable_key);
+    const row = await prisma.section.upsert({
+      where: { sectionId },
+      create: {
+        sectionId,
+        artifactId,
+        stableKey: draft.stable_key,
+        title: draft.title,
+        level: draft.level,
+        order: draft.order,
+      },
+      update: {
+        title: draft.title,
+        level: draft.level,
+        order: draft.order,
+      },
+    });
+    synced.push(mapSection(row));
+  }
+  return synced;
+}
+
+export async function listSections(artifactId: string): Promise<SectionRow[]> {
+  const rows = await getPrisma().section.findMany({
+    where: { artifactId },
+    orderBy: { order: "asc" },
+  });
+  return rows.map(mapSection);
+}
+
+export async function getSection(
+  sectionId: string,
+): Promise<SectionRow | null> {
+  const row = await getPrisma().section.findUnique({
+    where: { sectionId },
+  });
+  return row ? mapSection(row) : null;
+}
+
 export async function createArtifactRevision(payload: {
   revision_id: string;
   /** Preferred; falls back to page_id. */
@@ -496,6 +597,8 @@ export async function createArtifactRevision(payload: {
       contentJson: payload.content_json as object,
     },
   });
+  // Keep Section rows aligned with the newly saved document structure.
+  await syncSectionsForArtifact(artifactId, payload.content_json);
   return mapRevision(row);
 }
 

@@ -22,7 +22,9 @@
 
 | File | Entities |
 |---|---|
-| `threads.json` | Sample `Thread` + nested `posts` / `targets` (dossier + artifact anchors). States include `open` and `rfc`. |
+| `threads.json` | Sample `Thread` + nested `posts` / `targets` (dossier + artifact + **section** anchors). States include `open` and `rfc`. |
+
+Sections are not a separate seed file: on seed (and on each revision save) heading blocks with ids become Prisma `Section` rows (`stable_key` = block id; `section_id` = `sec_{artifactId}__{stableKey}`). ThreadTargets use `target_kind=section` + that `section_id`.
 
 ## Startup sequence (`pnpm run dev` → API)
 
