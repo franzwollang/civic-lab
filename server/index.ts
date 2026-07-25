@@ -60,6 +60,7 @@ import {
   updateArtifact,
 } from "./db";
 import { validateRevisionPayload } from "./validateRevision";
+import { validateImmutableRef } from "../src/lib/immutableRef";
 
 const PORT = Number(process.env.PORT) || 8787;
 const BODY_LIMIT = 2 * 1024 * 1024;
@@ -462,6 +463,26 @@ app.put("/api/attributions", async (c) => {
     return c.text("Invalid attributions payload", 400);
   }
 
+  const { validateImmutableRef } = await import("../src/lib/immutableRef");
+  const normalizedItems = [];
+  for (const item of parsed.data.items) {
+    const check = validateImmutableRef(item.immutable_ref);
+    if (!check.ok) {
+      return c.json(
+        {
+          error: "invalid_immutable_ref",
+          message: check.message,
+          attribution_id: item.id,
+        },
+        400,
+      );
+    }
+    normalizedItems.push({
+      ...item,
+      immutable_ref: check.parsed?.normalized ?? null,
+    });
+  }
+
   const current = await getAttributions();
   const currentVersion =
     typeof current.version === "number" ? current.version : 1;
@@ -472,7 +493,7 @@ app.put("/api/attributions", async (c) => {
 
   const next = {
     version: currentVersion + 1,
-    items: parsed.data.items,
+    items: normalizedItems,
   };
   const saved = await putAttributions(next);
   return c.json(saved);

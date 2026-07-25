@@ -370,6 +370,9 @@ function CitationRead({
       ? attributionRef
       : "Missing source";
   const titleParts = [label];
+  if (item?.immutable_ref) {
+    titleParts.push(`immutable: ${item.immutable_ref}`);
+  }
   if (locator?.kind && locator?.value) {
     titleParts.push(`${locator.kind}: ${locator.value}`);
   }
@@ -409,10 +412,13 @@ function TermRead({
     : termRef
       ? termRef
       : "Missing term";
+  const title = term?.definition_en
+    ? `${label} — ${term.definition_en}`
+    : label;
 
   return (
     <span
-      title={label}
+      title={title}
       className={
         "rounded px-1 py-0.5 text-[0.95em] underline decoration-dotted " +
         (termRef

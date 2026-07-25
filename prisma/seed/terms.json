@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "items": [
     {
       "id": "78546bdc-1d1a-4b4f-905c-8983686d0139",
@@ -16,8 +16,105 @@
           "transliteration": null
         }
       ],
-      "definition_en": "SODA voting system",
+      "definition_en": "SODA voting system (Approval-derived ranked method).",
+      "disambiguation_en": "Not the soft drink; electoral method construct.",
+      "see_also_term_ids": ["term-stv", "term-mmp"],
+      "notes": "Legacy fixture id referenced by page-001 term_inline nodes."
+    },
+    {
+      "id": "term-stv",
+      "scope": {
+        "kind": "dossier",
+        "ref": "electoral-1"
+      },
+      "type": "platform_construct",
+      "status": "accepted",
+      "canonical_label_en": "STV",
+      "aliases": [
+        {
+          "lang": "en",
+          "text": "Single Transferable Vote",
+          "transliteration": null
+        }
+      ],
+      "definition_en": "Ranked multi-winner method that transfers surplus and eliminated votes.",
       "disambiguation_en": "",
+      "see_also_term_ids": ["term-mmp", "78546bdc-1d1a-4b4f-905c-8983686d0139"],
+      "notes": ""
+    },
+    {
+      "id": "term-mmp",
+      "scope": {
+        "kind": "dossier",
+        "ref": "electoral-1"
+      },
+      "type": "platform_construct",
+      "status": "accepted",
+      "canonical_label_en": "MMP",
+      "aliases": [
+        {
+          "lang": "en",
+          "text": "Mixed-Member Proportional",
+          "transliteration": null
+        }
+      ],
+      "definition_en": "Mixed system combining local districts with compensatory party-list seats.",
+      "disambiguation_en": "",
+      "see_also_term_ids": ["term-stv"],
+      "notes": ""
+    },
+    {
+      "id": "term-provisional-ballot",
+      "scope": {
+        "kind": "country",
+        "ref": "US"
+      },
+      "type": "local_alias",
+      "status": "accepted",
+      "canonical_label_en": "provisional ballot",
+      "aliases": [
+        {
+          "lang": "en",
+          "text": "provisional vote",
+          "transliteration": null
+        }
+      ],
+      "definition_en": "Ballot cast when eligibility is unresolved; counted only after verification.",
+      "disambiguation_en": "US election-administration term; not a Canon universal construct.",
+      "see_also_term_ids": [],
+      "notes": "Scoped to US Manual country code."
+    },
+    {
+      "id": "term-duvergers-law",
+      "scope": {
+        "kind": "global"
+      },
+      "type": "disambiguation",
+      "status": "accepted",
+      "canonical_label_en": "Duverger's Law",
+      "aliases": [],
+      "definition_en": "Tendency for single-member plurality systems to favor two-party competition.",
+      "disambiguation_en": "Empirical regularity / hypothesis — cite via attributions, not as a Claim by itself.",
+      "see_also_term_ids": ["term-stv", "term-mmp"],
+      "notes": ""
+    },
+    {
+      "id": "term-country-manual",
+      "scope": {
+        "kind": "global"
+      },
+      "type": "platform_construct",
+      "status": "accepted",
+      "canonical_label_en": "Country Manual",
+      "aliases": [
+        {
+          "lang": "en",
+          "text": "Manual",
+          "transliteration": null
+        }
+      ],
+      "definition_en": "Per-country Collection with Descriptive / Prescriptive / Alignment lanes.",
+      "disambiguation_en": "Not a paper handbook; Civic Lab Collection type.",
       "see_also_term_ids": [],
       "notes": ""
     }
