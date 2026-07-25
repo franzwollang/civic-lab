@@ -170,6 +170,19 @@ export type AuditLogRow = {
   created_at: string;
 };
 
+/** CONCEPT §8.6 — real-identity attestation record. */
+export type UserIdentityRow = {
+  user_id: string;
+  verification_status: "unverified" | "pending" | "verified" | "rejected";
+  country_codes: string[];
+  long_term_ties_note: string | null;
+  attestation_kind: "none" | "self_asserted" | "owner_attested" | "provider_stub";
+  verified_by: string | null;
+  verified_at: string | null;
+  provider_stub: string | null;
+  updated_at: string;
+};
+
 export type CollectionDashboard = {
   collection: CollectionRow;
   stats: {

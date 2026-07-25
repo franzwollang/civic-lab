@@ -42,6 +42,7 @@ import {
   listRevSets,
   listSections,
   listThreads,
+  listUserIdentities,
   hideUserFromBoards,
   liftBoardHide,
   promoteCandidateFinding,
@@ -49,7 +50,11 @@ import {
   putAttributions,
   putTerms,
   requestClaimAdjudication,
+  requestIdentityVerification,
   adjudicateClaim,
+  attestUserIdentity,
+  getStewardEligibilityForUser,
+  getUserIdentity,
   searchCorpus,
   setPrisma,
   updateArtifact,
@@ -380,6 +385,24 @@ const boardHideLiftBodySchema = z.object({
   note: z.string().nullable().optional(),
 });
 
+/** CONCEPT §8.6 — Owner identity attestation. */
+const identityAttestBodySchema = z.object({
+  actor_id: z.string().min(1),
+  verification_status: z.enum([
+    "unverified",
+    "pending",
+    "verified",
+    "rejected",
+  ]),
+  country_codes: z.array(z.string()).optional(),
+  long_term_ties_note: z.string().nullable().optional(),
+  provider_stub: z.string().nullable().optional(),
+});
+
+const identityRequestBodySchema = z.object({
+  actor_id: z.string().min(1),
+});
+
 // CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
 app.get("/api/artifacts", async (c) => c.json(await handleListArtifacts()));
 app.get("/api/pages", async (c) => c.json(await handleListArtifacts()));
@@ -694,7 +717,11 @@ app.post("/api/threads/:threadId/decide", async (c) => {
         : result.error.code === "already_decided" ||
             result.error.code === "critical_unaccepted"
           ? 409
-          : result.error.code === "forbidden"
+          : result.error.code === "forbidden" ||
+              result.error.code === "identity_unverified" ||
+              result.error.code === "identity_pending" ||
+              result.error.code === "identity_rejected" ||
+              result.error.code === "steward_country_mismatch"
             ? 403
             : 400;
     return c.json({ error: result.error }, status);
@@ -901,7 +928,11 @@ app.post("/api/threads/:threadId/accepted-risk", async (c) => {
     const status =
       result.error.code === "not_found"
         ? 404
-        : result.error.code === "forbidden"
+        : result.error.code === "forbidden" ||
+            result.error.code === "identity_unverified" ||
+            result.error.code === "identity_pending" ||
+            result.error.code === "identity_rejected" ||
+            result.error.code === "steward_country_mismatch"
           ? 403
           : result.error.code === "already_exists"
             ? 409
@@ -1037,6 +1068,77 @@ app.get("/api/audit-logs", async (c) => {
       limit: Number.isFinite(limit) ? limit : undefined,
     }),
   );
+});
+
+/** CONCEPT §8.6 — real-identity policy hooks (impersonation session + attestation). */
+app.get("/api/identities", async (c) => c.json(await listUserIdentities()));
+
+app.get("/api/identities/:userId", async (c) => {
+  const identity = await getUserIdentity(c.req.param("userId"));
+  if (!identity) {
+    return c.json({ error: "Identity record not found" }, 404);
+  }
+  return c.json(identity);
+});
+
+app.get("/api/identities/:userId/steward-eligibility", async (c) => {
+  const country = c.req.query("country") ?? null;
+  return c.json(
+    await getStewardEligibilityForUser({
+      user_id: c.req.param("userId"),
+      country_code: country,
+    }),
+  );
+});
+
+app.post("/api/identities/:userId/request", async (c) => {
+  const parsed = identityRequestBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid identity request payload" }, 400);
+  }
+  const result = await requestIdentityVerification({
+    actor_id: parsed.data.actor_id,
+    subject_user_id: c.req.param("userId"),
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "unknown_user"
+          ? 404
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ identity: result.identity, audit: result.audit });
+});
+
+app.post("/api/identities/:userId/attest", async (c) => {
+  const parsed = identityAttestBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid identity attest payload" }, 400);
+  }
+  const result = await attestUserIdentity({
+    actor_id: parsed.data.actor_id,
+    subject_user_id: c.req.param("userId"),
+    verification_status: parsed.data.verification_status,
+    country_codes: parsed.data.country_codes,
+    long_term_ties_note: parsed.data.long_term_ties_note,
+    provider_stub: parsed.data.provider_stub,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "unknown_user"
+          ? 404
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ identity: result.identity, audit: result.audit });
 });
 
 async function main() {

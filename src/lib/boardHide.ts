@@ -22,7 +22,9 @@ export type AuditAction =
   | "claim_status_change"
   | "adjudication"
   | "accepted_risk"
-  | "role_change";
+  | "role_change"
+  | "identity_request"
+  | "identity_attest";
 
 export type BoardHideErrorCode =
   | "not_owner"

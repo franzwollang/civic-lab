@@ -350,6 +350,25 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+/// CONCEPT §8.6 — real-identity + country / long-term-ties attestation hooks.
+/// Session remains impersonation; this gates Manual steward legitimacy.
+model UserIdentity {
+  userId              String    @id @map("user_id")
+  verificationStatus  String    @map("verification_status")
+  /// JSON string array of ISO country codes (e.g. ["US"]).
+  countryCodes        Json      @map("country_codes")
+  longTermTiesNote    String?   @map("long_term_ties_note")
+  attestationKind     String    @map("attestation_kind")
+  verifiedBy          String?   @map("verified_by")
+  verifiedAt          DateTime? @map("verified_at")
+  /// Future IdP plug-in point (`prototype` today; OIDC later).
+  providerStub        String?   @map("provider_stub")
+  updatedAt           DateTime  @map("updated_at")
+
+  @@index([verificationStatus])
+  @@map("user_identities")
+}
+
 /// Records that seed data was applied. Absence ⇒ empty DB ⇒ re-seed on startup.
 model SeedMeta {
   id        String   @id

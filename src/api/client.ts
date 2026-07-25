@@ -18,8 +18,10 @@ import type {
   SectionRow,
   ThreadPostRow,
   ThreadRow,
+  UserIdentityRow,
 } from "../doc/types";
 import type { AttributionRegistry, TermRegistry } from "../doc/evidence";
+import type { VerificationStatus } from "../lib/identityPolicy";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
 
@@ -617,6 +619,74 @@ export async function getAuditLogs(opts?: {
     `${API_BASE}/audit-logs${q ? `?${q}` : ""}`,
   );
   return handleResponse<AuditLogRow[]>(response);
+}
+
+/** CONCEPT §8.6 — list real-identity attestation records. */
+export async function getIdentities(): Promise<UserIdentityRow[]> {
+  const response = await fetch(`${API_BASE}/identities`);
+  return handleResponse<UserIdentityRow[]>(response);
+}
+
+export async function getIdentity(userId: string): Promise<UserIdentityRow> {
+  const response = await fetch(`${API_BASE}/identities/${userId}`);
+  return handleResponse<UserIdentityRow>(response);
+}
+
+export async function getStewardEligibility(
+  userId: string,
+  country?: string | null,
+): Promise<{
+  auth_mode: string;
+  identity: UserIdentityRow;
+  eligibility: { ok: boolean; reason?: string; code?: string; message?: string };
+}> {
+  const params = new URLSearchParams();
+  if (country) params.set("country", country);
+  const q = params.toString();
+  const response = await fetch(
+    `${API_BASE}/identities/${userId}/steward-eligibility${q ? `?${q}` : ""}`,
+  );
+  return handleResponse(response);
+}
+
+export async function requestIdentityVerification(body: {
+  actor_id: string;
+  subject_user_id: string;
+}): Promise<{ identity: UserIdentityRow; audit: AuditLogRow }> {
+  const response = await fetch(
+    `${API_BASE}/identities/${body.subject_user_id}/request`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ actor_id: body.actor_id }),
+    },
+  );
+  return handleResponse(response);
+}
+
+export async function attestIdentity(body: {
+  actor_id: string;
+  subject_user_id: string;
+  verification_status: VerificationStatus;
+  country_codes?: string[];
+  long_term_ties_note?: string | null;
+  provider_stub?: string | null;
+}): Promise<{ identity: UserIdentityRow; audit: AuditLogRow }> {
+  const response = await fetch(
+    `${API_BASE}/identities/${body.subject_user_id}/attest`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        actor_id: body.actor_id,
+        verification_status: body.verification_status,
+        country_codes: body.country_codes,
+        long_term_ties_note: body.long_term_ties_note,
+        provider_stub: body.provider_stub,
+      }),
+    },
+  );
+  return handleResponse(response);
 }
 
 export async function getAttributions(): Promise<AttributionRegistry> {

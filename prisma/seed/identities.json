@@ -1,0 +1,62 @@
+[
+  {
+    "user_id": "user-alice",
+    "verification_status": "verified",
+    "country_codes": ["US"],
+    "long_term_ties_note": null,
+    "attestation_kind": "owner_attested",
+    "verified_by": "user-eve",
+    "verified_at": "2026-07-20T12:00:00.000Z",
+    "provider_stub": "prototype"
+  },
+  {
+    "user_id": "user-eve",
+    "verification_status": "verified",
+    "country_codes": [],
+    "long_term_ties_note": "Global Owner — meta-policy",
+    "attestation_kind": "owner_attested",
+    "verified_by": "user-eve",
+    "verified_at": "2026-07-20T12:00:00.000Z",
+    "provider_stub": "prototype"
+  },
+  {
+    "user_id": "user-carol",
+    "verification_status": "verified",
+    "country_codes": [],
+    "long_term_ties_note": null,
+    "attestation_kind": "provider_stub",
+    "verified_by": "user-eve",
+    "verified_at": "2026-07-20T12:00:00.000Z",
+    "provider_stub": "prototype"
+  },
+  {
+    "user_id": "user-bob",
+    "verification_status": "unverified",
+    "country_codes": [],
+    "long_term_ties_note": null,
+    "attestation_kind": "none",
+    "verified_by": null,
+    "verified_at": null,
+    "provider_stub": null
+  },
+  {
+    "user_id": "user-dave",
+    "verification_status": "pending",
+    "country_codes": [],
+    "long_term_ties_note": null,
+    "attestation_kind": "self_asserted",
+    "verified_by": null,
+    "verified_at": null,
+    "provider_stub": "prototype"
+  },
+  {
+    "user_id": "user-frank",
+    "verification_status": "verified",
+    "country_codes": [],
+    "long_term_ties_note": null,
+    "attestation_kind": "provider_stub",
+    "verified_by": "user-eve",
+    "verified_at": "2026-07-20T12:00:00.000Z",
+    "provider_stub": "prototype"
+  }
+]

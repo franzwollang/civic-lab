@@ -164,6 +164,17 @@ type CandidateSeedRow = {
   created_at: string;
 };
 
+type IdentitySeedRow = {
+  user_id: string;
+  verification_status: string;
+  country_codes: string[];
+  long_term_ties_note?: string | null;
+  attestation_kind: string;
+  verified_by?: string | null;
+  verified_at?: string | null;
+  provider_stub?: string | null;
+};
+
 async function readSeedJson<T>(name: string): Promise<T> {
   const raw = await fs.readFile(path.join(SEED_DIR, name), "utf-8");
   return JSON.parse(raw) as T;
@@ -194,6 +205,9 @@ export async function seedIfEmpty(
     await prisma.dossier.deleteMany();
     await prisma.collection.deleteMany();
     await prisma.area.deleteMany();
+    await prisma.boardHide.deleteMany();
+    await prisma.auditLog.deleteMany();
+    await prisma.userIdentity.deleteMany();
     await prisma.termsRegistry.deleteMany();
     await prisma.attributionsRegistry.deleteMany();
     await prisma.seedMeta.deleteMany();
@@ -209,6 +223,7 @@ export async function seedIfEmpty(
   const claims = await readSeedJson<ClaimSeedRow[]>("claims.json");
   const findings = await readSeedJson<FindingSeedRow[]>("findings.json");
   const candidates = await readSeedJson<CandidateSeedRow[]>("candidates.json");
+  const identities = await readSeedJson<IdentitySeedRow[]>("identities.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
@@ -433,6 +448,22 @@ export async function seedIfEmpty(
           status: c.status ?? "open",
           promotedFindingId: c.promoted_finding_id ?? null,
           createdAt: new Date(c.created_at),
+        },
+      });
+    }
+
+    for (const idn of identities) {
+      await tx.userIdentity.create({
+        data: {
+          userId: idn.user_id,
+          verificationStatus: idn.verification_status,
+          countryCodes: idn.country_codes,
+          longTermTiesNote: idn.long_term_ties_note ?? null,
+          attestationKind: idn.attestation_kind,
+          verifiedBy: idn.verified_by ?? null,
+          verifiedAt: idn.verified_at ? new Date(idn.verified_at) : null,
+          providerStub: idn.provider_stub ?? null,
+          updatedAt: new Date(idn.verified_at ?? "2026-07-20T12:00:00.000Z"),
         },
       });
     }
