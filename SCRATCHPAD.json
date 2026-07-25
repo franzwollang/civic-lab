@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-07-25T17:40Z",
-  "turn": 49,
+  "updated_at": "2026-07-25T17:55Z",
+  "turn": 50,
   "focus": {
     "milestone": null,
     "issue": "Editor MVP gaps",
-    "goal": "Register/delete unused editor plugins; wire or remove merge validate"
+    "goal": "Term scope + merge-strict validate; delete MathDecoratePlugin"
   },
   "recent": [
-    "Merged PR #35 progression onto cron branch c6c9",
-    "M9 identity hooks: UserIdentity + attest/request APIs",
-    "Manual steward country/ties gate on decide + AR",
-    "smoke-identity-policy; 32/32 smokes + vite build green",
-    "M9 marked done — full OAuth deferred"
+    "Merged PR #36 M6–M9 stack onto fresh cron branch",
+    "Deleted unused MathDecoratePlugin (autoConvertMath remains)",
+    "Wired validateDocumentStructureForMerge into RevSet + merge",
+    "Term dialog defaultScope from dossier/product chrome",
+    "smoke-editor-mvp added"
   ],
   "discoveries": [
     "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
-    "Full OAuth/IdP deferred past §8.6 hooks",
-    "Editor MVP gaps + evidence registries still open"
+    "Lists/links Plate plugins next editor residual",
+    "Evidence registries + immutable_ref / App D still open"
   ],
-  "next_step": "Editor MVP: MathDecoratePlugin / validateDocumentForMerge / lists MVP vs defer",
+  "next_step": "Plate lists+links MVP, or evidence registry seeding beyond /test/editor",
   "blockers": []
 }

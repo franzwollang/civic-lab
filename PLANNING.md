@@ -115,4 +115,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: residual open work — editor MVP gaps, evidence registries, moderator tools, or Fumadocs unpin (see `OPEN_ISSUES.md`).
+- Next: residual open work — Plate lists/links, evidence registries / `immutable_ref`, image upload, moderator tools, or Fumadocs unpin (see `OPEN_ISSUES.md`).

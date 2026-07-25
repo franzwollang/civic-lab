@@ -6,7 +6,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 import { pageRevisionSchema } from "../src/api/schemas.ts";
-import { validateDocumentStructure } from "../src/doc/structuralValidation.ts";
+import {
+  validateDocumentStructure,
+  validateDocumentStructureForMerge,
+} from "../src/doc/structuralValidation.ts";
 
 const validDoc = [
   { type: "h2", id: "h1", children: [{ text: "Title" }] },
@@ -113,5 +116,30 @@ assert.match(indexSrc, /issues: validated\.issues/);
 const validateSrc = readFileSync("server/validateRevision.ts", "utf8");
 assert.match(validateSrc, /pageRevisionSchema/);
 assert.match(validateSrc, /validateDocumentStructure/);
+
+const structuralSrc = readFileSync("src/doc/structuralValidation.ts", "utf8");
+assert.match(structuralSrc, /validateDocumentStructureForMerge/);
+
+const emptyTerms = { terms: new Map<string, { status?: string }>() };
+const warnDoc = [
+  {
+    type: "p",
+    id: "p1",
+    children: [
+      {
+        type: "term_inline",
+        term_ref: "missing-term-id",
+        children: [{ text: "x" }],
+      },
+    ],
+  },
+];
+const savePath = validateDocumentStructure(warnDoc, { registry: emptyTerms });
+assert.equal(savePath.success, true, "save path allows term-missing warning");
+const mergePath = validateDocumentStructureForMerge(warnDoc, {
+  registry: emptyTerms,
+});
+assert.equal(mergePath.success, false, "merge-strict rejects warnings");
+assert.ok(mergePath.issues.every((i) => i.severity === "error"));
 
 console.log("smoke-revision-validation: ok");

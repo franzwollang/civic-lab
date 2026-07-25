@@ -47,3 +47,4 @@
 {"ts":"2026-07-25T16:42Z","focus":"M9 reputation","summary":"advisory reputation board from RevSets/RT/adjudication/AR; seed merged thread","next":"anti-gaming board-hide or real auth"}
 {"ts":"2026-07-25T17:20Z","focus":"M9 board-hide","summary":"Owner board-hide + AuditLog; 31/31 smokes; hand off real-auth","next":"M9 real-identity auth hooks or editor/evidence"}
 {"ts":"2026-07-25T17:40Z","focus":"M9 identity hooks","summary":"§8.6 UserIdentity + steward gate; M9 done; 32/32 smokes","next":"Editor MVP gaps or evidence registries"}
+{"ts":"2026-07-25T17:55Z","focus":"Editor MVP gaps","summary":"term scope + merge-strict content_invalid + deleted math-plugin; smoke-editor-mvp","next":"Plate lists/links or evidence registries"}

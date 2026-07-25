@@ -8,12 +8,12 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 ## A. Editor correctness (working surface: `/test/editor`)
 
 - [ ] **Editor MVP gaps called out by codebase**
-  - `MathDecoratePlugin` (`src/editor/math-plugin.ts`) unused — register or delete.
-  - `validateDocumentForMerge` unused — wire into save/merge path or remove.
-  - Lists / blockquotes / tables / links not in Plate plugin set — decide MVP vs defer.
-  - Images require `.webp` only; no upload pipeline.
-  - Term dialog always saves `scope: { kind: "global" }` despite dossier/country scopes in schema.
-  - Attribution `immutable_ref` unused vs `CONCEPT.md` Appendix D.
+  - Done: deleted unused `MathDecoratePlugin` (`src/editor/math-plugin.ts`); live path remains `autoConvertMath`.
+  - Done: `validateDocumentStructureForMerge` wired into `createRevSet` + `decideThread` merge (warnings → errors; `content_invalid`).
+  - Done: term dialog uses editor context scope (`dossier` in product chrome, else `global`); edits preserve scope.
+  - Remaining: Lists / blockquotes / tables / links not in Plate plugin set — lists+links next; tables defer.
+  - Remaining: Images require `.webp` only; no upload pipeline.
+  - Remaining: Attribution `immutable_ref` unused vs `CONCEPT.md` Appendix E.1 / App D whitelist.
 
 ---
 
@@ -129,4 +129,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (32 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (33 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.

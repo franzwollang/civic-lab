@@ -47,6 +47,7 @@ import {
 import {
   TermEditorDialog,
   TermSearchDialog,
+  resolveDefaultTermScope,
 } from "@/app/components/evidence/term-dialogs";
 import {
   EvidenceRegistryProvider,
@@ -499,6 +500,10 @@ function TestEditorInner() {
         onOpenChange={setTermEditorOpen}
         seedLabel={termSeed}
         editing={termEditing}
+        defaultScope={resolveDefaultTermScope({
+          dossierId: inProductChrome ? dossierId : null,
+          countryCode: dossier?.country_code ?? null,
+        })}
         onSaved={(termId) => {
           if (termEditorPurpose.current !== "insert") {
             // Return to search, don't insert.

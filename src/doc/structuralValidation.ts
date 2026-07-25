@@ -492,3 +492,22 @@ export function validateDocumentStructure(
     issues,
   };
 }
+
+/**
+ * Merge/proposal path: treat every structural issue (including warnings) as
+ * an error. Mirrors client `validateDocumentForMerge` without MathJax/Mermaid.
+ */
+export function validateDocumentStructureForMerge(
+  value: unknown,
+  options: StructuralValidationOptions = {},
+): StructuralValidationResult {
+  const result = validateDocumentStructure(value, options);
+  const issues = result.issues.map((issue) => ({
+    ...issue,
+    severity: "error" as const,
+  }));
+  return {
+    success: issues.length === 0,
+    issues,
+  };
+}

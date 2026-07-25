@@ -92,6 +92,11 @@ import {
   isTimelinePostType,
 } from "../src/lib/candidateFindings";
 import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
+import {
+  validateDocumentStructureForMerge,
+  type StructuralIssue,
+  type StructuralValidationRegistry,
+} from "../src/doc/structuralValidation";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
 
 let prisma: PrismaClient | null = null;
@@ -1983,7 +1988,65 @@ export type CreateRevSetError =
   | { code: "not_found" }
   | { code: "not_leaf_rfc"; state: string; merge_artifact_id: string | null }
   | { code: "artifact_missing"; artifact_id: string }
-  | { code: "content_required" };
+  | { code: "content_required" }
+  | {
+      code: "content_invalid";
+      message: string;
+      issues: StructuralIssue[];
+    };
+
+async function loadStructuralRegistry(): Promise<StructuralValidationRegistry> {
+  const [attributions, terms] = await Promise.all([
+    getAttributions(),
+    getTerms(),
+  ]);
+
+  const attributionIds = new Set(
+    (attributions.items ?? [])
+      .map((item) =>
+        item && typeof item === "object" && "id" in item
+          ? String((item as { id: unknown }).id)
+          : "",
+      )
+      .filter(Boolean),
+  );
+
+  const termMap = new Map<string, { status?: string }>();
+  for (const item of terms.items ?? []) {
+    if (!item || typeof item !== "object" || !("id" in item)) continue;
+    const id = String((item as { id: unknown }).id);
+    if (!id) continue;
+    const status =
+      "status" in item && typeof (item as { status?: unknown }).status === "string"
+        ? (item as { status: string }).status
+        : undefined;
+    termMap.set(id, { status });
+  }
+
+  return { attributions: attributionIds, terms: termMap };
+}
+
+async function assertMergeStrictContent(
+  contentJson: unknown,
+): Promise<
+  | { ok: true }
+  | { ok: false; error: { code: "content_invalid"; message: string; issues: StructuralIssue[] } }
+> {
+  const registry = await loadStructuralRegistry();
+  const structural = validateDocumentStructureForMerge(contentJson, {
+    registry,
+  });
+  if (structural.success) return { ok: true };
+  return {
+    ok: false,
+    error: {
+      code: "content_invalid",
+      message:
+        "Document failed merge-strict structural validation (warnings treated as errors)",
+      issues: structural.issues,
+    },
+  };
+}
 
 /**
  * Attach a RevSet to a leaf RFC. Creates a proposed ArtifactRevision
@@ -2036,10 +2099,14 @@ export async function createRevSet(input: {
         error: { code: "artifact_missing", artifact_id: mergeArtifactId },
       };
     }
+    const contentCheck = await assertMergeStrictContent(existing.contentJson);
+    if (!contentCheck.ok) return contentCheck;
   } else {
     if (input.content_json === undefined) {
       return { ok: false, error: { code: "content_required" } };
     }
+    const contentCheck = await assertMergeStrictContent(input.content_json);
+    if (!contentCheck.ok) return contentCheck;
     revisionId = crypto.randomUUID();
     await prisma.artifactRevision.create({
       data: {
@@ -2117,6 +2184,11 @@ export type DecideThreadError =
   | { code: "revset_missing"; revset_version: number }
   | { code: "revision_missing"; artifact_revision_id: string }
   | { code: "authority_context_missing"; artifact_id: string }
+  | {
+      code: "content_invalid";
+      message: string;
+      issues: StructuralIssue[];
+    }
   | {
       code: "forbidden";
       author_id: string;
@@ -2326,6 +2398,9 @@ export async function decideThread(input: {
         },
       };
     }
+
+    const contentCheck = await assertMergeStrictContent(revision.contentJson);
+    if (!contentCheck.ok) return contentCheck;
 
     const arNote =
       blockers.length > 0
