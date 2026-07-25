@@ -71,7 +71,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (21/21) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (22/22) |
 
 **Next build:** **M7 Red Team** (`not started`). M6 Claims + lanes complete (legality, lanes, adjudication, authoring, Collection quality/forecast metrics).
 
