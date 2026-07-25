@@ -73,7 +73,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Auth | None (impersonation planned) |
 | Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (24/24) |
 
-**Next build:** **M7 Red Team** (`in progress` — Findings + Accepted Risk + Critical merge gate landed). Remaining: Candidate→Finding promotion / Findings timeline UX; then M8 Discovery.
+**Next build:** **M8 Discovery** (`not started` — search, breadcrumbs, impersonation role chrome). M7 Red Team complete (Findings + Candidate→Finding + timeline + Accepted Risk gate).
 
 ---
 
@@ -88,7 +88,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |
 | **M5 — Threads + RFC** | `done` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer ✓; Collection merge authority (§3.4) ✓ |
 | **M6 — Claims + lanes** | `done` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; Collection quality/forecast metrics ✓ |
-| **M7 — Red Team** | `in progress` | Finding + FindingTarget ✓; dashboard Critical/recent counts ✓; Accepted Risk on leaf + Critical merge gate ✓; Candidate→Finding / timeline UX remaining |
+| **M7 — Red Team** | `done` | Finding + FindingTarget ✓; dashboard Critical/recent counts ✓; Accepted Risk on leaf + Critical merge gate ✓; Candidate→Finding + timeline filters/sidebar ✓ |
 | **M8 — Discovery** | `not started` | Search; breadcrumbs; impersonation role UX |
 | **M9 — Policy** | `not started` | Real auth; reputation; Charter artifact; anti-gaming |
 
@@ -115,4 +115,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: **M7** Red Team residual (Findings timeline / Candidate→Finding) or **M8** Discovery; Critical merge gate landed.
+- Next: **M8** Discovery (search / breadcrumbs / impersonation chrome); M7 complete.

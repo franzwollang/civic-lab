@@ -39,3 +39,4 @@
 {"ts":"2026-07-25T13:50Z","focus":"M6 metrics","summary":"Collection claim quality/forecast panels live; M6 exit; next M7 Findings","next":"Finding model + Critical merge gate"}
 {"ts":"2026-07-25T14:10Z","focus":"M7 Findings","summary":"Finding model/API/dashboard counts landed; handoff to Accepted Risk merge gate","next":"AcceptedRisk + decideThread Critical gate"}
 {"ts":"2026-07-25T14:30Z","focus":"M7 Accepted Risk gate","summary":"AcceptedRisk + Critical merge gate landed; handoff to Findings timeline or M8","next":"Findings timeline UX or Candidate→Finding; else M8 Search"}
+{"ts":"2026-07-25T14:55Z","focus":"M7 Candidate→Finding timeline","summary":"Candidate promotion + thread timeline UX landed; M7 done; handoff to M8 Search","next":"M8 first-cut search API + header wiring"}

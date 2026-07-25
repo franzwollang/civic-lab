@@ -68,12 +68,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## F. Red Team + oversight (CONCEPT §§7–8)
 
-- [ ] **Findings (thread-required context)**
-  - Done: Prisma `Finding` / `FindingTarget`; seed (`prisma/seed/findings.json`); API `GET|POST /api/findings`, `GET /api/findings/:id`, `GET /api/threads/:id/findings`; Red Team-only create (`user-dave`); Collection dashboard `critical_findings` + `red_team.recent_count` live; Accepted Risk + Critical merge gate in `decideThread` (CONCEPT §7.6).
-  - Remaining: Candidate → Finding promotion (can stay stubbed); Findings timeline UX / filters on thread pages.
-
+- Findings, Candidate→Finding promotion, timeline filters, Accepted Risk, and Critical merge gate are landed (M7).
 - [ ] **Role separation via impersonation**
-  - Seed users/roles include Owner (`user-eve`), editor, steward, red_team, contributor (`src/app/lib/prototype-users.ts`); reply composer + decide paths use acting id.
+  - Seed users/roles include Owner (`user-eve`), editor, steward, red_team, contributor (`src/app/lib/prototype-users.ts`); reply composer + decide / AR / promote paths use acting id.
   - Remaining: global header switcher + distinct affordances per role (M8); do not collapse into one admin.
 
 ---
