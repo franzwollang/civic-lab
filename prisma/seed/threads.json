@@ -78,6 +78,31 @@
     ]
   },
   {
+    "thread_id": "thread-us-multi-open",
+    "home_dossier_id": "us-voting-1",
+    "title": "Coordinate voter-reg + provisional ballot wording",
+    "state": "open",
+    "decision_outcome": null,
+    "is_redteam": false,
+    "parent_thread_id": null,
+    "merge_artifact_id": null,
+    "created_at": "2026-07-11T16:00:00.000Z",
+    "targets": [
+      { "target_kind": "dossier", "target_id": "us-voting-1" },
+      { "target_kind": "artifact", "target_id": "us-voter-reg" },
+      { "target_kind": "artifact", "target_id": "us-provisional" }
+    ],
+    "posts": [
+      {
+        "post_id": "post-us-multi-1",
+        "author_id": "user-alice",
+        "type": "comment",
+        "body": "These two Manual artifacts share terminology — promote should become a wrapper + two leaf sub-RFCs.",
+        "created_at": "2026-07-11T16:00:00.000Z"
+      }
+    ]
+  },
+  {
     "thread_id": "thread-canon-goals-section",
     "home_dossier_id": "electoral-1",
     "title": "Goals section — Canon baseline scope",

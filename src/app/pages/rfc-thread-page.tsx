@@ -72,6 +72,16 @@ export function RfcThreadPage() {
                   <span className="text-sm text-neutral-500">
                     {thread.thread_id}
                   </span>
+                  {thread.rfc_kind === "wrapper" && (
+                    <span className="rounded bg-neutral-200 px-2 py-0.5 text-xs font-medium text-neutral-700">
+                      Wrapper
+                    </span>
+                  )}
+                  {thread.rfc_kind === "leaf" && (
+                    <span className="rounded bg-neutral-200 px-2 py-0.5 text-xs font-medium text-neutral-700">
+                      Leaf
+                    </span>
+                  )}
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
@@ -79,9 +89,9 @@ export function RfcThreadPage() {
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
                         <p className="text-xs">
-                          Leaf RFC: RevSets propose ArtifactRevisions against the
-                          merge artifact. Merge authority / Accepted Risk still
-                          deferred.
+                          {thread.rfc_kind === "wrapper"
+                            ? "Wrapper RFC coordinates sub-RFCs; it does not merge content. Each child leaf holds RevSets for one artifact."
+                            : "Leaf RFC: RevSets propose ArtifactRevisions against the merge artifact. Merge authority / Accepted Risk still deferred."}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -93,7 +103,9 @@ export function RfcThreadPage() {
 
                 <div className="mb-4 rounded-lg border border-neutral-200 bg-white p-4">
                   <div className="mb-2 text-xs font-medium uppercase tracking-wider text-neutral-500">
-                    Leaf merge target
+                    {thread.rfc_kind === "wrapper"
+                      ? "Wrapper scope"
+                      : "Leaf merge target"}
                   </div>
                   <div className="space-y-1 text-sm">
                     <div className="flex items-center gap-2">
@@ -105,6 +117,17 @@ export function RfcThreadPage() {
                         {thread.home_dossier_id}
                       </Link>
                     </div>
+                    {thread.parent_thread_id && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-neutral-600">Parent wrapper:</span>
+                        <Link
+                          to={`/thread/${thread.parent_thread_id}/rfc`}
+                          className="font-medium text-neutral-900 hover:text-neutral-700"
+                        >
+                          {thread.parent_thread_id}
+                        </Link>
+                      </div>
+                    )}
                     {thread.merge_artifact_id ? (
                       <div className="flex items-center gap-2">
                         <span className="text-neutral-600">Merge artifact:</span>
@@ -119,6 +142,28 @@ export function RfcThreadPage() {
                       <p className="text-sm text-amber-700">
                         No merge_artifact_id — wrapper RFCs do not merge content.
                       </p>
+                    )}
+                    {(thread.child_threads?.length ?? 0) > 0 && (
+                      <div className="pt-2">
+                        <div className="mb-1 text-xs font-medium uppercase tracking-wider text-neutral-500">
+                          Sub-RFCs
+                        </div>
+                        <ul className="space-y-1">
+                          {thread.child_threads!.map((child) => (
+                            <li key={child.thread_id}>
+                              <Link
+                                to={`/thread/${child.thread_id}/rfc`}
+                                className="font-medium text-neutral-900 hover:text-neutral-700"
+                              >
+                                {child.title}
+                              </Link>
+                              <span className="ml-2 text-neutral-500">
+                                → {child.merge_artifact_id} · {child.state}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                     <Link
                       to={`/thread/${thread.thread_id}`}
@@ -135,13 +180,26 @@ export function RfcThreadPage() {
                   Request for Change
                 </div>
                 <p className="text-sm text-neutral-800">
-                  Leaf RFC scaffolding: RevSets below point at proposed
-                  ArtifactRevisions. Merging those into{" "}
-                  <code className="text-xs">{thread.merge_artifact_id ?? "—"}</code>{" "}
-                  (and parent/sub-RFC wrappers) lands in a later M5 cut.
+                  {thread.rfc_kind === "wrapper" ? (
+                    <>
+                      Wrapper RFC: open each sub-RFC to attach RevSets. Parent
+                      becomes <code className="text-xs">decided</code> only when
+                      all children are decided (decision controls still deferred).
+                    </>
+                  ) : (
+                    <>
+                      Leaf RFC scaffolding: RevSets below point at proposed
+                      ArtifactRevisions. Merging those into{" "}
+                      <code className="text-xs">
+                        {thread.merge_artifact_id ?? "—"}
+                      </code>{" "}
+                      still lands in a later M5 cut.
+                    </>
+                  )}
                 </p>
               </Card>
 
+              {thread.rfc_kind !== "wrapper" && (
               <div className="mb-8">
                 <h2 className="mb-4 text-xl font-semibold text-neutral-900">
                   Revision Sets
@@ -171,14 +229,16 @@ export function RfcThreadPage() {
                   )}
                 </Card>
               </div>
+              )}
 
               <Card className="border-2 border-neutral-300 bg-white p-6">
                 <h3 className="mb-4 text-lg font-semibold text-neutral-900">
                   Decision
                 </h3>
                 <p className="mb-4 text-sm text-neutral-600">
-                  Merge / reject / park and Collection merge authority are still
-                  deferred within M5.
+                  {thread.rfc_kind === "wrapper"
+                    ? "Wrapper decisions follow children (all decided → parent decided). Merge / reject / park controls still deferred."
+                    : "Merge / reject / park and Collection merge authority are still deferred within M5."}
                 </p>
                 <div className="flex gap-3">
                   <Button variant="default" size="lg" disabled>

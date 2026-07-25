@@ -419,7 +419,7 @@ app.post("/api/threads/:threadId/promote", async (req, res) => {
     const status =
       result.error.code === "not_found"
         ? 404
-        : result.error.code === "wrapper_required"
+        : result.error.code === "cross_collection"
           ? 409
           : 400;
     res.status(status).json({ error: result.error });

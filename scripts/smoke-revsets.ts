@@ -82,7 +82,7 @@ async function main() {
       );
     }
 
-    // Multi-artifact while still open → wrapper_required.
+    // Multi-artifact same Collection → wrapper parent + sub-RFCs.
     await prisma.threadTarget.create({
       data: {
         threadId: "thread-canon-voting-open",
@@ -90,13 +90,81 @@ async function main() {
         targetId: "us-voter-reg",
       },
     });
-    const wrap = await promoteThreadToRfc({
+    // page-001 is Canon; us-voter-reg is Manual US → cross_collection.
+    const cross = await promoteThreadToRfc({
       thread_id: "thread-canon-voting-open",
     });
-    if (wrap.ok || wrap.error.code !== "wrapper_required") {
+    if (cross.ok || cross.error.code !== "cross_collection") {
       throw new Error(
-        `multi-artifact promote should be wrapper_required; got ${JSON.stringify(wrap)}`,
+        `cross-collection promote should fail; got ${JSON.stringify(cross)}`,
       );
+    }
+
+    // Same-Collection multi-artifact from seed thread-us-multi-open.
+    const wrap = await promoteThreadToRfc({
+      thread_id: "thread-us-multi-open",
+      author_id: "user-alice",
+    });
+    if (!wrap.ok) {
+      throw new Error(`wrapper promote failed: ${JSON.stringify(wrap.error)}`);
+    }
+    if (
+      wrap.thread.rfc_kind !== "wrapper" ||
+      wrap.thread.merge_artifact_id !== null
+    ) {
+      throw new Error("multi-artifact promote should yield wrapper (no merge id)");
+    }
+    if ((wrap.thread.child_threads?.length ?? 0) !== 2) {
+      throw new Error(
+        `expected 2 sub-RFCs; got ${JSON.stringify(wrap.thread.child_threads)}`,
+      );
+    }
+    const childIds = wrap.thread.child_threads!.map((c) => c.thread_id).sort();
+    if (
+      childIds.join(",") !==
+      ["thread-us-multi-open--us-provisional", "thread-us-multi-open--us-voter-reg"].join(
+        ",",
+      )
+    ) {
+      throw new Error(`bad child ids: ${childIds.join(",")}`);
+    }
+    for (const child of wrap.thread.child_threads!) {
+      if (child.state !== "rfc" || !child.merge_artifact_id) {
+        throw new Error(`bad child: ${JSON.stringify(child)}`);
+      }
+      const leaf = await getThread(child.thread_id);
+      if (!leaf || leaf.parent_thread_id !== "thread-us-multi-open") {
+        throw new Error("sub-RFC parent_thread_id mismatch");
+      }
+      if (leaf.rfc_kind !== "leaf") {
+        throw new Error("sub-RFC should be leaf");
+      }
+    }
+
+    // Wrapper itself cannot take RevSets.
+    const wrapRs = await createRevSet({
+      thread_id: "thread-us-multi-open",
+      author_id: "user-alice",
+      content_json: [{ type: "p", children: [{ text: "nope" }] }],
+    });
+    if (wrapRs.ok || wrapRs.error.code !== "not_leaf_rfc") {
+      throw new Error(
+        `wrapper createRevSet should be not_leaf_rfc; got ${JSON.stringify(wrapRs)}`,
+      );
+    }
+
+    // Sub-RFC can take a RevSet.
+    const subId = "thread-us-multi-open--us-voter-reg";
+    const subRs = await createRevSet({
+      thread_id: subId,
+      author_id: "user-alice",
+      summary: "Wrapper child proposal",
+      content_json: [
+        { type: "p", id: "w1", children: [{ text: "Coordinated leaf proposal" }] },
+      ],
+    });
+    if (!subRs.ok || subRs.revset.artifact_id !== "us-voter-reg") {
+      throw new Error(`sub-RFC RevSet failed: ${JSON.stringify(subRs)}`);
     }
 
     // Promote open provisional thread → leaf RFC (single artifact target).

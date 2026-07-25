@@ -41,12 +41,12 @@ async function main() {
     }
 
     const all = await listThreads();
-    if (all.length < 4) {
-      throw new Error(`expected ≥4 seeded threads, got ${all.length}`);
+    if (all.length < 5) {
+      throw new Error(`expected ≥5 seeded threads, got ${all.length}`);
     }
 
     const us = await listThreads({ homeDossierId: "us-voting-1" });
-    if (us.length !== 2) {
+    if (us.length !== 3) {
       throw new Error(`us-voting-1 threads: ${us.length}`);
     }
     const rfc = us.find((t) => t.state === "rfc");

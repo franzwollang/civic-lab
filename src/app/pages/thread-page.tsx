@@ -171,8 +171,42 @@ export function ThreadPage() {
                 </div>
                 {thread.state === "open" && (
                   <p className="mt-2 text-xs text-neutral-500">
-                    Leaf promote requires a single artifact target (wrapper
-                    parent/sub-RFC still deferred).
+                    One artifact target → leaf RFC. Multiple targets in the same
+                    Collection → wrapper parent + one sub-RFC per artifact.
+                  </p>
+                )}
+                {thread.rfc_kind === "wrapper" &&
+                  (thread.child_threads?.length ?? 0) > 0 && (
+                    <div className="mt-4 rounded-lg border border-neutral-200 bg-white p-4">
+                      <div className="mb-2 text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        Sub-RFCs
+                      </div>
+                      <ul className="space-y-2 text-sm">
+                        {thread.child_threads!.map((child) => (
+                          <li key={child.thread_id}>
+                            <Link
+                              to={`/thread/${child.thread_id}/rfc`}
+                              className="font-medium text-neutral-900 hover:text-neutral-700"
+                            >
+                              {child.title}
+                            </Link>
+                            <span className="ml-2 text-neutral-500">
+                              → {child.merge_artifact_id}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                {thread.parent_thread_id && (
+                  <p className="mt-3 text-xs text-neutral-500">
+                    Sub-RFC of{" "}
+                    <Link
+                      to={`/thread/${thread.parent_thread_id}/rfc`}
+                      className="underline"
+                    >
+                      {thread.parent_thread_id}
+                    </Link>
                   </p>
                 )}
               </div>

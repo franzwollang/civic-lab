@@ -147,6 +147,14 @@ export type ThreadRow = {
   posts?: ThreadPostRow[];
   post_count?: number;
   revsets?: RevSetRow[];
+  child_threads?: {
+    thread_id: string;
+    title: string;
+    state: string;
+    merge_artifact_id: string | null;
+    decision_outcome: string | null;
+  }[];
+  rfc_kind?: "leaf" | "wrapper" | null;
 };
 
 /** CONCEPT §3.3 RevSet wire shape. */

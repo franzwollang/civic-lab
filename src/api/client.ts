@@ -254,7 +254,7 @@ export async function createThreadPost(
   return handleResponse<ThreadPostRow>(response);
 }
 
-/** Promote open thread → leaf RFC (1:1 merge artifact). */
+/** Promote open thread → leaf RFC (1:1) or wrapper + sub-RFCs (multi-artifact). */
 export async function promoteThread(
   threadId: string,
   body?: { merge_artifact_id?: string; author_id?: string },

@@ -1,26 +1,27 @@
 {
-  "updated_at": "2026-07-25T10:05Z",
-  "turn": 27,
+  "updated_at": "2026-07-25T10:35Z",
+  "turn": 28,
   "focus": {
     "milestone": "M5",
     "issue": "RFC promotion + parent/sub-RFC + RevSets",
-    "goal": "Wrapper parent/sub-RFC or reply composer next"
+    "goal": "Parent decided cascade or reply composer next"
   },
   "recent": [
-    "Merged PR #16 (Section sync) onto cron branch adfa",
-    "Prisma RevSet + seed proposal revision on leaf RFC",
-    "POST promote (1:1 leaf) + GET/POST revsets; smoke-revsets",
-    "Thread/RFC pages + dossier cards wired to store"
+    "Merged PR #17 (RevSet/leaf) onto cron branch 5b73",
+    "Multi-artifact promote → wrapper + sub-RFCs (same Collection)",
+    "cross_collection 409; seed thread-us-multi-open; UI child links",
+    "smoke-revsets/threads/section-sync green"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
     "Prisma --force-reset blocked; use fresh SQLite file for smokes",
-    "RevSet proposals must skip Section sync / current_revision flip"
+    "Wrapper has null merge_artifact_id; only leaf sub-RFCs take RevSets"
   ],
   "open_threads": [
-    "Wrapper parent/sub-RFC + merge authority still open within M5",
+    "Parent decided when all children decided still open",
+    "Merge authority + Merge/Reject/Park still open",
     "Reply composer (impersonated author) still open"
   ],
-  "next_step": "Implement wrapper RFC upgrade for multi-artifact OR reply composer",
+  "next_step": "Implement parent decided cascade OR reply composer (impersonated)",
   "blockers": []
 }

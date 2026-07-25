@@ -152,6 +152,15 @@ export type ThreadPostRow = {
   created_at: string;
 };
 
+/** Compact child summary for wrapper RFC responses. */
+export type ThreadChildSummary = {
+  thread_id: string;
+  title: string;
+  state: string;
+  merge_artifact_id: string | null;
+  decision_outcome: string | null;
+};
+
 export type ThreadRow = {
   thread_id: string;
   home_dossier_id: string;
@@ -167,6 +176,10 @@ export type ThreadRow = {
   post_count?: number;
   /** Present when detail fetch includes RevSets. */
   revsets?: RevSetRow[];
+  /** Present on wrapper RFCs (and detail fetches that include children). */
+  child_threads?: ThreadChildSummary[];
+  /** Derived: leaf has merge_artifact_id; wrapper is rfc with children and no merge. */
+  rfc_kind?: "leaf" | "wrapper" | null;
 };
 
 /** CONCEPT §3.3 RevSet — proposed ArtifactRevision on a leaf RFC. */
@@ -773,6 +786,16 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
       targets: true,
       posts: { orderBy: { createdAt: "asc" } },
       revSets: { orderBy: { version: "asc" } },
+      childThreads: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          threadId: true,
+          title: true,
+          state: true,
+          mergeArtifactId: true,
+          decisionOutcome: true,
+        },
+      },
       _count: { select: { posts: true } },
     },
   });
@@ -784,7 +807,23 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
   mapped.revsets = row.revSets.map((r) =>
     mapRevSet(r, revArtifactIds.get(r.artifactRevisionId) ?? null),
   );
+  mapped.child_threads = row.childThreads.map((c) => ({
+    thread_id: c.threadId,
+    title: c.title,
+    state: c.state,
+    merge_artifact_id: c.mergeArtifactId,
+    decision_outcome: c.decisionOutcome,
+  }));
+  mapped.rfc_kind = deriveRfcKind(mapped);
   return mapped;
+}
+
+function deriveRfcKind(thread: ThreadRow): "leaf" | "wrapper" | null {
+  if (thread.state !== "rfc" && thread.state !== "review" && thread.state !== "decided") {
+    return null;
+  }
+  if (thread.merge_artifact_id) return "leaf";
+  return "wrapper";
 }
 
 function mapRevSet(
@@ -845,14 +884,81 @@ export async function listRevSets(threadId: string): Promise<RevSetRow[] | null>
 export type PromoteThreadError =
   | { code: "not_found" }
   | { code: "not_open"; state: string }
-  | { code: "wrapper_required"; artifact_ids: string[] }
   | { code: "no_artifact_target" }
   | { code: "artifact_missing"; artifact_id: string }
-  | { code: "merge_mismatch"; merge_artifact_id: string; artifact_ids: string[] };
+  | { code: "merge_mismatch"; merge_artifact_id: string; artifact_ids: string[] }
+  | {
+      code: "cross_collection";
+      artifact_ids: string[];
+      collection_ids: string[];
+    };
 
 /**
- * Promote an open discussion thread to a leaf RFC (1:1 merge artifact).
- * Multi-artifact targets require wrapper + sub-RFCs (not implemented this cut).
+ * Resolve artifact ids from thread targets (direct artifact + section→artifact).
+ */
+async function resolvePromoteArtifactIds(
+  targets: { targetKind: string; targetId: string }[],
+): Promise<string[]> {
+  const prisma = getPrisma();
+  const direct = targets
+    .filter((t) => t.targetKind === "artifact")
+    .map((t) => t.targetId);
+  const sectionIds = targets
+    .filter((t) => t.targetKind === "section")
+    .map((t) => t.targetId);
+  const fromSections =
+    sectionIds.length === 0
+      ? []
+      : (
+          await prisma.section.findMany({
+            where: { sectionId: { in: sectionIds } },
+            select: { artifactId: true },
+          })
+        ).map((s) => s.artifactId);
+  return [...new Set([...direct, ...fromSections])];
+}
+
+async function resolveArtifactCollections(
+  artifactIds: string[],
+): Promise<
+  | { ok: true; byArtifact: Map<string, { collectionId: string; title: string; dossierId: string | null }> }
+  | { ok: false; missing: string }
+> {
+  const prisma = getPrisma();
+  const artifacts = await prisma.artifact.findMany({
+    where: { artifactId: { in: artifactIds } },
+    select: {
+      artifactId: true,
+      title: true,
+      dossierId: true,
+      dossier: { select: { collectionId: true } },
+    },
+  });
+  const byArtifact = new Map<
+    string,
+    { collectionId: string; title: string; dossierId: string | null }
+  >();
+  for (const a of artifacts) {
+    if (!a.dossier?.collectionId) {
+      return { ok: false, missing: a.artifactId };
+    }
+    byArtifact.set(a.artifactId, {
+      collectionId: a.dossier.collectionId,
+      title: a.title,
+      dossierId: a.dossierId,
+    });
+  }
+  for (const id of artifactIds) {
+    if (!byArtifact.has(id)) return { ok: false, missing: id };
+  }
+  return { ok: true, byArtifact };
+}
+
+/**
+ * Promote an open discussion thread to RFC.
+ * - Single artifact → leaf RFC (`merge_artifact_id` set; RevSets allowed).
+ * - Multi-artifact (same Collection) → wrapper parent + one sub-RFC per artifact.
+ * - Cross-Collection multi-artifact → rejected (`cross_collection`).
  */
 export async function promoteThreadToRfc(input: {
   thread_id: string;
@@ -869,37 +975,131 @@ export async function promoteThreadToRfc(input: {
     return { ok: false, error: { code: "not_open", state: row.state } };
   }
 
-  const artifactTargets = row.targets
-    .filter((t) => t.targetKind === "artifact")
-    .map((t) => t.targetId);
-  const uniqueArtifacts = [...new Set(artifactTargets)];
+  const uniqueArtifacts = await resolvePromoteArtifactIds(row.targets);
 
   if (uniqueArtifacts.length === 0 && !input.merge_artifact_id) {
     return { ok: false, error: { code: "no_artifact_target" } };
   }
-  if (uniqueArtifacts.length > 1 && !input.merge_artifact_id) {
-    return {
-      ok: false,
-      error: { code: "wrapper_required", artifact_ids: uniqueArtifacts },
-    };
+
+  // Multi-artifact → wrapper parent + sub-RFCs (CONCEPT §3.3).
+  if (uniqueArtifacts.length > 1) {
+    if (
+      input.merge_artifact_id &&
+      !uniqueArtifacts.includes(input.merge_artifact_id)
+    ) {
+      return {
+        ok: false,
+        error: {
+          code: "merge_mismatch",
+          merge_artifact_id: input.merge_artifact_id,
+          artifact_ids: uniqueArtifacts,
+        },
+      };
+    }
+
+    const collections = await resolveArtifactCollections(uniqueArtifacts);
+    if (!collections.ok) {
+      return {
+        ok: false,
+        error: { code: "artifact_missing", artifact_id: collections.missing },
+      };
+    }
+    const collectionIds = [
+      ...new Set(
+        [...collections.byArtifact.values()].map((v) => v.collectionId),
+      ),
+    ];
+    if (collectionIds.length > 1) {
+      return {
+        ok: false,
+        error: {
+          code: "cross_collection",
+          artifact_ids: uniqueArtifacts,
+          collection_ids: collectionIds,
+        },
+      };
+    }
+
+    const authorId = input.author_id ?? "system";
+    const now = new Date();
+    const childIds: string[] = [];
+
+    await prisma.$transaction(async (tx) => {
+      await tx.thread.update({
+        where: { threadId: input.thread_id },
+        data: {
+          state: "rfc",
+          mergeArtifactId: null,
+        },
+      });
+
+      for (const artifactId of uniqueArtifacts) {
+        const meta = collections.byArtifact.get(artifactId)!;
+        const childId = `${input.thread_id}--${artifactId}`;
+        childIds.push(childId);
+        await tx.thread.create({
+          data: {
+            threadId: childId,
+            homeDossierId: meta.dossierId ?? row.homeDossierId,
+            title: `Sub-RFC: ${meta.title}`,
+            state: "rfc",
+            decisionOutcome: null,
+            isRedteam: row.isRedteam,
+            parentThreadId: input.thread_id,
+            mergeArtifactId: artifactId,
+            createdAt: now,
+          },
+        });
+        await tx.threadTarget.create({
+          data: {
+            threadId: childId,
+            targetKind: "artifact",
+            targetId: artifactId,
+          },
+        });
+        await tx.threadPost.create({
+          data: {
+            postId: crypto.randomUUID(),
+            threadId: childId,
+            authorId,
+            type: "comment",
+            body: `Leaf sub-RFC under wrapper ${input.thread_id} (merge → ${artifactId}). RevSets may propose ArtifactRevisions.`,
+            createdAt: now,
+          },
+        });
+      }
+
+      await tx.threadPost.create({
+        data: {
+          postId: crypto.randomUUID(),
+          threadId: input.thread_id,
+          authorId,
+          type: "comment",
+          body: `Promoted to wrapper RFC with ${childIds.length} sub-RFCs (${uniqueArtifacts.join(", ")}). Wrapper coordinates only — sub-RFCs merge content.`,
+          createdAt: now,
+        },
+      });
+    });
+
+    const thread = await getThread(input.thread_id);
+    if (!thread) return { ok: false, error: { code: "not_found" } };
+    return { ok: true, thread };
   }
 
+  // Leaf promote (0–1 resolved artifact targets, optional explicit merge id).
   const mergeId = input.merge_artifact_id ?? uniqueArtifacts[0]!;
-  if (uniqueArtifacts.length > 1 && !uniqueArtifacts.includes(mergeId)) {
+  if (
+    uniqueArtifacts.length === 1 &&
+    input.merge_artifact_id &&
+    uniqueArtifacts[0] !== input.merge_artifact_id
+  ) {
     return {
       ok: false,
       error: {
         code: "merge_mismatch",
-        merge_artifact_id: mergeId,
+        merge_artifact_id: input.merge_artifact_id,
         artifact_ids: uniqueArtifacts,
       },
-    };
-  }
-  // Even with explicit merge_artifact_id, multi-artifact still needs wrapper.
-  if (uniqueArtifacts.length > 1) {
-    return {
-      ok: false,
-      error: { code: "wrapper_required", artifact_ids: uniqueArtifacts },
     };
   }
 
