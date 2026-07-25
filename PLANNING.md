@@ -71,7 +71,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (24/24) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (25/25) |
 
 **Next build:** **M8 Discovery** (`not started` — search, breadcrumbs, impersonation role chrome). M7 Red Team complete (Findings + Candidate→Finding + timeline + Accepted Risk gate).
 
