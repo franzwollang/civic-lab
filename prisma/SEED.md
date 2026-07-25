@@ -23,8 +23,11 @@
 | File | Entities |
 |---|---|
 | `threads.json` | Sample `Thread` + nested `posts` / `targets` (dossier + artifact + **section** anchors). States include `open` and `rfc`. |
+| `revsets.json` | Leaf RFC `RevSet` rows pointing at proposed `ArtifactRevision`s (not `current_revision_id` until merge). |
 
 Sections are not a separate seed file: on seed (and on each revision save) heading blocks with ids become Prisma `Section` rows (`stable_key` = block id; `section_id` = `sec_{artifactId}__{stableKey}`). ThreadTargets use `target_kind=section` + that `section_id`.
+
+Leaf RFC seed: `thread-us-voter-reg-rfc` + `revset-us-voter-reg-1` → `rev-us-voter-reg-rfc-1` (proposal; current stays `rev-us-voter-reg-1`).
 
 ## Startup sequence (`pnpm run dev` → API)
 
@@ -61,6 +64,7 @@ rm -f prisma/dev.db prisma/dev.db-journal && pnpm run dev
 
 - Corpus: `/api/areas`, `/api/collections`, `/api/dossiers` (+ nested dossier artifacts).
 - Threads: `/api/threads`, `/api/threads/:id`, `/api/dossiers/:id/threads`.
+- RFC: `POST /api/threads/:id/promote` (leaf 1:1); `GET|POST /api/threads/:id/revsets`.
 - Documents: Prisma `Artifact` / `ArtifactRevision` mapped onto legacy tables
   `pages` / `page_revisions` (`page_id` column ≡ artifact id). Wire JSON dual-emits
   `artifact_id` + `page_id`; `/api/artifacts` preferred (legacy `/api/pages` works).

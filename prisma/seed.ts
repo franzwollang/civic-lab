@@ -89,6 +89,16 @@ type ThreadSeedRow = {
   posts?: ThreadPostSeed[];
 };
 
+type RevSetSeedRow = {
+  revset_id: string;
+  thread_id: string;
+  version: number;
+  artifact_revision_id: string;
+  author_id: string;
+  created_at: string;
+  summary?: string | null;
+};
+
 async function readSeedJson<T>(name: string): Promise<T> {
   const raw = await fs.readFile(path.join(SEED_DIR, name), "utf-8");
   return JSON.parse(raw) as T;
@@ -104,6 +114,7 @@ export async function seedIfEmpty(
   }
 
   if (options.force) {
+    await prisma.revSet.deleteMany();
     await prisma.threadTarget.deleteMany();
     await prisma.threadPost.deleteMany();
     await prisma.thread.deleteMany();
@@ -124,6 +135,7 @@ export async function seedIfEmpty(
   const pages = await readSeedJson<ArtifactSeedRow[]>("pages.json");
   const revisions = await readSeedJson<RevisionSeedRow[]>("page_revisions.json");
   const threads = await readSeedJson<ThreadSeedRow[]>("threads.json");
+  const revsets = await readSeedJson<RevSetSeedRow[]>("revsets.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
@@ -250,6 +262,21 @@ export async function seedIfEmpty(
           },
         });
       }
+    }
+
+    // Leaf RFC RevSets (proposed revisions already in page_revisions.json).
+    for (const rs of revsets) {
+      await tx.revSet.create({
+        data: {
+          revsetId: rs.revset_id,
+          threadId: rs.thread_id,
+          version: rs.version,
+          artifactRevisionId: rs.artifact_revision_id,
+          authorId: rs.author_id,
+          createdAt: new Date(rs.created_at),
+          summary: rs.summary ?? null,
+        },
+      });
     }
 
     await tx.termsRegistry.create({

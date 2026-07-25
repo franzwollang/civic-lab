@@ -146,6 +146,19 @@ export type ThreadRow = {
   targets?: ThreadTargetRow[];
   posts?: ThreadPostRow[];
   post_count?: number;
+  revsets?: RevSetRow[];
+};
+
+/** CONCEPT §3.3 RevSet wire shape. */
+export type RevSetRow = {
+  revset_id: string;
+  thread_id: string;
+  version: number;
+  artifact_revision_id: string;
+  artifact_id: string | null;
+  author_id: string;
+  created_at: string;
+  summary: string | null;
 };
 
 /** @deprecated Prefer ArtifactRow */

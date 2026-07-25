@@ -165,6 +165,20 @@ export type ThreadRow = {
   targets?: ThreadTargetRow[];
   posts?: ThreadPostRow[];
   post_count?: number;
+  /** Present when detail fetch includes RevSets. */
+  revsets?: RevSetRow[];
+};
+
+/** CONCEPT §3.3 RevSet — proposed ArtifactRevision on a leaf RFC. */
+export type RevSetRow = {
+  revset_id: string;
+  thread_id: string;
+  version: number;
+  artifact_revision_id: string;
+  artifact_id: string | null;
+  author_id: string;
+  created_at: string;
+  summary: string | null;
 };
 
 function mapArea(row: {
@@ -758,10 +772,276 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
     include: {
       targets: true,
       posts: { orderBy: { createdAt: "asc" } },
+      revSets: { orderBy: { version: "asc" } },
       _count: { select: { posts: true } },
     },
   });
-  return row ? mapThread(row) : null;
+  if (!row) return null;
+  const mapped = mapThread(row);
+  const revArtifactIds = await resolveRevSetArtifactIds(
+    row.revSets.map((r) => r.artifactRevisionId),
+  );
+  mapped.revsets = row.revSets.map((r) =>
+    mapRevSet(r, revArtifactIds.get(r.artifactRevisionId) ?? null),
+  );
+  return mapped;
+}
+
+function mapRevSet(
+  row: {
+    revsetId: string;
+    threadId: string;
+    version: number;
+    artifactRevisionId: string;
+    authorId: string;
+    createdAt: Date;
+    summary: string | null;
+  },
+  artifactId: string | null,
+): RevSetRow {
+  return {
+    revset_id: row.revsetId,
+    thread_id: row.threadId,
+    version: row.version,
+    artifact_revision_id: row.artifactRevisionId,
+    artifact_id: artifactId,
+    author_id: row.authorId,
+    created_at: row.createdAt.toISOString(),
+    summary: row.summary,
+  };
+}
+
+async function resolveRevSetArtifactIds(
+  revisionIds: string[],
+): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  if (revisionIds.length === 0) return map;
+  const revs = await getPrisma().artifactRevision.findMany({
+    where: { revisionId: { in: revisionIds } },
+    select: { revisionId: true, artifactId: true },
+  });
+  for (const r of revs) map.set(r.revisionId, r.artifactId);
+  return map;
+}
+
+export async function listRevSets(threadId: string): Promise<RevSetRow[] | null> {
+  const thread = await getPrisma().thread.findUnique({
+    where: { threadId },
+    select: { threadId: true },
+  });
+  if (!thread) return null;
+  const rows = await getPrisma().revSet.findMany({
+    where: { threadId },
+    orderBy: { version: "asc" },
+  });
+  const artifactIds = await resolveRevSetArtifactIds(
+    rows.map((r) => r.artifactRevisionId),
+  );
+  return rows.map((r) =>
+    mapRevSet(r, artifactIds.get(r.artifactRevisionId) ?? null),
+  );
+}
+
+export type PromoteThreadError =
+  | { code: "not_found" }
+  | { code: "not_open"; state: string }
+  | { code: "wrapper_required"; artifact_ids: string[] }
+  | { code: "no_artifact_target" }
+  | { code: "artifact_missing"; artifact_id: string }
+  | { code: "merge_mismatch"; merge_artifact_id: string; artifact_ids: string[] };
+
+/**
+ * Promote an open discussion thread to a leaf RFC (1:1 merge artifact).
+ * Multi-artifact targets require wrapper + sub-RFCs (not implemented this cut).
+ */
+export async function promoteThreadToRfc(input: {
+  thread_id: string;
+  merge_artifact_id?: string;
+  author_id?: string;
+}): Promise<{ ok: true; thread: ThreadRow } | { ok: false; error: PromoteThreadError }> {
+  const prisma = getPrisma();
+  const row = await prisma.thread.findUnique({
+    where: { threadId: input.thread_id },
+    include: { targets: true },
+  });
+  if (!row) return { ok: false, error: { code: "not_found" } };
+  if (row.state !== "open") {
+    return { ok: false, error: { code: "not_open", state: row.state } };
+  }
+
+  const artifactTargets = row.targets
+    .filter((t) => t.targetKind === "artifact")
+    .map((t) => t.targetId);
+  const uniqueArtifacts = [...new Set(artifactTargets)];
+
+  if (uniqueArtifacts.length === 0 && !input.merge_artifact_id) {
+    return { ok: false, error: { code: "no_artifact_target" } };
+  }
+  if (uniqueArtifacts.length > 1 && !input.merge_artifact_id) {
+    return {
+      ok: false,
+      error: { code: "wrapper_required", artifact_ids: uniqueArtifacts },
+    };
+  }
+
+  const mergeId = input.merge_artifact_id ?? uniqueArtifacts[0]!;
+  if (uniqueArtifacts.length > 1 && !uniqueArtifacts.includes(mergeId)) {
+    return {
+      ok: false,
+      error: {
+        code: "merge_mismatch",
+        merge_artifact_id: mergeId,
+        artifact_ids: uniqueArtifacts,
+      },
+    };
+  }
+  // Even with explicit merge_artifact_id, multi-artifact still needs wrapper.
+  if (uniqueArtifacts.length > 1) {
+    return {
+      ok: false,
+      error: { code: "wrapper_required", artifact_ids: uniqueArtifacts },
+    };
+  }
+
+  const artifact = await prisma.artifact.findUnique({
+    where: { artifactId: mergeId },
+  });
+  if (!artifact) {
+    return { ok: false, error: { code: "artifact_missing", artifact_id: mergeId } };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.thread.update({
+      where: { threadId: input.thread_id },
+      data: {
+        state: "rfc",
+        mergeArtifactId: mergeId,
+      },
+    });
+    // Ensure artifact target exists for the merge leaf.
+    const hasTarget = row.targets.some(
+      (t) => t.targetKind === "artifact" && t.targetId === mergeId,
+    );
+    if (!hasTarget) {
+      await tx.threadTarget.create({
+        data: {
+          threadId: input.thread_id,
+          targetKind: "artifact",
+          targetId: mergeId,
+        },
+      });
+    }
+    await tx.threadPost.create({
+      data: {
+        postId: crypto.randomUUID(),
+        threadId: input.thread_id,
+        authorId: input.author_id ?? "system",
+        type: "comment",
+        body: `Promoted to leaf RFC (merge → ${mergeId}). RevSets may now propose ArtifactRevisions.`,
+        createdAt: new Date(),
+      },
+    });
+  });
+
+  const thread = await getThread(input.thread_id);
+  if (!thread) return { ok: false, error: { code: "not_found" } };
+  return { ok: true, thread };
+}
+
+export type CreateRevSetError =
+  | { code: "not_found" }
+  | { code: "not_leaf_rfc"; state: string; merge_artifact_id: string | null }
+  | { code: "artifact_missing"; artifact_id: string }
+  | { code: "content_required" };
+
+/**
+ * Attach a RevSet to a leaf RFC. Creates a proposed ArtifactRevision
+ * (does not change current_revision_id / Section sync until merge).
+ */
+export async function createRevSet(input: {
+  thread_id: string;
+  author_id: string;
+  summary?: string | null;
+  content_json?: unknown;
+  /** Optional existing revision; otherwise a new proposal revision is created. */
+  artifact_revision_id?: string;
+  revset_id?: string;
+}): Promise<{ ok: true; revset: RevSetRow } | { ok: false; error: CreateRevSetError }> {
+  const prisma = getPrisma();
+  const thread = await prisma.thread.findUnique({
+    where: { threadId: input.thread_id },
+  });
+  if (!thread) return { ok: false, error: { code: "not_found" } };
+  if (thread.state !== "rfc" || !thread.mergeArtifactId) {
+    return {
+      ok: false,
+      error: {
+        code: "not_leaf_rfc",
+        state: thread.state,
+        merge_artifact_id: thread.mergeArtifactId,
+      },
+    };
+  }
+
+  const mergeArtifactId = thread.mergeArtifactId;
+  const artifact = await prisma.artifact.findUnique({
+    where: { artifactId: mergeArtifactId },
+  });
+  if (!artifact) {
+    return {
+      ok: false,
+      error: { code: "artifact_missing", artifact_id: mergeArtifactId },
+    };
+  }
+
+  let revisionId = input.artifact_revision_id;
+  if (revisionId) {
+    const existing = await prisma.artifactRevision.findUnique({
+      where: { revisionId },
+    });
+    if (!existing || existing.artifactId !== mergeArtifactId) {
+      return {
+        ok: false,
+        error: { code: "artifact_missing", artifact_id: mergeArtifactId },
+      };
+    }
+  } else {
+    if (input.content_json === undefined) {
+      return { ok: false, error: { code: "content_required" } };
+    }
+    revisionId = crypto.randomUUID();
+    await prisma.artifactRevision.create({
+      data: {
+        revisionId,
+        artifactId: mergeArtifactId,
+        parentRevisionId: artifact.currentRevisionId,
+        createdAt: new Date(),
+        author: input.author_id,
+        contentJson: input.content_json as object,
+      },
+    });
+    // Intentionally skip Section sync — proposal is not current until merge.
+  }
+
+  const maxVersion = await prisma.revSet.aggregate({
+    where: { threadId: input.thread_id },
+    _max: { version: true },
+  });
+  const version = (maxVersion._max.version ?? 0) + 1;
+
+  const row = await prisma.revSet.create({
+    data: {
+      revsetId: input.revset_id ?? crypto.randomUUID(),
+      threadId: input.thread_id,
+      version,
+      artifactRevisionId: revisionId!,
+      authorId: input.author_id,
+      createdAt: new Date(),
+      summary: input.summary ?? null,
+    },
+  });
+
+  return { ok: true, revset: mapRevSet(row, mergeArtifactId) };
 }
 
 export async function createThreadPost(input: {

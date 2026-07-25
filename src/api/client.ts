@@ -7,6 +7,7 @@ import type {
   DossierRow,
   PageRevisionRow,
   PageRow,
+  RevSetRow,
   SectionRow,
   ThreadPostRow,
   ThreadRow,
@@ -251,6 +252,42 @@ export async function createThreadPost(
     body: JSON.stringify(post),
   });
   return handleResponse<ThreadPostRow>(response);
+}
+
+/** Promote open thread → leaf RFC (1:1 merge artifact). */
+export async function promoteThread(
+  threadId: string,
+  body?: { merge_artifact_id?: string; author_id?: string },
+): Promise<ThreadRow> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/promote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body ?? {}),
+  });
+  return handleResponse<ThreadRow>(response);
+}
+
+export async function getThreadRevSets(threadId: string): Promise<RevSetRow[]> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/revsets`);
+  return handleResponse<RevSetRow[]>(response);
+}
+
+export async function createThreadRevSet(
+  threadId: string,
+  body: {
+    author_id: string;
+    summary?: string | null;
+    content_json?: unknown;
+    artifact_revision_id?: string;
+    revset_id?: string;
+  },
+): Promise<RevSetRow> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/revsets`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<RevSetRow>(response);
 }
 
 export async function getAttributions(): Promise<AttributionRegistry> {

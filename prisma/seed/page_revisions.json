@@ -8217,6 +8217,148 @@
     "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
   },
   {
+    "revision_id": "rev-us-voter-reg-rfc-1",
+    "page_id": "us-voter-reg",
+    "parent_revision_id": "rev-us-voter-reg-1",
+    "created_at": "2026-07-12T11:00:00.000Z",
+    "author": "user-alice",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-vr-h1",
+        "children": [
+          {
+            "text": "Voter Registration Procedures"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p1",
+        "children": [
+          {
+            "text": "Step-by-step workflows for registering voters across all 50 states, including ID requirements, deadlines, and explicit routing to provisional handling when ID is missing."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h2",
+        "children": [
+          {
+            "text": "Baseline intake"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p2",
+        "children": [
+          {
+            "text": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdiction checklist before creating a registration record."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h3",
+        "children": [
+          {
+            "text": "Deadlines"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p3",
+        "children": [
+          {
+            "text": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day lane documented under Polling Place Operations."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h4",
+        "children": [
+          {
+            "text": "ID requirements"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p4",
+        "children": [
+          {
+            "text": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a ballot."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-vr-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-vr-h1",
+        "text_preview": "Voter Registration Procedures"
+      },
+      {
+        "block_id": "us-vr-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-vr-p1-rfc1",
+        "text_preview": "Step-by-step workflows for registering voters across all 50 states, including ID requirements, deadl"
+      },
+      {
+        "block_id": "us-vr-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-vr-h2",
+        "text_preview": "Baseline intake"
+      },
+      {
+        "block_id": "us-vr-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-vr-p2",
+        "text_preview": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdict"
+      },
+      {
+        "block_id": "us-vr-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-vr-h3",
+        "text_preview": "Deadlines"
+      },
+      {
+        "block_id": "us-vr-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-vr-p3",
+        "text_preview": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day l"
+      },
+      {
+        "block_id": "us-vr-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-vr-h4",
+        "text_preview": "ID requirements"
+      },
+      {
+        "block_id": "us-vr-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-vr-p4",
+        "text_preview": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-voter-reg-rfc-1",
+    "schema_version": 1,
+    "note": "Leaf RFC RevSet v1 proposal (not current until merge)"
+  },
+  {
     "revision_id": "rev-us-polling-1",
     "page_id": "us-polling",
     "parent_revision_id": null,
@@ -8442,7 +8584,7 @@
         "id": "us-pb-h5",
         "children": [
           {
-            "text": "Critical alert — chain of custody"
+            "text": "Critical alert \u2014 chain of custody"
           }
         ]
       },
@@ -8554,7 +8696,7 @@
         "type": "h2",
         "order": 8,
         "hash": "seed-us-pb-h5",
-        "text_preview": "Critical alert — chain of custody"
+        "text_preview": "Critical alert \u2014 chain of custody"
       },
       {
         "block_id": "us-pb-p5",
@@ -9203,7 +9345,7 @@
         "id": "de-ov-p2",
         "children": [
           {
-            "text": "Provide a Manual baseline for federal election administration so Länder practice and Civic Lab Alignment claims share a common procedural reference."
+            "text": "Provide a Manual baseline for federal election administration so L\u00e4nder practice and Civic Lab Alignment claims share a common procedural reference."
           }
         ]
       },
@@ -9271,7 +9413,7 @@
         "type": "p",
         "order": 3,
         "hash": "seed-de-ov-p2",
-        "text_preview": "Provide a Manual baseline for federal election administration so Länder practice"
+        "text_preview": "Provide a Manual baseline for federal election administration so L\u00e4nder practice"
       },
       {
         "block_id": "de-ov-h3",
@@ -9381,7 +9523,7 @@
         "id": "de-bw-p4",
         "children": [
           {
-            "text": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document open Critical findings before any Manual merge that depends on disputed procedure."
+            "text": "Route electoral complaints to the competent Wahlpr\u00fcfungsverfahren path. Document open Critical findings before any Manual merge that depends on disputed procedure."
           }
         ]
       }
@@ -9441,7 +9583,7 @@
         "type": "p",
         "order": 7,
         "hash": "seed-de-bw-p4",
-        "text_preview": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document"
+        "text_preview": "Route electoral complaints to the competent Wahlpr\u00fcfungsverfahren path. Document"
       }
     ],
     "doc_root_hash": "seed-root-de-bundeswahl",

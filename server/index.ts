@@ -4,6 +4,7 @@ import { z } from "zod";
 import { bootstrapDatabase } from "./bootstrap";
 import {
   createArtifactRevision,
+  createRevSet,
   createThreadPost,
   getArtifact,
   getAttributions,
@@ -20,8 +21,10 @@ import {
   listArtifactsByDossier,
   listCollections,
   listDossiers,
+  listRevSets,
   listSections,
   listThreads,
+  promoteThreadToRfc,
   putAttributions,
   putTerms,
   setPrisma,
@@ -395,6 +398,74 @@ app.post("/api/threads/:threadId/posts", async (req, res) => {
     return;
   }
   res.status(201).json(created);
+});
+
+const promoteBodySchema = z.object({
+  merge_artifact_id: z.string().min(1).optional(),
+  author_id: z.string().min(1).optional(),
+});
+
+app.post("/api/threads/:threadId/promote", async (req, res) => {
+  const parsed = promoteBodySchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid promote payload" });
+    return;
+  }
+  const result = await promoteThreadToRfc({
+    thread_id: req.params.threadId,
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "wrapper_required"
+          ? 409
+          : 400;
+    res.status(status).json({ error: result.error });
+    return;
+  }
+  res.json(result.thread);
+});
+
+app.get("/api/threads/:threadId/revsets", async (req, res) => {
+  const revsets = await listRevSets(req.params.threadId);
+  if (!revsets) {
+    res.status(404).json({ error: "Thread not found" });
+    return;
+  }
+  res.json(revsets);
+});
+
+const revSetBodySchema = z
+  .object({
+    author_id: z.string().min(1),
+    summary: z.string().nullable().optional(),
+    content_json: z.unknown().optional(),
+    artifact_revision_id: z.string().min(1).optional(),
+    revset_id: z.string().min(1).optional(),
+  })
+  .refine(
+    (b) => b.artifact_revision_id != null || b.content_json !== undefined,
+    { message: "content_json or artifact_revision_id required" },
+  );
+
+app.post("/api/threads/:threadId/revsets", async (req, res) => {
+  const parsed = revSetBodySchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid RevSet payload" });
+    return;
+  }
+  const result = await createRevSet({
+    thread_id: req.params.threadId,
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status = result.error.code === "not_found" ? 404 : 400;
+    res.status(status).json({ error: result.error });
+    return;
+  }
+  res.status(201).json(result.revset);
 });
 
 async function main() {

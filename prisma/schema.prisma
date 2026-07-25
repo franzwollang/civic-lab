@@ -71,11 +71,30 @@ model Thread {
   childThreads    Thread[]       @relation("ThreadTree")
   posts           ThreadPost[]
   targets         ThreadTarget[]
+  revSets         RevSet[]
 
   @@index([homeDossierId])
   @@index([state])
   @@index([parentThreadId])
   @@map("threads")
+}
+
+/// CONCEPT §3.3 / Appendix A — proposed ArtifactRevision on a merging (leaf) RFC.
+/// Does not update Artifact.current_revision_id until merge (authority later).
+model RevSet {
+  revsetId            String   @id @map("revset_id")
+  threadId            String   @map("thread_id")
+  version             Int
+  artifactRevisionId  String   @map("artifact_revision_id")
+  authorId            String   @map("author_id")
+  createdAt           DateTime @map("created_at")
+  summary             String?
+  thread              Thread   @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+
+  @@unique([threadId, version])
+  @@index([threadId])
+  @@index([artifactRevisionId])
+  @@map("revsets")
 }
 
 /// CONCEPT §3 — timeline posts (typed later: comment / finding / mitigation).
