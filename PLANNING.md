@@ -110,4 +110,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: **M4** Corpus IA (or §A Editor MVP gaps polish in parallel).
+- Next: **M5** Threads + RFC (or §A Editor MVP gaps polish in parallel).
