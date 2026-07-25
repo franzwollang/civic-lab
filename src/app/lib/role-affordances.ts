@@ -16,7 +16,8 @@ export type RoleCapability =
   | "sign_ar_manual"
   | "sign_ar_canon"
   | "create_findings"
-  | "adjudicate_claims";
+  | "adjudicate_claims"
+  | "board_hide";
 
 const CAPABILITY_LABEL: Record<RoleCapability, string> = {
   discuss: "Discuss / reply",
@@ -29,6 +30,7 @@ const CAPABILITY_LABEL: Record<RoleCapability, string> = {
   sign_ar_canon: "Sign Accepted Risk (Canon)",
   create_findings: "Create / promote Findings",
   adjudicate_claims: "Adjudicate claims",
+  board_hide: "Hide accounts from boards (abuse)",
 };
 
 const ROLE_CAPABILITIES: Record<PrototypeRole, readonly RoleCapability[]> = {
@@ -55,6 +57,7 @@ const ROLE_CAPABILITIES: Record<PrototypeRole, readonly RoleCapability[]> = {
     "merge_canon_restricted",
     "sign_ar_manual",
     "sign_ar_canon",
+    "board_hide",
   ],
   red_team: ["discuss", "author_claims", "propose_revsets", "create_findings"],
   adjudicator: [
@@ -127,7 +130,7 @@ export function summarizeRoleAffordances(
   const role_labels = user.roles.map(roleShortLabel);
   const headline =
     primary === "owner"
-      ? "Owner — restricted Canon merge + meta-veto"
+      ? "Owner — restricted Canon merge + board-hide + meta-veto"
       : primary === "editor"
         ? "Editor — routine Canon merge"
         : primary === "steward"

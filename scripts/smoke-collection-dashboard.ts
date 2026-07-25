@@ -93,6 +93,12 @@ async function main() {
     if (canon.reputation.n < 1) {
       throw new Error("canon reputation should include seeded signals");
     }
+    if (!Array.isArray(canon.board_hides)) {
+      throw new Error("dashboard must expose board_hides array");
+    }
+    if (!Array.isArray(canon.reputation.hidden_user_ids)) {
+      throw new Error("reputation.hidden_user_ids missing");
+    }
 
     const electoral = canon.dossiers.find((d) => d.dossier_id === "electoral-1");
     if (!electoral || electoral.health !== "seeded") {

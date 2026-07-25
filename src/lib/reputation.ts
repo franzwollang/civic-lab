@@ -117,14 +117,23 @@ export function advisoryScoreFor(counts: ReputationSignalCounts): number {
 /**
  * Aggregate signal events into a Collection-scoped advisory board.
  * Contributors sorted by advisory_score desc, then signal_event_count, then user_id.
+ * Optional `hiddenUserIds` excludes Owner board-hides (CONCEPT §5.9).
  */
 export function computeReputationBoard(
   events: ReputationSignalEvent[],
+  opts?: { hiddenUserIds?: ReadonlySet<string> | readonly string[] },
 ): ReputationBoard {
+  const hidden = opts?.hiddenUserIds
+    ? opts.hiddenUserIds instanceof Set
+      ? opts.hiddenUserIds
+      : new Set(opts.hiddenUserIds)
+    : null;
+
   const byUser = new Map<string, ReputationSignalCounts>();
 
   for (const ev of events) {
     if (!ev.user_id) continue;
+    if (hidden?.has(ev.user_id)) continue;
     let counts = byUser.get(ev.user_id);
     if (!counts) {
       counts = emptyCounts();
@@ -161,7 +170,9 @@ export function computeReputationBoard(
     return a.user_id.localeCompare(b.user_id);
   });
 
-  const n = events.filter((e) => Boolean(e.user_id)).length;
+  const n = events.filter(
+    (e) => Boolean(e.user_id) && !(hidden?.has(e.user_id) ?? false),
+  ).length;
   const public_board_eligible = n >= REPUTATION_BOARD_MIN_N;
 
   return {

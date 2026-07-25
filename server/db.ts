@@ -47,7 +47,13 @@ import {
   computeReputationBoard,
   type ReputationSignalEvent,
 } from "../src/lib/reputation";
+import {
+  validateBoardHide,
+  validateBoardHideLift,
+  type AuditAction,
+} from "../src/lib/boardHide";
 import { getPrototypeUser } from "../src/app/lib/prototype-users";
+import { randomUUID } from "crypto";
 import {
   artifactHref,
   claimHref,
@@ -75,7 +81,6 @@ import {
 } from "../src/lib/candidateFindings";
 import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
-import { randomUUID } from "crypto";
 
 let prisma: PrismaClient | null = null;
 
@@ -221,6 +226,30 @@ export type CollectionReputationBoard = {
   public_board_eligible: boolean;
   contributors: ReputationContributorRow[];
   note: string;
+  /** Active Owner board-hides applied to this board (CONCEPT §5.9). */
+  hidden_user_ids: string[];
+};
+
+/** CONCEPT §5.9 / §9.4 — active board-hide row. */
+export type BoardHideRow = {
+  hide_id: string;
+  subject_user_id: string;
+  subject_display_name: string | null;
+  hidden_by: string;
+  reason: string;
+  created_at: string;
+  lifted_at: string | null;
+  lifted_by: string | null;
+};
+
+/** CONCEPT §9.4 — append-only audit entry. */
+export type AuditLogRow = {
+  audit_id: string;
+  action: string;
+  actor_id: string;
+  subject_id: string | null;
+  payload: unknown;
+  created_at: string;
 };
 
 export type CollectionDashboard = {
@@ -259,6 +288,8 @@ export type CollectionDashboard = {
   };
   /** CONCEPT §9.2 / §5.9 — advisory non-scorable contribution board. */
   reputation: CollectionReputationBoard;
+  /** CONCEPT §5.9 — active Owner board-hides (global; apply to all boards). */
+  board_hides: BoardHideRow[];
 };
 
 /** CONCEPT §2.3 Section wire shape. */
@@ -700,10 +731,15 @@ export async function getCollectionDashboard(
     .length;
   const recent_count = collectionFindings.length;
 
+  const activeHides = await listActiveBoardHides();
+  const hiddenUserIds = activeHides.map((h) => h.subject_user_id);
   const reputationEvents = await collectReputationSignals(dossierIds);
-  const reputationBoard = computeReputationBoard(reputationEvents);
+  const reputationBoard = computeReputationBoard(reputationEvents, {
+    hiddenUserIds,
+  });
   const reputation: CollectionReputationBoard = {
     ...reputationBoard,
+    hidden_user_ids: hiddenUserIds,
     contributors: reputationBoard.contributors.map((c) => ({
       ...c,
       display_name: getPrototypeUser(c.user_id)?.display_name ?? null,
@@ -732,6 +768,7 @@ export async function getCollectionDashboard(
       recent_count,
     },
     reputation,
+    board_hides: activeHides,
   };
 }
 
@@ -3370,5 +3407,220 @@ export async function promoteCandidateFinding(
     finding: mapFinding(created.finding),
     candidate: mapCandidateFinding(created.updatedCandidate),
   };
+}
+
+// —— CONCEPT §5.9 / §9.4 board-hide + append-only audit ——————————————
+
+function mapBoardHide(row: {
+  hideId: string;
+  subjectUserId: string;
+  hiddenBy: string;
+  reason: string;
+  createdAt: Date;
+  liftedAt: Date | null;
+  liftedBy: string | null;
+}): BoardHideRow {
+  return {
+    hide_id: row.hideId,
+    subject_user_id: row.subjectUserId,
+    subject_display_name:
+      getPrototypeUser(row.subjectUserId)?.display_name ?? null,
+    hidden_by: row.hiddenBy,
+    reason: row.reason,
+    created_at: row.createdAt.toISOString(),
+    lifted_at: row.liftedAt?.toISOString() ?? null,
+    lifted_by: row.liftedBy,
+  };
+}
+
+function mapAuditLog(row: {
+  auditId: string;
+  action: string;
+  actorId: string;
+  subjectId: string | null;
+  payload: unknown;
+  createdAt: Date;
+}): AuditLogRow {
+  return {
+    audit_id: row.auditId,
+    action: row.action,
+    actor_id: row.actorId,
+    subject_id: row.subjectId,
+    payload: row.payload,
+    created_at: row.createdAt.toISOString(),
+  };
+}
+
+/** Append-only audit insert (never update/delete). */
+export async function appendAuditLog(input: {
+  action: AuditAction | string;
+  actor_id: string;
+  subject_id?: string | null;
+  payload?: unknown;
+}): Promise<AuditLogRow> {
+  const row = await getPrisma().auditLog.create({
+    data: {
+      auditId: `audit-${randomUUID()}`,
+      action: input.action,
+      actorId: input.actor_id,
+      subjectId: input.subject_id ?? null,
+      payload: (input.payload ?? {}) as object,
+      createdAt: new Date(),
+    },
+  });
+  return mapAuditLog(row);
+}
+
+export async function listAuditLogs(opts?: {
+  action?: string;
+  limit?: number;
+}): Promise<AuditLogRow[]> {
+  const limit = Math.min(Math.max(opts?.limit ?? 50, 1), 200);
+  const rows = await getPrisma().auditLog.findMany({
+    where: opts?.action ? { action: opts.action } : undefined,
+    orderBy: { createdAt: "desc" },
+    take: limit,
+  });
+  return rows.map(mapAuditLog);
+}
+
+export async function listActiveBoardHides(): Promise<BoardHideRow[]> {
+  const rows = await getPrisma().boardHide.findMany({
+    where: { liftedAt: null },
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapBoardHide);
+}
+
+export async function listBoardHides(opts?: {
+  include_lifted?: boolean;
+}): Promise<BoardHideRow[]> {
+  const rows = await getPrisma().boardHide.findMany({
+    where: opts?.include_lifted ? undefined : { liftedAt: null },
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapBoardHide);
+}
+
+export type BoardHideMutationError =
+  | { code: "not_owner"; message: string }
+  | { code: "unknown_user"; message: string }
+  | { code: "cannot_hide_self"; message: string }
+  | { code: "already_hidden"; message: string }
+  | { code: "not_hidden"; message: string }
+  | { code: "invalid_input"; message: string };
+
+export async function hideUserFromBoards(input: {
+  actor_id: string;
+  subject_user_id: string;
+  reason: string;
+}): Promise<
+  | { ok: true; hide: BoardHideRow; audit: AuditLogRow }
+  | { ok: false; error: BoardHideMutationError }
+> {
+  const check = validateBoardHide({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const reason = input.reason.trim();
+  if (!reason) {
+    return {
+      ok: false,
+      error: { code: "invalid_input", message: "Reason is required" },
+    };
+  }
+
+  const existing = await getPrisma().boardHide.findFirst({
+    where: { subjectUserId: input.subject_user_id, liftedAt: null },
+  });
+  if (existing) {
+    return {
+      ok: false,
+      error: {
+        code: "already_hidden",
+        message: `User ${input.subject_user_id} is already hidden from boards`,
+      },
+    };
+  }
+
+  const hideId = `board-hide-${randomUUID()}`;
+  const createdAt = new Date();
+  const hide = await getPrisma().boardHide.create({
+    data: {
+      hideId,
+      subjectUserId: input.subject_user_id,
+      hiddenBy: input.actor_id,
+      reason,
+      createdAt,
+    },
+  });
+
+  const audit = await appendAuditLog({
+    action: "board_hide",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: {
+      hide_id: hideId,
+      reason,
+    },
+  });
+
+  return { ok: true, hide: mapBoardHide(hide), audit };
+}
+
+export async function liftBoardHide(input: {
+  actor_id: string;
+  subject_user_id: string;
+  note?: string | null;
+}): Promise<
+  | { ok: true; hide: BoardHideRow; audit: AuditLogRow }
+  | { ok: false; error: BoardHideMutationError }
+> {
+  const check = validateBoardHideLift({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const existing = await getPrisma().boardHide.findFirst({
+    where: { subjectUserId: input.subject_user_id, liftedAt: null },
+  });
+  if (!existing) {
+    return {
+      ok: false,
+      error: {
+        code: "not_hidden",
+        message: `User ${input.subject_user_id} is not currently hidden from boards`,
+      },
+    };
+  }
+
+  const liftedAt = new Date();
+  const hide = await getPrisma().boardHide.update({
+    where: { hideId: existing.hideId },
+    data: {
+      liftedAt,
+      liftedBy: input.actor_id,
+    },
+  });
+
+  const audit = await appendAuditLog({
+    action: "board_hide_lift",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: {
+      hide_id: existing.hideId,
+      note: input.note ?? null,
+      original_reason: existing.reason,
+    },
+  });
+
+  return { ok: true, hide: mapBoardHide(hide), audit };
 }
 

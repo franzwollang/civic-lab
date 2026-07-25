@@ -7,18 +7,27 @@ import {
   ShieldAlert,
   Layers,
   TrendingUp,
+  EyeOff,
 } from "lucide-react";
 import { Header } from "../components/header";
 import { DossierCard } from "../components/cards";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { getCollectionDashboard } from "../../api/client";
+import {
+  getCollectionDashboard,
+  hideUserFromBoards,
+  liftBoardHide,
+} from "../../api/client";
 import type { CollectionDashboard } from "../../doc/types";
 import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
 import {
   areaKindFromCollection,
   buildHierarchyCrumbs,
 } from "../lib/object-nav";
+import { useActingUserOptional } from "../lib/acting-user";
+import { userHasCapability } from "../lib/role-affordances";
+import { PROTOTYPE_USERS } from "../lib/prototype-users";
+import { ActingAsHint } from "../components/acting-as-hint";
 
 type LoadState =
   | { status: "loading" }
@@ -37,6 +46,7 @@ export function CollectionSplash({
   const { collectionId: paramId } = useParams();
   const collectionId = collectionIdProp || paramId || "";
   const [state, setState] = useState<LoadState>({ status: "loading" });
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,7 +73,7 @@ export function CollectionSplash({
     return () => {
       cancelled = true;
     };
-  }, [collectionId]);
+  }, [collectionId, reloadToken]);
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -87,7 +97,10 @@ export function CollectionSplash({
           </Card>
         )}
         {state.status === "ready" && (
-          <CollectionDashboardView dashboard={state.dashboard} />
+          <CollectionDashboardView
+            dashboard={state.dashboard}
+            onRefresh={() => setReloadToken((n) => n + 1)}
+          />
         )}
       </main>
     </div>
@@ -96,8 +109,10 @@ export function CollectionSplash({
 
 function CollectionDashboardView({
   dashboard,
+  onRefresh,
 }: {
   dashboard: CollectionDashboard;
+  onRefresh: () => void;
 }) {
   const { collection, stats, dossiers } = dashboard;
   const isManual = Boolean(collection.country_code);
@@ -245,7 +260,11 @@ function CollectionDashboardView({
               Advisory reputation
             </h2>
           </div>
-          <ReputationPanel board={dashboard.reputation} />
+          <ReputationPanel
+            board={dashboard.reputation}
+            boardHides={dashboard.board_hides}
+            onRefresh={onRefresh}
+          />
         </Card>
 
         {/* Manuals-only panels keep chrome slot even when deferred */}
@@ -390,62 +409,210 @@ function ClaimMetricsPanel({
 
 function ReputationPanel({
   board,
+  boardHides,
+  onRefresh,
 }: {
   board: CollectionDashboard["reputation"];
+  boardHides: CollectionDashboard["board_hides"];
+  onRefresh: () => void;
 }) {
-  if (board.n === 0 || board.contributors.length === 0) {
-    return (
-      <p className="text-sm text-neutral-500">
-        No non-scorable contribution signals in this Collection yet.
-      </p>
-    );
+  const acting = useActingUserOptional();
+  const canHide = userHasCapability(acting.user, "board_hide");
+  const [subjectId, setSubjectId] = useState("");
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const hideableUsers = PROTOTYPE_USERS.filter(
+    (u) =>
+      u.id !== acting.userId &&
+      !boardHides.some((h) => h.subject_user_id === u.id),
+  );
+
+  async function onHide() {
+    if (!acting.userId || !subjectId || !reason.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await hideUserFromBoards({
+        actor_id: acting.userId,
+        subject_user_id: subjectId,
+        reason: reason.trim(),
+      });
+      setSubjectId("");
+      setReason("");
+      onRefresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Hide failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onLift(subject_user_id: string) {
+    if (!acting.userId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await liftBoardHide({
+        actor_id: acting.userId,
+        subject_user_id,
+        note: "Lifted from Collection dashboard",
+      });
+      onRefresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Lift failed");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <div className="space-y-3 text-sm text-neutral-700">
-      <p className="text-xs text-neutral-500">{board.note}</p>
-      <ul className="space-y-2">
-        {board.contributors.slice(0, 8).map((c) => (
-          <li
-            key={c.user_id}
-            className="flex flex-wrap items-baseline justify-between gap-2 border-b border-neutral-100 pb-2 last:border-0"
-          >
-            <div>
-              <span className="font-medium text-neutral-900">
-                {c.display_name ?? c.user_id}
-              </span>
-              <span className="ml-2 text-xs text-neutral-500">
-                score {c.advisory_score} · {c.signal_event_count} signals
-              </span>
-            </div>
-            <span className="text-xs text-neutral-600">
-              {[
-                c.signals.merged_revsets
-                  ? `${c.signals.merged_revsets} merged RevSet`
-                  : null,
-                c.signals.review_labor
-                  ? `${c.signals.review_labor} review`
-                  : null,
-                c.signals.red_team_findings
-                  ? `${c.signals.red_team_findings} finding`
-                  : null,
-                c.signals.adjudications
-                  ? `${c.signals.adjudications} adjudication`
-                  : null,
-                c.signals.accepted_risk_signs
-                  ? `${c.signals.accepted_risk_signs} AR sign`
-                  : null,
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-            </span>
-          </li>
-        ))}
-      </ul>
-      {!board.public_board_eligible ? (
-        <p className="text-xs text-neutral-500">
-          Public leaderboard chrome stays preview-only until n ≥ 20 (anti-gaming).
+      {board.n === 0 || board.contributors.length === 0 ? (
+        <p className="text-neutral-500">
+          No non-scorable contribution signals in this Collection yet
+          {board.hidden_user_ids.length > 0
+            ? " (some accounts are Owner-hidden)."
+            : "."}
         </p>
+      ) : (
+        <>
+          <p className="text-xs text-neutral-500">{board.note}</p>
+          <ul className="space-y-2">
+            {board.contributors.slice(0, 8).map((c) => (
+              <li
+                key={c.user_id}
+                className="flex flex-wrap items-baseline justify-between gap-2 border-b border-neutral-100 pb-2 last:border-0"
+              >
+                <div>
+                  <span className="font-medium text-neutral-900">
+                    {c.display_name ?? c.user_id}
+                  </span>
+                  <span className="ml-2 text-xs text-neutral-500">
+                    score {c.advisory_score} · {c.signal_event_count} signals
+                  </span>
+                </div>
+                <span className="text-xs text-neutral-600">
+                  {[
+                    c.signals.merged_revsets
+                      ? `${c.signals.merged_revsets} merged RevSet`
+                      : null,
+                    c.signals.review_labor
+                      ? `${c.signals.review_labor} review`
+                      : null,
+                    c.signals.red_team_findings
+                      ? `${c.signals.red_team_findings} finding`
+                      : null,
+                    c.signals.adjudications
+                      ? `${c.signals.adjudications} adjudication`
+                      : null,
+                    c.signals.accepted_risk_signs
+                      ? `${c.signals.accepted_risk_signs} AR sign`
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {!board.public_board_eligible ? (
+            <p className="text-xs text-neutral-500">
+              Public leaderboard chrome stays preview-only until n ≥ 20
+              (anti-gaming).
+            </p>
+          ) : null}
+        </>
+      )}
+
+      {boardHides.length > 0 ? (
+        <div className="border-t border-neutral-100 pt-3">
+          <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-wider text-neutral-500">
+            <EyeOff className="h-3.5 w-3.5" />
+            Hidden from boards
+          </div>
+          <ul className="space-y-2">
+            {boardHides.map((h) => (
+              <li
+                key={h.hide_id}
+                className="flex flex-wrap items-center justify-between gap-2 text-xs"
+              >
+                <span>
+                  <span className="font-medium text-neutral-800">
+                    {h.subject_display_name ?? h.subject_user_id}
+                  </span>
+                  <span className="ml-2 text-neutral-500">— {h.reason}</span>
+                </span>
+                {canHide ? (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void onLift(h.subject_user_id)}
+                    className="underline text-neutral-700 disabled:opacity-50"
+                  >
+                    Lift hide
+                  </button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {canHide ? (
+        <div className="space-y-2 border-t border-neutral-100 pt-3">
+          <ActingAsHint
+            requireCapability="board_hide"
+            capabilityLabel="hide accounts from boards"
+          />
+          <p className="text-xs text-neutral-500">
+            Owner board-hide (CONCEPT §5.9) — audit-logged; does not change
+            permissions.
+          </p>
+          <div className="flex flex-wrap items-end gap-2">
+            <label className="text-xs text-neutral-600">
+              Account
+              <select
+                className="mt-1 block rounded border border-neutral-300 bg-white px-2 py-1 text-sm"
+                value={subjectId}
+                onChange={(e) => setSubjectId(e.target.value)}
+                data-testid="board-hide-subject"
+              >
+                <option value="">Select…</option>
+                {hideableUsers.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.display_name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="min-w-[12rem] flex-1 text-xs text-neutral-600">
+              Reason
+              <input
+                className="mt-1 block w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Abuse / gaming"
+                data-testid="board-hide-reason"
+              />
+            </label>
+            <button
+              type="button"
+              disabled={busy || !subjectId || !reason.trim()}
+              onClick={() => void onHide()}
+              className="rounded bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+              data-testid="board-hide-submit"
+            >
+              Hide from boards
+            </button>
+          </div>
+          {error ? (
+            <p className="text-xs text-red-700" role="alert">
+              {error}
+            </p>
+          ) : null}
+        </div>
       ) : null}
     </div>
   );

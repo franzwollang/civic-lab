@@ -32,6 +32,8 @@ import {
   listArtifactRevisions,
   listArtifacts,
   listArtifactsByDossier,
+  listAuditLogs,
+  listBoardHides,
   listCandidateFindings,
   listClaims,
   listCollections,
@@ -40,6 +42,8 @@ import {
   listRevSets,
   listSections,
   listThreads,
+  hideUserFromBoards,
+  liftBoardHide,
   promoteCandidateFinding,
   promoteThreadToRfc,
   putAttributions,
@@ -361,6 +365,19 @@ const acceptedRiskBodySchema = z.object({
   reopen_triggers: z.string().nullable().optional(),
   signer_id: z.string().min(1),
   signed_at: z.string().optional(),
+});
+
+/** CONCEPT §5.9 — Owner board-hide for abuse. */
+const boardHideBodySchema = z.object({
+  actor_id: z.string().min(1),
+  subject_user_id: z.string().min(1),
+  reason: z.string().min(1),
+});
+
+const boardHideLiftBodySchema = z.object({
+  actor_id: z.string().min(1),
+  subject_user_id: z.string().min(1),
+  note: z.string().nullable().optional(),
 });
 
 // CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
@@ -958,6 +975,68 @@ app.post("/api/claims/:claimId/adjudicate", async (c) => {
     return c.json({ error: result.error }, status);
   }
   return c.json(result.claim);
+});
+
+// M9 anti-gaming — Owner board-hide + append-only audit (CONCEPT §5.9 / §9.4)
+app.get("/api/board-hides", async (c) => {
+  const includeLifted = c.req.query("include_lifted") === "1";
+  return c.json(await listBoardHides({ include_lifted: includeLifted }));
+});
+
+app.post("/api/board-hides", async (c) => {
+  const parsed = boardHideBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid board-hide payload" }, 400);
+  }
+  const result = await hideUserFromBoards(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner" ||
+      result.error.code === "cannot_hide_self"
+        ? 403
+        : result.error.code === "already_hidden"
+          ? 409
+          : result.error.code === "unknown_user"
+            ? 404
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ hide: result.hide, audit: result.audit }, 201);
+});
+
+app.post("/api/board-hides/lift", async (c) => {
+  const parsed = boardHideLiftBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid board-hide lift payload" }, 400);
+  }
+  const result = await liftBoardHide(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "not_hidden" ||
+            result.error.code === "unknown_user"
+          ? 404
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ hide: result.hide, audit: result.audit });
+});
+
+app.get("/api/audit-logs", async (c) => {
+  const action = c.req.query("action") ?? undefined;
+  const limitRaw = c.req.query("limit");
+  const limit = limitRaw ? Number(limitRaw) : undefined;
+  return c.json(
+    await listAuditLogs({
+      action,
+      limit: Number.isFinite(limit) ? limit : undefined,
+    }),
+  );
 });
 
 async function main() {

@@ -3,6 +3,8 @@ import type {
   AreaRow,
   ArtifactRevisionRow,
   ArtifactRow,
+  AuditLogRow,
+  BoardHideRow,
   CandidateFindingRow,
   ClaimRow,
   CollectionDashboard,
@@ -562,6 +564,59 @@ export async function adjudicateClaim(
     body: JSON.stringify(body),
   });
   return handleResponse<ClaimRow>(response);
+}
+
+/** CONCEPT §5.9 — list Owner board-hides (active by default). */
+export async function getBoardHides(opts?: {
+  include_lifted?: boolean;
+}): Promise<BoardHideRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.include_lifted) params.set("include_lifted", "1");
+  const q = params.toString();
+  const response = await fetch(
+    `${API_BASE}/board-hides${q ? `?${q}` : ""}`,
+  );
+  return handleResponse<BoardHideRow[]>(response);
+}
+
+export async function hideUserFromBoards(body: {
+  actor_id: string;
+  subject_user_id: string;
+  reason: string;
+}): Promise<{ hide: BoardHideRow; audit: AuditLogRow }> {
+  const response = await fetch(`${API_BASE}/board-hides`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse(response);
+}
+
+export async function liftBoardHide(body: {
+  actor_id: string;
+  subject_user_id: string;
+  note?: string | null;
+}): Promise<{ hide: BoardHideRow; audit: AuditLogRow }> {
+  const response = await fetch(`${API_BASE}/board-hides/lift`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse(response);
+}
+
+export async function getAuditLogs(opts?: {
+  action?: string;
+  limit?: number;
+}): Promise<AuditLogRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.action) params.set("action", opts.action);
+  if (opts?.limit != null) params.set("limit", String(opts.limit));
+  const q = params.toString();
+  const response = await fetch(
+    `${API_BASE}/audit-logs${q ? `?${q}` : ""}`,
+  );
+  return handleResponse<AuditLogRow[]>(response);
 }
 
 export async function getAttributions(): Promise<AttributionRegistry> {

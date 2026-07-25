@@ -1,6 +1,6 @@
-// Civic Lab M7 — Findings + Accepted Risk + Candidate→Finding / timeline (CONCEPT §7).
-// M6 Claims retained.
-// M5 Threads + posts + flexible targets retained.
+// Civic Lab M9 — Policy (Charter, reputation, board-hide / audit).
+// M7 Findings + Accepted Risk + Candidate→Finding retained.
+// M6 Claims retained. M5 Threads + posts + flexible targets retained.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
 // Wire JSON dual-emits `artifact_id` (preferred) + `page_id` (same value).
@@ -316,6 +316,38 @@ model AttributionsRegistry {
   items   Json
 
   @@map("attributions_registry")
+}
+
+/// CONCEPT §5.9 — Owner hide of an account from boards (abuse / anti-gaming).
+/// Active when `lifted_at` is null. Global (Owner is global).
+model BoardHide {
+  hideId        String    @id @map("hide_id")
+  subjectUserId String    @map("subject_user_id")
+  hiddenBy      String    @map("hidden_by")
+  reason        String
+  createdAt     DateTime  @map("created_at")
+  liftedAt      DateTime? @map("lifted_at")
+  liftedBy      String?   @map("lifted_by")
+
+  @@index([subjectUserId])
+  @@index([liftedAt])
+  @@map("board_hides")
+}
+
+/// CONCEPT §9.4 — append-only audit log (merges, AR, adjudications, board-hide, …).
+/// Never update/delete rows in the prototype; only insert.
+model AuditLog {
+  auditId    String   @id @map("audit_id")
+  action     String
+  actorId    String   @map("actor_id")
+  subjectId  String?  @map("subject_id")
+  payload    Json     @default("{}")
+  createdAt  DateTime @map("created_at")
+
+  @@index([action])
+  @@index([actorId])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 
 /// Records that seed data was applied. Absence ⇒ empty DB ⇒ re-seed on startup.

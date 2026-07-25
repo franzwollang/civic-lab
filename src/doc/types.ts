@@ -144,6 +144,30 @@ export type CollectionReputationBoard = {
   public_board_eligible: boolean;
   contributors: ReputationContributorRow[];
   note: string;
+  /** Active Owner board-hides applied to this board (CONCEPT §5.9). */
+  hidden_user_ids: string[];
+};
+
+/** CONCEPT §5.9 / §9.4 — active board-hide row. */
+export type BoardHideRow = {
+  hide_id: string;
+  subject_user_id: string;
+  subject_display_name: string | null;
+  hidden_by: string;
+  reason: string;
+  created_at: string;
+  lifted_at: string | null;
+  lifted_by: string | null;
+};
+
+/** CONCEPT §9.4 — append-only audit entry. */
+export type AuditLogRow = {
+  audit_id: string;
+  action: string;
+  actor_id: string;
+  subject_id: string | null;
+  payload: unknown;
+  created_at: string;
 };
 
 export type CollectionDashboard = {
@@ -177,6 +201,8 @@ export type CollectionDashboard = {
   };
   /** CONCEPT §9.2 / §5.9 — advisory non-scorable contribution board. */
   reputation: CollectionReputationBoard;
+  /** CONCEPT §5.9 — active Owner board-hides (global). */
+  board_hides: BoardHideRow[];
 };
 
 /** CONCEPT §2.3 Section wire shape (persisted; synced from headings). */

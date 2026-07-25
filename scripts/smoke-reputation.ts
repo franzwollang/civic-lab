@@ -105,6 +105,12 @@ async function main() {
     if (us.reputation.public_board_eligible) {
       throw new Error("seed US board should still be preview-only (n < 20)");
     }
+    if (!Array.isArray(us.reputation.hidden_user_ids)) {
+      throw new Error("reputation.hidden_user_ids missing");
+    }
+    if (!Array.isArray(us.board_hides)) {
+      throw new Error("board_hides missing on dashboard");
+    }
 
     const alice = us.reputation.contributors.find(
       (c) => c.user_id === "user-alice",
