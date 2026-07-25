@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-25T12:20Z",
-  "turn": 33,
+  "updated_at": "2026-07-25T12:40Z",
+  "turn": 34,
   "focus": {
     "milestone": "M6",
-    "issue": "Claim resolution + adjudication scaffolding",
-    "goal": "Global adjudicators + status sets + request queue"
+    "issue": "Claim authoring UX (product surface)",
+    "goal": "Artifact/dossier claims panels + authoring UI"
   },
   "recent": [
-    "Merged PR #22 (claim legality) onto cron branch b29c",
-    "Immutable Manual lanes: create require + PATCH reject",
-    "Soft lane_soft_label composite from cross-lane claim links",
-    "smoke-immutable-lanes green; related smokes OK"
+    "Merged PR #23 (immutable lanes) onto cron branch 60df",
+    "claimAdjudication.ts: empirical/requirement status sets",
+    "Queue + adjudicate API; seed Frank adjudicator; pending NVRA claim",
+    "smoke-adjudication green"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
@@ -21,6 +21,6 @@
     "Claim authoring UX still open within M6",
     "Global impersonation chrome → M8"
   ],
-  "next_step": "Adjudication scaffolding (statuses, request queue, global adjudicators)",
+  "next_step": "Claim authoring UX on artifact/dossier surfaces (after merge #24 if fresh main)",
   "blockers": []
 }

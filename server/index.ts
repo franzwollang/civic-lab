@@ -19,6 +19,7 @@ import {
   getSection,
   getTerms,
   getThread,
+  listAdjudicationQueue,
   listAreas,
   listArtifactRevisions,
   listArtifacts,
@@ -32,6 +33,8 @@ import {
   promoteThreadToRfc,
   putAttributions,
   putTerms,
+  requestClaimAdjudication,
+  adjudicateClaim,
   setPrisma,
   updateArtifact,
 } from "./db";
@@ -628,6 +631,78 @@ app.post("/api/claims", async (req, res) => {
     return;
   }
   res.status(201).json(result.claim);
+});
+
+// M6 adjudication scaffolding (CONCEPT §8.3) — global queue + resolve
+app.get("/api/adjudication-queue", async (_req, res) => {
+  res.json(await listAdjudicationQueue());
+});
+
+const requestAdjudicationSchema = z.object({
+  author_id: z.string().min(1),
+  note: z.string().nullable().optional(),
+});
+
+app.post("/api/claims/:claimId/request-adjudication", async (req, res) => {
+  const parsed = requestAdjudicationSchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid adjudication request payload" });
+    return;
+  }
+  const result = await requestClaimAdjudication({
+    claim_id: req.params.claimId,
+    author_id: parsed.data.author_id,
+    note: parsed.data.note,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "already_queued"
+          ? 409
+          : 403;
+    res.status(status).json({ error: result.error });
+    return;
+  }
+  res.json(result.claim);
+});
+
+const adjudicateSchema = z.object({
+  author_id: z.string().min(1),
+  status: z.string().min(1),
+  rationale: z.string().min(1),
+  require_queued: z.boolean().optional(),
+});
+
+app.post("/api/claims/:claimId/adjudicate", async (req, res) => {
+  const parsed = adjudicateSchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid adjudicate payload" });
+    return;
+  }
+  const result = await adjudicateClaim({
+    claim_id: req.params.claimId,
+    author_id: parsed.data.author_id,
+    status: parsed.data.status,
+    rationale: parsed.data.rationale,
+    require_queued: parsed.data.require_queued,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "not_adjudicator" ||
+            result.error.code === "not_queued"
+          ? 403
+          : result.error.code === "illegal_status" ||
+              result.error.code === "rationale_required" ||
+              result.error.code === "unknown_profile"
+            ? 422
+            : 400;
+    res.status(status).json({ error: result.error });
+    return;
+  }
+  res.json(result.claim);
 });
 
 async function main() {

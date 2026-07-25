@@ -381,6 +381,43 @@ export async function createClaim(body: {
   return handleResponse<ClaimRow>(response);
 }
 
+export async function getAdjudicationQueue(): Promise<ClaimRow[]> {
+  const response = await fetch(`${API_BASE}/adjudication-queue`);
+  return handleResponse<ClaimRow[]>(response);
+}
+
+export async function requestClaimAdjudication(
+  claimId: string,
+  body: { author_id: string; note?: string | null },
+): Promise<ClaimRow> {
+  const response = await fetch(
+    `${API_BASE}/claims/${claimId}/request-adjudication`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+  return handleResponse<ClaimRow>(response);
+}
+
+export async function adjudicateClaim(
+  claimId: string,
+  body: {
+    author_id: string;
+    status: string;
+    rationale: string;
+    require_queued?: boolean;
+  },
+): Promise<ClaimRow> {
+  const response = await fetch(`${API_BASE}/claims/${claimId}/adjudicate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<ClaimRow>(response);
+}
+
 export async function getAttributions(): Promise<AttributionRegistry> {
   const response = await fetch(`${API_BASE}/attributions`);
   return handleResponse<AttributionRegistry>(response);

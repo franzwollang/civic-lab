@@ -82,6 +82,12 @@ type ClaimSeedRow = {
   links?: unknown[];
   created_at: string;
   author_id?: string | null;
+  adjudication_requested_at?: string | null;
+  adjudication_requested_by?: string | null;
+  adjudication_request_note?: string | null;
+  adjudication_rationale?: string | null;
+  adjudicated_by?: string | null;
+  adjudicated_at?: string | null;
 };
 
 type RegistryFile = {
@@ -334,6 +340,16 @@ export async function seedIfEmpty(
           links: c.links ?? [],
           createdAt: new Date(c.created_at),
           authorId: c.author_id ?? null,
+          adjudicationRequestedAt: c.adjudication_requested_at
+            ? new Date(c.adjudication_requested_at)
+            : null,
+          adjudicationRequestedBy: c.adjudication_requested_by ?? null,
+          adjudicationRequestNote: c.adjudication_request_note ?? null,
+          adjudicationRationale: c.adjudication_rationale ?? null,
+          adjudicatedBy: c.adjudicated_by ?? null,
+          adjudicatedAt: c.adjudicated_at
+            ? new Date(c.adjudicated_at)
+            : null,
         },
       });
     }

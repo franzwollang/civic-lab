@@ -190,7 +190,7 @@ export type RevSetRow = {
   summary: string | null;
 };
 
-/** CONCEPT §5 Claim wire shape. */
+/** CONCEPT §5 Claim wire shape (+ §8.3 adjudication scaffolding). */
 export type ClaimRow = {
   claim_id: string;
   artifact_id: string;
@@ -212,6 +212,13 @@ export type ClaimRow = {
   links: unknown[];
   created_at: string;
   author_id: string | null;
+  adjudication_requested_at: string | null;
+  adjudication_requested_by: string | null;
+  adjudication_request_note: string | null;
+  adjudication_rationale: string | null;
+  adjudicated_by: string | null;
+  adjudicated_at: string | null;
+  adjudication_pending?: boolean;
 };
 
 /** @deprecated Prefer ArtifactRow */

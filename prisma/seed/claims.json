@@ -32,7 +32,10 @@
     "canon_citations": [],
     "links": [],
     "created_at": "2026-07-10T12:10:00.000Z",
-    "author_id": "user-alice"
+    "author_id": "user-alice",
+    "adjudication_requested_at": "2026-07-12T09:00:00.000Z",
+    "adjudication_requested_by": "user-bob",
+    "adjudication_request_note": "NASS survey and state SOS pages disagree on three border states."
   },
   {
     "claim_id": "claim-us-align-canon-criteria",

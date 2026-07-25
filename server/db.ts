@@ -25,6 +25,12 @@ import {
   type ClaimOwnerContext,
 } from "../src/lib/claimLegality";
 import {
+  isAdjudicationPending,
+  validateAdjudicate,
+  validateRequestAdjudication,
+  type AdjudicationError,
+} from "../src/lib/claimAdjudication";
+import {
   artifactIdsFromClaimLinks,
   computeSoftLaneLabel,
   validateLaneOnCreate,
@@ -239,7 +245,7 @@ export type RevSetRow = {
   summary: string | null;
 };
 
-/** CONCEPT §5 Claim wire shape. */
+/** CONCEPT §5 Claim wire shape (+ §8.3 adjudication scaffolding). */
 export type ClaimRow = {
   claim_id: string;
   artifact_id: string;
@@ -261,6 +267,14 @@ export type ClaimRow = {
   links: unknown[];
   created_at: string;
   author_id: string | null;
+  adjudication_requested_at: string | null;
+  adjudication_requested_by: string | null;
+  adjudication_request_note: string | null;
+  adjudication_rationale: string | null;
+  adjudicated_by: string | null;
+  adjudicated_at: string | null;
+  /** Derived: pending on global adjudication queue. */
+  adjudication_pending?: boolean;
 };
 
 function mapArea(row: {
@@ -1840,7 +1854,19 @@ function mapClaim(row: {
   links: unknown;
   createdAt: Date;
   authorId: string | null;
+  adjudicationRequestedAt: Date | null;
+  adjudicationRequestedBy: string | null;
+  adjudicationRequestNote: string | null;
+  adjudicationRationale: string | null;
+  adjudicatedBy: string | null;
+  adjudicatedAt: Date | null;
 }): ClaimRow {
+  const adjudication_requested_at = row.adjudicationRequestedAt
+    ? row.adjudicationRequestedAt.toISOString()
+    : null;
+  const adjudicated_at = row.adjudicatedAt
+    ? row.adjudicatedAt.toISOString()
+    : null;
   return {
     claim_id: row.claimId,
     artifact_id: row.artifactId,
@@ -1862,6 +1888,16 @@ function mapClaim(row: {
     links: Array.isArray(row.links) ? row.links : [],
     created_at: row.createdAt.toISOString(),
     author_id: row.authorId,
+    adjudication_requested_at,
+    adjudication_requested_by: row.adjudicationRequestedBy,
+    adjudication_request_note: row.adjudicationRequestNote,
+    adjudication_rationale: row.adjudicationRationale,
+    adjudicated_by: row.adjudicatedBy,
+    adjudicated_at,
+    adjudication_pending: isAdjudicationPending({
+      adjudication_requested_at,
+      adjudicated_at,
+    }),
   };
 }
 
@@ -2002,4 +2038,88 @@ export async function createClaim(input: {
     },
   });
   return { ok: true, claim: mapClaim(row) };
+}
+
+export type RequestAdjudicationError =
+  | { code: "not_found" }
+  | AdjudicationError;
+
+export async function requestClaimAdjudication(input: {
+  claim_id: string;
+  author_id: string;
+  note?: string | null;
+}): Promise<
+  | { ok: true; claim: ClaimRow }
+  | { ok: false; error: RequestAdjudicationError }
+> {
+  const existing = await getClaim(input.claim_id);
+  if (!existing) return { ok: false, error: { code: "not_found" } };
+
+  const check = validateRequestAdjudication({
+    author_id: input.author_id,
+    note: input.note,
+    claim: existing,
+  });
+  if (!check.ok) return { ok: false, error: check.error };
+
+  const row = await getPrisma().claim.update({
+    where: { claimId: input.claim_id },
+    data: {
+      adjudicationRequestedAt: new Date(),
+      adjudicationRequestedBy: input.author_id,
+      adjudicationRequestNote: input.note?.trim() || null,
+    },
+  });
+  return { ok: true, claim: mapClaim(row) };
+}
+
+export type AdjudicateClaimError =
+  | { code: "not_found" }
+  | AdjudicationError;
+
+export async function adjudicateClaim(input: {
+  claim_id: string;
+  author_id: string;
+  status: string;
+  rationale: string;
+  /** When true (default), claim must be pending on the queue. */
+  require_queued?: boolean;
+}): Promise<
+  | { ok: true; claim: ClaimRow }
+  | { ok: false; error: AdjudicateClaimError }
+> {
+  const existing = await getClaim(input.claim_id);
+  if (!existing) return { ok: false, error: { code: "not_found" } };
+
+  const check = validateAdjudicate({
+    author_id: input.author_id,
+    status: input.status,
+    rationale: input.rationale,
+    profile: existing.profile,
+    requireQueued: input.require_queued !== false,
+    claim: existing,
+  });
+  if (!check.ok) return { ok: false, error: check.error };
+
+  const row = await getPrisma().claim.update({
+    where: { claimId: input.claim_id },
+    data: {
+      status: input.status,
+      adjudicationRationale: input.rationale.trim(),
+      adjudicatedBy: input.author_id,
+      adjudicatedAt: new Date(),
+    },
+  });
+  return { ok: true, claim: mapClaim(row) };
+}
+
+/** Global adjudication queue (CONCEPT §8.3) — pending requests across Collections. */
+export async function listAdjudicationQueue(): Promise<ClaimRow[]> {
+  const rows = await getPrisma().claim.findMany({
+    where: {
+      adjudicationRequestedAt: { not: null },
+    },
+    orderBy: { adjudicationRequestedAt: "asc" },
+  });
+  return rows.map(mapClaim).filter((c) => c.adjudication_pending);
 }

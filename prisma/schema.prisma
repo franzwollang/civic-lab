@@ -174,6 +174,13 @@ model Claim {
   links               Json      @default("[]")
   createdAt           DateTime  @map("created_at")
   authorId            String?   @map("author_id")
+  /// CONCEPT §8.3 — request-adjudication queue (pending when requested > last adjudicated).
+  adjudicationRequestedAt DateTime? @map("adjudication_requested_at")
+  adjudicationRequestedBy String?   @map("adjudication_requested_by")
+  adjudicationRequestNote String?   @map("adjudication_request_note")
+  adjudicationRationale   String?   @map("adjudication_rationale")
+  adjudicatedBy           String?   @map("adjudicated_by")
+  adjudicatedAt           DateTime? @map("adjudicated_at")
   artifact            Artifact  @relation(fields: [artifactId], references: [artifactId], onDelete: Cascade)
 
   @@index([artifactId])

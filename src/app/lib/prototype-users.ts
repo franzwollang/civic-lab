@@ -7,6 +7,7 @@
  * - editor — Carol (routine Canon merge)
  * - steward — Alice (Manual Collection merge)
  * - red_team — Dave (findings; no merge)
+ * - adjudicator — Frank (claim resolution; no merge)
  * - contributor — Bob (discuss / RevSets; no merge)
  */
 
@@ -50,6 +51,11 @@ export const PROTOTYPE_USERS: readonly PrototypeUser[] = [
     id: "user-eve",
     display_name: "Eve Okada",
     roles: ["owner"],
+  },
+  {
+    id: "user-frank",
+    display_name: "Frank Okonkwo",
+    roles: ["adjudicator"],
   },
 ] as const;
 
