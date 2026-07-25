@@ -84,6 +84,15 @@ async function main() {
     if (canon.red_team.recent_count < 1) {
       throw new Error("canon red_team.recent_count should include seeded Finding");
     }
+    if (!canon.reputation || canon.reputation.advisory !== true) {
+      throw new Error("canon reputation board must be present and advisory");
+    }
+    if (canon.reputation.grants_permissions) {
+      throw new Error("reputation must never grant permissions");
+    }
+    if (canon.reputation.n < 1) {
+      throw new Error("canon reputation should include seeded signals");
+    }
 
     const electoral = canon.dossiers.find((d) => d.dossier_id === "electoral-1");
     if (!electoral || electoral.health !== "seeded") {
@@ -122,6 +131,16 @@ async function main() {
     }
     if (us.red_team.recent_count < 2) {
       throw new Error("US red_team.recent_count should include seeded Findings");
+    }
+    if (!us.reputation || us.reputation.n < 5) {
+      throw new Error("US reputation should aggregate posts/findings/adjudications/merged RevSets");
+    }
+    if (
+      !us.reputation.contributors.some(
+        (c) => c.user_id === "user-alice" && c.signals.merged_revsets >= 1,
+      )
+    ) {
+      throw new Error("US reputation should credit Alice merged RevSet");
     }
 
     const ca = await getCollectionDashboard("collection-ca");
