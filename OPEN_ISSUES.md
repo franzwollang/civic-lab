@@ -53,11 +53,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - States seeded: `open` | `rfc` (also model `review` | `decided` | `archived`).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
-  - Seed includes one leaf RFC stub (`merge_artifact_id`); promotion UX + RevSet table not built.
-  - 1:1 leaf merges only; multi ⇒ same-Collection wrapper + subs.
-  - Parent `decided` when all children decided; outcomes merged|rejected|parked.
-  - Merge authority follows artifact Collection; Accepted Risk on leaf.
-  - RevSet → `ArtifactRevision`.
+  - Done (leaf cut): Prisma `RevSet`; seed `revsets.json` + proposal revision on `thread-us-voter-reg-rfc`; `POST /api/threads/:id/promote` (1:1 leaf); `GET|POST /api/threads/:id/revsets` (proposal revisions do not flip `current_revision_id`); dossier thread/RFC cards link to detail; thread/RFC pages load store data; `scripts/smoke-revsets.ts`.
+  - Remaining: multi-artifact → wrapper parent + sub-RFCs; parent `decided` when all children decided; merge authority by Collection; Accepted Risk on leaf; Merge/Reject/Park decision controls.
+  - RevSet → `ArtifactRevision` (propose ✓; merge apply still open).
 
 ---
 

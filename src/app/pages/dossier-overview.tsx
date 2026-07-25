@@ -190,33 +190,37 @@ export function DossierOverview() {
                           {state.threads
                             .filter((t) => t.state !== "rfc")
                             .map((t) => (
-                              <Card
+                              <Link
                                 key={t.thread_id}
-                                className="border border-neutral-200 p-4"
+                                to={`/thread/${t.thread_id}`}
+                                className="block"
                               >
-                                <div className="mb-1 flex items-center gap-2">
-                                  <StatusBadge
-                                    status={threadStatusLabel(t.state)}
-                                  />
-                                  <span className="text-xs text-neutral-500">
-                                    {t.post_count ?? t.posts?.length ?? 0} posts
-                                  </span>
-                                </div>
-                                <h3 className="text-sm font-medium text-neutral-900">
-                                  {t.title}
-                                </h3>
-                                <p className="mt-1 text-xs text-neutral-500">
-                                  {t.thread_id}
-                                  {t.targets && t.targets.length > 0
-                                    ? ` · ${t.targets
-                                        .map(
-                                          (x) =>
-                                            `${x.target_kind}:${x.target_id}`,
-                                        )
-                                        .join(", ")}`
-                                    : ""}
-                                </p>
-                              </Card>
+                                <Card className="border border-neutral-200 p-4 transition-colors hover:border-neutral-400">
+                                  <div className="mb-1 flex items-center gap-2">
+                                    <StatusBadge
+                                      status={threadStatusLabel(t.state)}
+                                    />
+                                    <span className="text-xs text-neutral-500">
+                                      {t.post_count ?? t.posts?.length ?? 0}{" "}
+                                      posts
+                                    </span>
+                                  </div>
+                                  <h3 className="text-sm font-medium text-neutral-900">
+                                    {t.title}
+                                  </h3>
+                                  <p className="mt-1 text-xs text-neutral-500">
+                                    {t.thread_id}
+                                    {t.targets && t.targets.length > 0
+                                      ? ` · ${t.targets
+                                          .map(
+                                            (x) =>
+                                              `${x.target_kind}:${x.target_id}`,
+                                          )
+                                          .join(", ")}`
+                                      : ""}
+                                  </p>
+                                </Card>
+                              </Link>
                             ))}
                         </div>
                       ) : (
@@ -235,26 +239,28 @@ export function DossierOverview() {
                           {state.threads
                             .filter((t) => t.state === "rfc")
                             .map((t) => (
-                              <Card
+                              <Link
                                 key={t.thread_id}
-                                className="border border-neutral-200 p-4"
+                                to={`/thread/${t.thread_id}/rfc`}
+                                className="block"
                               >
-                                <div className="mb-1 flex items-center gap-2">
-                                  <StatusBadge status="RFC" />
-                                  {t.merge_artifact_id && (
-                                    <span className="text-xs text-neutral-500">
-                                      merge → {t.merge_artifact_id}
-                                    </span>
-                                  )}
-                                </div>
-                                <h3 className="text-sm font-medium text-neutral-900">
-                                  {t.title}
-                                </h3>
-                                <p className="mt-1 text-xs text-neutral-500">
-                                  {t.thread_id} · RevSets / promotion UI still
-                                  M5
-                                </p>
-                              </Card>
+                                <Card className="border border-neutral-200 p-4 transition-colors hover:border-neutral-400">
+                                  <div className="mb-1 flex items-center gap-2">
+                                    <StatusBadge status="RFC" />
+                                    {t.merge_artifact_id && (
+                                      <span className="text-xs text-neutral-500">
+                                        merge → {t.merge_artifact_id}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <h3 className="text-sm font-medium text-neutral-900">
+                                    {t.title}
+                                  </h3>
+                                  <p className="mt-1 text-xs text-neutral-500">
+                                    {t.thread_id} · leaf RFC · RevSets on detail
+                                  </p>
+                                </Card>
+                              </Link>
                             ))}
                         </div>
                       ) : (
