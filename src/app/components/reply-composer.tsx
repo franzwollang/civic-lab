@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { createThreadPost } from "../../api/client";
 import type { ThreadPostRow } from "../../doc/types";
 import {
@@ -47,7 +47,7 @@ export function ReplyComposer({
     writeActingUserId(next);
   }
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const trimmed = body.trim();
     if (!trimmed || !enabled || submitting) return;
