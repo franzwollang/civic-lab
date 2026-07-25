@@ -48,8 +48,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 ## D. Thread-first + RFC (CONCEPT §§3)
 
 - [ ] **Thread + posts + flexible anchors**
-  - Done: Prisma `Thread` / `ThreadPost` / `ThreadTarget`; seed (`prisma/seed/threads.json`); API `GET /api/threads`, `GET /api/threads/:id`, `GET /api/dossiers/:id/threads`, `POST …/posts`; dossier Threads/RFCs tabs list store data; Collection dashboard open-thread counts live; section targets via persisted `Section` rows.
-  - Remaining: reply composer UI (impersonated author); typed posts (finding/mitigation) later.
+  - Done: Prisma `Thread` / `ThreadPost` / `ThreadTarget`; seed (`prisma/seed/threads.json`); API `GET /api/threads`, `GET /api/threads/:id`, `GET /api/dossiers/:id/threads`, `POST …/posts`; dossier Threads/RFCs tabs list store data; Collection dashboard open-thread counts live; section targets via persisted `Section` rows; **reply composer** on thread + RFC pages with seed-user impersonation (`src/app/lib/prototype-users.ts`, `ReplyComposer`).
+  - Remaining: typed posts (finding/mitigation) later; global header role switcher / affordances → M8.
   - States seeded: `open` | `rfc` (also model `review` | `decided` | `archived`).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
@@ -124,7 +124,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Every object page navigates “up” (artifact → dossier, thread → targets).
 
 - [ ] **Replace remaining placeholder panels**
-  - Dossier tab stubs, thread/RFC reply stubs, disabled Nominate-for-RFC, etc.
+  - Dossier tab stubs, disabled Nominate-for-RFC where still stubbed, etc.
+  - Thread/RFC reply composer: done (impersonated author).
 
 ---
 

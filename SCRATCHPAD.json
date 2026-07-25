@@ -1,27 +1,26 @@
 {
-  "updated_at": "2026-07-25T10:55Z",
-  "turn": 29,
+  "updated_at": "2026-07-25T11:15Z",
+  "turn": 30,
   "focus": {
     "milestone": "M5",
-    "issue": "RFC promotion + parent/sub-RFC + RevSets",
-    "goal": "Reply composer or Collection merge authority next"
+    "issue": "Thread reply composer",
+    "goal": "Impersonated reply composer on thread + RFC pages"
   },
   "recent": [
-    "Merged PR #18 (wrapper promote) onto cron branch 142b",
-    "POST /threads/:id/decide — merge/reject/park on leaves",
-    "Merge applies latest RevSet; parent cascades when all children decided",
-    "smoke-revsets green (merge + cascade + wrapper_not_direct)"
+    "Merged PR #19 (decide cascade) onto cron branch 52bc",
+    "Added PROTOTYPE_USERS + localStorage acting-user helper",
+    "ReplyComposer on thread-page + rfc-thread-page",
+    "smoke-reply-composer script added"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
-    "Prisma --force-reset blocked; use fresh SQLite file for smokes",
-    "Mixed child outcomes → wrapper decision_outcome parked"
+    "Prisma --force-reset blocked; use fresh SQLite file for smokes"
   ],
   "open_threads": [
-    "Collection merge authority still open",
-    "Reply composer (impersonated author) still open",
-    "Accepted Risk on leaf deferred to M7"
+    "Collection merge authority still open (last M5 gate)",
+    "Accepted Risk on leaf deferred to M7",
+    "Global impersonation chrome → M8"
   ],
-  "next_step": "Implement reply composer (impersonated) OR Collection merge authority",
+  "next_step": "Implement Collection merge authority scaffolding",
   "blockers": []
 }

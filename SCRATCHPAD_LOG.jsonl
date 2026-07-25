@@ -27,3 +27,4 @@
 {"ts":"2026-07-25T10:05Z","focus":"M5 RevSet leaf RFC","summary":"RevSet table, promote+revsets API, smoke-revsets, store-backed thread/RFC pages","next":"wrapper parent/sub-RFC or reply composer"}
 {"ts":"2026-07-25T10:35Z","focus":"M5 wrapper RFC","summary":"promote multi-artifact → wrapper parent + leaf sub-RFCs; UI+smoke","next":"parent decided cascade or reply composer"}
 {"ts":"2026-07-25T10:55Z","focus":"M5 RFC decide cascade","summary":"Leaf decide + parent cascade + merge apply; smoke-revsets OK","next":"reply composer or Collection merge authority"}
+{"ts":"2026-07-25T11:15Z","focus":"M5 reply composer","summary":"ReplyComposer + prototype-users; wired thread and RFC discussion","next":"Collection merge authority"}

@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import { Header } from "../components/header";
 import { SidebarNav } from "../components/sidebar-nav";
 import { StatusBadge } from "../components/badges";
+import {
+  ReplyComposer,
+  authorDisplayName,
+  authorInitials,
+} from "../components/reply-composer";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { GitBranch, Flag } from "lucide-react";
 import { useParams, Link, useNavigate } from "react-router";
 import { getThread, promoteThread } from "../../api/client";
-import type { ThreadRow } from "../../doc/types";
+import type { ThreadPostRow, ThreadRow } from "../../doc/types";
+import { readActingUserId } from "../lib/prototype-users";
 
 function statusLabel(
   state: string,
@@ -58,7 +64,9 @@ export function ThreadPage() {
     if (!id || !thread || thread.state !== "open") return;
     setPromoting(true);
     try {
-      const updated = await promoteThread(id, { author_id: "user-alice" });
+      const updated = await promoteThread(id, {
+        author_id: readActingUserId(),
+      });
       setThread(updated);
       navigate(`/thread/${id}/rfc`);
     } catch (err) {
@@ -66,6 +74,14 @@ export function ThreadPage() {
     } finally {
       setPromoting(false);
     }
+  }
+
+  function onPosted(post: ThreadPostRow) {
+    setThread((prev) =>
+      prev
+        ? { ...prev, posts: [...(prev.posts ?? []), post] }
+        : prev,
+    );
   }
 
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
@@ -220,14 +236,15 @@ export function ThreadPage() {
                     <div className="mb-3 flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-800 text-white">
                         <span className="text-xs font-semibold">
-                          {post.author_id.slice(0, 2).toUpperCase()}
+                          {authorInitials(post.author_id)}
                         </span>
                       </div>
                       <div>
                         <div className="font-medium text-neutral-900">
-                          {post.author_id}
+                          {authorDisplayName(post.author_id)}
                         </div>
                         <div className="text-sm text-neutral-500">
+                          {post.author_id} ·{" "}
                           {new Date(post.created_at).toLocaleString()} ·{" "}
                           {post.type}
                         </div>
@@ -239,11 +256,10 @@ export function ThreadPage() {
                   </Card>
                 ))}
 
-                <Card className="border-2 border-dashed border-neutral-300 bg-white p-6">
-                  <div className="text-center text-sm text-neutral-500">
-                    <p>Reply composer (impersonated author) still open in M5.</p>
-                  </div>
-                </Card>
+                <ReplyComposer
+                  threadId={thread.thread_id}
+                  onPosted={onPosted}
+                />
               </div>
             </>
           )}

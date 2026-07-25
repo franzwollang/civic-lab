@@ -3,6 +3,11 @@ import { Header } from "../components/header";
 import { SidebarNav } from "../components/sidebar-nav";
 import { StatusBadge } from "../components/badges";
 import { RevSetRow } from "../components/revset-row";
+import {
+  ReplyComposer,
+  authorDisplayName,
+  authorInitials,
+} from "../components/reply-composer";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Info } from "lucide-react";
@@ -14,7 +19,12 @@ import {
   TooltipTrigger,
 } from "../components/ui/tooltip";
 import { decideThread, getThread, getThreadRevSets } from "../../api/client";
-import type { RevSetRow as RevSetWire, ThreadRow } from "../../doc/types";
+import type {
+  RevSetRow as RevSetWire,
+  ThreadPostRow,
+  ThreadRow,
+} from "../../doc/types";
+import { readActingUserId } from "../lib/prototype-users";
 
 function statusLabel(
   thread: ThreadRow,
@@ -71,7 +81,7 @@ export function RfcThreadPage() {
     try {
       const result = await decideThread(id, {
         outcome,
-        author_id: "user-alice",
+        author_id: readActingUserId(),
       });
       setThread(result.thread);
       setError(null);
@@ -83,6 +93,14 @@ export function RfcThreadPage() {
     } finally {
       setDeciding(false);
     }
+  }
+
+  function onPosted(post: ThreadPostRow) {
+    setThread((prev) =>
+      prev
+        ? { ...prev, posts: [...(prev.posts ?? []), post] }
+        : prev,
+    );
   }
 
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
@@ -355,14 +373,15 @@ export function RfcThreadPage() {
                       <div className="mb-3 flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-700 text-white">
                           <span className="text-xs font-semibold">
-                            {post.author_id.slice(0, 2).toUpperCase()}
+                            {authorInitials(post.author_id)}
                           </span>
                         </div>
                         <div>
                           <div className="font-medium text-neutral-900">
-                            {post.author_id}
+                            {authorDisplayName(post.author_id)}
                           </div>
                           <div className="text-sm text-neutral-500">
+                            {post.author_id} ·{" "}
                             {new Date(post.created_at).toLocaleString()}
                           </div>
                         </div>
@@ -372,6 +391,11 @@ export function RfcThreadPage() {
                       </p>
                     </Card>
                   ))}
+
+                  <ReplyComposer
+                    threadId={thread.thread_id}
+                    onPosted={onPosted}
+                  />
                 </div>
               </div>
             </>
