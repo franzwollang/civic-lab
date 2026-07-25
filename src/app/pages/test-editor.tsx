@@ -968,7 +968,18 @@ function TestEditorInner() {
                             Transforms.insertText(editor, TAB_SPACES);
                             return;
                           }
-                          handleMathInlineArrowNavigation(editor, event);
+                          handleMathInlineArrowNavigation(editor, event, {
+                            isHidden: (node) => {
+                              const id =
+                                node &&
+                                typeof node === "object" &&
+                                "id" in node &&
+                                typeof (node as { id?: unknown }).id === "string"
+                                  ? (node as { id: string }).id
+                                  : undefined;
+                              return id ? hiddenBlockIds.has(id) : false;
+                            },
+                          });
                         }}
                         onPaste={(event) => {
                           if (!editor) return;

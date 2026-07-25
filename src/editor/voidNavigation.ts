@@ -119,6 +119,14 @@ const focusEditorNow = () => {
   return true;
 };
 
+const scheduleFrame = (cb: () => void) => {
+  if (typeof requestAnimationFrame === "function") {
+    requestAnimationFrame(cb);
+    return;
+  }
+  setTimeout(cb, 0);
+};
+
 const focusAndSelect = (
   editor: Editor,
   target: any,
@@ -132,7 +140,7 @@ const focusAndSelect = (
     logVoidNav("focus-select: select failed", { label, error });
   }
 
-  requestAnimationFrame(() => {
+  scheduleFrame(() => {
     const range = Editor.range(editor, target);
     if (canResolveDomRange(editor, range)) {
       try {
@@ -156,7 +164,9 @@ const focusAndSelect = (
   });
 };
 
-const DEBUG_VOID_NAV = import.meta.env.DEV;
+const DEBUG_VOID_NAV = Boolean(
+  (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV,
+);
 const DEBUG_VOID_NAV_VERBOSE = false;
 const pathLabel = (path: Path) => path.join(".");
 const nodeLabel = (node: unknown) =>
@@ -326,6 +336,75 @@ const selectVoidBlock = (
   Transforms.select(editor, Editor.range(editor, path));
 };
 
+// --- Shared vertical exit from a void block (textarea / image inputs / editor) ---
+function exitVoidBlockVertically(
+  editor: Editor,
+  path: Path,
+  event: KeyboardEvent,
+  column: number,
+  isHidden?: (node: unknown) => boolean,
+  blurTarget?: HTMLElement | null,
+): boolean {
+  const direction = event.key === "ArrowUp" ? "prev" : "next";
+
+  const buildTarget =
+    event.key === "ArrowUp"
+      ? (p: Path) => getPointAtLineColumn(editor, p, "last", column)
+      : (p: Path) => getPointAtLineColumn(editor, p, "first", column);
+
+  const neighbor = getNeighborBlockFiltered(editor, path, direction, isHidden);
+  if (!neighbor) {
+    logVoidNav("void exit: no neighbor", {
+      key: event.key,
+      path: pathLabel(path),
+    });
+    return false;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  logVoidNav("void exit: neighbor", {
+    key: event.key,
+    direction,
+    neighborType: nodeLabel(neighbor[0]),
+    neighborPath: pathLabel(neighbor[1]),
+    column,
+  });
+
+  if (blurTarget) {
+    try {
+      blurTarget.blur();
+    } catch {
+      // ignore
+    }
+  }
+
+  const [neighborNode, neighborPath] = neighbor;
+  if (isVoidBlockElement(neighborNode)) {
+    const intent: VoidEntryIntent =
+      event.key === "ArrowUp"
+        ? { type: "line", line: "last", column }
+        : { type: "line", line: "first", column };
+
+    logVoidNav("void exit: select void neighbor", {
+      intent,
+      neighborPath: pathLabel(neighborPath),
+    });
+    setVoidEntryIntent(neighborNode as any, neighborPath, intent);
+    focusAndSelect(editor, Editor.range(editor, neighborPath), "exit->void");
+    return true;
+  }
+
+  const target = buildTarget(neighborPath);
+  logVoidNav("void exit: select text neighbor", {
+    target,
+    neighborPath: pathLabel(neighborPath),
+  });
+  focusAndSelect(editor, target, "exit->text");
+  return true;
+}
+
 // --- Textarea-level navigation (exit from void UI) ---
 export function handleVoidBlockTextareaArrowExit(
   editor: Editor,
@@ -356,84 +435,56 @@ export function handleVoidBlockTextareaArrowExit(
   if (event.key === "ArrowUp" && !isFirstLine) return false;
   if (event.key === "ArrowDown" && !isLastLine) return false;
 
-  // Step C: resolve neighbor block; if none, let the textarea keep focus.
-  const direction = event.key === "ArrowUp" ? "prev" : "next";
   const column = getColumnFromOffset(value, start);
-
-  const buildTarget =
-    event.key === "ArrowUp"
-      ? (p: Path) => getPointAtLineColumn(editor, p, "last", column)
-      : (p: Path) => getPointAtLineColumn(editor, p, "first", column);
-
-  const neighbor = getNeighborBlockFiltered(
+  return exitVoidBlockVertically(
     editor,
     path,
-    direction,
+    event,
+    column,
     isHidden,
+    event.currentTarget,
   );
-  if (!neighbor) {
-    logVoidNav("textarea exit: no neighbor", {
-      key: event.key,
-      path: pathLabel(path),
-    });
+}
+
+/**
+ * Vertical exit from a void block's edge control (e.g. image URL/caption inputs).
+ * Call when ArrowUp on the first field or ArrowDown on the last field.
+ */
+export function handleVoidBlockEdgeArrowExit(
+  editor: Editor,
+  path: Path,
+  event: KeyboardEvent,
+  opts: {
+    edge: "start" | "end";
+    column?: number;
+    isHidden?: (node: unknown) => boolean;
+  },
+): boolean {
+  if (!isVerticalArrowKey(event.key)) return false;
+  if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) {
     return false;
   }
+  if (event.key === "ArrowUp" && opts.edge !== "start") return false;
+  if (event.key === "ArrowDown" && opts.edge !== "end") return false;
 
-  // Step D: we are exiting the void block; take over the key.
-  event.preventDefault();
-  event.stopPropagation();
-
-  logVoidNav("textarea exit: neighbor", {
-    key: event.key,
-    direction,
-    neighborType: nodeLabel(neighbor[0]),
-    neighborPath: pathLabel(neighbor[1]),
+  const column = Math.max(0, opts.column ?? 0);
+  const blurTarget =
+    event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+  return exitVoidBlockVertically(
+    editor,
+    path,
+    event,
     column,
-  });
-
-  // Step D1: blur the textarea so the editor can own focus/selection.
-  try {
-    event.currentTarget.blur();
-  } catch {
-    // ignore
-  }
-
-  // Step E: if the neighbor is another void block, enter it with an intent.
-  const [neighborNode, neighborPath] = neighbor;
-  if (isVoidBlockElement(neighborNode)) {
-    const intent: VoidEntryIntent =
-      event.key === "ArrowUp"
-        ? { type: "line", line: "last", column }
-        : event.key === "ArrowDown"
-          ? { type: "line", line: "first", column }
-          : direction === "prev"
-            ? { type: "end" }
-            : { type: "start" };
-
-    logVoidNav("textarea exit: select void neighbor", {
-      intent,
-      neighborPath: pathLabel(neighborPath),
-    });
-    setVoidEntryIntent(neighborNode as any, neighborPath, intent);
-    focusAndSelect(editor, Editor.range(editor, neighborPath), "exit->void");
-    return true;
-  }
-
-  // Step F: otherwise, place the caret into the neighboring text block.
-  const target = buildTarget(neighborPath);
-
-  logVoidNav("textarea exit: select text neighbor", {
-    target,
-    neighborPath: pathLabel(neighborPath),
-  });
-  focusAndSelect(editor, target, "exit->text");
-  return true;
+    opts.isHidden,
+    blurTarget,
+  );
 }
 
 // --- Editor-level navigation (enter/exit void blocks) ---
 export function handleVoidBlockArrowNavigation(
   editor: Editor,
   event: KeyboardEvent,
+  isHidden?: (node: unknown) => boolean,
 ): boolean {
   // Step A: guard — arrows only, no modifiers, selection required.
   if (!isArrowKey(event.key)) return false;
@@ -455,54 +506,27 @@ export function handleVoidBlockArrowNavigation(
     const voidRange = Editor.range(editor, voidPath);
 
     if (Range.equals(sel, voidRange)) {
-      // Step B1: resolve neighbor and move selection out of the void block.
-      const direction = event.key === "ArrowUp" ? "prev" : "next";
-      const neighbor = getNeighborBlock(editor, voidPath, direction);
-      if (!neighbor) {
-        logVoidNav("editor exit: no neighbor", {
-          key: event.key,
-          path: pathLabel(voidPath),
-        });
-        return false;
+      // Prefer column from a focused textarea inside the void when available.
+      let column = 0;
+      if (typeof document !== "undefined") {
+        const active = document.activeElement;
+        if (
+          active instanceof HTMLTextAreaElement ||
+          active instanceof HTMLInputElement
+        ) {
+          const start = active.selectionStart ?? 0;
+          const value = active.value ?? "";
+          column = getColumnFromOffset(value, start);
+        }
       }
 
-      event.preventDefault();
-      event.stopPropagation();
-
-      const [neighborNode, neighborPath] = neighbor;
-      logVoidNav("editor exit: neighbor", {
-        key: event.key,
-        direction,
-        neighborType: nodeLabel(neighborNode),
-        neighborPath: pathLabel(neighborPath),
-      });
-      // Step B2: if neighbor is another void block, select it with an entry intent.
-      if (isVoidBlockElement(neighborNode)) {
-        const intent: VoidEntryIntent =
-          event.key === "ArrowUp"
-            ? { type: "line", line: "last", column: 0 }
-            : { type: "line", line: "first", column: 0 };
-
-        setVoidEntryIntent(neighborNode as any, neighborPath, intent);
-        logVoidNav("editor exit: select void neighbor", {
-          intent,
-          neighborPath: pathLabel(neighborPath),
-        });
-        focusAndSelect(editor, Editor.range(editor, neighborPath), "editor-exit->void");
-      } else {
-        // Step B3: otherwise, put the caret into the neighbor text block.
-        const target =
-          event.key === "ArrowUp"
-            ? getPointAtLineColumn(editor, neighborPath, "last", 0)
-            : getPointAtLineColumn(editor, neighborPath, "first", 0);
-        logVoidNav("editor exit: select text neighbor", {
-          target,
-          neighborPath: pathLabel(neighborPath),
-        });
-        focusAndSelect(editor, target, "editor-exit->text");
-      }
-
-      return true;
+      return exitVoidBlockVertically(
+        editor,
+        voidPath,
+        event,
+        column,
+        isHidden,
+      );
     }
   }
 
@@ -525,7 +549,12 @@ export function handleVoidBlockArrowNavigation(
   if (event.key === "ArrowDown" && !atEnd) return false;
 
   const direction = event.key === "ArrowUp" ? "prev" : "next";
-  const neighbor = getNeighborBlock(editor, blockPath, direction);
+  const neighbor = getNeighborBlockFiltered(
+    editor,
+    blockPath,
+    direction,
+    isHidden,
+  );
   if (!neighbor) return false;
 
   const [neighborNode, neighborPath] = neighbor;

@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-07-25T04:45Z",
-  "turn": 11,
+  "updated_at": "2026-07-25T05:10Z",
+  "turn": 12,
   "focus": {
     "milestone": "M2",
-    "issue": "Void embed keyboard navigation",
-    "goal": "Arrow keys enter/exit void embeds per OPEN_ISSUES §A"
+    "issue": "Copy/paste + plain-text export for void embeds",
+    "goal": "Clipboard round-trip + Markdown-ish export for voids"
   },
   "recent": [
-    "M1: Prisma+SQLite schema, seed-if-empty, Express via Prisma",
-    "Moved db/*.json → prisma/seed/; added prisma/SEED.md",
-    "Stubbed dullahan-web for cloud install; fixed .npmrc store-dir"
+    "Cherry-picked M1 Prisma+SQLite onto this branch",
+    "Void nav: inline L/R/U/D for math+citation; block skip-hidden",
+    "Image block edge ArrowUp/Down exit; hardened voidNavigation for Node"
   ],
   "discoveries": [
-    "dullahan-web was file:../dullahanUI — stub at stubs/dullahan-web",
-    "pnpm store-dir in .npmrc was macOS-absolute; omit for portability"
+    "Prior M1 lived on cursor/next-task-progression-5940 (PR #1)",
+    "term_inline is non-void — out of void-nav scope"
   ],
   "open_threads": [],
-  "next_step": "Implement void embed keyboard nav acceptance from OPEN_ISSUES.md §A",
+  "next_step": "Implement copy/paste + plain-text export for void embeds (OPEN_ISSUES §A)",
   "blockers": []
 }

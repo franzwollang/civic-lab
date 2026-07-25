@@ -7,14 +7,6 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## A. Editor correctness (working surface: `/test/editor`)
 
-- [ ] **Void embed keyboard navigation**
-  - **Context**: Void blocks/inlines (`math_*`, `mermaid_block`, `procedure_block`, `data_block`, evidence voids) need intentional caret rules; `src/editor/voidNavigation.ts` + `mathNavigation.ts` exist but are incomplete vs acceptance.
-  - **Acceptance**:
-    - Left/Right enter/exit inline voids from both sides.
-    - Up/Down move through/around inline voids (not only Left/Right).
-    - Block voids: Up/Down at start/end edges move to prev/next block; entering a void preserves column intent where implemented.
-    - Behavior consistent across math, mermaid, procedure, data, and evidence void variants.
-
 - [ ] **Copy/paste + plain-text export for void embeds**
   - **Context**: Payload lives on element props (`latex`/`code`), so native copy does not round-trip.
   - **Acceptance**:

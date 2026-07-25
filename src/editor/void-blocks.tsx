@@ -13,6 +13,7 @@ import { useMermaidTick } from "@/editor/useMermaidTick";
 import {
   consumeVoidEntryIntent,
   getVoidEntrySelection,
+  handleVoidBlockEdgeArrowExit,
   handleVoidBlockTextareaArrowExit,
 } from "@/editor/voidNavigation";
 
@@ -835,6 +836,17 @@ function ImageBlockComponent(props: PlateElementProps) {
   const alt = typeof el.alt === "string" ? el.alt : "";
   const caption = typeof el.caption === "string" ? el.caption : "";
 
+  const isHiddenNode = (node: unknown) => {
+    const nodeId =
+      node &&
+      typeof node === "object" &&
+      "id" in node &&
+      typeof (node as { id?: unknown }).id === "string"
+        ? (node as { id: string }).id
+        : undefined;
+    return nodeId ? Boolean(collapse?.isHidden(nodeId)) : false;
+  };
+
   const handleRemove = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -879,6 +891,15 @@ function ImageBlockComponent(props: PlateElementProps) {
               value={src}
               onChange={(e) => updateNode({ src: e.target.value })}
               onMouseDown={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                e.stopPropagation();
+                handleVoidBlockEdgeArrowExit(
+                  props.editor as any,
+                  props.path as any,
+                  e,
+                  { edge: "start", isHidden: isHiddenNode },
+                );
+              }}
               className="h-7 w-full rounded border border-neutral-200 bg-white px-2 text-[11px] text-neutral-700"
               placeholder="https://…"
             />
@@ -895,6 +916,10 @@ function ImageBlockComponent(props: PlateElementProps) {
               value={alt}
               onChange={(e) => updateNode({ alt: e.target.value })}
               onMouseDown={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                // Keep Slate from acting on the selected void while editing fields.
+                e.stopPropagation();
+              }}
               className="h-7 w-full rounded border border-neutral-200 bg-white px-2 text-[11px] text-neutral-700"
               placeholder="Short description"
             />
@@ -907,6 +932,15 @@ function ImageBlockComponent(props: PlateElementProps) {
               value={caption}
               onChange={(e) => updateNode({ caption: e.target.value })}
               onMouseDown={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                e.stopPropagation();
+                handleVoidBlockEdgeArrowExit(
+                  props.editor as any,
+                  props.path as any,
+                  e,
+                  { edge: "end", isHidden: isHiddenNode },
+                );
+              }}
               className="h-7 w-full rounded border border-neutral-200 bg-white px-2 text-[11px] text-neutral-700"
               placeholder="Optional caption"
             />
