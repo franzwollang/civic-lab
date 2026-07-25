@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "build": "vite build",
     "dev": "concurrently \"vite\" \"pnpm:dev:server\"",
@@ -11,7 +12,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test:smoke": "tsx scripts/run-smokes.ts"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -51,16 +53,16 @@
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "1.1.1",
-    "cors": "2.8.5",
     "csv-parse": "5.6.0",
     "date-fns": "3.6.0",
     "dompurify": "3.3.1",
     "embla-carousel": "8.6.0",
     "embla-carousel-react": "8.6.0",
-    "express": "4.19.2",
-    "fumadocs-core": "^16.5.2",
-    "fumadocs-mdx": "^14.2.7",
-    "fumadocs-ui": "^16.5.2",
+    "hono": "^4.9.6",
+    "@hono/node-server": "^1.14.4",
+    "fumadocs-core": "16.5.4",
+    "fumadocs-mdx": "14.2.7",
+    "fumadocs-ui": "16.5.4",
     "input-otp": "1.4.2",
     "js-toml": "1.0.2",
     "lucide-react": "0.487.0",
@@ -93,8 +95,7 @@
     "vaul": "1.1.2",
     "yaml": "2.8.1",
     "zod": "4.3.6",
-    "zustand": "^5.0.8",
-    "dullahan-web": "file:stubs/dullahan-web"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
@@ -112,6 +113,13 @@
   "pnpm": {
     "overrides": {
       "vite": "6.3.5"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "prisma",
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "@tailwindcss/oxide"
+    ]
   }
 }

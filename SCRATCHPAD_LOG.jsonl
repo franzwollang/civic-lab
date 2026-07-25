@@ -33,3 +33,6 @@
 {"ts":"2026-07-25T12:20Z","focus":"M6 immutable lanes","summary":"create require+PATCH reject+soft composite; smoke-immutable-lanes","next":"adjudication scaffolding"}
 {"ts":"2026-07-25T12:40Z","focus":"M6 adjudication","summary":"Merged #23; landed claim adjudication scaffolding + smoke","next":"claim authoring UX"}
 {"ts":"2026-07-25T13:00Z","focus":"M6 claim authoring UX","summary":"Merged #24; landed artifact/dossier claim authoring UI + smoke","next":"M6 metrics panels or M7 Findings"}
+{"ts":"2026-07-25T13:20Z","focus":"toolchain + M6 green","summary":"Fixed pnpm/fumadocs/dullahan; build+21 smokes green; PLANNING/OPEN_ISSUES updated","next":"M6 metrics panels or M7 Findings"}
+{"ts":"2026-07-25T13:25Z","focus":"MVP unblocked from Dullahan","summary":"Deleted stubs/dullahan-web + editorPageModel; saveRevision local; planning updated","next":"M6 metrics or M7"}
+{"ts":"2026-07-25T13:30Z","focus":"Hono API","summary":"Express→Hono migration complete; PLANNING/SEED updated","next":"M6 metrics or M7"}

@@ -17,6 +17,10 @@ lives in `SCRATCHPAD.json`.
 | Seed format | **JSON** under seed dir (e.g. `prisma/seed/`) |
 | Dev startup | Create DB if missing → `db push` → **re-seed if empty** (`SeedMeta`) |
 | Schema growth | Existing editor entities first; CONCEPT tables as milestones need them |
+| Package manager | **pnpm@9.15.9** (`packageManager` field; lockfile v9) |
+| onlyBuiltDependencies | In **`package.json` → `pnpm.onlyBuiltDependencies`** (never JSON-string arrays in `.npmrc`) |
+| Fumadocs | **Pinned 16.5.4** — caret bumps to 16.12+ break Vite (`-inset-s-4` unknown to Tailwind 4.1.12) |
+| API server | **Hono** on Node (`@hono/node-server`); Prisma server-side only (`server/`) |
 | `/docs` | Engineering only |
 | Prototype identity | Seed users + **impersonation** |
 | Adjudicators / Red Team | **Global** |
@@ -64,9 +68,10 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Layer | Reality |
 |---|---|
 | Product UI | Hybrid — Area/Collection/Dossier routes data-driven; many dossier panels still fixture |
-| Editor + doc pipeline | Real (Plate, evidence, revisions) |
+| Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (21/21) |
 
 **Next build:** **M6 Claims + lanes** (`in progress` — Claim table + immutable lanes + adjudication + authoring UX landed). Next: Collection claim metrics (quality/forecast panels). Accepted Risk on leaf stays M7.
 
@@ -77,7 +82,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Milestone | Status | Exit criteria |
 |---|---|---|
 | **M0 — Orientation** | `done` | CONCEPT/PLANNING coherent; residual gaps defaulted |
-| **M1 — Persistence** | `done` | Prisma/SQLite; seeds; db push; seed-if-empty; Express via Prisma |
+| **M1 — Persistence** | `done` | Prisma/SQLite; seeds; db push; seed-if-empty; Hono API via Prisma |
 | **M2 — Editor solidity** | `done` | Void nav ✓; clipboard ✓; a11y ✓; full preview ✓; server validate ✓ |
 | **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |

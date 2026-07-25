@@ -59,19 +59,16 @@ import { diffBlocks } from "@/doc/diff";
 import type { ArtifactRevisionRow, ArtifactRow } from "@/doc/types";
 import { artifactIdOf } from "@/doc/types";
 import { getArtifact, getArtifactRevisions } from "@/api/client";
-import { editorPageModel } from "@/app/models/editorPageModel";
-import { ClientPageProvider, toUserMessage } from "dullahan-web/client";
+import { saveRevision, toUserMessage } from "@/api/actions";
 import { validateDocument } from "@/doc/validation";
 
 const DEFAULT_ARTIFACT_ID = "page-001";
 
 export function TestEditor() {
   return (
-    <ClientPageProvider model={editorPageModel}>
-      <EvidenceRegistryProvider>
-        <TestEditorInner />
-      </EvidenceRegistryProvider>
-    </ClientPageProvider>
+    <EvidenceRegistryProvider>
+      <TestEditorInner />
+    </EvidenceRegistryProvider>
   );
 }
 
@@ -92,11 +89,6 @@ function TestEditorInner() {
     "idle",
   );
   const [error, setError] = useState<string | null>(null);
-  const {
-    execute: saveRevision,
-    pending: savePending,
-    message: saveErrorMessage,
-  } = editorPageModel.useTransition("saveRevision");
   const [mathjaxTick, setMathjaxTick] = useState(0);
   const [mermaidTick, setMermaidTick] = useState(0);
   const isAutoConvertingMath = useRef(false);
@@ -357,7 +349,7 @@ function TestEditorInner() {
       });
 
       if (!result.ok) {
-        setError(saveErrorMessage ?? toUserMessage(result.error));
+        setError(toUserMessage(result.error));
         setStatus("error");
         return;
       }
@@ -1039,7 +1031,7 @@ function TestEditorInner() {
                       No validation issues.
                     </span>
                   )}
-                  {(status === "saving" || savePending) && (
+                  {status === "saving" && (
                     <span>Saving in progress...</span>
                   )}
                 </div>
@@ -1057,9 +1049,9 @@ function TestEditorInner() {
                   <Button
                     size="sm"
                     onClick={handleSave}
-                    disabled={status === "saving" || savePending || hasErrors}
+                    disabled={status === "saving" || hasErrors}
                   >
-                    {status === "saving" || savePending ? "Saving..." : "Save revision"}
+                    {status === "saving" ? "Saving..." : "Save revision"}
                   </Button>
                 </div>
               </div>

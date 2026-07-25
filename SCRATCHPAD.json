@@ -1,25 +1,23 @@
 {
-  "updated_at": "2026-07-25T13:00Z",
-  "turn": 35,
+  "updated_at": "2026-07-25T13:30Z",
+  "turn": 38,
   "focus": {
     "milestone": "M6",
     "issue": "Metrics + Collection dashboard panels",
     "goal": "Claim quality / forecast accuracy panels beyond counts"
   },
   "recent": [
-    "Merged PR #24 (adjudication) onto cron branch 2704",
-    "ClaimComposer + ArtifactClaimsPanel + dossier Claims tab",
-    "buildClaimOwnerContext from dossier.country_code + lane",
-    "smoke-claim-authoring green"
+    "Migrated server/ Express → Hono + @hono/node-server",
+    "All /api routes preserved; bodyLimit 2mb; CORS via hono/cors",
+    "build + 21/21 smokes + GET /api/areas HTTP check green"
   ],
   "discoveries": [
-    "Cron branches start at main — merge latest progression PR first",
-    "Prisma --force-reset blocked; use fresh SQLite file for smokes"
+    "Prisma stays server-only; SPA unchanged at localhost:8787/api"
   ],
   "open_threads": [
     "Accepted Risk on leaf deferred to M7",
     "Global impersonation chrome → M8",
-    "Model implication graph still deferred"
+    "M6 metrics panels remaining"
   ],
   "next_step": "M6 metrics: Collection claim quality/forecast panels (or start M7 if deferring metrics)",
   "blockers": []

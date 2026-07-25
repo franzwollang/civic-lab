@@ -74,20 +74,35 @@ async function main() {
 
     const underElectoral = await prisma.artifact.findMany({
       where: { dossierId: "electoral-1" },
+      orderBy: { artifactId: "asc" },
     });
-    if (underElectoral.length !== 1) {
-      throw new Error(`electoral-1 artifacts: ${underElectoral.length}`);
+    // page-001 (seeded content) + canon-charter (owner_merge_only exemplar for M5)
+    const electoralIds = underElectoral.map((a) => a.artifactId).sort();
+    if (
+      underElectoral.length < 2 ||
+      !electoralIds.includes("page-001") ||
+      !electoralIds.includes("canon-charter")
+    ) {
+      throw new Error(
+        `electoral-1 artifacts: expected page-001 + canon-charter, got ${electoralIds.join(",")}`,
+      );
     }
 
     const underUsVoting = await prisma.artifact.findMany({
       where: { dossierId: "us-voting-1" },
       orderBy: { slug: "asc" },
     });
-    if (underUsVoting.length !== 4) {
+    if (underUsVoting.length !== 5) {
       throw new Error(`us-voting-1 artifacts: ${underUsVoting.length}`);
     }
     const usSlugs = underUsVoting.map((a) => a.slug).sort();
-    const expected = ["overview", "polling", "provisional", "voter-reg"];
+    const expected = [
+      "alignment",
+      "overview",
+      "polling",
+      "provisional",
+      "voter-reg",
+    ];
     if (JSON.stringify(usSlugs) !== JSON.stringify(expected)) {
       throw new Error(`us-voting-1 slugs: ${usSlugs.join(",")}`);
     }

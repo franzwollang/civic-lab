@@ -130,9 +130,18 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ---
 
+## J. Toolchain / packaging (keep green)
+
+- [ ] **Fumadocs upgrade path**
+  - Pinned `fumadocs-{core,ui}@16.5.4` + `fumadocs-mdx@14.2.7` after 16.12.x broke Vite (`Cannot apply unknown utility class -inset-s-4`).
+  - Before unpinning: confirm Tailwind (or Fumadocs preset) provides `inset-s-*`, or switch to prebuilt `fumadocs-ui/style.css`.
+
+---
+
 ## Notes (do not treat as separate issues)
 
 - Spec-compliance page/route appears **already removed** from `routes.tsx` / header — not listed above.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (21 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.

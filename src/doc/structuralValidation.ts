@@ -1,6 +1,6 @@
 /**
  * Node-safe document structure checks (no MathJax/Mermaid DOM).
- * Used by the Express save path; browser `validateDocument` still owns
+ * Used by the server save path; browser `validateDocument` still owns
  * render-based TeX/diagram parsing.
  */
 import { z, ZodIssueCode } from "zod";

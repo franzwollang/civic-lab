@@ -42,7 +42,7 @@ Profile legality (CONCEPT §5) is enforced on create: Manual Descriptive → `em
 1. Create `prisma/dev.db` if missing.
 2. `prisma db push` (sync schema).
 3. If no `SeedMeta` row ⇒ load JSON from `prisma/seed/` and write `SeedMeta`.
-4. Express serves `/api/*` via Prisma.
+4. Hono serves `/api/*` via Prisma (`server/index.ts`, port 8787).
 
 ## Common ops
 

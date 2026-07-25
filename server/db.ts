@@ -1,5 +1,5 @@
 /**
- * Prisma-backed data access for the Express API.
+ * Prisma-backed data access for the Hono API.
  * Domain models are Artifact / ArtifactRevision; SQLite tables remain
  * `pages` / `page_revisions` via Prisma @@map. Wire JSON dual-emits
  * `artifact_id` (preferred) and legacy `page_id` (same value).

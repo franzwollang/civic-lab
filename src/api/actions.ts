@@ -1,13 +1,27 @@
-import { ok } from 'dullahan-web/client';
-import type { RemoteHandler } from 'dullahan-web/remote';
-import { serverActionValidationFail } from 'dullahan-web/client';
+import type { ArtifactRevisionRow, ArtifactRow } from "@/doc/types";
+import { artifactIdOf } from "@/doc/types";
 
-import type { ArtifactRevisionRow, ArtifactRow } from '@/doc/types';
-import { artifactIdOf } from '@/doc/types';
+import { saveRevisionInput, type SaveRevisionInput } from "./schemas";
 
-import { saveRevisionInput, type SaveRevisionInput } from './schemas';
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8787/api';
+export type ActionResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; error: unknown };
+
+export function toUserMessage(err: unknown): string {
+  if (err == null) return "Unknown error";
+  if (typeof err === "string") return err;
+  if (typeof err === "object" && err !== null && "message" in err) {
+    const message = (err as { message?: unknown }).message;
+    if (typeof message === "string") return message;
+  }
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
 
 async function readJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -18,15 +32,15 @@ async function readJson<T>(response: Response): Promise<T> {
 }
 
 /**
- * Committed finalizer for editor save — chains revision POST + artifact PATCH.
- * Prefers `/api/artifacts`; Express returns dual-emit JSON.
+ * Editor save — chains revision POST + artifact PATCH.
+ * Prefers `/api/artifacts`; API returns dual-emit JSON.
  */
-export const saveRevisionRemote: RemoteHandler<SaveRevisionInput, ArtifactRow> = async (
-  rawInput
-) => {
+export async function saveRevision(
+  rawInput: SaveRevisionInput | unknown,
+): Promise<ActionResult<ArtifactRow>> {
   const parsed = saveRevisionInput.safeParse(rawInput);
   if (!parsed.success) {
-    return serverActionValidationFail(parsed.error);
+    return { ok: false, error: parsed.error };
   }
 
   const { artifactId, revision, nextCurrentRevisionId } = parsed.data;
@@ -34,35 +48,38 @@ export const saveRevisionRemote: RemoteHandler<SaveRevisionInput, ArtifactRow> =
   try {
     const created = await readJson<ArtifactRevisionRow>(
       await fetch(`${API_BASE}/artifacts/${artifactId}/revisions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(revision)
-      })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(revision),
+      }),
     );
 
     const updated = await readJson<ArtifactRow>(
       await fetch(`${API_BASE}/artifacts/${artifactId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ current_revision_id: nextCurrentRevisionId })
-      })
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ current_revision_id: nextCurrentRevisionId }),
+      }),
     );
 
-    return ok({
-      ...updated,
-      artifact_id: artifactIdOf(updated) || artifactId,
-      page_id: artifactIdOf(updated) || artifactId,
-      current_revision_id: created.revision_id
-    });
+    return {
+      ok: true,
+      data: {
+        ...updated,
+        artifact_id: artifactIdOf(updated) || artifactId,
+        page_id: artifactIdOf(updated) || artifactId,
+        current_revision_id: created.revision_id,
+      },
+    };
   } catch (error) {
     return {
       ok: false,
       error: {
-        kind: 'network',
-        code: 'fetch_failed',
+        kind: "network",
+        code: "fetch_failed",
         message: error instanceof Error ? error.message : String(error),
-        retryable: true
-      }
+        retryable: true,
+      },
     };
   }
-};
+}
