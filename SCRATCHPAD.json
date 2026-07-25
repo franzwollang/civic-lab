@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-25T12:40Z",
-  "turn": 34,
+  "updated_at": "2026-07-25T13:00Z",
+  "turn": 35,
   "focus": {
     "milestone": "M6",
-    "issue": "Claim authoring UX (product surface)",
-    "goal": "Artifact/dossier claims panels + authoring UI"
+    "issue": "Metrics + Collection dashboard panels",
+    "goal": "Claim quality / forecast accuracy panels beyond counts"
   },
   "recent": [
-    "Merged PR #23 (immutable lanes) onto cron branch 60df",
-    "claimAdjudication.ts: empirical/requirement status sets",
-    "Queue + adjudicate API; seed Frank adjudicator; pending NVRA claim",
-    "smoke-adjudication green"
+    "Merged PR #24 (adjudication) onto cron branch 2704",
+    "ClaimComposer + ArtifactClaimsPanel + dossier Claims tab",
+    "buildClaimOwnerContext from dossier.country_code + lane",
+    "smoke-claim-authoring green"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
@@ -18,9 +18,9 @@
   ],
   "open_threads": [
     "Accepted Risk on leaf deferred to M7",
-    "Claim authoring UX still open within M6",
-    "Global impersonation chrome → M8"
+    "Global impersonation chrome → M8",
+    "Model implication graph still deferred"
   ],
-  "next_step": "Claim authoring UX on artifact/dossier surfaces (after merge #24 if fresh main)",
+  "next_step": "M6 metrics: Collection claim quality/forecast panels (or start M7 if deferring metrics)",
   "blockers": []
 }

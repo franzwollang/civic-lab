@@ -415,6 +415,15 @@ export function DossierOverview() {
                         </div>
                         <div className="text-sm text-neutral-600">Threads</div>
                       </div>
+                      <div>
+                        <div className="mb-1 text-2xl font-bold text-neutral-900">
+                          {claimGroups.reduce(
+                            (n, g) => n + g.claims.length,
+                            0,
+                          )}
+                        </div>
+                        <div className="text-sm text-neutral-600">Claims</div>
+                      </div>
                       <div className="border-l-2 border-amber-500 pl-3">
                         <div className="mb-1 flex items-center gap-2">
                           <StatusBadge status="RFC" />
@@ -424,7 +433,7 @@ export function DossierOverview() {
                             state.threads.filter((t) => t.state === "rfc")
                               .length
                           }{" "}
-                          RFCs (promotion/RevSets still M5)
+                          RFCs
                         </h4>
                       </div>
                     </div>

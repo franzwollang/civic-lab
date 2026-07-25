@@ -232,6 +232,16 @@ export function ArtifactPage() {
                   <ArtifactDocumentBody load={doc} />
                 </Card>
               )}
+
+              {doc.status === "ready" && (
+                <div className="mt-8">
+                  <ArtifactClaimsPanel
+                    artifact={doc.artifact}
+                    dossier={dossier}
+                    sections={doc.sections}
+                  />
+                </div>
+              )}
             </article>
 
             <aside className="w-80">
@@ -333,14 +343,6 @@ export function ArtifactPage() {
                       ))}
                     </div>
                   </Card>
-                )}
-
-                {showLive && (
-                  <ArtifactClaimsPanel
-                    artifact={doc.artifact}
-                    dossier={dossier}
-                    sections={doc.sections}
-                  />
                 )}
               </div>
             </aside>
