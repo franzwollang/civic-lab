@@ -7,10 +7,6 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## A. Editor correctness (working surface: `/test/editor`)
 
-- [ ] **Read preview renders full document model**
-  - **Context**: `src/app/pages/test-preview.tsx` only renders basic headings/paragraphs; saved revisions already contain math/mermaid/evidence/etc.
-  - **Acceptance**: Preview (and any future artifact reader) renders the same node set as the editor (at least math, mermaid, procedure, data, image, evidence, citation, term).
-
 - [ ] **Server-side revision validation on save**
   - **Context**: Client validates via `src/doc/validation.ts`; `POST /api/pages/:pageId/revisions` accepts arbitrary JSON (`server/index.ts`).
   - **Acceptance**: Server rejects invalid revisions (schema + at least structural validation); optionally reuse/port `validateDocument` / Zod revision schema.

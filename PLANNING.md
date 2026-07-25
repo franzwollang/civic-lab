@@ -68,7 +68,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
 
-**Next build:** M2 Editor solidity — void nav done; next clipboard/export, then a11y, full preview, server validate.
+**Next build:** M2 Editor solidity — void nav/clipboard/a11y/full preview done; next server-side revision validation (then MVP gaps).
 
 ---
 
@@ -78,7 +78,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 |---|---|---|
 | **M0 — Orientation** | `done` | CONCEPT/PLANNING coherent; residual gaps defaulted |
 | **M1 — Persistence** | `done` | Prisma/SQLite; seeds; db push; seed-if-empty; Express via Prisma |
-| **M2 — Editor solidity** | `in progress` | Void nav ✓; clipboard ✓; a11y ✓; full preview, server validate remain |
+| **M2 — Editor solidity** | `in progress` | Void nav ✓; clipboard ✓; a11y ✓; full preview ✓; server validate remains |
 | **M3 — Content bridge** | `not started` | Shared reader; Artifact naming path; Section plan |
 | **M4 — Corpus IA** | `not started` | Area/Collection/Dossier; shared splash; map picker; data-driven routes |
 | **M5 — Threads + RFC** | `not started` | Posts, targets, leaf/wrapper RFC, RevSet→revision, authority rules |

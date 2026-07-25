@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-07-25T05:55Z",
-  "turn": 14,
+  "updated_at": "2026-07-25T06:10Z",
+  "turn": 15,
   "focus": {
     "milestone": "M2",
-    "issue": "Read preview renders full document model",
-    "goal": "Preview renders math/mermaid/procedure/data/image/evidence/cite/term"
+    "issue": "Server-side revision validation on save",
+    "goal": "Reject invalid revisions in Express POST using validateDocument/Zod"
   },
   "recent": [
-    "Merged PR #3 (M1+void-nav+clipboard) onto this fresh branch",
-    "Void a11y: aria labels, keyboard select/remove, DOMPurify Prism/SVG",
-    "Smoke scripts: smoke-void-a11y + smoke-void-clipboard"
+    "Merged PR #4 (M1+void-nav/clipboard/a11y) onto fresh cron branch",
+    "DocumentReader: math/mermaid/procedure/data/image/evidence/cite/term",
+    "test-preview wired with EvidenceRegistryProvider; smoke-document-reader"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
-    "usePrismHighlight is the choke point for procedure/data/mermaid Prism HTML"
+    "DocumentReader lives in src/doc/ for reuse by future artifact readers (M3)"
   ],
   "open_threads": [],
-  "next_step": "Implement full document model in test-preview (OPEN_ISSUES §A)",
+  "next_step": "Server-side revision validation on save (OPEN_ISSUES §A)",
   "blockers": []
 }
