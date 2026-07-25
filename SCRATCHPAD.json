@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-07-25T18:20Z",
-  "turn": 52,
+  "updated_at": "2026-07-25T19:20Z",
+  "turn": 53,
   "focus": {
     "milestone": null,
-    "issue": "Editor MVP lists+links",
-    "goal": "Plate Indent/List/Link plugins + reader/export + smoke"
+    "issue": "Evidence registries + immutable_ref",
+    "goal": "Richer seeds + immutable_ref validation/UI beyond /test/editor"
   },
   "recent": [
-    "Merged PR #37 (M6–M9 + editor term/validate) onto fresh cron branch",
-    "Added @platejs/{indent,list,link}@52.0.11; toolbar Bullets/Numbered/Link",
-    "DocumentReader + plainTextExport list/link aware; ELEMENT_TYPES.LINK",
-    "34/34 smokes + vite build green"
+    "Merged progression 75c2 (M6–M9 + lists/links) onto cron branch",
+    "Enriched attributions/terms seeds; ArtifactDocumentBody already wired",
+    "immutableRef helper + PUT validate/normalize; editor + reader tooltips",
+    "smoke-evidence-registries; 35/35 smokes + vite build green"
   ],
   "discoveries": [
     "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
-    "Evidence registries + immutable_ref / App D still open",
+    "external_artifact Plate node + App D provider allowlist still open",
     "Blockquotes optional; tables + image upload deferred"
   ],
-  "next_step": "Evidence registry seeding beyond /test/editor, or attribution immutable_ref / App D whitelist",
+  "next_step": "external_artifact node + App D whitelist, or home RFC/RT fixture retirement / blockquotes",
   "blockers": []
 }

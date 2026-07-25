@@ -14,7 +14,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Done: Plate **lists + links** — `@platejs/{indent,list,link}@52.0.11`; toolbar Bullets/Numbered/Link; DocumentReader + plainTextExport; `smoke-editor-lists-links`.
   - Remaining: blockquotes / tables — defer tables; blockquotes optional follow-up.
   - Remaining: Images require `.webp` only; no upload pipeline.
-  - Remaining: Attribution `immutable_ref` unused vs `CONCEPT.md` Appendix E.1 / App D whitelist.
+  - Done: Attribution `immutable_ref` editor field + PUT validation/normalize (GitHub SHA / DOI / arXiv / OSF); reader tooltips.
 
 ---
 
@@ -78,14 +78,13 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## G. Evidence / external refs (editor-adjacent → CONCEPT Apps C–D)
 
-- [ ] **Wire evidence registries beyond `/test/editor`**
-  - Artifact readers resolve citation/term chips against attributions/terms APIs.
-  - Seed richer attributions/terms than the single-item registries.
+- Evidence registries beyond `/test/editor`: done — `ArtifactDocumentBody` + `EvidenceRegistryProvider`; richer seed attributions (≥7) and terms (≥6, scoped); `smoke-evidence-registries`.
+- Attribution `immutable_ref` patterns (GitHub / DOI / arXiv / OSF) validated on PUT + surfaced in editor/reader (CONCEPT E.1 / D.3).
 
-- [ ] **External artifact references (whitelist + immutability)**
-  - `external_artifact` / provider allowlist per CONCEPT Appendix D.
-  - Require general_id + specific_id; validate GitHub SHA / DOI version / arXiv vN patterns.
-  - Surfaced in editor + validation.
+- [ ] **External artifact references (node + whitelist)**
+  - Remaining: `external_artifact` Plate node / provider allowlist per CONCEPT Appendix D.
+  - Pattern validation helpers exist in `src/lib/immutableRef.ts` for attribution snapshots; extend to node fields (`provider`, `general_id`, `specific_id`).
+  - Surfaced in editor + structural validation.
 
 ---
 
@@ -112,7 +111,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Anti-gaming / scoring leaderboard policy: **done** (M9) — forecast + reputation boards gate n≥20; Owner board-hide + lift + append-only `AuditLog` (`smoke-board-hide`).
 - Auth + real-identity policy hooks: **done** (M9) — `UserIdentity` + Owner attest / self-request; Manual steward country / long-term-ties gate on decide + AR; header badges; `smoke-identity-policy`. Full OAuth/IdP deferred.
 - [ ] **Moderator tools + audit logs** — board-hide + identity attest audit landed; broader mod tools still open.
-- [ ] **External artifact whitelist** (CONCEPT App D) — deferred until evidence/editor bridge solid.
+- [ ] **External artifact whitelist** (CONCEPT App D) — attribution `immutable_ref` patterns landed; remaining is `external_artifact` node + full provider allowlist.
 
 ---
 
@@ -130,4 +129,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (34 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (35 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
