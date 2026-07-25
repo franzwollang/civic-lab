@@ -1,18 +1,21 @@
 {
-  "updated_at": "2026-07-24T23:03-05:00",
-  "turn": 10,
+  "updated_at": "2026-07-25T04:45Z",
+  "turn": 11,
   "focus": {
-    "milestone": "M1",
-    "issue": "SQLite + Prisma bootstrap",
-    "goal": "Residual CONCEPT gaps defaulted; start persistence"
+    "milestone": "M2",
+    "issue": "Void embed keyboard navigation",
+    "goal": "Arrow keys enter/exit void embeds per OPEN_ISSUES §A"
   },
   "recent": [
-    "Defaulted: Canon editor merge split; regional codes; baselines/anti-gaming",
-    "Defaulted: audit log; dossier no-templates; Charter as content",
-    "M0 marked done; §12 becomes defaults log"
+    "M1: Prisma+SQLite schema, seed-if-empty, Express via Prisma",
+    "Moved db/*.json → prisma/seed/; added prisma/SEED.md",
+    "Stubbed dullahan-web for cloud install; fixed .npmrc store-dir"
   ],
-  "discoveries": [],
+  "discoveries": [
+    "dullahan-web was file:../dullahanUI — stub at stubs/dullahan-web",
+    "pnpm store-dir in .npmrc was macOS-absolute; omit for portability"
+  ],
   "open_threads": [],
-  "next_step": "Implement M1 Prisma+SQLite seed-if-empty when user asks",
+  "next_step": "Implement void embed keyboard nav acceptance from OPEN_ISSUES.md §A",
   "blockers": []
 }

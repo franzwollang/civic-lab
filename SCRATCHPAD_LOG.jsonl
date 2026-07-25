@@ -8,3 +8,4 @@
 {"ts":"2026-07-24T22:46-05:00","focus":"CONCEPT","summary":"Figured claim adapters; wrote evidence appendix; await profile confirmation","next":"user confirm or tweak profiles"}
 {"ts":"2026-07-24T22:52-05:00","focus":"consistency","summary":"Full CONCEPT rewrite for coherence; PLANNING trimmed to match","next":"M1 or user review"}
 {"ts":"2026-07-24T23:03-05:00","focus":"M1","summary":"M0 done; architecture gaps defaulted","next":"implement persistence on request"}
+{"ts":"2026-07-25T04:45Z","focus":"M1 Persistence","summary":"Bootstrapped SQLite+Prisma; retired JSON db helpers; documented seed contract","next":"M2 void embed keyboard navigation"}

@@ -47,25 +47,6 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ---
 
-## B. Persistence foundation (M1 — next)
-
-- [ ] **Bootstrap SQLite + Prisma for existing entities**
-  - **Scope (first cut only):** current editor store — `pages` / `page_revisions` / `terms` / `attributions` JSON shapes (domain-wise these documents are Artifacts; rename can wait until M3).
-  - **Stack:** Prisma + SQLite; prototype uses **`prisma db push`** (not migration history yet).
-  - **Acceptance**:
-    - Prisma schema + `db push` create/update the DB.
-    - Current `db/*.json` moved to **seed-only** dir (e.g. `prisma/seed/`).
-    - Seed script loads JSON; **`SeedMeta`** records seed application; startup **re-seeds only if empty** (no SeedMeta / empty marker).
-    - Startup wired into `pnpm run dev` (or start script): create DB if missing → push → seed-if-empty.
-    - Express reads/writes via Prisma (retire `server/db.ts` JSON helpers).
-    - `/test/editor` and `/test/preview` still work.
-    - SQLite DB file gitignored.
-
-- [ ] **Document seed vs runtime contract**
-  - How to reset DB, add a seed file, that empty re-seed is intentional for local prototype.
-
----
-
 ## C. Product shell vs real data (after M1)
 
 - [ ] **Add CONCEPT tables + seeds incrementally**
