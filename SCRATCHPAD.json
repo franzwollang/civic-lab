@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-25T17:55Z",
-  "turn": 50,
+  "updated_at": "2026-07-25T18:05Z",
+  "turn": 51,
   "focus": {
     "milestone": null,
     "issue": "Editor MVP gaps",
@@ -8,10 +8,10 @@
   },
   "recent": [
     "Merged PR #36 M6–M9 stack onto fresh cron branch",
-    "Deleted unused MathDecoratePlugin (autoConvertMath remains)",
+    "Deleted unused MathDecoratePlugin; extract termScope helper",
     "Wired validateDocumentStructureForMerge into RevSet + merge",
     "Term dialog defaultScope from dossier/product chrome",
-    "smoke-editor-mvp added"
+    "33/33 smokes + vite build green"
   ],
   "discoveries": [
     "Fresh cron branches start at main; merge latest progression PR first"
