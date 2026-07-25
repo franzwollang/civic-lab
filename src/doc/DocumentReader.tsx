@@ -350,6 +350,59 @@ function ImageBlockRead({
   );
 }
 
+function ExternalArtifactRead({
+  provider,
+  generalId,
+  specificId,
+  displayTitle,
+  summary,
+  license,
+}: {
+  provider: string;
+  generalId: string;
+  specificId: string;
+  displayTitle: string;
+  summary?: string;
+  license?: string;
+}) {
+  const incomplete = !provider || !generalId || !specificId || !displayTitle;
+  return (
+    <aside
+      className={
+        "my-3 rounded border bg-neutral-50 px-3 py-2 " +
+        (incomplete ? "border-amber-200" : "border-neutral-200")
+      }
+      aria-label={displayTitle || "External artifact"}
+    >
+      <div className="flex items-center text-xs text-neutral-600">
+        <span className="inline-flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5">
+          <span className="text-[11px] font-semibold text-neutral-700">
+            External artifact
+          </span>
+        </span>
+      </div>
+      <div className="mt-2 space-y-1">
+        <div className="text-[13px] font-medium text-neutral-900">
+          {displayTitle || "Untitled external artifact"}
+        </div>
+        <div className="text-[11px] text-neutral-600">
+          {[provider || "provider?", generalId || "general_id?", specificId || "specific_id?"].join(
+            " · ",
+          )}
+        </div>
+        {summary ? (
+          <div className="text-[11px] text-neutral-500">{summary}</div>
+        ) : null}
+        {license ? (
+          <div className="text-[10px] uppercase tracking-wide text-neutral-400">
+            {license}
+          </div>
+        ) : null}
+      </div>
+    </aside>
+  );
+}
+
 function CitationRead({
   attributionRef,
   attributions,
@@ -530,6 +583,28 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
             alt={typeof node.alt === "string" ? node.alt : undefined}
             caption={
               typeof node.caption === "string" ? node.caption : undefined
+            }
+          />
+        );
+      case ELEMENT_TYPES.EXTERNAL_ARTIFACT:
+        return (
+          <ExternalArtifactRead
+            key={key}
+            provider={typeof node.provider === "string" ? node.provider : ""}
+            generalId={
+              typeof node.general_id === "string" ? node.general_id : ""
+            }
+            specificId={
+              typeof node.specific_id === "string" ? node.specific_id : ""
+            }
+            displayTitle={
+              typeof node.display_title === "string" ? node.display_title : ""
+            }
+            summary={
+              typeof node.summary === "string" ? node.summary : undefined
+            }
+            license={
+              typeof node.license === "string" ? node.license : undefined
             }
           />
         );
@@ -789,6 +864,7 @@ export const DOCUMENT_READER_NODE_TYPES = [
   ELEMENT_TYPES.PROCEDURE_BLOCK,
   ELEMENT_TYPES.DATA_BLOCK,
   ELEMENT_TYPES.IMAGE_BLOCK,
+  ELEMENT_TYPES.EXTERNAL_ARTIFACT,
   ELEMENT_TYPES.EVIDENCE_BLOCK,
   ELEMENT_TYPES.EVIDENCE_BLOCK_TEXT,
   ELEMENT_TYPES.EVIDENCE_BLOCK_TRANSLATION,

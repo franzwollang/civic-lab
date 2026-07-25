@@ -9,9 +9,12 @@
  * - data         → ```json|yaml|toml|csv … ```
  * - procedure    → ```pseudocode.js … ```
  * - image        → `![alt](src)` (+ optional caption line)
+ * - external_artifact → ```external_artifact … ```
  * - citation     → `[cite:attribution_ref]`
  * - term         → `[term:term_ref|label]`
  */
+
+import { serializeExternalArtifactFence } from "../lib/externalArtifact";
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   Boolean(v) && typeof v === "object" && !Array.isArray(v);
@@ -104,6 +107,17 @@ export function serializeNode(node: unknown): string {
       const caption = typeof node.caption === "string" ? node.caption.trim() : "";
       const image = `![${alt}](${src})`;
       return caption ? `${image}\n${caption}` : image;
+    }
+    case "external_artifact": {
+      return serializeExternalArtifactFence({
+        provider: typeof node.provider === "string" ? node.provider : "",
+        general_id: typeof node.general_id === "string" ? node.general_id : "",
+        specific_id: typeof node.specific_id === "string" ? node.specific_id : "",
+        display_title:
+          typeof node.display_title === "string" ? node.display_title : "",
+        summary: typeof node.summary === "string" ? node.summary : "",
+        license: typeof node.license === "string" ? node.license : "",
+      });
     }
     case "citation_inline": {
       const ref =

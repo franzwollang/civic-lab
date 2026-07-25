@@ -80,11 +80,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 - Evidence registries beyond `/test/editor`: done — `ArtifactDocumentBody` + `EvidenceRegistryProvider`; richer seed attributions (≥7) and terms (≥6, scoped); `smoke-evidence-registries`.
 - Attribution `immutable_ref` patterns (GitHub / DOI / arXiv / OSF) validated on PUT + surfaced in editor/reader (CONCEPT E.1 / D.3).
-
-- [ ] **External artifact references (node + whitelist)**
-  - Remaining: `external_artifact` Plate node / provider allowlist per CONCEPT Appendix D.
-  - Pattern validation helpers exist in `src/lib/immutableRef.ts` for attribution snapshots; extend to node fields (`provider`, `general_id`, `specific_id`).
-  - Surfaced in editor + structural validation.
+- External artifact references (CONCEPT App D): done — `external_artifact` Plate void node; provider whitelist `github|zenodo|arxiv|osf`; `general_id` + `specific_id` + `display_title` validated in structural/client validation; DocumentReader + void clipboard fence; `smoke-external-artifact`.
 
 ---
 
@@ -111,7 +107,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Anti-gaming / scoring leaderboard policy: **done** (M9) — forecast + reputation boards gate n≥20; Owner board-hide + lift + append-only `AuditLog` (`smoke-board-hide`).
 - Auth + real-identity policy hooks: **done** (M9) — `UserIdentity` + Owner attest / self-request; Manual steward country / long-term-ties gate on decide + AR; header badges; `smoke-identity-policy`. Full OAuth/IdP deferred.
 - [ ] **Moderator tools + audit logs** — board-hide + identity attest audit landed; broader mod tools still open.
-- [ ] **External artifact whitelist** (CONCEPT App D) — attribution `immutable_ref` patterns landed; remaining is `external_artifact` node + full provider allowlist.
+- External artifact whitelist (CONCEPT App D): **done** — `external_artifact` node + provider allowlist (`smoke-external-artifact`); attribution `immutable_ref` patterns remain for registry snapshots.
 
 ---
 
@@ -129,4 +125,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (35 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (36 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.

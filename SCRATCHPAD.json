@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-07-25T19:20Z",
-  "turn": 53,
+  "updated_at": "2026-07-25T19:26Z",
+  "turn": 54,
   "focus": {
     "milestone": null,
-    "issue": "Evidence registries + immutable_ref",
-    "goal": "Richer seeds + immutable_ref validation/UI beyond /test/editor"
+    "issue": "external_artifact App D node",
+    "goal": "Plate void + provider whitelist + structural validation"
   },
   "recent": [
-    "Merged progression 75c2 (M6–M9 + lists/links) onto cron branch",
-    "Enriched attributions/terms seeds; ArtifactDocumentBody already wired",
-    "immutableRef helper + PUT validate/normalize; editor + reader tooltips",
-    "smoke-evidence-registries; 35/35 smokes + vite build green"
+    "Merged PR #41 tip (evidence registries) onto cron branch",
+    "Added src/lib/externalArtifact.ts provider whitelist",
+    "external_artifact Plate void + reader + clipboard fence",
+    "smoke-external-artifact; OPEN_ISSUES App D resolved"
   ],
   "discoveries": [
     "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
-    "external_artifact Plate node + App D provider allowlist still open",
-    "Blockquotes optional; tables + image upload deferred"
+    "Optional blockquotes; tables + image upload deferred",
+    "Home RFC/RT fixture retirement still open"
   ],
-  "next_step": "external_artifact node + App D whitelist, or home RFC/RT fixture retirement / blockquotes",
+  "next_step": "Home RFC/RT fixture retirement, optional blockquotes, or moderator tools residual",
   "blockers": []
 }

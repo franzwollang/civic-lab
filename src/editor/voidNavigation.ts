@@ -8,6 +8,7 @@ const VOID_BLOCK_TYPES = new Set([
   "mermaid_block",
   "procedure_block",
   "image_block",
+  "external_artifact",
   "evidence_block_data",
   "evidence_block_math",
 ]);

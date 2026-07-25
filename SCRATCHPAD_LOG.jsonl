@@ -51,3 +51,4 @@
 {"ts":"2026-07-25T18:05Z","focus":"Editor MVP gaps","summary":"33/33 smokes + build green; termScope extracted for Node smokes","next":"Plate lists/links or evidence registries"}
 {"ts":"2026-07-25T18:20Z","focus":"editor lists+links","summary":"Plate Indent/List/Link + toolbar + reader/export + smoke-editor-lists-links; 34/34 smokes","next":"evidence registries or immutable_ref / App D"}
 {"ts":"2026-07-25T19:20Z","focus":"evidence registries","summary":"richer seeds + immutable_ref validate/UI; 35/35 smokes","next":"external_artifact node / App D or home fixture retirement"}
+{"ts":"2026-07-25T19:26Z","focus":"external_artifact App D","summary":"Plate node + whitelist + smoke; merged #41 tip first","next":"home RFC/RT fixtures or blockquotes / mod tools"}

@@ -15,6 +15,7 @@ import {
   MermaidBlockPlugin,
   ProcedureBlockPlugin,
 } from "./void-blocks";
+import { ExternalArtifactPlugin } from "./external-artifact-nodes";
 import {
   CitationInlinePlugin,
   EvidenceBlockPlugin,
@@ -160,6 +161,7 @@ export const editorPlugins = [
   ProcedureBlockPlugin,
   DataBlockPlugin,
   ImageBlockPlugin,
+  ExternalArtifactPlugin,
   VoidClipboardPlugin,
 ];
 

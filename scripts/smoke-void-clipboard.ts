@@ -55,6 +55,17 @@ const image = {
   caption: "A ballot",
   children: [{ text: "" }],
 };
+const external = {
+  type: "external_artifact",
+  id: "e1",
+  provider: "github",
+  general_id: "github:example/ballot-defs",
+  specific_id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  display_title: "Ballot defs",
+  summary: "Pinned",
+  license: "MIT",
+  children: [{ text: "" }],
+};
 const citation = {
   type: "citation_inline",
   id: "c1",
@@ -89,6 +100,11 @@ assertEq(
   serializeNode(image),
   "![Ballot](/img.webp)\nA ballot",
   "image export",
+);
+assertEq(
+  serializeNode(external),
+  "```external_artifact\nprovider: github\ngeneral_id: github:example/ballot-defs\nspecific_id: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\ndisplay_title: Ballot defs\nsummary: Pinned\nlicense: MIT\n```",
+  "external_artifact export",
 );
 assertEq(serializeNode(citation), "[cite:attr-1]", "citation export");
 assertEq(serializeNode(term), "[term:term-1|plurality]", "term export");
@@ -130,6 +146,19 @@ assertEq(
     caption: "A ballot",
   },
   "image round-trip",
+);
+assertEq(
+  parseVoidPlainText(serializeNode(external)),
+  {
+    kind: "external_artifact",
+    provider: "github",
+    general_id: "github:example/ballot-defs",
+    specific_id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    display_title: "Ballot defs",
+    summary: "Pinned",
+    license: "MIT",
+  },
+  "external_artifact round-trip",
 );
 assertEq(
   parseVoidPlainText(serializeNode(citation)),

@@ -34,6 +34,7 @@ function getTextPreview(node: unknown): string {
     elementType === "procedure_block" ||
     elementType === "data_block" ||
     elementType === "image_block" ||
+    elementType === "external_artifact" ||
     elementType === "evidence_block" ||
     elementType === "citation_inline" ||
     elementType === "term_inline";
@@ -144,6 +145,37 @@ function normalizeForHash(node: unknown): unknown {
       src,
       alt,
       caption,
+    };
+  }
+
+  if (element.type === "external_artifact") {
+    return {
+      type: "external_artifact",
+      id: typeof element.id === "string" ? element.id : "",
+      provider:
+        typeof (node as { provider?: unknown }).provider === "string"
+          ? String((node as any).provider)
+          : "",
+      general_id:
+        typeof (node as { general_id?: unknown }).general_id === "string"
+          ? String((node as any).general_id)
+          : "",
+      specific_id:
+        typeof (node as { specific_id?: unknown }).specific_id === "string"
+          ? String((node as any).specific_id)
+          : "",
+      display_title:
+        typeof (node as { display_title?: unknown }).display_title === "string"
+          ? String((node as any).display_title)
+          : "",
+      summary:
+        typeof (node as { summary?: unknown }).summary === "string"
+          ? String((node as any).summary)
+          : "",
+      license:
+        typeof (node as { license?: unknown }).license === "string"
+          ? String((node as any).license)
+          : "",
     };
   }
 

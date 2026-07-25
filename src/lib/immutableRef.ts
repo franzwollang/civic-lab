@@ -1,7 +1,7 @@
 /**
  * CONCEPT Appendix E.1 + D.3 — optional attribution `immutable_ref` patterns.
- * Full `external_artifact` node/whitelist is a later slice; this validates
- * common snapshot forms when an immutable_ref is provided.
+ * Plate `external_artifact` nodes use `src/lib/externalArtifact.ts` (App D
+ * provider + general_id + specific_id); this validates registry snapshot strings.
  */
 
 export type ImmutableRefKind = "github_commit" | "doi" | "arxiv" | "osf" | "other";

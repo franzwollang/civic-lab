@@ -7,6 +7,10 @@ import { z, ZodIssueCode } from "zod";
 import { parse as parseYaml } from "yaml";
 import { load as parseToml } from "js-toml";
 import { parse as parseCsv } from "csv-parse/sync";
+import {
+  isExternalArtifactEmpty,
+  validateExternalArtifact,
+} from "../lib/externalArtifact";
 
 type SlateBlock = Record<string, unknown> & { type?: string; id?: string };
 
@@ -310,6 +314,68 @@ const createStructuralSchema = (registry?: StructuralValidationRegistry) =>
             path: [index, "src"],
             params: { rule: "image-webp-only" },
           });
+        }
+        return;
+      }
+
+      if (node.type === "external_artifact") {
+        const fields = {
+          provider:
+            typeof (node as { provider?: unknown }).provider === "string"
+              ? (node as { provider: string }).provider
+              : "",
+          general_id:
+            typeof (node as { general_id?: unknown }).general_id === "string"
+              ? (node as { general_id: string }).general_id
+              : "",
+          specific_id:
+            typeof (node as { specific_id?: unknown }).specific_id === "string"
+              ? (node as { specific_id: string }).specific_id
+              : "",
+          display_title:
+            typeof (node as { display_title?: unknown }).display_title ===
+            "string"
+              ? (node as { display_title: string }).display_title
+              : "",
+          summary:
+            typeof (node as { summary?: unknown }).summary === "string"
+              ? (node as { summary: string }).summary
+              : "",
+          license:
+            typeof (node as { license?: unknown }).license === "string"
+              ? (node as { license: string }).license
+              : "",
+        };
+        if (isExternalArtifactEmpty(fields)) {
+          warn(
+            "External artifact is missing provider, general_id, specific_id, and display_title.",
+            [index, "provider"],
+            { rule: "external-artifact-empty" },
+          );
+          return;
+        }
+        const result = validateExternalArtifact(fields);
+        if (!result.ok) {
+          const field = result.field ?? "provider";
+          const incomplete =
+            field === "provider" ||
+            field === "general_id" ||
+            field === "specific_id" ||
+            field === "display_title"
+              ? !String(fields[field] ?? "").trim()
+              : false;
+          if (incomplete) {
+            warn(result.message, [index, field], {
+              rule: "external-artifact-incomplete",
+            });
+          } else {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: result.message,
+              path: [index, field],
+              params: { rule: "external-artifact-invalid", field },
+            });
+          }
         }
         return;
       }

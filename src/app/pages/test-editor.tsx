@@ -30,6 +30,7 @@ import { insertMathBlock, insertMathInline } from "@/editor/mathCommands";
 import { TAB_SPACES } from "@/editor/tabSpaces";
 import {
   insertDataBlock,
+  insertExternalArtifact,
   insertImageBlock,
   insertMermaidBlock,
   insertProcedureBlock,
@@ -962,6 +963,17 @@ function TestEditorInner() {
                       }}
                     >
                       Image
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertExternalArtifact(editor);
+                      }}
+                    >
+                      External
                     </Button>
                   </div>
                 </div>
