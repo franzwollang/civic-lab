@@ -46,12 +46,20 @@ async function main() {
     }
 
     const us = await listThreads({ homeDossierId: "us-voting-1" });
-    if (us.length !== 3) {
+    if (us.length < 4) {
       throw new Error(`us-voting-1 threads: ${us.length}`);
     }
     const rfc = us.find((t) => t.state === "rfc");
     if (!rfc || rfc.merge_artifact_id !== "us-voter-reg") {
       throw new Error("RFC stub missing merge_artifact_id");
+    }
+    const mergedSeed = us.find((t) => t.thread_id === "thread-us-overview-merged");
+    if (
+      !mergedSeed ||
+      mergedSeed.state !== "decided" ||
+      mergedSeed.decision_outcome !== "merged"
+    ) {
+      throw new Error("seeded merged overview RFC missing for reputation signals");
     }
 
     const detail = await getThread("thread-us-provisional-open");
