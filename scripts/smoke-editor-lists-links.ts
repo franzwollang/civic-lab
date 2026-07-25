@@ -12,14 +12,10 @@ import { promisify } from "util";
 import { readFileSync } from "node:fs";
 import { seedIfEmpty } from "../prisma/seed";
 import { setPrisma, createRevSet } from "../server/db";
-import {
-  validateDocumentStructureForMerge,
-} from "../src/doc/structuralValidation";
+import { validateDocumentStructureForMerge } from "../src/doc/structuralValidation";
 import { validateDocumentForMerge } from "../src/doc/validation";
 import { serializeNode, serializeNodes } from "../src/doc/plainTextExport";
-import {
-  DOCUMENT_READER_NODE_TYPES,
-} from "../src/doc/DocumentReader";
+import { DOCUMENT_READER_NODE_TYPES } from "../src/doc/DocumentReader";
 import { ELEMENT_TYPES } from "../src/editor/model";
 
 const execFileAsync = promisify(execFile);
@@ -61,7 +57,6 @@ const listLinkDoc = [
 ];
 
 async function main() {
-  // Source wiring
   const plateSrc = readFileSync("src/editor/plate.tsx", "utf8");
   assert.match(plateSrc, /ListPluginConfigured/);
   assert.match(plateSrc, /LinkPluginConfigured/);
@@ -79,69 +74,75 @@ async function main() {
     "reader checklist includes link type",
   );
 
-  // Export
-  const bullet = serializeNode(listLinkDoc[1]);
-  assert.equal(bullet, "- First bullet");
-  const linked = serializeNode(listLinkDoc[2]);
-  assert.equal(linked, "- See [the docs](https://example.com/docs).");
-  const numbered = serializeNode(listLinkDoc[3]);
-  assert.equal(numbered, "1. Step one");
+  assert.equal(serializeNode(listLinkDoc[1]), "- First bullet");
+  assert.equal(
+    serializeNode(listLinkDoc[2]),
+    "- See [the docs](https://example.com/docs).",
+  );
+  assert.equal(serializeNode(listLinkDoc[3]), "1. Step one");
   const md = serializeNodes(listLinkDoc);
   assert.match(md, /## Lists and links/);
   assert.match(md, /\[the docs\]\(https:\/\/example\.com\/docs\)/);
 
-  // Validation (structure + merge)
   const structure = validateDocumentStructureForMerge(listLinkDoc);
-  assert.equal(structure.success, true, "structure merge accepts list+link doc");
-  const merge = validateDocumentForMerge(listLinkDoc);
-  assert.equal(merge.success, true, "client merge validate accepts list+link doc");
-
-  // DB: RevSet create accepts document with list props + link inline
-  await fs.rm(DB_PATH, { force: true });
-  process.env.DATABASE_URL = "file:./smoke-editor-lists-links.db";
-  await execFileAsync(
-    "pnpm",
-    ["exec", "prisma", "db", "push", "--skip-generate", "--accept-data-loss"],
-    {
-      cwd: ROOT,
-      env: { ...process.env, DATABASE_URL: "file:./smoke-editor-lists-links.db" },
-    },
+  assert.equal(
+    structure.success,
+    true,
+    "structure merge accepts list+link doc",
   );
+  const merge = validateDocumentForMerge(listLinkDoc);
+  assert.equal(
+    merge.success,
+    true,
+    "client merge validate accepts list+link doc",
+  );
+
+  process.env.DATABASE_URL = "file:./smoke-editor-lists-links.db";
+  await fs.rm(DB_PATH, { force: true });
+  await fs.rm(`${DB_PATH}-journal`, { force: true });
+
+  const prismaCli = path.join(
+    ROOT,
+    "node_modules",
+    "prisma",
+    "build",
+    "index.js",
+  );
+  await execFileAsync(
+    process.execPath,
+    [prismaCli, "db", "push", "--skip-generate"],
+    { cwd: ROOT, env: { ...process.env }, maxBuffer: 10 * 1024 * 1024 },
+  );
+
   const prisma = new PrismaClient();
   setPrisma(prisma);
-  await seedIfEmpty(prisma);
+  try {
+    const seeded = await seedIfEmpty(prisma);
+    if (seeded !== "seeded") {
+      throw new Error(`expected seeded, got ${seeded}`);
+    }
 
-  const leaf = await prisma.thread.findFirst({
-    where: { state: "rfc", parent_thread_id: null },
-    include: { targets: true },
-  });
-  assert.ok(leaf, "need an RFC leaf thread");
-  const artifactId = leaf!.targets[0]?.artifact_id;
-  assert.ok(artifactId, "leaf has artifact target");
+    const okRs = await createRevSet({
+      thread_id: "thread-us-voter-reg-rfc",
+      author_id: "user-alice",
+      summary: "list+link proposal",
+      content_json: listLinkDoc,
+    });
+    assert.equal(
+      okRs.ok,
+      true,
+      `list+link RevSet should pass: ${JSON.stringify(okRs)}`,
+    );
 
-  const rev = await createRevSet({
-    thread_id: leaf!.id,
-    artifact_id: artifactId!,
-    content_json: listLinkDoc,
-    created_by: "user-alice",
-  });
-  assert.ok(rev.id, "RevSet created for list+link doc");
-  assert.equal(
-    (rev as { content_invalid?: boolean }).content_invalid,
-    undefined,
-  );
-
-  await prisma.$disconnect();
-  await fs.rm(DB_PATH, { force: true });
-  console.log("smoke-editor-lists-links: OK");
+    console.log("smoke-editor-lists-links: ok");
+  } finally {
+    await prisma.$disconnect();
+    await fs.rm(DB_PATH, { force: true });
+    await fs.rm(`${DB_PATH}-journal`, { force: true });
+  }
 }
 
-main().catch(async (err) => {
+main().catch((err) => {
   console.error(err);
-  try {
-    await fs.rm(DB_PATH, { force: true });
-  } catch {
-    /* ignore */
-  }
   process.exit(1);
 });

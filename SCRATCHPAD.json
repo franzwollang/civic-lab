@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-07-25T18:05Z",
-  "turn": 51,
+  "updated_at": "2026-07-25T18:20Z",
+  "turn": 52,
   "focus": {
     "milestone": null,
-    "issue": "Editor MVP gaps",
-    "goal": "Term scope + merge-strict validate; delete MathDecoratePlugin"
+    "issue": "Editor MVP lists+links",
+    "goal": "Plate Indent/List/Link plugins + reader/export + smoke"
   },
   "recent": [
-    "Merged PR #36 M6–M9 stack onto fresh cron branch",
-    "Deleted unused MathDecoratePlugin; extract termScope helper",
-    "Wired validateDocumentStructureForMerge into RevSet + merge",
-    "Term dialog defaultScope from dossier/product chrome",
-    "33/33 smokes + vite build green"
+    "Merged PR #37 (M6–M9 + editor term/validate) onto fresh cron branch",
+    "Added @platejs/{indent,list,link}@52.0.11; toolbar Bullets/Numbered/Link",
+    "DocumentReader + plainTextExport list/link aware; ELEMENT_TYPES.LINK",
+    "34/34 smokes + vite build green"
   ],
   "discoveries": [
     "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
-    "Lists/links Plate plugins next editor residual",
-    "Evidence registries + immutable_ref / App D still open"
+    "Evidence registries + immutable_ref / App D still open",
+    "Blockquotes optional; tables + image upload deferred"
   ],
-  "next_step": "Plate lists+links MVP, or evidence registry seeding beyond /test/editor",
+  "next_step": "Evidence registry seeding beyond /test/editor, or attribution immutable_ref / App D whitelist",
   "blockers": []
 }

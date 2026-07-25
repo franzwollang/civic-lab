@@ -11,7 +11,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Done: deleted unused `MathDecoratePlugin` (`src/editor/math-plugin.ts`); live path remains `autoConvertMath`.
   - Done: `validateDocumentStructureForMerge` wired into `createRevSet` + `decideThread` merge (warnings → errors; `content_invalid`).
   - Done: term dialog uses editor context scope (`dossier` in product chrome, else `global`); edits preserve scope.
-  - Remaining: Lists / blockquotes / tables / links not in Plate plugin set — lists+links next; tables defer.
+  - Done: Plate **lists + links** — `@platejs/{indent,list,link}@52.0.11`; toolbar Bullets/Numbered/Link; DocumentReader + plainTextExport; `smoke-editor-lists-links`.
+  - Remaining: blockquotes / tables — defer tables; blockquotes optional follow-up.
   - Remaining: Images require `.webp` only; no upload pipeline.
   - Remaining: Attribution `immutable_ref` unused vs `CONCEPT.md` Appendix E.1 / App D whitelist.
 
