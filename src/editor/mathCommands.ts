@@ -7,12 +7,17 @@ const isMathInline = (n: unknown) =>
 const isMathBlock = (n: unknown) =>
   Element.isElement(n) && (n as any).type === "math_block";
 
-export function insertMathInline(editor: Editor) {
+export function insertMathInline(editor: Editor, latex = "") {
   const at = editor.selection ?? Editor.end(editor, []);
 
   Transforms.insertNodes(
     editor,
-    { type: "math_inline", id: uuidv4(), latex: "", children: [{ text: "" }] } as any,
+    {
+      type: "math_inline",
+      id: uuidv4(),
+      latex,
+      children: [{ text: "" }],
+    } as any,
     { at, select: true },
   );
 
@@ -22,7 +27,7 @@ export function insertMathInline(editor: Editor) {
   Transforms.select(editor, Editor.range(editor, path));
 }
 
-export function insertMathBlock(editor: Editor) {
+export function insertMathBlock(editor: Editor, latex = "") {
   const blockEntry = editor.selection
     ? Editor.above(editor, {
         match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
@@ -33,7 +38,12 @@ export function insertMathBlock(editor: Editor) {
 
   Transforms.insertNodes(
     editor,
-    { type: "math_block", id: uuidv4(), latex: "", children: [{ text: "" }] } as any,
+    {
+      type: "math_block",
+      id: uuidv4(),
+      latex,
+      children: [{ text: "" }],
+    } as any,
     { at: insertPath, select: true },
   );
 

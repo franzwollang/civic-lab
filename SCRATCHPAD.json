@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-07-25T05:10Z",
-  "turn": 12,
+  "updated_at": "2026-07-25T05:30Z",
+  "turn": 13,
   "focus": {
     "milestone": "M2",
-    "issue": "Copy/paste + plain-text export for void embeds",
-    "goal": "Clipboard round-trip + Markdown-ish export for voids"
+    "issue": "Accessibility for rendered embeds",
+    "goal": "aria labels + keyboard select/remove + sanitize procedure HTML"
   },
   "recent": [
-    "Cherry-picked M1 Prisma+SQLite onto this branch",
-    "Void nav: inline L/R/U/D for math+citation; block skip-hidden",
-    "Image block edge ArrowUp/Down exit; hardened voidNavigation for Node"
+    "Re-landed M1+void-nav onto cursor/next-task-progression-3105",
+    "Void clipboard: serialize/parse + VoidClipboardPlugin",
+    "Canonical Markdown-ish export; blockIndex previews use it"
   ],
   "discoveries": [
-    "Prior M1 lived on cursor/next-task-progression-5940 (PR #1)",
-    "term_inline is non-void — out of void-nav scope"
+    "Prior M1/void-nav lived on PR #2 (91e2); fresh branches need merge",
+    "Old test-editor fenced paste regex was double-escaped (never matched)"
   ],
   "open_threads": [],
-  "next_step": "Implement copy/paste + plain-text export for void embeds (OPEN_ISSUES §A)",
+  "next_step": "Implement accessibility for rendered embeds (OPEN_ISSUES §A)",
   "blockers": []
 }

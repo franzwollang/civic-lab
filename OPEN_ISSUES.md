@@ -7,14 +7,6 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## A. Editor correctness (working surface: `/test/editor`)
 
-- [ ] **Copy/paste + plain-text export for void embeds**
-  - **Context**: Payload lives on element props (`latex`/`code`), so native copy does not round-trip.
-  - **Acceptance**:
-    - Copy produces reasonable text (`$…$`, `$$…$$`, fenced blocks) for plain destinations.
-    - Paste of those forms recreates the correct node type where appropriate.
-    - Canonical Markdown-ish export defined for revision previews/diffs.
-  - **Note**: Mermaid/data fenced paste exists partially in `test-editor.tsx`; generalize.
-
 - [ ] **Accessibility for rendered embeds**
   - **Acceptance**:
     - Render containers have meaningful `aria-label` / `aria-describedby`.

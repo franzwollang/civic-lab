@@ -981,37 +981,6 @@ function TestEditorInner() {
                             },
                           });
                         }}
-                        onPaste={(event) => {
-                          if (!editor) return;
-                          const raw = event.clipboardData?.getData("text/plain");
-                          if (!raw) return;
-
-                          const text = raw.replace(/\r\n/g, "\n");
-                          const match = text.match(
-                            /^```([A-Za-z0-9_-]+)\\s*\\n([\\s\\S]*?)\\n```\\s*$/m,
-                          );
-                          if (!match) return;
-
-                          const lang = match[1].toLowerCase();
-                          const code = match[2] ?? "";
-
-                          if (lang === "mermaid") {
-                            event.preventDefault();
-                            insertMermaidBlock(editor, code);
-                            return;
-                          }
-
-                          const normalizedLang = lang === "yml" ? "yaml" : lang;
-                          if (
-                            normalizedLang === "json" ||
-                            normalizedLang === "yaml" ||
-                            normalizedLang === "toml" ||
-                            normalizedLang === "csv"
-                          ) {
-                            event.preventDefault();
-                            insertDataBlock(editor, normalizedLang, code);
-                          }
-                        }}
                       />
                     </Plate>
                   </EvidenceModalProvider>
