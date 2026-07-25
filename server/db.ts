@@ -39,6 +39,11 @@ export type DossierRow = {
   title: string;
   summary: string | null;
   tags: string[];
+  /** Present when listed with Prisma `_count`. */
+  artifact_count?: number;
+  /** Joined from Collection when available. */
+  collection_title?: string | null;
+  country_code?: string | null;
 };
 
 /** Wire shape — dual-emits `artifact_id` + legacy `page_id`. */
@@ -107,6 +112,11 @@ function mapDossier(row: {
   title: string;
   summary: string | null;
   tags: unknown;
+  _count?: { artifacts: number };
+  collection?: {
+    title: string;
+    countryCode: string | null;
+  } | null;
 }): DossierRow {
   const tags = Array.isArray(row.tags)
     ? row.tags.filter((t): t is string => typeof t === "string")
@@ -117,6 +127,9 @@ function mapDossier(row: {
     title: row.title,
     summary: row.summary,
     tags,
+    artifact_count: row._count?.artifacts,
+    collection_title: row.collection?.title ?? null,
+    country_code: row.collection?.countryCode ?? null,
   };
 }
 
@@ -179,6 +192,10 @@ export async function listDossiers(
   const rows = await getPrisma().dossier.findMany({
     where: collectionId ? { collectionId } : undefined,
     orderBy: { title: "asc" },
+    include: {
+      _count: { select: { artifacts: true } },
+      collection: { select: { title: true, countryCode: true } },
+    },
   });
   return rows.map(mapDossier);
 }
@@ -186,6 +203,10 @@ export async function listDossiers(
 export async function getDossier(dossierId: string): Promise<DossierRow | null> {
   const row = await getPrisma().dossier.findUnique({
     where: { dossierId },
+    include: {
+      _count: { select: { artifacts: true } },
+      collection: { select: { title: true, countryCode: true } },
+    },
   });
   return row ? mapDossier(row) : null;
 }

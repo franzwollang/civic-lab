@@ -109,13 +109,15 @@ export function CollectionSplash({
                     title={d.title}
                     description={d.summary || ""}
                     lane={
-                      state.collection.country_code
-                        ? "Prescriptive"
-                        : "Descriptive"
+                      d.tags.some((t) => /alignment/i.test(t))
+                        ? "Alignment"
+                        : state.collection.country_code
+                          ? "Prescriptive"
+                          : "Descriptive"
                     }
-                    steward="—"
+                    steward={state.collection.title}
                     lastUpdated="seed"
-                    artifactCount={0}
+                    artifactCount={d.artifact_count ?? 0}
                     threadCount={0}
                   />
                 ))}

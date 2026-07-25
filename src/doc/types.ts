@@ -62,6 +62,10 @@ export type DossierRow = {
   title: string;
   summary: string | null;
   tags: string[];
+  /** Present on list/get when API joins Prisma `_count`. */
+  artifact_count?: number;
+  collection_title?: string | null;
+  country_code?: string | null;
 };
 
 /** @deprecated Prefer ArtifactRow */

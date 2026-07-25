@@ -3,13 +3,13 @@ import { Link } from "react-router";
 import { Header } from "../components/header";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
+import { ManualsMap } from "../components/manuals-map";
 import { getCollections } from "../../api/client";
 import type { CollectionRow } from "../../doc/types";
 import { Search } from "lucide-react";
 
 /**
- * Manuals Area entry — list/search of country Collections.
- * 3D map picker deferred (OPEN_ISSUES M4 remainder).
+ * Manuals Area entry — map + list/search of country Collections (CONCEPT §1.2).
  */
 export function ManualsIndex() {
   const [collections, setCollections] = useState<CollectionRow[] | null>(null);
@@ -54,10 +54,33 @@ export function ManualsIndex() {
           </p>
           <h1 className="mb-3 text-3xl font-bold text-neutral-900">Manuals</h1>
           <p className="mb-6 max-w-2xl text-neutral-600">
-            One Collection per country. Pick a Manual to open its shared splash
-            and dossier list. Map picker comes later.
+            One Collection per country. Pick from the map or search the list to
+            open a Manual splash and its dossiers.
           </p>
-          <div className="relative max-w-md">
+        </div>
+
+        {error && (
+          <Card className="mb-8 border border-neutral-200 p-6 text-sm text-neutral-600">
+            {error}
+          </Card>
+        )}
+
+        {collections && collections.length > 0 && (
+          <div className="mb-10">
+            <ManualsMap collections={collections} />
+          </div>
+        )}
+
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
+              All manuals
+            </h2>
+            <p className="mt-1 text-sm text-neutral-600">
+              List view mirrors the map — same Collections from the store.
+            </p>
+          </div>
+          <div className="relative w-full max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
             <Input
               type="search"
@@ -69,11 +92,6 @@ export function ManualsIndex() {
           </div>
         </div>
 
-        {error && (
-          <Card className="border border-neutral-200 p-6 text-sm text-neutral-600">
-            {error}
-          </Card>
-        )}
         {!error && collections === null && (
           <p className="text-sm text-neutral-500">Loading manuals…</p>
         )}
