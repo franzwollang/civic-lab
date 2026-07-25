@@ -24,7 +24,8 @@ export type AuditAction =
   | "accepted_risk"
   | "role_change"
   | "identity_request"
-  | "identity_attest";
+  | "identity_attest"
+  | "post_soft_delete";
 
 export type BoardHideErrorCode =
   | "not_owner"

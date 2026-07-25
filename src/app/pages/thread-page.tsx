@@ -83,6 +83,17 @@ export function ThreadPage() {
     );
   }
 
+  function onPostDeleted(postId: string) {
+    setThread((prev) =>
+      prev
+        ? {
+            ...prev,
+            posts: (prev.posts ?? []).filter((p) => p.post_id !== postId),
+          }
+        : prev,
+    );
+  }
+
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
 
   return (
@@ -254,6 +265,7 @@ export function ThreadPage() {
                 threadId={thread.thread_id}
                 posts={thread.posts ?? []}
                 onPosted={onPosted}
+                onPostDeleted={onPostDeleted}
               />
             </>
           )}

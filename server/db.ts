@@ -53,6 +53,10 @@ import {
   type AuditAction,
 } from "../src/lib/boardHide";
 import {
+  validateSoftDeletePost,
+  type SoftDeleteContext,
+} from "../src/lib/moderation";
+import {
   AUTH_MODE,
   defaultIdentityRecord,
   evaluateStewardEligibility,
@@ -332,6 +336,9 @@ export type ThreadPostRow = {
   type: string;
   body: string;
   created_at: string;
+  /** CONCEPT §9.4 soft-delete — null when live. */
+  deleted_at: string | null;
+  deleted_by: string | null;
 };
 
 /** Compact child summary for wrapper RFC responses. */
@@ -1460,6 +1467,8 @@ function mapThreadPost(row: {
   type: string;
   body: string;
   createdAt: Date;
+  deletedAt?: Date | null;
+  deletedBy?: string | null;
 }): ThreadPostRow {
   return {
     post_id: row.postId,
@@ -1468,6 +1477,8 @@ function mapThreadPost(row: {
     type: row.type,
     body: row.body,
     created_at: row.createdAt.toISOString(),
+    deleted_at: row.deletedAt ? row.deletedAt.toISOString() : null,
+    deleted_by: row.deletedBy ?? null,
   };
 }
 
@@ -1489,6 +1500,8 @@ function mapThread(row: {
     type: string;
     body: string;
     createdAt: Date;
+    deletedAt?: Date | null;
+    deletedBy?: string | null;
   }[];
   _count?: { posts: number };
 }): ThreadRow {
@@ -1520,18 +1533,29 @@ export async function listThreads(opts?: {
     orderBy: { createdAt: "desc" },
     include: {
       targets: true,
-      _count: { select: { posts: true } },
+      _count: {
+        select: {
+          posts: { where: { deletedAt: null } },
+        },
+      },
     },
   });
   return rows.map(mapThread);
 }
 
-export async function getThread(threadId: string): Promise<ThreadRow | null> {
+export async function getThread(
+  threadId: string,
+  opts?: { include_deleted_posts?: boolean },
+): Promise<ThreadRow | null> {
+  const includeDeleted = opts?.include_deleted_posts === true;
   const row = await getPrisma().thread.findUnique({
     where: { threadId },
     include: {
       targets: true,
-      posts: { orderBy: { createdAt: "asc" } },
+      posts: {
+        where: includeDeleted ? undefined : { deletedAt: null },
+        orderBy: { createdAt: "asc" },
+      },
       revSets: { orderBy: { version: "asc" } },
       childThreads: {
         orderBy: { createdAt: "asc" },
@@ -1543,7 +1567,11 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
           decisionOutcome: true,
         },
       },
-      _count: { select: { posts: true } },
+      _count: {
+        select: {
+          posts: { where: { deletedAt: null } },
+        },
+      },
     },
   });
   if (!row) return null;
@@ -2173,6 +2201,111 @@ export async function createThreadPost(input: {
   return mapThreadPost(row);
 }
 
+export type SoftDeletePostError =
+  | { code: "not_found"; message: string }
+  | { code: "already_deleted"; message: string }
+  | { code: "unknown_actor"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "canon_owner_only"; message: string }
+  | { code: "steward_country_mismatch"; message: string }
+  | { code: "context_missing"; message: string };
+
+/**
+ * CONCEPT §9.4 — soft-delete an ordinary ThreadPost (never hard-delete).
+ * Steward local to Manual Collection country; Owner global (incl. Canon).
+ */
+export async function softDeleteThreadPost(input: {
+  post_id: string;
+  actor_id: string;
+  reason?: string | null;
+}): Promise<
+  | { ok: true; post: ThreadPostRow; audit: AuditLogRow }
+  | { ok: false; error: SoftDeletePostError }
+> {
+  const prisma = getPrisma();
+  const post = await prisma.threadPost.findUnique({
+    where: { postId: input.post_id },
+    include: {
+      thread: {
+        include: {
+          homeDossier: {
+            include: {
+              collection: {
+                include: { area: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!post) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Post not found" },
+    };
+  }
+  if (post.deletedAt) {
+    return {
+      ok: false,
+      error: { code: "already_deleted", message: "Post already soft-deleted" },
+    };
+  }
+
+  const collection = post.thread.homeDossier.collection;
+  const areaKind = collection.area.kind;
+  if (areaKind !== "canon" && areaKind !== "manuals") {
+    return {
+      ok: false,
+      error: {
+        code: "context_missing",
+        message: `Unknown area kind: ${areaKind}`,
+      },
+    };
+  }
+  const context: SoftDeleteContext = {
+    area_kind: areaKind,
+    country_code: collection.countryCode,
+  };
+
+  const identity = await getUserIdentity(input.actor_id);
+  const gate = validateSoftDeletePost({
+    actor_id: input.actor_id,
+    context,
+    actor_country_codes: identity?.country_codes ?? [],
+  });
+  if (!gate.ok) {
+    return {
+      ok: false,
+      error: { code: gate.code, message: gate.message },
+    };
+  }
+
+  const now = new Date();
+  const updated = await prisma.threadPost.update({
+    where: { postId: input.post_id },
+    data: {
+      deletedAt: now,
+      deletedBy: input.actor_id,
+    },
+  });
+  const mapped = mapThreadPost(updated);
+  const audit = await appendAuditLog({
+    action: "post_soft_delete",
+    actor_id: input.actor_id,
+    subject_id: input.post_id,
+    payload: {
+      thread_id: post.threadId,
+      author_id: post.authorId,
+      collection_id: collection.collectionId,
+      area_kind: areaKind,
+      country_code: collection.countryCode,
+      reason: input.reason?.trim() || null,
+    },
+  });
+  return { ok: true, post: mapped, audit };
+}
+
 export type DecisionOutcome = "merged" | "rejected" | "parked";
 
 export type DecideThreadError =
@@ -2463,6 +2596,23 @@ export async function decideThread(input: {
 
   const thread = await getThread(input.thread_id);
   if (!thread) return { ok: false, error: { code: "not_found" } };
+
+  // CONCEPT §9.4 — append-only audit for merges (reject/park are not merge events).
+  if (input.outcome === "merged") {
+    await appendAuditLog({
+      action: "merge",
+      actor_id: authorId,
+      subject_id: input.thread_id,
+      payload: {
+        outcome: "merged",
+        merge_artifact_id: row.mergeArtifactId,
+        collection_id: authority.collection_id,
+        authority_class: authority.authority_class,
+        parent_cascaded: parentCascaded,
+      },
+    });
+  }
+
   return { ok: true, thread, parent_cascaded: parentCascaded };
 }
 
@@ -2796,7 +2946,31 @@ export async function adjudicateClaim(input: {
       adjudicatedAt: new Date(),
     },
   });
-  return { ok: true, claim: mapClaim(row) };
+  const claim = mapClaim(row);
+  await appendAuditLog({
+    action: "adjudication",
+    actor_id: input.author_id,
+    subject_id: input.claim_id,
+    payload: {
+      prior_status: existing.status,
+      status: input.status,
+      profile: existing.profile,
+      rationale: input.rationale.trim(),
+    },
+  });
+  if (existing.status !== input.status) {
+    await appendAuditLog({
+      action: "claim_status_change",
+      actor_id: input.author_id,
+      subject_id: input.claim_id,
+      payload: {
+        prior_status: existing.status,
+        status: input.status,
+        via: "adjudication",
+      },
+    });
+  }
+  return { ok: true, claim };
 }
 
 /** Global adjudication queue (CONCEPT §8.3) — pending requests across Collections. */
@@ -3294,9 +3468,21 @@ export async function createAcceptedRisk(
   const row = await prisma.acceptedRisk.findUniqueOrThrow({
     where: { acceptedRiskId },
   });
+  const accepted_risk = mapAcceptedRisk(row);
+  await appendAuditLog({
+    action: "accepted_risk",
+    actor_id: input.signer_id,
+    subject_id: input.thread_id,
+    payload: {
+      accepted_risk_id: acceptedRiskId,
+      merge_artifact_id: thread.mergeArtifactId,
+      findings_updated: findingIds,
+      description: input.description.trim(),
+    },
+  });
   return {
     ok: true,
-    accepted_risk: mapAcceptedRisk(row),
+    accepted_risk,
     findings_updated: findingIds,
   };
 }

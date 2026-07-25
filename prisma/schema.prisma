@@ -178,6 +178,7 @@ model RevSet {
 }
 
 /// CONCEPT §3 / §7.5 — timeline posts: comment | mitigation (Findings are first-class rows).
+/// Soft-delete via deleted_at (CONCEPT §9.4); never hard-delete Findings/Claims/AR/merged RevSets.
 model ThreadPost {
   postId            String             @id @map("post_id")
   threadId          String             @map("thread_id")
@@ -185,10 +186,13 @@ model ThreadPost {
   type              String
   body              String
   createdAt         DateTime           @map("created_at")
+  deletedAt         DateTime?          @map("deleted_at")
+  deletedBy         String?            @map("deleted_by")
   thread            Thread             @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
   candidateFinding  CandidateFinding?
 
   @@index([threadId])
+  @@index([deletedAt])
   @@map("thread_posts")
 }
 

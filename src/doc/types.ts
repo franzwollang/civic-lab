@@ -241,6 +241,9 @@ export type ThreadPostRow = {
   type: string;
   body: string;
   created_at: string;
+  /** CONCEPT §9.4 soft-delete — null when live. */
+  deleted_at: string | null;
+  deleted_by: string | null;
 };
 
 /** CONCEPT §7.4 Candidate Finding wire shape. */

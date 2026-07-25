@@ -281,6 +281,23 @@ export async function createThreadPost(
   return handleResponse<ThreadPostRow>(response);
 }
 
+/** CONCEPT §9.4 — soft-delete ordinary post (steward/Owner). */
+export async function softDeleteThreadPost(
+  threadId: string,
+  postId: string,
+  body: { actor_id: string; reason?: string | null },
+): Promise<{ post: ThreadPostRow; audit: AuditLogRow }> {
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/posts/${postId}/soft-delete`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+  return handleResponse(response);
+}
+
 /** Promote open thread → leaf RFC (1:1) or wrapper + sub-RFCs (multi-artifact). */
 export async function promoteThread(
   threadId: string,

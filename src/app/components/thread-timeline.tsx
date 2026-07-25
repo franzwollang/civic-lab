@@ -4,6 +4,7 @@ import {
   getThreadCandidates,
   getThreadFindings,
   promoteCandidateFinding,
+  softDeleteThreadPost,
 } from "../../api/client";
 import type {
   CandidateFindingRow,
@@ -18,6 +19,7 @@ import {
 } from "../../lib/candidateFindings";
 import { useActingUserOptional } from "../lib/acting-user";
 import { getPrototypeUser } from "../lib/prototype-users";
+import { userHasCapability } from "../lib/role-affordances";
 import { ActingAsHint } from "./acting-as-hint";
 import {
   ReplyComposer,
@@ -30,12 +32,14 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "./ui/toggle-group";
-import { AlertTriangle, Flag, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Flag, ShieldAlert, Trash2 } from "lucide-react";
 
 type ThreadTimelineProps = {
   threadId: string;
   posts: ThreadPostRow[];
   onPosted?: (post: ThreadPostRow) => void;
+  /** Called after a successful soft-delete so parents can drop the post. */
+  onPostDeleted?: (postId: string) => void;
   /** Optional heading override (default: Discussion). */
   heading?: string;
 };
@@ -61,6 +65,7 @@ export function ThreadTimeline({
   threadId,
   posts,
   onPosted,
+  onPostDeleted,
   heading = "Discussion",
 }: ThreadTimelineProps) {
   const { userId: actingId } = useActingUserOptional();
@@ -69,7 +74,11 @@ export function ThreadTimeline({
   const [candidates, setCandidates] = useState<CandidateFindingRow[]>([]);
   const [busyPostId, setBusyPostId] = useState<string | null>(null);
   const [busyCandidateId, setBusyCandidateId] = useState<string | null>(null);
+  const [busyDeleteId, setBusyDeleteId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const actor = getPrototypeUser(actingId);
+  const canModerate = userHasCapability(actor, "moderate_posts");
 
   useEffect(() => {
     let cancelled = false;
@@ -172,12 +181,27 @@ export function ThreadTimeline({
     }
   }
 
+  async function onSoftDelete(post: ThreadPostRow) {
+    if (busyDeleteId || !canModerate || post.deleted_at) return;
+    setBusyDeleteId(post.post_id);
+    setError(null);
+    try {
+      await softDeleteThreadPost(threadId, post.post_id, {
+        actor_id: actingId,
+        reason: "Moderation soft-delete",
+      });
+      onPostDeleted?.(post.post_id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Soft-delete failed");
+    } finally {
+      setBusyDeleteId(null);
+    }
+  }
+
   function scrollToFinding(findingId: string) {
     const el = document.getElementById(`finding-${findingId}`);
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-
-  const actor = getPrototypeUser(actingId);
 
   return (
     <div className="mt-8">
@@ -337,6 +361,21 @@ export function ThreadTimeline({
                         {busyPostId === post.post_id
                           ? "Flagging…"
                           : "Flag Candidate"}
+                      </Button>
+                    )}
+                    {canModerate && !post.deleted_at && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={busyDeleteId === post.post_id}
+                        onClick={() => onSoftDelete(post)}
+                        data-testid="soft-delete-post"
+                      >
+                        <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+                        {busyDeleteId === post.post_id
+                          ? "Deleting…"
+                          : "Soft-delete"}
                       </Button>
                     )}
                     {candidate?.status === "open" && canPromote && (

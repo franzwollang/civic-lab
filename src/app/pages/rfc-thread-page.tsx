@@ -139,6 +139,17 @@ export function RfcThreadPage() {
     );
   }
 
+  function onPostDeleted(postId: string) {
+    setThread((prev) =>
+      prev
+        ? {
+            ...prev,
+            posts: (prev.posts ?? []).filter((p) => p.post_id !== postId),
+          }
+        : prev,
+    );
+  }
+
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
   const latestVersion =
     revsets.length > 0 ? Math.max(...revsets.map((r) => r.version)) : 0;
@@ -542,6 +553,7 @@ export function RfcThreadPage() {
                 threadId={thread.thread_id}
                 posts={thread.posts ?? []}
                 onPosted={onPosted}
+                onPostDeleted={onPostDeleted}
                 heading="Discussion"
               />
             </>

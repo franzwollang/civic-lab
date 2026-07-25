@@ -57,6 +57,7 @@ import {
   getUserIdentity,
   searchCorpus,
   setPrisma,
+  softDeleteThreadPost,
   updateArtifact,
 } from "./db";
 import { validateRevisionPayload } from "./validateRevision";
@@ -238,6 +239,11 @@ const threadPostBodySchema = z.object({
   type: z.enum(["comment", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
+});
+
+const softDeletePostBodySchema = z.object({
+  actor_id: z.string().min(1),
+  reason: z.string().optional().nullable(),
 });
 
 const flagCandidateBodySchema = z.object({
@@ -641,7 +647,10 @@ app.get("/api/threads", async (c) => {
 });
 
 app.get("/api/threads/:threadId", async (c) => {
-  const thread = await getThread(c.req.param("threadId"));
+  const includeDeleted = c.req.query("include_deleted") === "1";
+  const thread = await getThread(c.req.param("threadId"), {
+    include_deleted_posts: includeDeleted,
+  });
   if (!thread) {
     return c.json({ error: "Thread not found" }, 404);
   }
@@ -671,6 +680,43 @@ app.post("/api/threads/:threadId/posts", async (c) => {
     return c.json({ error: "Thread not found" }, 404);
   }
   return c.json(created, 201);
+});
+
+/** CONCEPT §9.4 — soft-delete ordinary post (steward Manual / Owner global). */
+app.post("/api/threads/:threadId/posts/:postId/soft-delete", async (c) => {
+  const parsed = softDeletePostBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid soft-delete payload" }, 400);
+  }
+  const threadId = c.req.param("threadId");
+  const postId = c.req.param("postId");
+  const result = await softDeleteThreadPost({
+    post_id: postId,
+    actor_id: parsed.data.actor_id,
+    reason: parsed.data.reason,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "forbidden" ||
+      result.error.code === "canon_owner_only" ||
+      result.error.code === "steward_country_mismatch"
+        ? 403
+        : result.error.code === "not_found"
+          ? 404
+          : result.error.code === "already_deleted"
+            ? 409
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  if (result.post.thread_id !== threadId) {
+    return c.json(
+      { error: { code: "not_found", message: "Post not on this thread" } },
+      404,
+    );
+  }
+  return c.json({ post: result.post, audit: result.audit });
 });
 
 app.post("/api/threads/:threadId/promote", async (c) => {

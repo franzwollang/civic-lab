@@ -8,17 +8,19 @@ import {
   Layers,
   TrendingUp,
   EyeOff,
+  ScrollText,
 } from "lucide-react";
 import { Header } from "../components/header";
 import { DossierCard } from "../components/cards";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import {
+  getAuditLogs,
   getCollectionDashboard,
   hideUserFromBoards,
   liftBoardHide,
 } from "../../api/client";
-import type { CollectionDashboard } from "../../doc/types";
+import type { AuditLogRow, CollectionDashboard } from "../../doc/types";
 import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
 import {
   areaKindFromCollection,
@@ -267,6 +269,16 @@ function CollectionDashboardView({
           />
         </Card>
 
+        <Card className="border border-neutral-200 bg-white p-6 lg:col-span-2">
+          <div className="mb-2 flex items-center gap-2">
+            <ScrollText className="h-4 w-4 text-neutral-600" />
+            <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
+              Audit log
+            </h2>
+          </div>
+          <AuditLogPanel />
+        </Card>
+
         {/* Manuals-only panels keep chrome slot even when deferred */}
         {isManual && dashboard.lane_coverage && (
           <Card className="border border-neutral-200 bg-white p-6">
@@ -403,6 +415,102 @@ function ClaimMetricsPanel({
           </ul>
         )}
       </div>
+    </div>
+  );
+}
+
+function AuditLogPanel() {
+  const acting = useActingUserOptional();
+  const canView = userHasCapability(acting.user, "view_audit");
+  const [logs, setLogs] = useState<AuditLogRow[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!canView) {
+      setLogs([]);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    getAuditLogs({ limit: 12 })
+      .then((rows) => {
+        if (!cancelled) {
+          setLogs(rows);
+          setError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load audit");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [canView, acting.userId]);
+
+  if (!canView) {
+    return (
+      <div className="space-y-2">
+        <ActingAsHint
+          requireCapability="view_audit"
+          capabilityLabel="view the append-only audit log"
+        />
+        <p className="text-sm text-neutral-500">
+          Steward / Owner only — merges, adjudications, Accepted Risk, board-hide,
+          and soft-deletes (CONCEPT §9.4).
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3" data-testid="audit-log-panel">
+      <ActingAsHint
+        requireCapability="view_audit"
+        capabilityLabel="view the append-only audit log"
+      />
+      <p className="text-xs text-neutral-500">
+        Append-only site audit (CONCEPT §9.4). Soft-deleted posts stay in the DB;
+        Findings / Claims / Accepted Risk / merged RevSets are never hard-deleted.
+      </p>
+      {loading ? (
+        <p className="text-sm text-neutral-500">Loading audit…</p>
+      ) : null}
+      {error ? (
+        <p className="text-xs text-red-700" role="alert">
+          {error}
+        </p>
+      ) : null}
+      {!loading && logs.length === 0 ? (
+        <p className="text-sm text-neutral-500">No audit rows yet.</p>
+      ) : (
+        <ul className="divide-y divide-neutral-100 border border-neutral-100 rounded">
+          {logs.map((row) => (
+            <li
+              key={row.audit_id}
+              className="flex flex-wrap items-baseline justify-between gap-2 px-3 py-2 text-xs"
+            >
+              <span>
+                <span className="font-medium text-neutral-900">{row.action}</span>
+                <span className="ml-2 text-neutral-600">by {row.actor_id}</span>
+                {row.subject_id ? (
+                  <span className="ml-2 text-neutral-500">
+                    · {row.subject_id}
+                  </span>
+                ) : null}
+              </span>
+              <span className="text-neutral-400">
+                {new Date(row.created_at).toLocaleString()}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
