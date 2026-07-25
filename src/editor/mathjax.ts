@@ -1,3 +1,5 @@
+import { sanitizeSvgHtml } from "@/editor/sanitizeHtml";
+
 type MathJaxGlobal = {
   startup?: { promise?: Promise<unknown> };
   tex2svg?: (
@@ -146,7 +148,7 @@ export function renderTexToSvgHtml(
       const html = node?.outerHTML;
       if (!html) throw new Error("MathJax did not return SVG output.");
 
-      renderCache.set(key, { status: "ok", value: html });
+      renderCache.set(key, { status: "ok", value: sanitizeSvgHtml(html) });
       notify();
     } catch (err) {
       renderCache.set(key, {

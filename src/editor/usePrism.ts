@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { sanitizePrismHtml } from "@/editor/sanitizeHtml";
+
 type PrismType = any;
 
 async function loadPrism(): Promise<PrismType | null> {
@@ -77,18 +79,22 @@ export function usePrismHighlight(args: {
   const prism = usePrism();
 
   return useMemo(() => {
-    if (!prism) return { html: escapeHtml(args.code), ready: false };
+    if (!prism) {
+      return { html: sanitizePrismHtml(escapeHtml(args.code)), ready: false };
+    }
     const grammar = prism.languages?.[args.language] ?? prism.languages?.markup;
     if (!grammar || typeof prism.highlight !== "function") {
-      return { html: escapeHtml(args.code), ready: true };
+      return { html: sanitizePrismHtml(escapeHtml(args.code)), ready: true };
     }
     try {
       return {
-        html: prism.highlight(args.code, grammar, args.language),
+        html: sanitizePrismHtml(
+          prism.highlight(args.code, grammar, args.language),
+        ),
         ready: true,
       };
     } catch {
-      return { html: escapeHtml(args.code), ready: true };
+      return { html: sanitizePrismHtml(escapeHtml(args.code)), ready: true };
     }
   }, [args.code, args.language, prism]);
 }

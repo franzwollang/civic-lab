@@ -2,7 +2,7 @@ import type { PlateElementProps } from "platejs/react";
 import { PlateElement, useSelected } from "platejs/react";
 import { createSlatePlugin } from "platejs";
 import { Editor, Transforms } from "slate";
-import type { ChangeEvent, MouseEvent } from "react";
+import type { ChangeEvent, KeyboardEvent, MouseEvent } from "react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { useCollapseContext } from "@/editor/collapse";
@@ -10,6 +10,11 @@ import { applyTabToText, TAB_SPACES } from "@/editor/tabSpaces";
 import { usePrismHighlight } from "@/editor/usePrism";
 import { renderMermaidToSvgHtml, validateMermaidDiagram } from "@/editor/mermaid";
 import { useMermaidTick } from "@/editor/useMermaidTick";
+import {
+  REMOVE_BUTTON_CLASS,
+  VoidPreviewRegion,
+  removeButtonKeyDown,
+} from "@/editor/voidA11y";
 import {
   consumeVoidEntryIntent,
   getVoidEntrySelection,
@@ -55,7 +60,7 @@ function RemoveButton({
   className,
   label,
 }: {
-  onMouseDown: (e: MouseEvent) => void;
+  onMouseDown: (e: MouseEvent | KeyboardEvent) => void;
   className?: string;
   label: string;
 }) {
@@ -64,11 +69,9 @@ function RemoveButton({
       type="button"
       contentEditable={false}
       onMouseDown={onMouseDown}
+      onKeyDown={(e) => removeButtonKeyDown(e, onMouseDown)}
       aria-label={label}
-      className={
-        className ??
-        "absolute right-2 top-2 hidden h-6 w-6 items-center justify-center rounded border border-neutral-200 bg-white text-xs text-neutral-600 shadow-sm hover:bg-neutral-100 group-hover:flex"
-      }
+      className={className ?? REMOVE_BUTTON_CLASS}
     >
       x
     </button>
@@ -76,15 +79,37 @@ function RemoveButton({
 }
 
 function useSelectSelf(props: PlateElementProps) {
-  return (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  return (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     try {
       Transforms.select(props.editor, Editor.range(props.editor as any, props.path as any) as any);
     } catch {
       // ignore
     }
     document.querySelector<HTMLElement>("[data-slate-editor=\"true\"]")?.focus();
+  };
+}
+
+function useRemoveSelf(
+  props: PlateElementProps,
+  opts?: { replaceWithParagraph?: boolean; id?: string },
+) {
+  return (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+    Transforms.removeNodes(props.editor, { at: props.path });
+    if (opts?.replaceWithParagraph) {
+      Transforms.insertNodes(
+        props.editor,
+        {
+          type: "p",
+          ...(opts.id ? { id: opts.id } : {}),
+          children: [{ text: "" }],
+        } as any,
+        { at: props.path },
+      );
+    }
   };
 }
 
@@ -102,6 +127,10 @@ function MermaidBlockComponent(props: PlateElementProps) {
   const code = typeof el.code === "string" ? el.code : "";
   const [draftCode, setDraftCode] = useState(code);
   const selectSelf = useSelectSelf(props);
+  const handleRemove = useRemoveSelf(props, {
+    replaceWithParagraph: true,
+    id,
+  });
   const displayCode = selected ? draftCode : code;
   const highlighted = usePrismHighlight({ language: "mermaid", code: displayCode });
   useMermaidTick();
@@ -160,17 +189,6 @@ function MermaidBlockComponent(props: PlateElementProps) {
       // ignore
     }
   }, [displayCode, selected]);
-
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    Transforms.removeNodes(props.editor, { at: props.path });
-    Transforms.insertNodes(
-      props.editor,
-      { type: "p", ...(id ? { id } : {}), children: [{ text: "" }] } as any,
-      { at: props.path },
-    );
-  };
 
   if (hidden) return null;
 
@@ -289,17 +307,19 @@ function MermaidBlockComponent(props: PlateElementProps) {
           </div>
         </div>
       ) : (
-        <div
-          contentEditable={false}
-          className="mt-2 rounded border border-neutral-200 bg-white p-2 text-[11px] text-neutral-600"
-          onMouseDown={selectSelf}
+        <VoidPreviewRegion
+          label="Mermaid diagram"
+          description={
+            !validation.ok
+              ? validation.message
+              : displayCode.trim() || "Empty diagram"
+          }
+          onSelect={selectSelf}
+          onRemove={() => handleRemove()}
+          className="mt-2 rounded border border-neutral-200 bg-white p-2 text-[11px] text-neutral-600 outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           {svgHtml ? (
-            <div
-              aria-hidden
-              style={{ pointerEvents: "none" }}
-              dangerouslySetInnerHTML={{ __html: svgHtml }}
-            />
+            <div style={{ pointerEvents: "none" }} dangerouslySetInnerHTML={{ __html: svgHtml }} />
           ) : (
             <div
               className={
@@ -323,7 +343,7 @@ function MermaidBlockComponent(props: PlateElementProps) {
               />
             </pre>
           ) : null}
-        </div>
+        </VoidPreviewRegion>
       )}
 
       <span className="absolute inset-0 opacity-0 pointer-events-none" aria-hidden>
@@ -419,16 +439,10 @@ function ProcedureBlockComponent(props: PlateElementProps) {
     }
   }, [displayCode, selected]);
 
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    Transforms.removeNodes(props.editor, { at: props.path });
-    Transforms.insertNodes(
-      props.editor,
-      { type: "p", ...(id ? { id } : {}), children: [{ text: "" }] } as any,
-      { at: props.path },
-    );
-  };
+  const handleRemove = useRemoveSelf(props, {
+    replaceWithParagraph: true,
+    id,
+  });
 
   if (hidden) return null;
 
@@ -555,10 +569,16 @@ function ProcedureBlockComponent(props: PlateElementProps) {
           ) : null}
         </div>
       ) : (
-        <div
-          contentEditable={false}
-          className="mt-2 rounded border border-neutral-200 bg-white p-2"
-          onMouseDown={selectSelf}
+        <VoidPreviewRegion
+          label="Procedure block (pseudocode)"
+          description={
+            headerIssue
+              ? "Missing procedure or function header"
+              : firstContentLine || displayCode.trim() || "Empty procedure"
+          }
+          onSelect={selectSelf}
+          onRemove={() => handleRemove()}
+          className="mt-2 rounded border border-neutral-200 bg-white p-2 outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           {!hasHeader ? (
             <div className="rounded bg-amber-50 px-2 py-1 text-[11px] text-amber-700">
@@ -573,7 +593,7 @@ function ProcedureBlockComponent(props: PlateElementProps) {
               />
             </pre>
           )}
-        </div>
+        </VoidPreviewRegion>
       )}
 
       <span className="absolute inset-0 opacity-0 pointer-events-none" aria-hidden>
@@ -649,16 +669,10 @@ export function DataBlockComponent(
     }
   }, [draftCode, selected]);
 
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    Transforms.removeNodes(props.editor, { at: props.path });
-    Transforms.insertNodes(
-      props.editor,
-      { type: "p", ...(id ? { id } : {}), children: [{ text: "" }] } as any,
-      { at: props.path },
-    );
-  };
+  const handleRemove = useRemoveSelf(props, {
+    replaceWithParagraph: true,
+    id,
+  });
 
   const setLanguage = (next: string) => {
     Transforms.setNodes(
@@ -799,10 +813,12 @@ export function DataBlockComponent(
           </div>
         </div>
       ) : (
-        <div
-          contentEditable={false}
-          className="mt-2 rounded border border-neutral-200 bg-white p-2"
-          onMouseDown={selectSelf}
+        <VoidPreviewRegion
+          label={`Data block (${language})`}
+          description={displayCode.trim() || "Empty data block"}
+          onSelect={selectSelf}
+          onRemove={embedded ? undefined : () => handleRemove()}
+          className="mt-2 rounded border border-neutral-200 bg-white p-2 outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           <pre className={`code-prism language-${language} whitespace-pre-wrap break-words font-mono text-[11px] text-neutral-800`}>
             <code
@@ -810,7 +826,7 @@ export function DataBlockComponent(
               dangerouslySetInnerHTML={{ __html: highlighted.html }}
             />
           </pre>
-        </div>
+        </VoidPreviewRegion>
       )}
 
       <span className="absolute inset-0 opacity-0 pointer-events-none" aria-hidden>
@@ -847,16 +863,10 @@ function ImageBlockComponent(props: PlateElementProps) {
     return nodeId ? Boolean(collapse?.isHidden(nodeId)) : false;
   };
 
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    Transforms.removeNodes(props.editor, { at: props.path });
-    Transforms.insertNodes(
-      props.editor,
-      { type: "p", ...(id ? { id } : {}), children: [{ text: "" }] } as any,
-      { at: props.path },
-    );
-  };
+  const handleRemove = useRemoveSelf(props, {
+    replaceWithParagraph: true,
+    id,
+  });
 
   const updateNode = (patch: Partial<ImageBlockElement>) => {
     Transforms.setNodes(props.editor, patch, { at: props.path as any });
@@ -963,10 +973,12 @@ function ImageBlockComponent(props: PlateElementProps) {
           </div>
         </div>
       ) : (
-        <div
-          contentEditable={false}
-          className="mt-2 rounded border border-neutral-200 bg-white p-2"
-          onMouseDown={selectSelf}
+        <VoidPreviewRegion
+          label={alt ? `Image: ${alt}` : "Image block"}
+          description={caption || alt || src || "Missing image source"}
+          onSelect={selectSelf}
+          onRemove={() => handleRemove()}
+          className="mt-2 rounded border border-neutral-200 bg-white p-2 outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           {src ? (
             <img
@@ -980,7 +992,7 @@ function ImageBlockComponent(props: PlateElementProps) {
           {caption ? (
             <div className="mt-2 text-[11px] text-neutral-600">{caption}</div>
           ) : null}
-        </div>
+        </VoidPreviewRegion>
       )}
 
       <span className="absolute inset-0 opacity-0 pointer-events-none" aria-hidden>

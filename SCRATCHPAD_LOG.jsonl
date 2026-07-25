@@ -11,3 +11,4 @@
 {"ts":"2026-07-25T04:45Z","focus":"M1 Persistence","summary":"Bootstrapped SQLite+Prisma; retired JSON db helpers; documented seed contract","next":"M2 void embed keyboard navigation"}
 {"ts":"2026-07-25T05:10Z","focus":"M2 void nav","summary":"M1 on branch + void embed keyboard nav acceptance; handoff to copy/paste export","next":"copy/paste + plain-text export for void embeds"}
 {"ts":"2026-07-25T05:30Z","focus":"M2 void clipboard","summary":"Canonical plain-text export + paste round-trip for voids; handoff to embed a11y","next":"accessibility for rendered embeds"}
+{"ts":"2026-07-25T05:55Z","focus":"M2 void a11y","summary":"Embed a11y: ARIA, keyboard select/remove, DOMPurify on Prism+MathJax; next is full preview","next":"read preview renders full document model"}

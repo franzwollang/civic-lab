@@ -7,12 +7,6 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## A. Editor correctness (working surface: `/test/editor`)
 
-- [ ] **Accessibility for rendered embeds**
-  - **Acceptance**:
-    - Render containers have meaningful `aria-label` / `aria-describedby`.
-    - Keyboard users can focus/select/remove embeds without a mouse.
-    - Generated HTML (e.g. procedure/pseudocode Prism output) sanitized before DOM insert (mermaid already uses DOMPurify; procedure path does not).
-
 - [ ] **Read preview renders full document model**
   - **Context**: `src/app/pages/test-preview.tsx` only renders basic headings/paragraphs; saved revisions already contain math/mermaid/evidence/etc.
   - **Acceptance**: Preview (and any future artifact reader) renders the same node set as the editor (at least math, mermaid, procedure, data, image, evidence, citation, term).

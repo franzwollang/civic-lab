@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-07-25T05:30Z",
-  "turn": 13,
+  "updated_at": "2026-07-25T05:55Z",
+  "turn": 14,
   "focus": {
     "milestone": "M2",
-    "issue": "Accessibility for rendered embeds",
-    "goal": "aria labels + keyboard select/remove + sanitize procedure HTML"
+    "issue": "Read preview renders full document model",
+    "goal": "Preview renders math/mermaid/procedure/data/image/evidence/cite/term"
   },
   "recent": [
-    "Re-landed M1+void-nav onto cursor/next-task-progression-3105",
-    "Void clipboard: serialize/parse + VoidClipboardPlugin",
-    "Canonical Markdown-ish export; blockIndex previews use it"
+    "Merged PR #3 (M1+void-nav+clipboard) onto this fresh branch",
+    "Void a11y: aria labels, keyboard select/remove, DOMPurify Prism/SVG",
+    "Smoke scripts: smoke-void-a11y + smoke-void-clipboard"
   ],
   "discoveries": [
-    "Prior M1/void-nav lived on PR #2 (91e2); fresh branches need merge",
-    "Old test-editor fenced paste regex was double-escaped (never matched)"
+    "Cron branches start at main — merge latest progression PR first",
+    "usePrismHighlight is the choke point for procedure/data/mermaid Prism HTML"
   ],
   "open_threads": [],
-  "next_step": "Implement accessibility for rendered embeds (OPEN_ISSUES §A)",
+  "next_step": "Implement full document model in test-preview (OPEN_ISSUES §A)",
   "blockers": []
 }

@@ -1,4 +1,4 @@
-import DOMPurify from "dompurify";
+import { sanitizeSvgHtml } from "@/editor/sanitizeHtml";
 
 type MermaidApi = {
   initialize?: (config: Record<string, unknown>) => void;
@@ -32,16 +32,7 @@ export function subscribeMermaidUpdates(listener: () => void) {
   return () => listeners.delete(listener);
 }
 
-const sanitizeSvg = (html: string) => {
-  if (typeof window === "undefined") return html;
-  try {
-    return DOMPurify.sanitize(html, {
-      USE_PROFILES: { svg: true, svgFilters: true },
-    });
-  } catch {
-    return html;
-  }
-};
+const sanitizeSvg = sanitizeSvgHtml;
 
 export async function ensureMermaidLoaded(): Promise<MermaidApi | null> {
   if (typeof document === "undefined") return null;

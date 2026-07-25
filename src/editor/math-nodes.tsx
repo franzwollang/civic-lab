@@ -5,13 +5,21 @@ import {
 } from "platejs/react";
 import { createSlatePlugin } from "platejs";
 import { Editor, Transforms } from "slate";
-import type { MouseEvent } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { renderTexToSvgHtml, validateTexWithMathJax } from "@/editor/mathjax";
 import { useCollapseContext } from "@/editor/collapse";
 import { useMathJaxTick } from "@/editor/useMathJaxTick";
 import { applyTabToText, TAB_SPACES } from "@/editor/tabSpaces";
+import {
+  REMOVE_BUTTON_BASE,
+  REMOVE_BUTTON_INLINE_CLASS,
+  VoidPreviewRegion,
+  removeButtonKeyDown,
+  truncateForAria,
+  voidPreviewKeyDown,
+} from "@/editor/voidA11y";
 import {
   consumeVoidEntryIntent,
   getVoidEntrySelection,
@@ -48,15 +56,15 @@ function MathInlineComponent(props: PlateElementProps) {
   const svgHtml = !active && hasLatex ? renderTexToSvgHtml(latex, false) : null;
   const inputChWidth = Math.max(2, latex.length + 1);
 
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleRemove = (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     Transforms.removeNodes(props.editor, { at: props.path });
   };
 
-  const handleEnter = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleEnter = (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     try {
       // Select the element so we can render the input UI.
       Transforms.select(
@@ -83,13 +91,22 @@ function MathInlineComponent(props: PlateElementProps) {
     >
       {!active ? (
         <span
+          role="img"
+          tabIndex={0}
+          aria-label={`Inline math: ${truncateForAria(latex || "empty")}`}
           contentEditable={false}
-          className="inline-flex items-baseline"
+          className="inline-flex items-baseline outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded"
           onMouseDown={handleEnter}
+          onKeyDown={(event) => {
+            voidPreviewKeyDown({
+              event,
+              onSelect: () => handleEnter(event),
+              onRemove: () => handleRemove(),
+            });
+          }}
         >
           {svgHtml ? (
             <span
-              aria-hidden
               style={{ pointerEvents: "none" }}
               dangerouslySetInnerHTML={{ __html: svgHtml }}
             />
@@ -207,8 +224,9 @@ function MathInlineComponent(props: PlateElementProps) {
         type="button"
         contentEditable={false}
         onMouseDown={handleRemove}
+        onKeyDown={(e) => removeButtonKeyDown(e, handleRemove)}
         aria-label="Remove math"
-        className="absolute -right-3 -top-3 hidden h-5 w-5 items-center justify-center rounded border border-neutral-200 bg-white text-[11px] text-neutral-600 shadow-sm hover:bg-neutral-100 group-hover:flex"
+        className={REMOVE_BUTTON_INLINE_CLASS}
       >
         x
       </button>
@@ -274,9 +292,9 @@ export function MathBlockComponent(
     return renderTexToSvgHtml(displayLatex, true, containerWidth ?? undefined);
   }, [active, containerWidth, displayLatex, hasLatex, mathjaxTick]);
 
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleRemove = (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     // Replace with an empty paragraph to keep the document valid.
     Transforms.removeNodes(props.editor, { at: props.path });
     Transforms.insertNodes(
@@ -286,9 +304,9 @@ export function MathBlockComponent(
     );
   };
 
-  const handleEnter = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleEnter = (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     try {
       Transforms.select(
         props.editor,
@@ -360,34 +378,43 @@ export function MathBlockComponent(
       >
         Math
       </div>
-      <div
-        contentEditable={false}
-        className="cursor-text overflow-x-auto text-center"
-        onMouseDown={handleEnter}
-        ref={renderRef}
-      >
-        {!active ? (
-          svgHtml ? (
-            <div
-              aria-hidden
-              style={{ pointerEvents: "none" }}
-              dangerouslySetInnerHTML={{ __html: svgHtml }}
-            />
-          ) : (
-            <div
-              className={
-                !validation.ok
-                  ? validation.message === "Validating LaTeX..."
-                    ? "rounded bg-neutral-100 px-2 py-1 text-xs text-neutral-500"
-                    : "rounded bg-red-50 px-2 py-1 text-xs text-red-700"
-                  : "rounded bg-neutral-100 px-2 py-1 text-xs text-neutral-600"
-              }
-            >
-              {`$$\n${latex}\n$$`}
-            </div>
-          )
-        ) : null}
-      </div>
+      {!active ? (
+        <VoidPreviewRegion
+          label="Math expression"
+          description={latex.trim() || "Empty math block"}
+          onSelect={handleEnter}
+          onRemove={embedded ? undefined : () => handleRemove()}
+          className="cursor-text overflow-x-auto text-center outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded"
+        >
+          <div ref={renderRef}>
+            {svgHtml ? (
+              <div
+                style={{ pointerEvents: "none" }}
+                dangerouslySetInnerHTML={{ __html: svgHtml }}
+              />
+            ) : (
+              <div
+                className={
+                  !validation.ok
+                    ? validation.message === "Validating LaTeX..."
+                      ? "rounded bg-neutral-100 px-2 py-1 text-xs text-neutral-500"
+                      : "rounded bg-red-50 px-2 py-1 text-xs text-red-700"
+                    : "rounded bg-neutral-100 px-2 py-1 text-xs text-neutral-600"
+                }
+              >
+                {`$$\n${latex}\n$$`}
+              </div>
+            )}
+          </div>
+        </VoidPreviewRegion>
+      ) : (
+        <div
+          contentEditable={false}
+          className="cursor-text overflow-x-auto text-center"
+          onMouseDown={handleEnter}
+          ref={renderRef}
+        />
+      )}
 
       {active ? (
         // Keep the editing UI under a non-editable subtree so Slate doesn't interpret
@@ -481,8 +508,9 @@ export function MathBlockComponent(
           type="button"
           contentEditable={false}
           onMouseDown={handleRemove}
+          onKeyDown={(e) => removeButtonKeyDown(e, handleRemove)}
           aria-label="Remove math block"
-          className="absolute -right-2 -top-2 hidden h-6 w-6 items-center justify-center rounded border border-neutral-200 bg-white text-xs text-neutral-600 shadow-sm hover:bg-neutral-100 group-hover:flex"
+          className={`${REMOVE_BUTTON_BASE} -right-2 -top-2`}
         >
           x
         </button>
