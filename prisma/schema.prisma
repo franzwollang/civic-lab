@@ -341,7 +341,7 @@ model AuditLog {
   action     String
   actorId    String   @map("actor_id")
   subjectId  String?  @map("subject_id")
-  payload    Json     @default("{}")
+  payload    Json
   createdAt  DateTime @map("created_at")
 
   @@index([action])

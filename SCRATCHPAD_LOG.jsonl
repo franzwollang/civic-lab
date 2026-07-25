@@ -45,3 +45,4 @@
 {"ts":"2026-07-25T16:10Z","focus":"M8 impersonation chrome","summary":"Global acting-user switcher + role affordances; M8 done","next":"M9 Policy start or editor/evidence residuals"}
 {"ts":"2026-07-25T16:40Z","focus":"M9 Charter artifact","summary":"Living owner_merge_only Charter + redirect + Owner gate; M9 in progress","next":"Reputation scaffolding or anti-gaming board policy"}
 {"ts":"2026-07-25T16:42Z","focus":"M9 reputation","summary":"advisory reputation board from RevSets/RT/adjudication/AR; seed merged thread","next":"anti-gaming board-hide or real auth"}
+{"ts":"2026-07-25T17:20Z","focus":"M9 board-hide","summary":"Owner board-hide + AuditLog; 31/31 smokes; hand off real-auth","next":"M9 real-identity auth hooks or editor/evidence"}

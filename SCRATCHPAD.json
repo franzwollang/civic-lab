@@ -1,23 +1,24 @@
 {
-  "updated_at": "2026-07-25T16:55Z",
-  "turn": 47,
+  "updated_at": "2026-07-25T17:20Z",
+  "turn": 48,
   "focus": {
     "milestone": "M9",
-    "issue": "Anti-gaming board-hide / real auth",
-    "goal": "Owner board-hide + audit or auth policy hooks"
+    "issue": "Auth + real-identity policy hooks",
+    "goal": "CONCEPT §8.6 real-auth scaffolding after impersonation"
   },
   "recent": [
-    "Merged PR #33 (M9 Charter) onto cron branch 1248",
-    "M9 reputation: src/lib/reputation.ts + Collection dashboard panel",
-    "Seed merged RevSet thread; smoke-reputation; hand off anti-gaming/auth"
+    "Merged PR #34 progression onto cron branch 7a86",
+    "M9 board-hide: BoardHide + AuditLog; Owner hide/lift APIs",
+    "Reputation boards filter hidden users; Collection splash Owner UI",
+    "smoke-board-hide; 31/31 smokes + vite build green"
   ],
   "discoveries": [
-    "Prefer merge latest progression PR before coding on fresh cron branches"
+    "Prisma Json @default(\"{}\") breaks SQLite push — omit default, pass payload"
   ],
   "open_threads": [
-    "M9 anti-gaming board-hide + real auth remain",
+    "M9 real-auth / identity hooks remain",
     "Editor MVP gaps + evidence registries still open"
   ],
-  "next_step": "M9: Owner board-hide/audit for abuse OR real-identity auth hooks; else editor/evidence residuals",
+  "next_step": "M9: real-identity auth policy hooks (CONCEPT §8.6) or editor/evidence residuals",
   "blockers": []
 }
