@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { appendRow, readJson, updateRow } from "./db";
+import { appendRow, readJson, updateRow, writeJson } from "./db";
+import { z } from "zod";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8787;
@@ -35,6 +36,119 @@ app.get("/api/pages/:pageId/revisions", async (req, res) => {
       return bTime - aTime;
     });
   res.json(filtered);
+});
+
+app.get("/api/attributions", async (_req, res) => {
+  const attributions = await readJson<Record<string, unknown>>(
+    "attributions.json",
+  );
+  res.json(attributions);
+});
+
+const attributionEntitySchema = z.object({
+  id: z.string().min(1),
+  type: z.enum(["url", "book", "paper", "report", "other"]).default("url"),
+  title: z.string().min(1),
+  authors: z.array(z.string()).default([]),
+  publisher: z.string().optional(),
+  date_published: z.string().optional(),
+  url: z.string().optional(),
+  accessed_at: z.string().optional(),
+  immutable_ref: z.string().nullable().optional(),
+  notes: z.string().optional(),
+});
+
+const attributionsRegistrySchema = z.object({
+  version: z.number().int().nonnegative(),
+  items: z.array(attributionEntitySchema),
+});
+
+app.put("/api/attributions", async (req, res) => {
+  const parsed = attributionsRegistrySchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).send("Invalid attributions payload");
+    return;
+  }
+
+  const current = await readJson<Record<string, unknown>>("attributions.json");
+  const currentVersion =
+    typeof current.version === "number" ? current.version : 1;
+
+  if (parsed.data.version !== currentVersion) {
+    res.status(409).send("Attributions version conflict");
+    return;
+  }
+
+  const next = {
+    version: currentVersion + 1,
+    items: parsed.data.items,
+  };
+  await writeJson("attributions.json", next);
+  res.json(next);
+});
+
+const termAliasSchema = z.object({
+  lang: z.string().min(1),
+  text: z.string().min(1),
+  transliteration: z.string().nullable().optional(),
+});
+
+const termScopeSchema = z.union([
+  z.object({ kind: z.literal("global"), ref: z.string().optional() }),
+  z.object({ kind: z.literal("dossier"), ref: z.string().min(1) }),
+  z.object({ kind: z.literal("country"), ref: z.string().min(1) }),
+]);
+
+const termEntitySchema = z.object({
+  id: z.string().min(1),
+  scope: termScopeSchema,
+  type: z.enum(["local_alias", "platform_construct", "disambiguation"]),
+  status: z.enum(["tentative", "accepted"]).default("tentative"),
+  canonical_label_en: z.string().min(1),
+  aliases: z.array(termAliasSchema),
+  definition_en: z.string().min(1),
+  disambiguation_en: z.string().optional(),
+  see_also_term_ids: z.array(z.string()).optional(),
+  notes: z.string().optional(),
+});
+
+const termsRegistrySchema = z.object({
+  version: z.number().int().nonnegative(),
+  items: z.array(termEntitySchema),
+});
+
+app.get("/api/terms", async (_req, res) => {
+  const raw = await readJson<Record<string, unknown>>("terms.json");
+  const parsed = termsRegistrySchema.safeParse(raw);
+  if (!parsed.success) {
+    res.status(500).send("Invalid terms registry on disk");
+    return;
+  }
+  res.json(parsed.data);
+});
+
+app.put("/api/terms", async (req, res) => {
+  const parsed = termsRegistrySchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).send("Invalid terms payload");
+    return;
+  }
+
+  const current = await readJson<Record<string, unknown>>("terms.json");
+  const currentVersion =
+    typeof current.version === "number" ? current.version : 1;
+
+  if (parsed.data.version !== currentVersion) {
+    res.status(409).send("Terms version conflict");
+    return;
+  }
+
+  const next = {
+    version: currentVersion + 1,
+    items: parsed.data.items,
+  };
+  await writeJson("terms.json", next);
+  res.json(next);
 });
 
 app.post("/api/pages/:pageId/revisions", async (req, res) => {

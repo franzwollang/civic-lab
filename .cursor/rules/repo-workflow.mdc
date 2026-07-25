@@ -1,0 +1,37 @@
+---
+description: Source-of-truth and workflow discipline for the Civic Lab prototype
+alwaysApply: true
+---
+
+# Repo Workflow
+
+This is the **Civic Lab** high-fidelity prototype: a React/Vite + Express app for a
+thread-first Canon / Country Manuals knowledge system.
+
+## Documents (different jobs)
+
+| Artifact | Job |
+|---|---|
+| `CONCEPT.md` | General reference — product vision and vocabulary |
+| `PLANNING.md` | Planning & coordination — milestones, sequencing, status board |
+| `OPEN_ISSUES.md` | Current open work items + acceptance criteria |
+| `SCRATCHPAD.json` | Agent session snapshot (focus / next step) |
+| `src/` / `server/` / `db/` | Implementation |
+
+See the **project-state** rule for write cadences and how the three continuity files
+overlap without replacing each other.
+
+## Stack (orient quickly)
+
+- **Client:** React 19, React Router, Vite, Tailwind, Plate/Slate editor, MUI/Radix UI
+- **Server:** Express + `tsx`, JSON files in `db/`
+- **Package manager:** `pnpm` (lockfile present); `pnpm run dev` runs Vite + API
+
+## Divergence protocol
+
+Never let the prototype and `CONCEPT.md` diverge silently. When an implementation choice
+improves on or contradicts the concept:
+
+1. Implement it (if justified), and
+2. Record the mismatch as an `OPEN_ISSUES.md` entry (and/or update `CONCEPT.md` if the
+   user asked for a concept change). Plan any phased rollout in `PLANNING.md`.

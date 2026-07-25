@@ -26,6 +26,19 @@ async function loadPrism(): Promise<PrismType | null> {
       };
     }
 
+    if (mod?.languages && !mod.languages.pseudocode) {
+      mod.languages.pseudocode = {
+        comment: [/#.*/, /\/\/.*/],
+        string: /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/,
+        keyword:
+          /\b(procedure|function|return|if|else|elseif|for|while|repeat|until|break|continue|call|in|to|step|then|do|end|switch|case|default|and|or|not)\b/i,
+        boolean: /\b(true|false)\b/i,
+        number: /\b\d+(?:\.\d+)?\b/,
+        operator: /==|!=|<=|>=|<-|->|:=|=|<|>|\+|-|\*|\/|%/,
+        punctuation: /[{}[\]();,.]/,
+      };
+    }
+
     return mod?.default ?? mod;
   } catch {
     return null;

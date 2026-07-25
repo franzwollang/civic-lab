@@ -2,12 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import { Plate, PlateContent, usePlateEditor } from "platejs/react";
 import { v4 as uuidv4 } from "uuid";
-import { Editor, Transforms } from "slate";
+import { Editor, Range, Transforms } from "slate";
 
 import { Header } from "../components/header";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
 import { Separator } from "../components/ui/separator";
 import {
   Tooltip,
@@ -29,20 +28,52 @@ import { handleMathInlineArrowNavigation } from "@/editor/mathNavigation";
 import { insertMathBlock, insertMathInline } from "@/editor/mathCommands";
 import { TAB_SPACES } from "@/editor/tabSpaces";
 import {
-  insertCodeBlock,
+  insertDataBlock,
+  insertImageBlock,
   insertMermaidBlock,
   insertProcedureBlock,
 } from "@/editor/blockCommands";
+import {
+  insertCitationInline,
+  insertEvidenceBlock,
+  insertTermInline,
+} from "@/editor/evidenceCommands";
+import type { AttributionEntity, TermEntity } from "@/doc/evidence";
+import {
+  AttributionEditorDialog,
+  AttributionSearchDialog,
+} from "@/app/components/evidence/attribution-dialogs";
+import {
+  TermEditorDialog,
+  TermSearchDialog,
+} from "@/app/components/evidence/term-dialogs";
+import {
+  EvidenceRegistryProvider,
+  useEvidenceRegistry,
+} from "@/editor/evidenceRegistry";
+import { EvidenceModalProvider } from "@/editor/evidenceModals";
 import { extractBlockIndex } from "@/doc/blockIndex";
 import { merkleRoot } from "@/doc/merkle";
 import { diffBlocks } from "@/doc/diff";
 import type { PageRevisionRow, PageRow } from "@/doc/types";
-import { createRevision, getPage, getRevisions, updatePage } from "@/api/client";
+import { getPage, getRevisions } from "@/api/client";
+import { editorPageModel } from "@/app/models/editorPageModel";
+import { ClientPageProvider, toUserMessage } from "dullahan-web/client";
 import { validateDocument } from "@/doc/validation";
 
 const PAGE_ID = "page-001";
 
 export function TestEditor() {
+  return (
+    <ClientPageProvider model={editorPageModel}>
+      <EvidenceRegistryProvider>
+        <TestEditorInner />
+      </EvidenceRegistryProvider>
+    </ClientPageProvider>
+  );
+}
+
+function TestEditorInner() {
   const [value, setValue] = useState(initialValue);
   const [page, setPage] = useState<PageRow | null>(null);
   const [revisions, setRevisions] = useState<PageRevisionRow[]>([]);
@@ -50,6 +81,11 @@ export function TestEditor() {
     "idle",
   );
   const [error, setError] = useState<string | null>(null);
+  const {
+    execute: saveRevision,
+    pending: savePending,
+    message: saveErrorMessage,
+  } = editorPageModel.useTransition("saveRevision");
   const [mathjaxTick, setMathjaxTick] = useState(0);
   const [mermaidTick, setMermaidTick] = useState(0);
   const isAutoConvertingMath = useRef(false);
@@ -57,6 +93,22 @@ export function TestEditor() {
     () => new Set(),
   );
   const hasInitializedCollapse = useRef(false);
+  const evidenceRegistry = useEvidenceRegistry();
+
+  const savedSelectionForInsert = useRef<Range | null>(null);
+
+  const [termSearchOpen, setTermSearchOpen] = useState(false);
+  const [termEditorOpen, setTermEditorOpen] = useState(false);
+  const [termSeed, setTermSeed] = useState("");
+  const [termEditing, setTermEditing] = useState<TermEntity | null>(null);
+  const termEditorPurpose = useRef<"insert" | "search">("insert");
+
+  const [attSearchOpen, setAttSearchOpen] = useState(false);
+  const [attEditorOpen, setAttEditorOpen] = useState(false);
+  const [attSeed, setAttSeed] = useState("");
+  const [attEditing, setAttEditing] = useState<AttributionEntity | null>(null);
+  const attEditorPurpose = useRef<"insert" | "search">("insert");
+  const attSelectionHandler = useRef<((id: string) => void) | null>(null);
 
   const getBlockId = (node: Record<string, unknown>) => {
     const id = (node as { id?: unknown }).id;
@@ -130,10 +182,44 @@ export function TestEditor() {
     return diffBlocks(previousRevision.blocks, latestRevision.blocks);
   }, [latestRevision, previousRevision]);
 
-  const validation = useMemo(
-    () => validateDocument(value),
-    [mathjaxTick, mermaidTick, value],
+  const validation = useMemo(() => {
+    const useRegistry =
+      !evidenceRegistry.loading && !evidenceRegistry.error;
+    const attributionIds = useRegistry
+      ? new Set(
+          evidenceRegistry.attributions.items.map((item) => item.id),
+        )
+      : undefined;
+    const termIds = useRegistry
+      ? new Map(
+          evidenceRegistry.terms.items.map((item) => [
+            item.id,
+            { status: item.status as string | undefined },
+          ]),
+        )
+      : undefined;
+    return validateDocument(value, {
+      registry: useRegistry
+        ? { attributions: attributionIds, terms: termIds }
+        : undefined,
+    });
+  }, [
+    evidenceRegistry.attributions.items,
+    evidenceRegistry.error,
+    evidenceRegistry.loading,
+    evidenceRegistry.terms.items,
+    mathjaxTick,
+    mermaidTick,
+    value,
+  ]);
+  const errorIssues = validation.issues.filter(
+    (issue) => issue.severity === "error",
   );
+  const warningIssues = validation.issues.filter(
+    (issue) => issue.severity === "warning",
+  );
+  const primaryIssue = errorIssues[0] ?? warningIssues[0];
+  const hasErrors = errorIssues.length > 0;
 
   const load = async () => {
     setStatus("loading");
@@ -250,12 +336,19 @@ export function TestEditor() {
         schema_version: 2,
       };
 
-      await createRevision(page.page_id, revision);
-      const updated = await updatePage(page.page_id, {
-        current_revision_id: revisionId,
+      const result = await saveRevision({
+        pageId: page.page_id,
+        revision,
+        nextCurrentRevisionId: revisionId,
       });
-      setPage(updated);
 
+      if (!result.ok) {
+        setError(saveErrorMessage ?? toUserMessage(result.error));
+        setStatus("error");
+        return;
+      }
+
+      setPage(result.data);
       await load();
       setStatus("idle");
     } catch (err) {
@@ -312,15 +405,157 @@ export function TestEditor() {
     return hidden;
   }, [collapsedHeaderIds, value]);
 
+  const restoreSavedSelection = () => {
+    if (!editor) return;
+    const sel = savedSelectionForInsert.current;
+    if (sel) {
+      try {
+        Transforms.select(editor, sel);
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  const openAttributionSearch = (options: {
+    seed?: string;
+    onSelect: (id: string) => void;
+  }) => {
+    attSelectionHandler.current = options.onSelect;
+    attEditorPurpose.current = "search";
+    setAttSeed(options.seed ?? "");
+    setAttEditing(null);
+    setAttSearchOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
 
+      <TermSearchDialog
+        open={termSearchOpen}
+        onOpenChange={setTermSearchOpen}
+        initialQuery={termSeed}
+        onSelectTermId={(termId) => {
+          setTermSearchOpen(false);
+          if (!editor) return;
+          restoreSavedSelection();
+          const label =
+            evidenceRegistry.terms.items.find((item) => item.id === termId)
+              ?.canonical_label_en ?? "";
+          insertTermInline(editor, termId, label);
+          savedSelectionForInsert.current = null;
+        }}
+        onProposeNew={(seedLabel) => {
+          setTermSearchOpen(false);
+          termEditorPurpose.current = "insert";
+          setTermSeed(seedLabel);
+          setTermEditing(null);
+          setTermEditorOpen(true);
+        }}
+        onEditTerm={(term) => {
+          setTermSearchOpen(false);
+          termEditorPurpose.current = "search";
+          setTermEditing(term);
+          setTermEditorOpen(true);
+        }}
+      />
+
+      <TermEditorDialog
+        open={termEditorOpen}
+        onOpenChange={setTermEditorOpen}
+        seedLabel={termSeed}
+        editing={termEditing}
+        onSaved={(termId) => {
+          if (termEditorPurpose.current !== "insert") {
+            // Return to search, don't insert.
+            setTermSearchOpen(true);
+            return;
+          }
+          if (!editor) return;
+          restoreSavedSelection();
+          const label =
+            evidenceRegistry.terms.items.find((item) => item.id === termId)
+              ?.canonical_label_en ?? "";
+          insertTermInline(editor, termId, label);
+          savedSelectionForInsert.current = null;
+        }}
+      />
+
+      <AttributionSearchDialog
+        open={attSearchOpen}
+        onOpenChange={(open) => {
+          setAttSearchOpen(open);
+          if (!open) {
+            attSelectionHandler.current = null;
+          }
+        }}
+        initialQuery={attSeed}
+        onSelectAttributionId={(id) => {
+          setAttSearchOpen(false);
+          const handler = attSelectionHandler.current;
+          attSelectionHandler.current = null;
+          if (handler) {
+            handler(id);
+            return;
+          }
+          if (!editor) return;
+          restoreSavedSelection();
+          if (editor.selection && Range.isExpanded(editor.selection)) {
+            Transforms.collapse(editor, { edge: "end" });
+          }
+          insertCitationInline(editor, id);
+          savedSelectionForInsert.current = null;
+        }}
+        onCreateNew={(seed) => {
+          setAttSearchOpen(false);
+          attEditorPurpose.current = attSelectionHandler.current ? "search" : "insert";
+          setAttSeed(seed);
+          setAttEditing(null);
+          setAttEditorOpen(true);
+        }}
+        onEditAttribution={(att) => {
+          setAttSearchOpen(false);
+          attEditorPurpose.current = "search";
+          setAttEditing(att);
+          setAttEditorOpen(true);
+        }}
+      />
+
+      <AttributionEditorDialog
+        open={attEditorOpen}
+        onOpenChange={setAttEditorOpen}
+        seed={attSeed}
+        editing={attEditing}
+        onSaved={(id) => {
+          const handler = attSelectionHandler.current;
+          if (handler) {
+            attSelectionHandler.current = null;
+            handler(id);
+            return;
+          }
+          if (attEditorPurpose.current !== "insert") {
+            setAttSearchOpen(true);
+            return;
+          }
+          if (!editor) return;
+          restoreSavedSelection();
+          if (editor.selection && Range.isExpanded(editor.selection)) {
+            Transforms.collapse(editor, { edge: "end" });
+          }
+          insertCitationInline(editor, id);
+          savedSelectionForInsert.current = null;
+        }}
+      />
+
       <main className="mx-auto flex h-[calc(100vh-4rem)] max-w-[1400px] min-h-0 gap-6 px-8 py-6 overflow-hidden">
         <aside className="flex w-1/4 min-h-0 flex-col gap-6">
           <div className="pb-4">
+            <div className="text-xs uppercase tracking-wider text-neutral-500">
+              Editing
+            </div>
             <h1 className="text-3xl font-semibold text-neutral-900">
-              Test Editor
+              {page?.title || "Voting Systems"}
             </h1>
             <p className="text-sm text-neutral-500">
               MVP Plate editor with block hashes and revision tracking.
@@ -452,164 +687,232 @@ export function TestEditor() {
 
         <Card className="border border-neutral-200 bg-white w-3/4 min-h-0">
           <div className="flex h-full min-h-0 flex-col overflow-hidden">
-            <div className="border-b border-neutral-200 bg-white px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-neutral-500">
-                    Editing
-                  </div>
-                  <div className="text-lg font-semibold text-neutral-900">
-                    {page?.title || "Voting Systems"}
+            <div className="border-b border-neutral-200 bg-white px-6 py-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 text-[11px] [&_[data-slot=button]]:h-7 [&_[data-slot=button]]:gap-1 [&_[data-slot=button]]:px-2 [&_[data-slot=button]]:text-[11px]">
+                  <span className="text-[9px] font-semibold uppercase tracking-wide text-neutral-500">
+                    Text
+                  </span>
+                  <div className="h-4 w-px bg-neutral-200" />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant={isMarkActive("bold") ? "default" : "outline"}
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        toggleMark("bold");
+                      }}
+                    >
+                      Bold
+                    </Button>
+                    <Button
+                      variant={isMarkActive("italic") ? "default" : "outline"}
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        toggleMark("italic");
+                      }}
+                    >
+                      Italic
+                    </Button>
+                    <Button
+                      variant={isMarkActive("underline") ? "default" : "outline"}
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        toggleMark("underline");
+                      }}
+                    >
+                      Underline
+                    </Button>
                   </div>
                 </div>
-                <Badge variant="secondary">
-                  {page?.current_revision_id ? "Revisions" : "Draft"}
-                </Badge>
-              </div>
-            </div>
 
-            <div className="border-b border-neutral-200 bg-white px-6 py-3">
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button
-                    variant={isMarkActive("bold") ? "default" : "outline"}
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      toggleMark("bold");
-                    }}
-                  >
-                    Bold
-                  </Button>
-                  <Button
-                    variant={isMarkActive("italic") ? "default" : "outline"}
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      toggleMark("italic");
-                    }}
-                  >
-                    Italic
-                  </Button>
-                  <Button
-                    variant={isMarkActive("underline") ? "default" : "outline"}
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      toggleMark("underline");
-                    }}
-                  >
-                    Underline
-                  </Button>
-                  <Button
-                    variant={isMarkActive("code") ? "default" : "outline"}
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      toggleMark("code");
-                    }}
-                  >
-                    Code
-                  </Button>
-                  <div className="mx-1 h-5 w-px bg-neutral-200" />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      setBlockType("p");
-                    }}
-                  >
-                    Paragraph
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      setBlockType("h2");
-                    }}
-                  >
-                    H2
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      setBlockType("h3");
-                    }}
-                  >
-                    H3
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      setBlockType("h4");
-                    }}
-                  >
-                    H4
-                  </Button>
+                <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 text-[11px] [&_[data-slot=button]]:h-7 [&_[data-slot=button]]:gap-1 [&_[data-slot=button]]:px-2 [&_[data-slot=button]]:text-[11px]">
+                  <span className="text-[9px] font-semibold uppercase tracking-wide text-neutral-500">
+                    Blocks
+                  </span>
+                  <div className="h-4 w-px bg-neutral-200" />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setBlockType("p");
+                      }}
+                    >
+                      Paragraph
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setBlockType("h2");
+                      }}
+                    >
+                      H2
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setBlockType("h3");
+                      }}
+                    >
+                      H3
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setBlockType("h4");
+                      }}
+                    >
+                      H4
+                    </Button>
+                  </div>
                 </div>
-                <div className="h-5 w-px bg-neutral-200" />
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      if (!editor) return;
-                      insertMathInline(editor);
-                    }}
-                  >
-                    Inline Math
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      if (!editor) return;
-                      insertMathBlock(editor);
-                    }}
-                  >
-                    Math Block
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      if (!editor) return;
-                      insertCodeBlock(editor, "json");
-                    }}
-                  >
-                    Data
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      if (!editor) return;
-                      insertMermaidBlock(editor);
-                    }}
-                  >
-                    Diagram
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      if (!editor) return;
-                      insertProcedureBlock(editor);
-                    }}
-                  >
-                    Procedure
-                  </Button>
+
+                <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 text-[11px] [&_[data-slot=button]]:h-7 [&_[data-slot=button]]:gap-1 [&_[data-slot=button]]:px-2 [&_[data-slot=button]]:text-[11px]">
+                  <span className="text-[9px] font-semibold uppercase tracking-wide text-neutral-500">
+                    Inserts
+                  </span>
+                  <div className="h-4 w-px bg-neutral-200" />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertMathInline(editor);
+                      }}
+                    >
+                      Inline Math
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertMathBlock(editor);
+                      }}
+                    >
+                      Math Block
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertDataBlock(editor, "json");
+                      }}
+                    >
+                      Data
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertMermaidBlock(editor);
+                      }}
+                    >
+                      Diagram
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertProcedureBlock(editor);
+                      }}
+                    >
+                      Procedure
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertImageBlock(editor);
+                      }}
+                    >
+                      Image
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 text-[11px] [&_[data-slot=button]]:h-7 [&_[data-slot=button]]:gap-1 [&_[data-slot=button]]:px-2 [&_[data-slot=button]]:text-[11px]">
+                  <span className="text-[9px] font-semibold uppercase tracking-wide text-neutral-500">
+                    Evidence
+                  </span>
+                  <div className="h-4 w-px bg-neutral-200" />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertEvidenceBlock(editor);
+                      }}
+                    >
+                      Evidence
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        // Open citation search modal (dedupe first).
+                        const sel = editor.selection
+                          ? (JSON.parse(JSON.stringify(editor.selection)) as Range)
+                          : null;
+                        savedSelectionForInsert.current = sel;
+                        attSelectionHandler.current = null;
+                        setAttSeed("");
+                        setAttEditing(null);
+                        attEditorPurpose.current = "insert";
+                        setAttSearchOpen(true);
+                      }}
+                    >
+                      Cite
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        // Open term search modal. If text is selected, use it to seed search.
+                        const sel = editor.selection
+                          ? (JSON.parse(JSON.stringify(editor.selection)) as Range)
+                          : null;
+                        savedSelectionForInsert.current = sel;
+                        const seed =
+                          sel && Range.isExpanded(sel)
+                            ? Editor.string(editor, sel)
+                            : "";
+                        setTermSeed(seed);
+                        setTermEditing(null);
+                        termEditorPurpose.current = "insert";
+                        setTermSearchOpen(true);
+                      }}
+                    >
+                      Term
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -625,110 +928,120 @@ export function TestEditor() {
                     isHidden: (id) => hiddenBlockIds.has(id),
                   }}
                 >
-                <Plate
-                  editor={editor}
-                  onChange={({ value: nextValue }) => {
-                    const normalizedHeadings = normalizeHeadingLevels(
-                      nextValue as Array<Record<string, unknown>>,
-                    );
-                    const normalizedDoc = normalizeDocumentValue(
-                      normalizedHeadings.value as Array<Record<string, unknown>>,
-                    );
-
-                    if (normalizedHeadings.changed || normalizedDoc.changed) {
-                      setValue(normalizedDoc.value);
-                      editor?.tf?.setValue(
-                        normalizedDoc.value as Array<Record<string, unknown>>,
-                      );
-                      return;
-                    }
-                    setValue(
-                      normalizedDoc.value as Array<Record<string, unknown>>,
-                    );
-                  }}
-                >
-                    <PlateContent
-                      className="min-h-full rounded-lg border border-neutral-200 bg-white p-4 pb-12 text-sm text-neutral-900 focus:outline-none"
-                      placeholder="Write your draft..."
-                      renderLeaf={renderLeaf}
-                      onKeyDown={(event) => {
-                        if (!editor) return;
-                        if (
-                          event.key === "Tab" &&
-                          !event.shiftKey &&
-                          !event.metaKey &&
-                          !event.ctrlKey &&
-                          !event.altKey
-                        ) {
-                          event.preventDefault();
-                          Transforms.insertText(editor, TAB_SPACES);
-                          return;
-                        }
-                        handleMathInlineArrowNavigation(editor, event);
-                      }}
-                      onPaste={(event) => {
-                        if (!editor) return;
-                        const raw = event.clipboardData?.getData("text/plain");
-                        if (!raw) return;
-
-                        const text = raw.replace(/\r\n/g, "\n");
-                        const match = text.match(
-                          /^```([A-Za-z0-9_-]+)\\s*\\n([\\s\\S]*?)\\n```\\s*$/m,
+                  <EvidenceModalProvider value={{ openAttributionSearch }}>
+                    <Plate
+                      editor={editor}
+                      onChange={({ value: nextValue }) => {
+                        const normalizedHeadings = normalizeHeadingLevels(
+                          nextValue as Array<Record<string, unknown>>,
                         );
-                        if (!match) return;
+                        const normalizedDoc = normalizeDocumentValue(
+                          normalizedHeadings.value as Array<Record<string, unknown>>,
+                        );
 
-                        const lang = match[1].toLowerCase();
-                        const code = match[2] ?? "";
-
-                        if (lang === "mermaid") {
-                          event.preventDefault();
-                          insertMermaidBlock(editor, code);
+                        if (normalizedHeadings.changed || normalizedDoc.changed) {
+                          setValue(normalizedDoc.value);
+                          editor?.tf?.setValue(
+                            normalizedDoc.value as Array<Record<string, unknown>>,
+                          );
                           return;
                         }
-
-                        const normalizedLang = lang === "yml" ? "yaml" : lang;
-                        if (
-                          normalizedLang === "json" ||
-                          normalizedLang === "yaml" ||
-                          normalizedLang === "toml" ||
-                          normalizedLang === "csv"
-                        ) {
-                          event.preventDefault();
-                          insertCodeBlock(editor, normalizedLang, code);
-                        }
+                        setValue(
+                          normalizedDoc.value as Array<Record<string, unknown>>,
+                        );
                       }}
-                    />
-                  </Plate>
+                    >
+                      <PlateContent
+                        className="min-h-full rounded-lg border border-neutral-200 bg-white p-4 pb-12 text-sm text-neutral-900 focus:outline-none"
+                        placeholder="Write your draft..."
+                        renderLeaf={renderLeaf}
+                        onKeyDown={(event) => {
+                          if (!editor) return;
+                          if (
+                            event.key === "Tab" &&
+                            !event.shiftKey &&
+                            !event.metaKey &&
+                            !event.ctrlKey &&
+                            !event.altKey
+                          ) {
+                            event.preventDefault();
+                            Transforms.insertText(editor, TAB_SPACES);
+                            return;
+                          }
+                          handleMathInlineArrowNavigation(editor, event);
+                        }}
+                        onPaste={(event) => {
+                          if (!editor) return;
+                          const raw = event.clipboardData?.getData("text/plain");
+                          if (!raw) return;
+
+                          const text = raw.replace(/\r\n/g, "\n");
+                          const match = text.match(
+                            /^```([A-Za-z0-9_-]+)\\s*\\n([\\s\\S]*?)\\n```\\s*$/m,
+                          );
+                          if (!match) return;
+
+                          const lang = match[1].toLowerCase();
+                          const code = match[2] ?? "";
+
+                          if (lang === "mermaid") {
+                            event.preventDefault();
+                            insertMermaidBlock(editor, code);
+                            return;
+                          }
+
+                          const normalizedLang = lang === "yml" ? "yaml" : lang;
+                          if (
+                            normalizedLang === "json" ||
+                            normalizedLang === "yaml" ||
+                            normalizedLang === "toml" ||
+                            normalizedLang === "csv"
+                          ) {
+                            event.preventDefault();
+                            insertDataBlock(editor, normalizedLang, code);
+                          }
+                        }}
+                      />
+                    </Plate>
+                  </EvidenceModalProvider>
                 </CollapseProvider>
               </div>
             </div>
 
             <div className="border-t border-neutral-200 bg-white px-6 py-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs text-neutral-500">
-                  {validation.issues.length > 0 ? (
-                    <span className="font-medium text-red-600">
-                      {validation.issues[0].message}
+                <div className="flex items-center gap-2 text-[11px] text-neutral-500">
+                  {primaryIssue ? (
+                    <span
+                      className={
+                        "font-medium " +
+                        (hasErrors ? "text-red-600" : "text-amber-600")
+                      }
+                    >
+                      {primaryIssue.message}
                     </span>
                   ) : (
                     <span className="font-medium text-neutral-500">
                       No validation issues.
                     </span>
                   )}
-                  {status === "saving" && <span>Saving in progress...</span>}
+                  {(status === "saving" || savePending) && (
+                    <span>Saving in progress...</span>
+                  )}
                 </div>
                 <div className="flex items-center gap-3">
                   <Link
                     to={`/test/preview/${page?.page_id ?? PAGE_ID}`}
-                    className="text-sm font-medium text-neutral-600 hover:text-neutral-900"
+                    className="text-[11px] font-medium text-neutral-600 hover:text-neutral-900"
                   >
                     Preview
                   </Link>
                   <Button
+                    size="sm"
                     onClick={handleSave}
-                    disabled={status === "saving" || validation.issues.length > 0}
+                    disabled={status === "saving" || savePending || hasErrors}
                   >
-                    {status === "saving" ? "Saving..." : "Save revision"}
+                    {status === "saving" || savePending ? "Saving..." : "Save revision"}
                   </Button>
                 </div>
               </div>

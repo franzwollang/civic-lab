@@ -15,6 +15,45 @@ function getNodeText(node: unknown): string {
   return children.map(getNodeText).join("");
 }
 
+function getEvidenceText(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const children = (node as { children?: unknown }).children;
+  if (!Array.isArray(children)) return getNodeText(node);
+  const quoteChild = children.find(
+    (child) =>
+      child &&
+      typeof child === "object" &&
+      (child as { type?: unknown }).type === "evidence_block_text",
+  );
+  return quoteChild ? getNodeText(quoteChild) : getNodeText(node);
+}
+
+function getEvidenceData(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const children = (node as { children?: unknown }).children;
+  if (!Array.isArray(children)) return "";
+  const dataChild = children.find(
+    (child) =>
+      child &&
+      typeof child === "object" &&
+      (child as { type?: unknown }).type === "evidence_block_data",
+  ) as { code?: unknown } | undefined;
+  return typeof dataChild?.code === "string" ? dataChild.code : "";
+}
+
+function getEvidenceMath(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const children = (node as { children?: unknown }).children;
+  if (!Array.isArray(children)) return "";
+  const mathChild = children.find(
+    (child) =>
+      child &&
+      typeof child === "object" &&
+      (child as { type?: unknown }).type === "evidence_block_math",
+  ) as { latex?: unknown } | undefined;
+  return typeof mathChild?.latex === "string" ? mathChild.latex : "";
+}
+
 function getMathTex(node: unknown): string {
   if (!node || typeof node !== "object") return "";
 
@@ -47,7 +86,7 @@ function getTextPreview(node: unknown): string {
     return `procedure: ${first}`;
   }
 
-  if (elementType === "code_block") {
+  if (elementType === "data_block") {
     const language =
       typeof (node as { language?: unknown }).language === "string"
         ? String((node as any).language)
@@ -57,6 +96,40 @@ function getTextPreview(node: unknown): string {
       typeof code === "string" ? code : getNodeText(node);
     const first = text.trim().split("\n")[0] ?? "";
     return `${language}: ${first}`;
+  }
+
+  if (elementType === "image_block") {
+    const caption =
+      typeof (node as { caption?: unknown }).caption === "string"
+        ? String((node as any).caption)
+        : "";
+    const src =
+      typeof (node as { src?: unknown }).src === "string"
+        ? String((node as any).src)
+        : "";
+    const label = caption.trim() ? caption.trim() : src;
+    const first = label.trim().split("\n")[0] ?? "";
+    return `image: ${first}`;
+  }
+
+  if (elementType === "evidence_block") {
+    const kind =
+      typeof (node as { kind?: unknown }).kind === "string"
+        ? String((node as any).kind)
+        : "text";
+    if (kind === "data") {
+      const text = getEvidenceData(node);
+      const first = text.trim().split("\n")[0] ?? "";
+      return `evidence(data): ${first}`;
+    }
+    if (kind === "math") {
+      const text = getEvidenceMath(node);
+      const first = text.trim().split("\n")[0] ?? "";
+      return `evidence(math): ${first}`;
+    }
+    const text = getEvidenceText(node);
+    const first = text.trim().split("\n")[0] ?? "";
+    return `evidence(text): ${first}`;
   }
 
   return getNodeText(node);
@@ -125,7 +198,7 @@ function normalizeForHash(node: unknown): unknown {
     };
   }
 
-  if (element.type === "code_block") {
+  if (element.type === "data_block") {
     const code =
       typeof (node as { code?: unknown }).code === "string"
         ? String((node as any).code)
@@ -135,10 +208,138 @@ function normalizeForHash(node: unknown): unknown {
         ? String((node as any).language)
         : "json";
     return {
-      type: "code_block",
+      type: "data_block",
       id: typeof element.id === "string" ? element.id : "",
       code,
       language,
+    };
+  }
+
+  if (element.type === "image_block") {
+    const src =
+      typeof (node as { src?: unknown }).src === "string"
+        ? String((node as any).src)
+        : "";
+    const alt =
+      typeof (node as { alt?: unknown }).alt === "string"
+        ? String((node as any).alt)
+        : "";
+    const caption =
+      typeof (node as { caption?: unknown }).caption === "string"
+        ? String((node as any).caption)
+        : "";
+    return {
+      type: "image_block",
+      id: typeof element.id === "string" ? element.id : "",
+      src,
+      alt,
+      caption,
+    };
+  }
+
+  if (element.type === "evidence_block") {
+    const kind =
+      typeof (node as { kind?: unknown }).kind === "string"
+        ? String((node as any).kind)
+        : "text";
+    const lang =
+      typeof (node as { lang?: unknown }).lang === "string"
+        ? String((node as any).lang)
+        : "en";
+    const attribution_ref =
+      typeof (node as { attribution_ref?: unknown }).attribution_ref === "string"
+        ? String((node as any).attribution_ref)
+        : "";
+    const translation =
+      typeof (node as { translation?: unknown }).translation === "string"
+        ? String((node as any).translation)
+        : "";
+    const locator =
+      typeof (node as { locator?: unknown }).locator === "object" &&
+      (node as any).locator !== null &&
+      !Array.isArray((node as any).locator)
+        ? (node as any).locator
+        : undefined;
+    const children = Array.isArray(element.children)
+      ? element.children.map(normalizeForHash)
+      : [];
+
+    return {
+      type: "evidence_block",
+      id: typeof element.id === "string" ? element.id : "",
+      kind,
+      lang,
+      attribution_ref,
+      translation,
+      locator,
+      children,
+    };
+  }
+
+  if (element.type === "evidence_block_data") {
+    const code =
+      typeof (node as { code?: unknown }).code === "string"
+        ? String((node as any).code)
+        : "";
+    const language =
+      typeof (node as { language?: unknown }).language === "string"
+        ? String((node as any).language)
+        : "json";
+    return {
+      type: "evidence_block_data",
+      code,
+      language,
+    };
+  }
+
+  if (element.type === "evidence_block_math") {
+    const latex =
+      typeof (node as { latex?: unknown }).latex === "string"
+        ? String((node as any).latex)
+        : "";
+    return {
+      type: "evidence_block_math",
+      latex,
+    };
+  }
+
+  if (element.type === "citation_inline") {
+    const attribution_ref =
+      typeof (node as { attribution_ref?: unknown }).attribution_ref === "string"
+        ? String((node as any).attribution_ref)
+        : "";
+    const locator =
+      typeof (node as { locator?: unknown }).locator === "object" &&
+      (node as any).locator !== null &&
+      !Array.isArray((node as any).locator)
+        ? (node as any).locator
+        : undefined;
+    const note =
+      typeof (node as { note?: unknown }).note === "string"
+        ? String((node as any).note)
+        : "";
+    return {
+      type: "citation_inline",
+      id: typeof element.id === "string" ? element.id : "",
+      attribution_ref,
+      locator,
+      note,
+    };
+  }
+
+  if (element.type === "term_inline") {
+    const term_ref =
+      typeof (node as { term_ref?: unknown }).term_ref === "string"
+        ? String((node as any).term_ref)
+        : "";
+    const children = Array.isArray(element.children)
+      ? element.children.map(normalizeForHash)
+      : [];
+    return {
+      type: "term_inline",
+      id: typeof element.id === "string" ? element.id : "",
+      term_ref,
+      children,
     };
   }
 

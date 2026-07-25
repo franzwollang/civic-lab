@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "items": [
+    {
+      "id": "78546bdc-1d1a-4b4f-905c-8983686d0139",
+      "scope": {
+        "kind": "global"
+      },
+      "type": "platform_construct",
+      "status": "tentative",
+      "canonical_label_en": "SODA",
+      "aliases": [
+        {
+          "lang": "de",
+          "text": "SODA",
+          "transliteration": null
+        }
+      ],
+      "definition_en": "SODA voting system",
+      "disambiguation_en": "",
+      "see_also_term_ids": [],
+      "notes": ""
+    }
+  ]
+}

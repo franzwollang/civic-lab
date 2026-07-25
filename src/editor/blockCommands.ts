@@ -65,9 +65,25 @@ export function insertProcedureBlock(editor: Editor, code = "") {
   });
 }
 
-export function insertCodeBlock(editor: Editor, language: string, code = "") {
+export function insertImageBlock(
+  editor: Editor,
+  src = "",
+  alt = "",
+  caption = "",
+) {
   replaceEmptyParagraphOrInsertAfter(editor, {
-    type: "code_block",
+    type: "image_block",
+    id: uuidv4(),
+    src,
+    alt,
+    caption,
+    children: [{ text: "" }],
+  });
+}
+
+export function insertDataBlock(editor: Editor, language: string, code = "") {
+  replaceEmptyParagraphOrInsertAfter(editor, {
+    type: "data_block",
     id: uuidv4(),
     code,
     language,

@@ -10,10 +10,20 @@ import {
 import { MathBlockPlugin, MathInlinePlugin } from "./math-nodes";
 import { CollapseProvider, useCollapseContext } from "./collapse";
 import {
-  CodeBlockPlugin,
+  DataBlockPlugin,
+  ImageBlockPlugin,
   MermaidBlockPlugin,
   ProcedureBlockPlugin,
 } from "./void-blocks";
+import {
+  CitationInlinePlugin,
+  EvidenceBlockPlugin,
+  EvidenceBlockDataPlugin,
+  EvidenceBlockMathPlugin,
+  EvidenceBlockTextPlugin,
+  EvidenceBlockTranslationPlugin,
+  TermInlinePlugin,
+} from "./evidence-nodes";
 
 export { CollapseProvider } from "./collapse";
 
@@ -119,9 +129,17 @@ export const editorPlugins = [
   H4Plugin.configure({ node: { component: SubsubheadingElement } }),
   MathInlinePlugin,
   MathBlockPlugin,
+  CitationInlinePlugin,
+  TermInlinePlugin,
+  EvidenceBlockPlugin,
+  EvidenceBlockDataPlugin,
+  EvidenceBlockMathPlugin,
+  EvidenceBlockTextPlugin,
+  EvidenceBlockTranslationPlugin,
   MermaidBlockPlugin,
   ProcedureBlockPlugin,
-  CodeBlockPlugin,
+  DataBlockPlugin,
+  ImageBlockPlugin,
 ];
 
 export const initialValue: Array<Record<string, unknown>> = [

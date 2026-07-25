@@ -479,7 +479,104 @@ export function Constitution() {
         <section className="mb-10">
           <Card className="border border-neutral-200 bg-white p-6">
             <h2 className="text-2xl font-semibold text-neutral-900">
-              4) Separation of Lanes in Country Manuals
+              4) Capability Profiles (Technology Assumptions)
+            </h2>
+
+            <p className="mt-3 text-sm text-neutral-600">
+              Some Canon designs depend on assumptions about what technologies and
+              system primitives are available (e.g., privacy-preserving computation,
+              identity primitives, or verification tooling). Because these assumptions
+              change the feasible design space, Civic Lab encodes them explicitly as
+              first-class Canon artifacts called capability profiles.
+            </p>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-neutral-900">
+                4.1 What a capability profile is
+              </h3>
+              <p className="mt-2 text-sm text-neutral-600">
+                A capability profile is a named bundle of technical assumptions with
+                operational thresholds and an explicit threat/leakage model. It is not
+                a marketing claim (“practical,” “fast,” “secure”); it is a constraint
+                object that designs can declare dependency on.
+              </p>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-neutral-900">
+                4.2 Constitutional rule: no silent technical assumptions
+              </h3>
+              <p className="mt-2 text-sm text-neutral-600">
+                Canon artifacts that rely on non-trivial technical primitives must
+                explicitly declare the capability profile(s) they assume. Designs may
+                not import additional technical assumptions implicitly.
+              </p>
+              <p className="mt-3 text-sm text-neutral-600">
+                If a design needs a capability profile that does not exist yet, the
+                correct workflow is to propose a new capability profile artifact (and
+                then reference it), rather than embedding unstated assumptions in the
+                design.
+              </p>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-neutral-900">
+                4.3 Required structure (minimum fields)
+              </h3>
+              <p className="mt-2 text-sm text-neutral-600">
+                Capability profile artifacts must include, at minimum:
+              </p>
+              <ul className="mt-3 space-y-2 text-sm text-neutral-600">
+                <li>
+                  Name and scope (what domain it applies to; what it is not trying to
+                  cover).
+                </li>
+                <li>
+                  Assumed primitives (e.g., FHE/ZK/MPC primitives, identity primitives,
+                  signature assumptions).
+                </li>
+                <li>
+                  Minimum operational thresholds (scale, latency, cost envelope,
+                  update/dynamism constraints, and failure behavior).
+                </li>
+                <li>
+                  Threat model and leakage model (what is protected; what is visible;
+                  what can be inferred via metadata, access patterns, timing, or
+                  coercion).
+                </li>
+                <li>
+                  Custody/authority assumptions (who holds keys; who can authorize
+                  computation; what happens under compromise or compelled disclosure).
+                </li>
+                <li>
+                  Known failure modes and design consequences (what breaks; how the
+                  dependent designs degrade).
+                </li>
+                <li>
+                  References and evidence (implementations, benchmarks, proofs, and
+                  known limitations).
+                </li>
+              </ul>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-neutral-900">
+                4.4 Change-control discipline
+              </h3>
+              <p className="mt-2 text-sm text-neutral-600">
+                Because capability profiles can materially change Canon outcomes,
+                creating or changing a capability profile is treated as a high-impact
+                Canon change: the change must be explicit, rationale must be stated,
+                and dissent must be preserved.
+              </p>
+            </div>
+          </Card>
+        </section>
+
+        <section className="mb-10">
+          <Card className="border border-neutral-200 bg-white p-6">
+            <h2 className="text-2xl font-semibold text-neutral-900">
+              5) Separation of Lanes in Country Manuals
             </h2>
             <p className="mt-3 text-sm text-neutral-600">
               To keep reasoning legible, Civic Lab separates manual content into
@@ -487,7 +584,7 @@ export function Constitution() {
             </p>
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                4.1 Descriptive lane
+                5.1 Descriptive lane
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 What is true now (or forecasted), with sources, confidence, and
@@ -496,7 +593,7 @@ export function Constitution() {
             </div>
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                4.2 Prescriptive lane
+                5.2 Prescriptive lane
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 Plans and actions to achieve an explicit objective. The actor and
@@ -505,7 +602,7 @@ export function Constitution() {
             </div>
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                4.3 Alignment lane
+                5.3 Alignment lane
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 Steps that move a country toward Canon invariants and constraints,
@@ -518,7 +615,7 @@ export function Constitution() {
         <section className="mb-10">
           <Card className="border border-neutral-200 bg-white p-6">
             <h2 className="text-2xl font-semibold text-neutral-900">
-              5) Realism Without Pretense
+              6) Realism Without Pretense
             </h2>
             <p className="mt-3 text-sm text-neutral-600">
               Civic Lab permits realistic institutional analysis, including
@@ -540,12 +637,12 @@ export function Constitution() {
         <section className="mb-10">
           <Card className="border border-neutral-200 bg-white p-6">
             <h2 className="text-2xl font-semibold text-neutral-900">
-              6) Governance Model
+              7) Governance Model
             </h2>
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                6.1 Provisional and evolving
+                7.1 Provisional and evolving
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 Civic Lab is an early-stage project. Its governance, funding
@@ -563,7 +660,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                6.2 Benevolent dictator model for the Canon
+                7.2 Benevolent dictator model for the Canon
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 The Canon has final editorial oversight by the platform owner.
@@ -583,7 +680,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                6.3 Delegated stewardship for Country Manuals
+                7.3 Delegated stewardship for Country Manuals
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 Country Manuals may have appointed stewards with merge authority
@@ -597,7 +694,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                6.4 Global Red Team and global adjudication
+                7.4 Global Red Team and global adjudication
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 To reduce local ideological bubbles and capture, Red Team members
@@ -617,7 +714,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                6.5 Funding and institutional independence
+                7.5 Funding and institutional independence
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 As interest and participation increase, the owner is committed to
@@ -634,7 +731,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                6.6 Non-profit formation and jurisdiction intent
+                7.6 Non-profit formation and jurisdiction intent
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 When operationally viable, the owner intends to form a non-profit
@@ -659,7 +756,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                6.7 Governance evolution and amendment discipline
+                7.7 Governance evolution and amendment discipline
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 Changes to governance and institutional form should be treated as
@@ -680,12 +777,12 @@ export function Constitution() {
         <section className="mb-10">
           <Card className="border border-neutral-200 bg-white p-6">
             <h2 className="text-2xl font-semibold text-neutral-900">
-              7) Accountability and Identity
+              8) Accountability and Identity
             </h2>
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                7.1 Real-person policy
+                8.1 Real-person policy
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 Contributors with write access are verified as real people. Public
@@ -696,7 +793,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                7.2 Provenance is permanent
+                8.2 Provenance is permanent
               </h3>
               <p className="mt-2 text-sm text-neutral-600">
                 Contributions, decisions, and dissent records are preserved with
@@ -710,12 +807,12 @@ export function Constitution() {
         <section className="mb-10">
           <Card className="border border-neutral-200 bg-white p-6">
             <h2 className="text-2xl font-semibold text-neutral-900">
-              8) Scope and Boundaries
+              9) Scope and Boundaries
             </h2>
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                8.1 Civic Lab welcomes
+                9.1 Civic Lab welcomes
               </h3>
               <ul className="mt-3 space-y-2 text-sm text-neutral-600">
                 <li>Rigorous synthesis and model exploration with explicit uncertainty.</li>
@@ -728,7 +825,7 @@ export function Constitution() {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-neutral-900">
-                8.2 Civic Lab rejects
+                9.2 Civic Lab rejects
               </h3>
               <ul className="mt-3 space-y-2 text-sm text-neutral-600">
                 <li>Content premised on supernatural revelation as authoritative ground truth.</li>
@@ -744,7 +841,7 @@ export function Constitution() {
         <section className="mb-10">
           <Card className="border border-neutral-200 bg-white p-6">
             <h2 className="text-2xl font-semibold text-neutral-900">
-              9) Amendments
+              10) Amendments
             </h2>
             <p className="mt-3 text-sm text-neutral-600">
               This constitution may evolve. Any amendment should state the change
@@ -759,7 +856,7 @@ export function Constitution() {
         <section>
           <Card className="border border-neutral-200 bg-white p-6">
             <h2 className="text-2xl font-semibold text-neutral-900">
-              10) The Spirit of the Project
+              11) The Spirit of the Project
             </h2>
             <p className="mt-3 text-sm text-neutral-600">
               Civic Lab is a place for people who want to think clearly, argue

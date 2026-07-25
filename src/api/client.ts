@@ -1,4 +1,5 @@
 import type { PageRevisionRow, PageRow } from "../doc/types";
+import type { AttributionRegistry, TermRegistry } from "../doc/evidence";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
 
@@ -47,4 +48,34 @@ export async function updatePage(
     body: JSON.stringify(patch),
   });
   return handleResponse<PageRow>(response);
+}
+
+export async function getAttributions(): Promise<AttributionRegistry> {
+  const response = await fetch(`${API_BASE}/attributions`);
+  return handleResponse<AttributionRegistry>(response);
+}
+
+export async function getTerms(): Promise<TermRegistry> {
+  const response = await fetch(`${API_BASE}/terms`);
+  return handleResponse<TermRegistry>(response);
+}
+
+export async function putAttributions(
+  registry: AttributionRegistry,
+): Promise<AttributionRegistry> {
+  const response = await fetch(`${API_BASE}/attributions`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(registry),
+  });
+  return handleResponse<AttributionRegistry>(response);
+}
+
+export async function putTerms(registry: TermRegistry): Promise<TermRegistry> {
+  const response = await fetch(`${API_BASE}/terms`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(registry),
+  });
+  return handleResponse<TermRegistry>(response);
 }

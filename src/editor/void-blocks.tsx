@@ -2,7 +2,7 @@ import type { PlateElementProps } from "platejs/react";
 import { PlateElement, useSelected } from "platejs/react";
 import { createSlatePlugin } from "platejs";
 import { Editor, Transforms } from "slate";
-import type { ChangeEvent, KeyboardEvent, MouseEvent } from "react";
+import type { ChangeEvent, MouseEvent } from "react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { useCollapseContext } from "@/editor/collapse";
@@ -10,6 +10,11 @@ import { applyTabToText, TAB_SPACES } from "@/editor/tabSpaces";
 import { usePrismHighlight } from "@/editor/usePrism";
 import { renderMermaidToSvgHtml, validateMermaidDiagram } from "@/editor/mermaid";
 import { useMermaidTick } from "@/editor/useMermaidTick";
+import {
+  consumeVoidEntryIntent,
+  getVoidEntrySelection,
+  handleVoidBlockTextareaArrowExit,
+} from "@/editor/voidNavigation";
 
 type MermaidBlockElement = {
   type: "mermaid_block";
@@ -26,11 +31,20 @@ type ProcedureBlockElement = {
   children: Array<{ text: string }>;
 };
 
-type CodeBlockElement = {
-  type: "code_block";
+type DataBlockElement = {
+  type: "data_block";
   id?: string;
   code?: string;
   language?: string;
+  caption?: string;
+  children: Array<{ text: string }>;
+};
+
+type ImageBlockElement = {
+  type: "image_block";
+  id?: string;
+  src?: string;
+  alt?: string;
   caption?: string;
   children: Array<{ text: string }>;
 };
@@ -73,57 +87,12 @@ function useSelectSelf(props: PlateElementProps) {
   };
 }
 
-const handleBlockTextareaArrowExit = (
-  editor: any,
-  path: any,
-  value: string,
-  event: KeyboardEvent<HTMLTextAreaElement>,
-) => {
-  const key = event.key;
-  if (
-    key !== "ArrowUp" &&
-    key !== "ArrowDown" &&
-    key !== "ArrowLeft" &&
-    key !== "ArrowRight"
-  ) {
-    return false;
-  }
-
-  const start = event.currentTarget.selectionStart ?? 0;
-  const end = event.currentTarget.selectionEnd ?? 0;
-  if (start !== end) return false;
-
-  const atStart = start === 0;
-  const atEnd = start === value.length;
-  const isFirstLine = value.lastIndexOf("\n", start - 1) === -1;
-  const isLastLine = value.indexOf("\n", start) === -1;
-
-  if (key === "ArrowUp" && !isFirstLine) return false;
-  if (key === "ArrowDown" && !isLastLine) return false;
-  if (key === "ArrowLeft" && !atStart) return false;
-  if (key === "ArrowRight" && !atEnd) return false;
-
-  const point =
-    key === "ArrowUp" || key === "ArrowLeft"
-      ? Editor.before(editor, path)
-      : Editor.after(editor, path);
-  if (!point) return false;
-
-  event.preventDefault();
-  event.stopPropagation();
-  Transforms.select(editor, point);
-  requestAnimationFrame(() => {
-    document.querySelector<HTMLElement>("[data-slate-editor=\"true\"]")?.focus();
-  });
-  return true;
-};
 
 function MermaidBlockComponent(props: PlateElementProps) {
   const el = props.element as unknown as MermaidBlockElement;
   const id = typeof el.id === "string" ? el.id : undefined;
   const collapse = useCollapseContext();
   const hidden = id ? collapse?.isHidden(id) : false;
-  if (hidden) return null;
 
   const selected = useSelected();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -135,6 +104,10 @@ function MermaidBlockComponent(props: PlateElementProps) {
   const displayCode = selected ? draftCode : code;
   const highlighted = usePrismHighlight({ language: "mermaid", code: displayCode });
   useMermaidTick();
+  const isHiddenNode = (node: unknown) => {
+    const id = (node as any)?.id as string | undefined;
+    return id ? collapse?.isHidden(id) : false;
+  };
 
   const validation = displayCode.trim()
     ? validateMermaidDiagram(displayCode)
@@ -151,6 +124,23 @@ function MermaidBlockComponent(props: PlateElementProps) {
     if (!selected) return;
     textareaRef.current?.focus();
   }, [selected]);
+
+  useEffect(() => {
+    if (!selected) return;
+    const intent = consumeVoidEntryIntent(el, props.path);
+    if (!intent) return;
+    const next = getVoidEntrySelection(displayCode, intent);
+    pendingSelection.current = next;
+    requestAnimationFrame(() => {
+      if (!textareaRef.current) return;
+      try {
+        textareaRef.current.selectionStart = next.start;
+        textareaRef.current.selectionEnd = next.end;
+      } catch {
+        // ignore
+      }
+    });
+  }, [displayCode, el, props.path, selected]);
 
   useEffect(() => {
     if (selected) return;
@@ -181,6 +171,8 @@ function MermaidBlockComponent(props: PlateElementProps) {
     );
   };
 
+  if (hidden) return null;
+
   return (
     <PlateElement
       as="div"
@@ -189,7 +181,7 @@ function MermaidBlockComponent(props: PlateElementProps) {
     >
       <div
         contentEditable={false}
-        className="flex items-center justify-between text-xs text-neutral-600"
+        className="flex items-center justify-between pr-7 text-xs text-neutral-600"
         onMouseDown={selectSelf}
       >
         {selected ? (
@@ -206,10 +198,12 @@ function MermaidBlockComponent(props: PlateElementProps) {
             </select>
           </span>
         ) : (
-          <span className="rounded bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold text-neutral-600">
-            Mermaid
-          </span>
+          <span />
         )}
+        <span className="inline-flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5">
+          <span className="text-[11px] font-semibold text-neutral-700">Diagram</span>
+          <span className="text-[10px] font-medium text-neutral-500">Mermaid</span>
+        </span>
       </div>
 
       {selected ? (
@@ -248,9 +242,15 @@ function MermaidBlockComponent(props: PlateElementProps) {
               onPaste={(e) => e.stopPropagation()}
               onKeyDown={(e) => {
                 e.stopPropagation();
-                if (handleBlockTextareaArrowExit(props.editor, props.path, displayCode, e)) {
-                  return;
-                }
+              if (handleVoidBlockTextareaArrowExit(
+                props.editor,
+                props.path,
+                displayCode,
+                e,
+                isHiddenNode,
+              )) {
+                return;
+              }
                 if (e.key !== "Tab") return;
                 e.preventDefault();
                 const el = e.currentTarget;
@@ -339,21 +339,66 @@ function ProcedureBlockComponent(props: PlateElementProps) {
   const id = typeof el.id === "string" ? el.id : undefined;
   const collapse = useCollapseContext();
   const hidden = id ? collapse?.isHidden(id) : false;
-  if (hidden) return null;
 
   const selected = useSelected();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const highlightRef = useRef<HTMLPreElement | null>(null);
   const code = typeof el.code === "string" ? el.code : "";
   const [draftCode, setDraftCode] = useState(code);
   const pendingSelection = useRef<{ start: number; end: number } | null>(null);
   const dialect = typeof el.dialect === "string" ? el.dialect : "pseudocode.js";
   const selectSelf = useSelectSelf(props);
   const displayCode = selected ? draftCode : code;
+  const highlightLanguage = dialect === "pseudocode.js" ? "pseudocode" : "pseudocode";
+  const highlighted = usePrismHighlight({ language: highlightLanguage, code: displayCode });
+  const isHiddenNode = (node: unknown) => {
+    const id = (node as any)?.id as string | undefined;
+    return id ? collapse?.isHidden(id) : false;
+  };
+  const hasCode = displayCode.trim().length > 0;
+  const firstContentLine = useMemo(() => {
+    return displayCode
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .find((line) => line.length > 0 && !line.startsWith("#") && !line.startsWith("//"));
+  }, [displayCode]);
+  const hasHeader = firstContentLine ? /^(procedure|function)\b/i.test(firstContentLine) : false;
+  const headerIssue = hasCode && !hasHeader;
+
+  const syncHighlightScroll = (el: HTMLTextAreaElement) => {
+    if (!highlightRef.current) return;
+    highlightRef.current.style.transform = `translate(${-el.scrollLeft}px, ${-el.scrollTop}px)`;
+  };
+
+  const setDialect = (next: string) => {
+    Transforms.setNodes(
+      props.editor,
+      { dialect: next },
+      { at: props.path as any },
+    );
+  };
 
   useEffect(() => {
     if (!selected) return;
     textareaRef.current?.focus();
   }, [selected]);
+
+  useEffect(() => {
+    if (!selected) return;
+    const intent = consumeVoidEntryIntent(el, props.path);
+    if (!intent) return;
+    const next = getVoidEntrySelection(displayCode, intent);
+    pendingSelection.current = next;
+    requestAnimationFrame(() => {
+      if (!textareaRef.current) return;
+      try {
+        textareaRef.current.selectionStart = next.start;
+        textareaRef.current.selectionEnd = next.end;
+      } catch {
+        // ignore
+      }
+    });
+  }, [displayCode, el, props.path, selected]);
 
   useEffect(() => {
     if (selected) return;
@@ -384,6 +429,8 @@ function ProcedureBlockComponent(props: PlateElementProps) {
     );
   };
 
+  if (hidden) return null;
+
   return (
     <PlateElement
       as="div"
@@ -392,14 +439,14 @@ function ProcedureBlockComponent(props: PlateElementProps) {
     >
       <div
         contentEditable={false}
-        className="flex items-center justify-between text-xs text-neutral-600"
+        className="flex items-center justify-between pr-7 text-xs text-neutral-600"
         onMouseDown={selectSelf}
       >
         {selected ? (
           <span contentEditable={false}>
             <select
               value={dialect}
-              onChange={() => {}}
+              onChange={(e) => setDialect(e.target.value)}
               onMouseDown={(e) => e.stopPropagation()}
               onKeyDownCapture={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
@@ -409,82 +456,122 @@ function ProcedureBlockComponent(props: PlateElementProps) {
             </select>
           </span>
         ) : (
-          <span className="rounded bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold text-neutral-600">
-            {dialect}
-          </span>
+          <span />
         )}
+        <span className="inline-flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5">
+          <span className="text-[11px] font-semibold text-neutral-700">Procedure</span>
+          <span className="text-[10px] font-medium text-neutral-500">{dialect}</span>
+        </span>
       </div>
 
       {selected ? (
         <div contentEditable={false}>
-          <textarea
-            ref={textareaRef}
-            value={displayCode}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-              const nextValue = e.target.value;
-              pendingSelection.current = {
-                start: e.currentTarget.selectionStart ?? 0,
-                end: e.currentTarget.selectionEnd ?? 0,
-              };
-              setDraftCode(nextValue);
-              Transforms.setNodes(
-                props.editor,
-                { code: nextValue, dialect: "pseudocode.js" },
-                { at: props.path as any },
-              );
-            }}
-            onBeforeInput={(e) => e.stopPropagation()}
-            onCopy={(e) => e.stopPropagation()}
-            onCut={(e) => e.stopPropagation()}
-            onPaste={(e) => e.stopPropagation()}
-            onKeyDown={(e) => {
-              e.stopPropagation();
-              if (handleBlockTextareaArrowExit(props.editor, props.path, displayCode, e)) {
-                return;
-              }
-              if (e.key !== "Tab") return;
-              e.preventDefault();
-              const el = e.currentTarget;
-              const next = applyTabToText({
-                value: displayCode,
-                selectionStart: el.selectionStart ?? 0,
-                selectionEnd: el.selectionEnd ?? 0,
-                tab: TAB_SPACES,
-                outdent: e.shiftKey,
-              });
-              setDraftCode(next.value);
-              Transforms.setNodes(
-                props.editor,
-                { code: next.value, dialect: "pseudocode.js" },
-                { at: props.path as any },
-              );
-              requestAnimationFrame(() => {
-                try {
-                  el.selectionStart = next.selectionStart;
-                  el.selectionEnd = next.selectionEnd;
-                } catch {
-                  // ignore
+          <div className="relative mt-2 rounded border border-neutral-200 bg-white">
+            <pre
+              ref={highlightRef}
+              aria-hidden
+              className="code-prism pointer-events-none absolute inset-0 overflow-hidden whitespace-pre-wrap break-words px-2 py-1 font-mono text-[11px] leading-5 text-neutral-800"
+              style={{ transform: "translate(0px, 0px)" }}
+            >
+              <code
+                className={`language-${highlightLanguage}`}
+                dangerouslySetInnerHTML={{ __html: highlighted.html }}
+              />
+            </pre>
+            <textarea
+              ref={textareaRef}
+              value={displayCode}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+                const nextValue = e.target.value;
+                pendingSelection.current = {
+                  start: e.currentTarget.selectionStart ?? 0,
+                  end: e.currentTarget.selectionEnd ?? 0,
+                };
+                setDraftCode(nextValue);
+                Transforms.setNodes(
+                  props.editor,
+                  { code: nextValue, dialect: "pseudocode.js" },
+                  { at: props.path as any },
+                );
+              }}
+              onBeforeInput={(e) => e.stopPropagation()}
+              onCopy={(e) => e.stopPropagation()}
+              onCut={(e) => e.stopPropagation()}
+              onPaste={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                e.stopPropagation();
+                if (handleVoidBlockTextareaArrowExit(
+                  props.editor,
+                  props.path,
+                  displayCode,
+                  e,
+                  isHiddenNode,
+                )) {
+                  return;
                 }
-              });
-            }}
-            onMouseDown={(e) => e.stopPropagation()}
-            rows={Math.min(14, Math.max(4, code.split("\n").length + 1))}
-            className="mt-2 w-full resize-y rounded border border-neutral-200 bg-white px-2 py-1 font-mono text-xs text-neutral-800 outline-none"
-            placeholder={
-              "procedure Example(x)\n  if x < 0\n    return 0\n  return x"
-            }
-          />
+                if (e.key !== "Tab") return;
+                e.preventDefault();
+                const el = e.currentTarget;
+                const next = applyTabToText({
+                  value: displayCode,
+                  selectionStart: el.selectionStart ?? 0,
+                  selectionEnd: el.selectionEnd ?? 0,
+                  tab: TAB_SPACES,
+                  outdent: e.shiftKey,
+                });
+                setDraftCode(next.value);
+                Transforms.setNodes(
+                  props.editor,
+                  { code: next.value, dialect: "pseudocode.js" },
+                  { at: props.path as any },
+                );
+                requestAnimationFrame(() => {
+                  try {
+                    el.selectionStart = next.selectionStart;
+                    el.selectionEnd = next.selectionEnd;
+                    syncHighlightScroll(el);
+                  } catch {
+                    // ignore
+                  }
+                });
+              }}
+              onScroll={(e) => syncHighlightScroll(e.currentTarget)}
+              onMouseDown={(e) => e.stopPropagation()}
+              rows={Math.min(14, Math.max(4, code.split("\n").length + 1))}
+              className="relative z-10 w-full resize-y bg-transparent px-2 py-1 font-mono text-[11px] leading-5 text-transparent caret-neutral-800 outline-none placeholder:text-neutral-400"
+              style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              placeholder={
+                "procedure Example(x)\n  if x < 0\n    return 0\n  return x"
+              }
+              spellCheck={false}
+            />
+          </div>
+          {!hasHeader ? (
+            <div className="mt-2 rounded bg-amber-50 px-2 py-1 text-[11px] text-amber-700">
+              Start with <span className="font-semibold">procedure</span> or{" "}
+              <span className="font-semibold">function</span>.
+            </div>
+          ) : null}
         </div>
       ) : (
         <div
           contentEditable={false}
-          className="mt-2 rounded border border-neutral-200 bg-white p-2 text-[11px] text-neutral-600"
+          className="mt-2 rounded border border-neutral-200 bg-white p-2"
           onMouseDown={selectSelf}
         >
-          <div className="mb-1 text-[10px] uppercase tracking-wide text-neutral-400">
-            Procedure preview not implemented yet
-          </div>
-          <pre className="whitespace-pre-wrap break-words font-mono">{code}</pre>
+          {!hasHeader ? (
+            <div className="rounded bg-amber-50 px-2 py-1 text-[11px] text-amber-700">
+              Start with <span className="font-semibold">procedure</span> or{" "}
+              <span className="font-semibold">function</span>.
+            </div>
+          ) : (
+            <pre className={`code-prism language-${highlightLanguage} whitespace-pre-wrap break-words font-mono text-[11px] text-neutral-800`}>
+              <code
+                className={`language-${highlightLanguage}`}
+                dangerouslySetInnerHTML={{ __html: highlighted.html }}
+              />
+            </pre>
+          )}
         </div>
       )}
 
@@ -497,12 +584,14 @@ function ProcedureBlockComponent(props: PlateElementProps) {
   );
 }
 
-function CodeBlockComponent(props: PlateElementProps) {
-  const el = props.element as unknown as CodeBlockElement;
+export function DataBlockComponent(
+  props: PlateElementProps & { embedded?: boolean },
+) {
+  const embedded = (props as { embedded?: boolean }).embedded === true;
+  const el = props.element as unknown as DataBlockElement;
   const id = typeof el.id === "string" ? el.id : undefined;
   const collapse = useCollapseContext();
   const hidden = id ? collapse?.isHidden(id) : false;
-  if (hidden) return null;
 
   const selected = useSelected();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -514,11 +603,32 @@ function CodeBlockComponent(props: PlateElementProps) {
   const selectSelf = useSelectSelf(props);
   const displayCode = selected ? draftCode : code;
   const highlighted = usePrismHighlight({ language, code: displayCode });
+  const isHiddenNode = (node: unknown) => {
+    const id = (node as any)?.id as string | undefined;
+    return id ? collapse?.isHidden(id) : false;
+  };
 
   useEffect(() => {
     if (!selected) return;
     textareaRef.current?.focus();
   }, [selected]);
+
+  useEffect(() => {
+    if (!selected) return;
+    const intent = consumeVoidEntryIntent(el, props.path);
+    if (!intent) return;
+    const next = getVoidEntrySelection(displayCode, intent);
+    pendingSelection.current = next;
+    requestAnimationFrame(() => {
+      if (!textareaRef.current) return;
+      try {
+        textareaRef.current.selectionStart = next.start;
+        textareaRef.current.selectionEnd = next.end;
+      } catch {
+        // ignore
+      }
+    });
+  }, [displayCode, el, props.path, selected]);
 
   useEffect(() => {
     if (selected) return;
@@ -563,15 +673,21 @@ function CodeBlockComponent(props: PlateElementProps) {
     highlightRef.current.style.transform = `translate(${-el.scrollLeft}px, ${-el.scrollTop}px)`;
   };
 
+  if (hidden) return null;
+
   return (
     <PlateElement
       as="div"
       {...props}
-      className="group relative my-3 rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
+      className={
+        embedded
+          ? "group relative rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
+          : "group relative my-3 rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
+      }
     >
       <div
         contentEditable={false}
-        className="flex items-center justify-between text-xs text-neutral-600"
+        className="flex items-center justify-between pr-7 text-xs text-neutral-600"
         onMouseDown={selectSelf}
       >
         {selected ? (
@@ -590,10 +706,12 @@ function CodeBlockComponent(props: PlateElementProps) {
             </select>
           </span>
         ) : (
-          <span className="rounded bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold text-neutral-600">
-            {langLabel}
-          </span>
+          <span />
         )}
+        <span className="inline-flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5">
+          <span className="text-[11px] font-semibold text-neutral-700">Data</span>
+          <span className="text-[10px] font-medium text-neutral-500">{langLabel}</span>
+        </span>
       </div>
 
       {selected ? (
@@ -632,7 +750,13 @@ function CodeBlockComponent(props: PlateElementProps) {
               onPaste={(e) => e.stopPropagation()}
               onKeyDown={(e) => {
                 e.stopPropagation();
-                if (handleBlockTextareaArrowExit(props.editor, props.path, draftCode, e)) {
+                if (handleVoidBlockTextareaArrowExit(
+                  props.editor,
+                  props.path,
+                  draftCode,
+                  e,
+                  isHiddenNode,
+                )) {
                   return;
                 }
                 if (e.key !== "Tab") return;
@@ -692,7 +816,144 @@ function CodeBlockComponent(props: PlateElementProps) {
         {props.children}
       </span>
 
-      <RemoveButton onMouseDown={handleRemove} label="Remove code block" />
+      {!embedded ? (
+        <RemoveButton onMouseDown={handleRemove} label="Remove data block" />
+      ) : null}
+    </PlateElement>
+  );
+}
+
+function ImageBlockComponent(props: PlateElementProps) {
+  const el = props.element as unknown as ImageBlockElement;
+  const id = typeof el.id === "string" ? el.id : undefined;
+  const collapse = useCollapseContext();
+  const hidden = id ? collapse?.isHidden(id) : false;
+
+  const selected = useSelected();
+  const selectSelf = useSelectSelf(props);
+  const src = typeof el.src === "string" ? el.src : "";
+  const alt = typeof el.alt === "string" ? el.alt : "";
+  const caption = typeof el.caption === "string" ? el.caption : "";
+
+  const handleRemove = (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    Transforms.removeNodes(props.editor, { at: props.path });
+    Transforms.insertNodes(
+      props.editor,
+      { type: "p", ...(id ? { id } : {}), children: [{ text: "" }] } as any,
+      { at: props.path },
+    );
+  };
+
+  const updateNode = (patch: Partial<ImageBlockElement>) => {
+    Transforms.setNodes(props.editor, patch, { at: props.path as any });
+  };
+
+  if (hidden) return null;
+
+  return (
+    <PlateElement
+      as="div"
+      {...props}
+      className="group relative my-3 rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
+    >
+      <div
+        contentEditable={false}
+        className="flex items-center justify-between pr-7 text-xs text-neutral-600"
+        onMouseDown={selectSelf}
+      >
+        <span />
+        <span className="inline-flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5">
+          <span className="text-[11px] font-semibold text-neutral-700">Image</span>
+        </span>
+      </div>
+
+      {selected ? (
+        <div contentEditable={false} className="mt-2 space-y-2">
+          <div className="space-y-1">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+              Source URL
+            </div>
+            <input
+              value={src}
+              onChange={(e) => updateNode({ src: e.target.value })}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="h-7 w-full rounded border border-neutral-200 bg-white px-2 text-[11px] text-neutral-700"
+              placeholder="https://…"
+            />
+            <div className="text-[10px] text-neutral-500">
+              WebP only for now. Other formats will be auto-converted after the
+              Next.js migration.
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+              Alt Text
+            </div>
+            <input
+              value={alt}
+              onChange={(e) => updateNode({ alt: e.target.value })}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="h-7 w-full rounded border border-neutral-200 bg-white px-2 text-[11px] text-neutral-700"
+              placeholder="Short description"
+            />
+          </div>
+          <div className="space-y-1">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+              Caption
+            </div>
+            <input
+              value={caption}
+              onChange={(e) => updateNode({ caption: e.target.value })}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="h-7 w-full rounded border border-neutral-200 bg-white px-2 text-[11px] text-neutral-700"
+              placeholder="Optional caption"
+            />
+          </div>
+          <div className="mt-2 rounded border border-neutral-200 bg-white p-2">
+            {src ? (
+              <img
+                src={src}
+                alt={alt}
+                className="max-h-[320px] w-auto max-w-full rounded"
+              />
+            ) : (
+              <div className="text-[11px] text-neutral-500">
+                Add an image URL to preview.
+              </div>
+            )}
+            {caption ? (
+              <div className="mt-2 text-[11px] text-neutral-600">{caption}</div>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <div
+          contentEditable={false}
+          className="mt-2 rounded border border-neutral-200 bg-white p-2"
+          onMouseDown={selectSelf}
+        >
+          {src ? (
+            <img
+              src={src}
+              alt={alt}
+              className="max-h-[320px] w-auto max-w-full rounded"
+            />
+          ) : (
+            <div className="text-[11px] text-neutral-500">Image URL missing.</div>
+          )}
+          {caption ? (
+            <div className="mt-2 text-[11px] text-neutral-600">{caption}</div>
+          ) : null}
+        </div>
+      )}
+
+      <span className="absolute inset-0 opacity-0 pointer-events-none" aria-hidden>
+        {props.children}
+      </span>
+
+      <RemoveButton onMouseDown={handleRemove} label="Remove image block" />
     </PlateElement>
   );
 }
@@ -717,12 +978,22 @@ export const ProcedureBlockPlugin = createSlatePlugin({
   },
 });
 
-export const CodeBlockPlugin = createSlatePlugin({
-  key: "codeBlock",
+export const DataBlockPlugin = createSlatePlugin({
+  key: "dataBlock",
   node: {
-    type: "code_block",
+    type: "data_block",
     isElement: true,
     isVoid: true,
-    component: CodeBlockComponent as any,
+    component: DataBlockComponent as any,
+  },
+});
+
+export const ImageBlockPlugin = createSlatePlugin({
+  key: "imageBlock",
+  node: {
+    type: "image_block",
+    isElement: true,
+    isVoid: true,
+    component: ImageBlockComponent as any,
   },
 });

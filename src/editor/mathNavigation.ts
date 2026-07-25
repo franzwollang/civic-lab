@@ -1,32 +1,21 @@
 import type { KeyboardEvent } from "react";
 import { Editor, Element, Node, Range, Text, Transforms } from "slate";
+import { handleVoidBlockArrowNavigation } from "@/editor/voidNavigation";
 
 const isMathInline = (n: unknown) =>
   Element.isElement(n) && (n as any).type === "math_inline";
 
-const isBlockVoid = (n: unknown) => {
-  if (!Element.isElement(n)) return false;
-  const type = (n as any).type;
-  return (
-    type === "math_block" ||
-    type === "code_block" ||
-    type === "mermaid_block" ||
-    type === "procedure_block"
-  );
-};
-
 /**
- * Make `math_inline` (an inline void) feel easier to enter/exit with arrows:
- * - From adjacent text: ArrowLeft/ArrowRight selects the math element in 1 tap.
- * - While math element is selected: Arrow keys jump before/after it.
- *
- * Also handles block void up/down navigation: ArrowUp/ArrowDown selects the
- * block in one tap, and exits the selected block in one tap.
+ * Arrow navigation for inline math + block-level void nodes.
+ * - Let block-level void navigation handle entry/exit first.
+ * - If the selection is on an inline math node, arrow keys exit it.
+ * - If the caret is adjacent to inline math, left/right enters it.
  */
 export function handleMathInlineArrowNavigation(
   editor: Editor,
   event: KeyboardEvent,
 ): boolean {
+  // Step A: guard on arrow keys + no modifiers.
   const key = event.key;
   if (
     key !== "ArrowLeft" &&
@@ -42,7 +31,10 @@ export function handleMathInlineArrowNavigation(
   const sel = editor.selection;
   if (!sel) return false;
 
-  // 1) If we're currently on a math node, arrow keys should exit it.
+  // Step B: block-level void entry/exit (math/code/mermaid/procedure).
+  if (handleVoidBlockArrowNavigation(editor, event)) return true;
+
+  // Step C: if we're on a math_inline node, arrows should exit it.
   const inlineEntry = Editor.above(editor, { match: isMathInline });
   if (inlineEntry) {
     const [, path] = inlineEntry;
@@ -57,23 +49,9 @@ export function handleMathInlineArrowNavigation(
     return true;
   }
 
-  const blockEntry = Editor.above(editor, { match: isBlockVoid });
-  if (blockEntry) {
-    const [, path] = blockEntry;
-    const point =
-      key === "ArrowUp" || key === "ArrowLeft"
-        ? Editor.before(editor, path)
-        : Editor.after(editor, path);
-    if (!point) return false;
-    event.preventDefault();
-    event.stopPropagation();
-    Transforms.select(editor, point);
-    return true;
-  }
-
   if (!Range.isCollapsed(sel)) return false;
 
-  // 2) Enter math_inline from adjacent text with left/right.
+  // Step D: enter math_inline from adjacent text with left/right only.
   const anchor = sel.anchor;
   let current: unknown;
   try {
@@ -118,46 +96,6 @@ export function handleMathInlineArrowNavigation(
     event.preventDefault();
     event.stopPropagation();
     Transforms.select(editor, Editor.range(editor, prevPath));
-    return true;
-  }
-
-  // 3) Enter math_block from adjacent blocks with up/down.
-  if (key === "ArrowDown" || key === "ArrowUp") {
-    const currentBlock = Editor.above(editor, {
-      match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
-    });
-    if (!currentBlock) return false;
-
-    const [, blockPath] = currentBlock;
-    const atEdge = (() => {
-      try {
-        return key === "ArrowDown"
-          ? Editor.isEnd(editor, anchor, blockPath)
-          : Editor.isStart(editor, anchor, blockPath);
-      } catch {
-        return false;
-      }
-    })();
-    if (!atEdge) return false;
-
-    const neighbor =
-      key === "ArrowDown"
-        ? Editor.next(editor, {
-            at: blockPath,
-            match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
-          })
-        : Editor.previous(editor, {
-            at: blockPath,
-            match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
-          });
-    if (!neighbor) return false;
-
-    const [neighborNode, neighborPath] = neighbor;
-    if (!isBlockVoid(neighborNode)) return false;
-
-    event.preventDefault();
-    event.stopPropagation();
-    Transforms.select(editor, Editor.range(editor, neighborPath));
     return true;
   }
 

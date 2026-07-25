@@ -1,0 +1,10 @@
+{"ts":"2026-07-24T20:45-05:00","focus":"cursor rules","summary":"Retargeted .cursor/rules from Proteus to civic-lab; subagents Composer+Grok only; deleted proteus/paper-si rules","next":"prototype issues from ISSUES.md"}
+{"ts":"2026-07-24T20:50-05:00","focus":"continuity artifacts","summary":"Documented distinct jobs: CONCEPT reference; PLANNING coordination; OPEN_ISSUES current work; SCRATCHPAD session memory","next":"prototype issues under M0/M1"}
+{"ts":"2026-07-24T21:00-05:00","focus":"planning draft","summary":"Codebase survey: editor real, product shell static; PLANNING M0-M8 drafted for discussion","next":"user refine milestones/priorities"}
+{"ts":"2026-07-24T21:17-05:00","focus":"M1 persistence","summary":"Updated PLANNING/OPEN_ISSUES for Prisma+SQLite; asking CONCEPT clarifying Qs","next":"user answers then implement M1"}
+{"ts":"2026-07-24T21:41-05:00","focus":"domain decisions","summary":"Updated PLANNING/OPEN_ISSUES from user answers; 2 clarifications remain","next":"Accepted Risk + Constitution answers then M1"}
+{"ts":"2026-07-24T22:12-05:00","focus":"M1 ready","summary":"Final domain clarifications recorded; blockers cleared","next":"implement Prisma SQLite bootstrap"}
+{"ts":"2026-07-24T22:33-05:00","focus":"CONCEPT discuss","summary":"Recorded UX/claim/bridge/RFC answers; probing merge rules and claim adapters next","next":"user answers on sub-RFC and claim contexts"}
+{"ts":"2026-07-24T22:46-05:00","focus":"CONCEPT","summary":"Figured claim adapters; wrote evidence appendix; await profile confirmation","next":"user confirm or tweak profiles"}
+{"ts":"2026-07-24T22:52-05:00","focus":"consistency","summary":"Full CONCEPT rewrite for coherence; PLANNING trimmed to match","next":"M1 or user review"}
+{"ts":"2026-07-24T23:03-05:00","focus":"M1","summary":"M0 done; architecture gaps defaulted","next":"implement persistence on request"}

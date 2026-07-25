@@ -1,0 +1,34 @@
+---
+description: Civic Lab folder layout and where different kinds of work live
+alwaysApply: true
+---
+
+# Project Structure
+
+Civic Lab is a collaborative Canon + Country Manuals prototype (thread-first wiki/forum
+hybrid). Product vocabulary lives in `CONCEPT.md`.
+
+## Top-level layout
+
+| Path | Purpose |
+|---|---|
+| `CONCEPT.md` | Reference vision (Canon, Manuals, threads/RFCs, claims, Red Team) |
+| `PLANNING.md` | Milestones, sequencing, coordination status board |
+| `OPEN_ISSUES.md` | Current open prototype work + acceptance criteria |
+| `SCRATCHPAD.json` | Agent live session snapshot |
+| `src/app/` | Routes, pages, UI components, client models |
+| `src/editor/` | Plate/Slate editor, embeds, commands, navigation |
+| `src/doc/` | Document model, validation, evidence helpers |
+| `src/api/` | Client API, schemas, actions |
+| `server/` | Express API |
+| `db/` | JSON persistence (pages, revisions, terms, etc.) |
+| `content/` | Docs/MDX content (Fumadocs) |
+| `dist/` | Build output (usually not hand-edited) |
+
+## Conventions
+
+- Prefer extending existing editor/doc patterns over new parallel systems.
+- Keep Canon vs Manuals **lane hygiene** in mind when adding UI copy or data model fields
+  (descriptive / prescriptive / alignment).
+- Roadmap → `PLANNING.md`; concrete open work → `OPEN_ISSUES.md`; session memory →
+  `SCRATCHPAD.json`. Do not use `CONCEPT.md` as a task tracker.

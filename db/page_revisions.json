@@ -3474,7 +3474,7 @@
         "_id": "block-002"
       },
       {
-        "type": "code_block",
+        "type": "data_block",
         "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
         "code": "{\n\"hello\": \"world\"\n}",
         "language": "json",
@@ -3704,7 +3704,7 @@
       },
       {
         "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
-        "type": "code_block",
+        "type": "data_block",
         "order": 5,
         "hash": "25616f03a240b9f8c10c072fd6e4d8689028e0ca02e17b02107dae09da380470",
         "text_preview": "json: {"
@@ -3837,6 +3837,4099 @@
       }
     ],
     "doc_root_hash": "85ee4b3dbfc2c0a3f33245654446f21b0a76d4c0deb2cff31226a1f46e8cdc8c",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "2a5cfcd0-0db6-45e9-9766-3a626725bad1",
+    "page_id": "page-001",
+    "parent_revision_id": "79d9e813-a028-4376-84e8-861d44d2e074",
+    "created_at": "2026-02-10T02:30:37.263Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "9ISaZNCh1-",
+        "_id": "9ISaZNCh1-",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "mermaid_block",
+        "id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "code": "flow chart TD\n  a --> b\n  c --> d",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "data_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "9ISaZNCh1-",
+        "type": "p",
+        "order": 2,
+        "hash": "fdc3fdec3b11ca7764975db67f08ad9cce7c546a24959eb4f191eb97247785e8",
+        "text_preview": ""
+      },
+      {
+        "block_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "type": "mermaid_block",
+        "order": 3,
+        "hash": "0e54d5f5ec3d269325ed719f114fd23f1c3b2bbbb5075cf7f24c8763dd522d47",
+        "text_preview": "mermaid: flow chart TD"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 4,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 5,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 6,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "data_block",
+        "order": 7,
+        "hash": "25616f03a240b9f8c10c072fd6e4d8689028e0ca02e17b02107dae09da380470",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 8,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 9,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 10,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 11,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 12,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 13,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 14,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 15,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 16,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 17,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 18,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 19,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 20,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 21,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 22,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 23,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 24,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 25,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "e19774d31a44aa560265edd60ab9a1663fb870febf04ed1e3eaa5a437684b345",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "e679d670-207a-493a-8496-377fe35e8cb6",
+    "page_id": "page-001",
+    "parent_revision_id": "2a5cfcd0-0db6-45e9-9766-3a626725bad1",
+    "created_at": "2026-02-10T02:31:20.405Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "9ISaZNCh1-",
+        "_id": "9ISaZNCh1-",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "mermaid_block",
+        "id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "code": "pie title NETFLIX\n         \"Time spent looking for movie\" : 90\n         \"Time spent watching it\" : 10\n",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "data_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "9ISaZNCh1-",
+        "type": "p",
+        "order": 2,
+        "hash": "fdc3fdec3b11ca7764975db67f08ad9cce7c546a24959eb4f191eb97247785e8",
+        "text_preview": ""
+      },
+      {
+        "block_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "type": "mermaid_block",
+        "order": 3,
+        "hash": "ed1e1917ff4dbcac9d6869d767844891d6fcd015158740d7716c339794f2dfee",
+        "text_preview": "mermaid: pie title NETFLIX"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 4,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 5,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 6,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "data_block",
+        "order": 7,
+        "hash": "25616f03a240b9f8c10c072fd6e4d8689028e0ca02e17b02107dae09da380470",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 8,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 9,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 10,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 11,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 12,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 13,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 14,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 15,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 16,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 17,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 18,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 19,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 20,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 21,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 22,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 23,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 24,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 25,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "25a7bf2d7ef3414dd453068fd4f62869c0b47f69a3a2493edb7dd8e6cd8931cf",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "01503bb1-a2b6-4bb7-bc03-3a5888d39cf5",
+    "page_id": "page-001",
+    "parent_revision_id": "e679d670-207a-493a-8496-377fe35e8cb6",
+    "created_at": "2026-02-10T02:33:41.346Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "9ISaZNCh1-",
+        "_id": "9ISaZNCh1-",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "mermaid_block",
+        "id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "code": "pie title NETFLIX\n         \"Time spent looking for movie\" : 90\n         \"Time spent watching it\" : 10\n",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "procedure_block",
+        "id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "code": "procedure Example(x)\n  if x < 0\n    return 0\n  return x ",
+        "dialect": "pseudocode.js",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22"
+      },
+      {
+        "type": "p",
+        "id": "gBfB2meEkC",
+        "_id": "gBfB2meEkC",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "XF9PvNhg8Q",
+        "_id": "XF9PvNhg8Q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "GliYmcWo-q",
+        "_id": "GliYmcWo-q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "data_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "9ISaZNCh1-",
+        "type": "p",
+        "order": 2,
+        "hash": "fdc3fdec3b11ca7764975db67f08ad9cce7c546a24959eb4f191eb97247785e8",
+        "text_preview": ""
+      },
+      {
+        "block_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "type": "mermaid_block",
+        "order": 3,
+        "hash": "ed1e1917ff4dbcac9d6869d767844891d6fcd015158740d7716c339794f2dfee",
+        "text_preview": "mermaid: pie title NETFLIX"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 4,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "type": "procedure_block",
+        "order": 5,
+        "hash": "cd5c38644ac49e193313aab7452b7c1411b949add0319da4afc735647e852354",
+        "text_preview": "procedure: procedure Example(x)"
+      },
+      {
+        "block_id": "gBfB2meEkC",
+        "type": "p",
+        "order": 6,
+        "hash": "66a1fc14d478c63210bd4bb064c8459cf640301cb7eec43146cf96d2e3180c99",
+        "text_preview": ""
+      },
+      {
+        "block_id": "XF9PvNhg8Q",
+        "type": "p",
+        "order": 7,
+        "hash": "6e3f8b31b3f2f8cd5da6ebaae10c216830b5afad065ae233c9ce4fe99b1b902a",
+        "text_preview": ""
+      },
+      {
+        "block_id": "GliYmcWo-q",
+        "type": "p",
+        "order": 8,
+        "hash": "f0d2fc5fa21cdbb831186e6097e2da0417b16324c9f1fa165f1c1e82839ca6b6",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 9,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 10,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "data_block",
+        "order": 11,
+        "hash": "25616f03a240b9f8c10c072fd6e4d8689028e0ca02e17b02107dae09da380470",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 12,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 13,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 14,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 15,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 16,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 17,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 18,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 19,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 20,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 21,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 22,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 23,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 24,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 25,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 26,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 27,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 28,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 29,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "b937b5d84c8d9cbc685b765b232f64dcf3326a861749c045357d317d32ce0913",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "9a2a4479-6506-40e4-89a0-64920de58bc1",
+    "page_id": "page-001",
+    "parent_revision_id": "01503bb1-a2b6-4bb7-bc03-3a5888d39cf5",
+    "created_at": "2026-02-10T23:53:01.281Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "5kr-MzpePB",
+        "_id": "5kr-MzpePB",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "V89liVJRZi",
+        "_id": "V89liVJRZi",
+        "children": [
+          {
+            "text": ""
+          },
+          {
+            "type": "citation_inline",
+            "id": "a571ed13-7444-4a6b-802d-dadded1d48d1",
+            "attribution_ref": "e64a1ad1-33f4-47b2-b020-1e70a3cdc68e",
+            "children": [
+              {
+                "text": ""
+              }
+            ],
+            "note": ""
+          },
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "9ISaZNCh1-",
+        "_id": "9ISaZNCh1-",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "mermaid_block",
+        "id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "code": "pie title NETFLIX\n         \"Time spent looking for movie\" : 90\n         \"Time spent watching it\" : 10\n",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "procedure_block",
+        "id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "code": "procedure Example(x)\n  if x < 0\n    return 0\n  return x ",
+        "dialect": "pseudocode.js",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22"
+      },
+      {
+        "type": "p",
+        "id": "gBfB2meEkC",
+        "_id": "gBfB2meEkC",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "XF9PvNhg8Q",
+        "_id": "XF9PvNhg8Q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "GliYmcWo-q",
+        "_id": "GliYmcWo-q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "data_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "5kr-MzpePB",
+        "type": "p",
+        "order": 2,
+        "hash": "22cad3fd33ac24515d633e2c8fb06ae605867830f0377fabe4b499a8b06cca8e",
+        "text_preview": ""
+      },
+      {
+        "block_id": "V89liVJRZi",
+        "type": "p",
+        "order": 3,
+        "hash": "76bc4f3adc1a20a2c73bee66e78d984416478ef2a9f4fa7fcf2aeb58391910a2",
+        "text_preview": ""
+      },
+      {
+        "block_id": "9ISaZNCh1-",
+        "type": "p",
+        "order": 4,
+        "hash": "fdc3fdec3b11ca7764975db67f08ad9cce7c546a24959eb4f191eb97247785e8",
+        "text_preview": ""
+      },
+      {
+        "block_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "type": "mermaid_block",
+        "order": 5,
+        "hash": "ed1e1917ff4dbcac9d6869d767844891d6fcd015158740d7716c339794f2dfee",
+        "text_preview": "mermaid: pie title NETFLIX"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 6,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "type": "procedure_block",
+        "order": 7,
+        "hash": "cd5c38644ac49e193313aab7452b7c1411b949add0319da4afc735647e852354",
+        "text_preview": "procedure: procedure Example(x)"
+      },
+      {
+        "block_id": "gBfB2meEkC",
+        "type": "p",
+        "order": 8,
+        "hash": "66a1fc14d478c63210bd4bb064c8459cf640301cb7eec43146cf96d2e3180c99",
+        "text_preview": ""
+      },
+      {
+        "block_id": "XF9PvNhg8Q",
+        "type": "p",
+        "order": 9,
+        "hash": "6e3f8b31b3f2f8cd5da6ebaae10c216830b5afad065ae233c9ce4fe99b1b902a",
+        "text_preview": ""
+      },
+      {
+        "block_id": "GliYmcWo-q",
+        "type": "p",
+        "order": 10,
+        "hash": "f0d2fc5fa21cdbb831186e6097e2da0417b16324c9f1fa165f1c1e82839ca6b6",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 11,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 12,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "data_block",
+        "order": 13,
+        "hash": "b003539c6bf0278aeb998256ae82f561756c35c767f861c9cef33edf720b1ce3",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 14,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 15,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 16,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 17,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 18,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 19,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 20,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 21,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 22,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 23,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 24,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 25,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 26,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 27,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 28,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 29,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 30,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 31,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "b38d5d7ab76b87252372c0b43edae7032d09cc3137ebfad190be72322bde61ee",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "45521c62-75de-417d-88a5-e82658b26a47",
+    "page_id": "page-001",
+    "parent_revision_id": "9a2a4479-6506-40e4-89a0-64920de58bc1",
+    "created_at": "2026-02-11T03:07:00.307Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "5kr-MzpePB",
+        "_id": "5kr-MzpePB",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "V89liVJRZi",
+        "_id": "V89liVJRZi",
+        "children": [
+          {
+            "text": ""
+          },
+          {
+            "type": "citation_inline",
+            "id": "a571ed13-7444-4a6b-802d-dadded1d48d1",
+            "attribution_ref": "e64a1ad1-33f4-47b2-b020-1e70a3cdc68e",
+            "children": [
+              {
+                "text": ""
+              }
+            ],
+            "note": ""
+          },
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "DWbIRtVqfr",
+        "_id": "DWbIRtVqfr",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "x1dtkXqE5z",
+        "_id": "x1dtkXqE5z",
+        "children": [
+          {
+            "text": ""
+          },
+          {
+            "type": "term_inline",
+            "id": "13360b61-efb0-4000-9c25-824801368b3b",
+            "term_ref": "78546bdc-1d1a-4b4f-905c-8983686d0139",
+            "children": [
+              {
+                "text": "SODA"
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "9ISaZNCh1-",
+        "_id": "9ISaZNCh1-",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "mermaid_block",
+        "id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "code": "pie title NETFLIX\n         \"Time spent looking for movie\" : 90\n         \"Time spent watching it\" : 10\n",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "procedure_block",
+        "id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "code": "procedure Example(x)\n  if x < 0\n    return 0\n  return x ",
+        "dialect": "pseudocode.js",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22"
+      },
+      {
+        "type": "p",
+        "id": "gBfB2meEkC",
+        "_id": "gBfB2meEkC",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "XF9PvNhg8Q",
+        "_id": "XF9PvNhg8Q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "GliYmcWo-q",
+        "_id": "GliYmcWo-q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "data_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "5kr-MzpePB",
+        "type": "p",
+        "order": 2,
+        "hash": "22cad3fd33ac24515d633e2c8fb06ae605867830f0377fabe4b499a8b06cca8e",
+        "text_preview": ""
+      },
+      {
+        "block_id": "V89liVJRZi",
+        "type": "p",
+        "order": 3,
+        "hash": "76bc4f3adc1a20a2c73bee66e78d984416478ef2a9f4fa7fcf2aeb58391910a2",
+        "text_preview": ""
+      },
+      {
+        "block_id": "DWbIRtVqfr",
+        "type": "p",
+        "order": 4,
+        "hash": "074ce61764f41138a731ac4ddc23cfea630f21ae36cd9deaf37fc94c7bb350a5",
+        "text_preview": ""
+      },
+      {
+        "block_id": "x1dtkXqE5z",
+        "type": "p",
+        "order": 5,
+        "hash": "dd9ee6e78cfdafb73e1122f0946229533163606f236d73dbc4f790f821dedad6",
+        "text_preview": "SODA"
+      },
+      {
+        "block_id": "9ISaZNCh1-",
+        "type": "p",
+        "order": 6,
+        "hash": "fdc3fdec3b11ca7764975db67f08ad9cce7c546a24959eb4f191eb97247785e8",
+        "text_preview": ""
+      },
+      {
+        "block_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "type": "mermaid_block",
+        "order": 7,
+        "hash": "ed1e1917ff4dbcac9d6869d767844891d6fcd015158740d7716c339794f2dfee",
+        "text_preview": "mermaid: pie title NETFLIX"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 8,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "type": "procedure_block",
+        "order": 9,
+        "hash": "cd5c38644ac49e193313aab7452b7c1411b949add0319da4afc735647e852354",
+        "text_preview": "procedure: procedure Example(x)"
+      },
+      {
+        "block_id": "gBfB2meEkC",
+        "type": "p",
+        "order": 10,
+        "hash": "66a1fc14d478c63210bd4bb064c8459cf640301cb7eec43146cf96d2e3180c99",
+        "text_preview": ""
+      },
+      {
+        "block_id": "XF9PvNhg8Q",
+        "type": "p",
+        "order": 11,
+        "hash": "6e3f8b31b3f2f8cd5da6ebaae10c216830b5afad065ae233c9ce4fe99b1b902a",
+        "text_preview": ""
+      },
+      {
+        "block_id": "GliYmcWo-q",
+        "type": "p",
+        "order": 12,
+        "hash": "f0d2fc5fa21cdbb831186e6097e2da0417b16324c9f1fa165f1c1e82839ca6b6",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 13,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 14,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "data_block",
+        "order": 15,
+        "hash": "b003539c6bf0278aeb998256ae82f561756c35c767f861c9cef33edf720b1ce3",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 16,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 17,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 18,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 19,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 20,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 21,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 22,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 23,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 24,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 25,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 26,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 27,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 28,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 29,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 30,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 31,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 32,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 33,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "d51142de30bdaebeab55a89bb829a4647a1c6da16e7b07f6182ac43b6af0dd2b",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "2002cc31-0137-4636-abd1-ee8a1b7f7d96",
+    "page_id": "page-001",
+    "parent_revision_id": "45521c62-75de-417d-88a5-e82658b26a47",
+    "created_at": "2026-02-11T03:14:43.920Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "5kr-MzpePB",
+        "_id": "5kr-MzpePB",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "V89liVJRZi",
+        "_id": "V89liVJRZi",
+        "children": [
+          {
+            "text": ""
+          },
+          {
+            "type": "citation_inline",
+            "id": "a571ed13-7444-4a6b-802d-dadded1d48d1",
+            "attribution_ref": "e64a1ad1-33f4-47b2-b020-1e70a3cdc68e",
+            "children": [
+              {
+                "text": ""
+              }
+            ],
+            "note": ""
+          },
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "DWbIRtVqfr",
+        "_id": "DWbIRtVqfr",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "x1dtkXqE5z",
+        "_id": "x1dtkXqE5z",
+        "children": [
+          {
+            "text": ""
+          },
+          {
+            "type": "term_inline",
+            "id": "13360b61-efb0-4000-9c25-824801368b3b",
+            "term_ref": "78546bdc-1d1a-4b4f-905c-8983686d0139",
+            "children": [
+              {
+                "text": "SODA"
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "rNxVWI2ySj",
+        "_id": "rNxVWI2ySj",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "evidence_block",
+        "id": "e49b3617-d405-4918-99ea-c6ff5a5a0259",
+        "lang": "en",
+        "attribution_ref": "e64a1ad1-33f4-47b2-b020-1e70a3cdc68e",
+        "children": [
+          {
+            "type": "evidence_block_text",
+            "children": [
+              {
+                "text": "The pee was golden; the poo, a luscious brown."
+              }
+            ],
+            "id": "i6qz6Uko-v"
+          },
+          {
+            "type": "evidence_block_translation",
+            "children": [
+              {
+                "text": ""
+              }
+            ],
+            "id": "Wtr2e-sbJp"
+          }
+        ],
+        "_id": "e49b3617-d405-4918-99ea-c6ff5a5a0259"
+      },
+      {
+        "type": "p",
+        "id": "9ISaZNCh1-",
+        "_id": "9ISaZNCh1-",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "mermaid_block",
+        "id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "code": "pie title NETFLIX\n         \"Time spent looking for movie\" : 90\n         \"Time spent watching it\" : 10\n",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "procedure_block",
+        "id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "code": "procedure Example(x)\n  if x < 0\n    return 0\n  return x ",
+        "dialect": "pseudocode.js",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22"
+      },
+      {
+        "type": "p",
+        "id": "gBfB2meEkC",
+        "_id": "gBfB2meEkC",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "XF9PvNhg8Q",
+        "_id": "XF9PvNhg8Q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "GliYmcWo-q",
+        "_id": "GliYmcWo-q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "data_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "5kr-MzpePB",
+        "type": "p",
+        "order": 2,
+        "hash": "22cad3fd33ac24515d633e2c8fb06ae605867830f0377fabe4b499a8b06cca8e",
+        "text_preview": ""
+      },
+      {
+        "block_id": "V89liVJRZi",
+        "type": "p",
+        "order": 3,
+        "hash": "76bc4f3adc1a20a2c73bee66e78d984416478ef2a9f4fa7fcf2aeb58391910a2",
+        "text_preview": ""
+      },
+      {
+        "block_id": "DWbIRtVqfr",
+        "type": "p",
+        "order": 4,
+        "hash": "074ce61764f41138a731ac4ddc23cfea630f21ae36cd9deaf37fc94c7bb350a5",
+        "text_preview": ""
+      },
+      {
+        "block_id": "x1dtkXqE5z",
+        "type": "p",
+        "order": 5,
+        "hash": "dd9ee6e78cfdafb73e1122f0946229533163606f236d73dbc4f790f821dedad6",
+        "text_preview": "SODA"
+      },
+      {
+        "block_id": "rNxVWI2ySj",
+        "type": "p",
+        "order": 6,
+        "hash": "4ab1d85a5f90611bfe84532b7eee7dfafa3c9df310072f147d33b7fac3ffea03",
+        "text_preview": ""
+      },
+      {
+        "block_id": "e49b3617-d405-4918-99ea-c6ff5a5a0259",
+        "type": "evidence_block",
+        "order": 7,
+        "hash": "54283f0e0f3bc4db88c67c9cab93c12a7817240a26e51098f2d9a78c0a47dd1e",
+        "text_preview": "quote: The pee was golden; the poo, a luscious brown."
+      },
+      {
+        "block_id": "9ISaZNCh1-",
+        "type": "p",
+        "order": 8,
+        "hash": "fdc3fdec3b11ca7764975db67f08ad9cce7c546a24959eb4f191eb97247785e8",
+        "text_preview": ""
+      },
+      {
+        "block_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "type": "mermaid_block",
+        "order": 9,
+        "hash": "ed1e1917ff4dbcac9d6869d767844891d6fcd015158740d7716c339794f2dfee",
+        "text_preview": "mermaid: pie title NETFLIX"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 10,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "type": "procedure_block",
+        "order": 11,
+        "hash": "cd5c38644ac49e193313aab7452b7c1411b949add0319da4afc735647e852354",
+        "text_preview": "procedure: procedure Example(x)"
+      },
+      {
+        "block_id": "gBfB2meEkC",
+        "type": "p",
+        "order": 12,
+        "hash": "66a1fc14d478c63210bd4bb064c8459cf640301cb7eec43146cf96d2e3180c99",
+        "text_preview": ""
+      },
+      {
+        "block_id": "XF9PvNhg8Q",
+        "type": "p",
+        "order": 13,
+        "hash": "6e3f8b31b3f2f8cd5da6ebaae10c216830b5afad065ae233c9ce4fe99b1b902a",
+        "text_preview": ""
+      },
+      {
+        "block_id": "GliYmcWo-q",
+        "type": "p",
+        "order": 14,
+        "hash": "f0d2fc5fa21cdbb831186e6097e2da0417b16324c9f1fa165f1c1e82839ca6b6",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 15,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 16,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "data_block",
+        "order": 17,
+        "hash": "b003539c6bf0278aeb998256ae82f561756c35c767f861c9cef33edf720b1ce3",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 18,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 19,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 20,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 21,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 22,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 23,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 24,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 25,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 26,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 27,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 28,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 29,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 30,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 31,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 32,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 33,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 34,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 35,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "71a61b004c025eb60eeccb71f9e78c725f9f92ead8a558bfa2439123e0c99e5f",
+    "schema_version": 2
+  },
+  {
+    "revision_id": "c806630d-cc1f-4829-a49a-d31835cfed88",
+    "page_id": "page-001",
+    "parent_revision_id": "2002cc31-0137-4636-abd1-ee8a1b7f7d96",
+    "created_at": "2026-02-11T03:40:13.243Z",
+    "author": "local",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "block-001",
+        "children": [
+          {
+            "text": "Voting systems overview"
+          }
+        ],
+        "_id": "block-001"
+      },
+      {
+        "type": "p",
+        "id": "yoPILQEbJy",
+        "children": [
+          {
+            "text": "Test change. Change nonce: 5\n"
+          },
+          {
+            "type": "math_inline",
+            "id": "4bb16731-1acb-4ee0-8631-25e4c5c0437d",
+            "latex": "E = mc^2",
+            "children": [
+              {
+                "text": ""
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ],
+        "_id": "yoPILQEbJy"
+      },
+      {
+        "type": "p",
+        "id": "5kr-MzpePB",
+        "_id": "5kr-MzpePB",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "V89liVJRZi",
+        "_id": "V89liVJRZi",
+        "children": [
+          {
+            "text": ""
+          },
+          {
+            "type": "citation_inline",
+            "id": "a571ed13-7444-4a6b-802d-dadded1d48d1",
+            "attribution_ref": "e64a1ad1-33f4-47b2-b020-1e70a3cdc68e",
+            "children": [
+              {
+                "text": ""
+              }
+            ],
+            "note": ""
+          },
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "DWbIRtVqfr",
+        "_id": "DWbIRtVqfr",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "x1dtkXqE5z",
+        "_id": "x1dtkXqE5z",
+        "children": [
+          {
+            "text": ""
+          },
+          {
+            "type": "term_inline",
+            "id": "13360b61-efb0-4000-9c25-824801368b3b",
+            "term_ref": "78546bdc-1d1a-4b4f-905c-8983686d0139",
+            "children": [
+              {
+                "text": "SODA"
+              }
+            ]
+          },
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "rNxVWI2ySj",
+        "_id": "rNxVWI2ySj",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "evidence_block",
+        "id": "e49b3617-d405-4918-99ea-c6ff5a5a0259",
+        "lang": "en",
+        "attribution_ref": "e64a1ad1-33f4-47b2-b020-1e70a3cdc68e",
+        "children": [
+          {
+            "type": "evidence_block_text",
+            "children": [
+              {
+                "text": "The pee was golden; the poo, a luscious brown."
+              }
+            ],
+            "id": "i6qz6Uko-v"
+          },
+          {
+            "type": "evidence_block_translation",
+            "children": [
+              {
+                "text": ""
+              }
+            ],
+            "id": "Wtr2e-sbJp"
+          }
+        ],
+        "_id": "e49b3617-d405-4918-99ea-c6ff5a5a0259",
+        "locator": {
+          "kind": "page",
+          "value": "42"
+        }
+      },
+      {
+        "type": "p",
+        "id": "9ISaZNCh1-",
+        "_id": "9ISaZNCh1-",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "mermaid_block",
+        "id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "code": "pie title NETFLIX\n         \"Time spent looking for movie\" : 90\n         \"Time spent watching it\" : 10\n",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244"
+      },
+      {
+        "type": "p",
+        "id": "R4sdJtoJEi",
+        "_id": "R4sdJtoJEi",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "procedure_block",
+        "id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "code": "procedure Example(x)\n  if x < 0\n    return 0\n  return x ",
+        "dialect": "pseudocode.js",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22"
+      },
+      {
+        "type": "p",
+        "id": "gBfB2meEkC",
+        "_id": "gBfB2meEkC",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "XF9PvNhg8Q",
+        "_id": "XF9PvNhg8Q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "GliYmcWo-q",
+        "_id": "GliYmcWo-q",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "math_block",
+        "id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "latex": "p*p = p^2",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "551915a0-abcd-43e8-8f5a-92d5f9187184"
+      },
+      {
+        "type": "p",
+        "id": "block-002",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "block-002"
+      },
+      {
+        "type": "data_block",
+        "id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "code": "{\n\"hello\": \"world\"\n}",
+        "language": "json",
+        "children": [
+          {
+            "text": ""
+          }
+        ],
+        "_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4"
+      },
+      {
+        "type": "p",
+        "id": "L_f6yF4uhs",
+        "_id": "L_f6yF4uhs",
+        "children": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "vQE2t6nSGN",
+        "_id": "vQE2t6nSGN",
+        "children": [
+          {
+            "text": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "block-003",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ],
+        "_id": "block-003"
+      },
+      {
+        "type": "p",
+        "id": "block-004",
+        "children": [
+          {
+            "text": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unavoidable."
+          }
+        ],
+        "_id": "block-004"
+      },
+      {
+        "type": "h2",
+        "id": "block-005",
+        "children": [
+          {
+            "text": "Common systems"
+          }
+        ],
+        "_id": "block-005"
+      },
+      {
+        "type": "p",
+        "id": "block-006",
+        "children": [
+          {
+            "text": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine district seats with proportional compensation."
+          }
+        ],
+        "_id": "block-006"
+      },
+      {
+        "type": "h2",
+        "id": "block-007",
+        "children": [
+          {
+            "text": "Key tradeoffs"
+          }
+        ],
+        "_id": "block-007"
+      },
+      {
+        "type": "p",
+        "id": "block-008",
+        "children": [
+          {
+            "text": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+          }
+        ],
+        "_id": "block-008"
+      },
+      {
+        "type": "h2",
+        "id": "block-009",
+        "children": [
+          {
+            "text": "Design questions"
+          }
+        ],
+        "_id": "block-009"
+      },
+      {
+        "type": "p",
+        "id": "block-010",
+        "children": [
+          {
+            "text": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter education burden?"
+          }
+        ],
+        "_id": "block-010"
+      },
+      {
+        "type": "h2",
+        "id": "block-011",
+        "children": [
+          {
+            "text": "Ballot design"
+          }
+        ],
+        "_id": "block-011"
+      },
+      {
+        "type": "p",
+        "id": "block-012",
+        "children": [
+          {
+            "text": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visual grouping and candidate photos."
+          }
+        ],
+        "_id": "block-012"
+      },
+      {
+        "type": "h2",
+        "id": "block-013",
+        "children": [
+          {
+            "text": "Counting and audits"
+          }
+        ],
+        "_id": "block-013"
+      },
+      {
+        "type": "p",
+        "id": "block-014",
+        "children": [
+          {
+            "text": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for discrepancies."
+          }
+        ],
+        "_id": "block-014"
+      },
+      {
+        "type": "h2",
+        "id": "block-015",
+        "children": [
+          {
+            "text": "Case examples"
+          }
+        ],
+        "_id": "block-015"
+      },
+      {
+        "type": "p",
+        "id": "block-016",
+        "children": [
+          {
+            "text": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality with proportional lists."
+          }
+        ],
+        "_id": "block-016"
+      },
+      {
+        "type": "h2",
+        "id": "block-017",
+        "children": [
+          {
+            "text": "Glossary"
+          }
+        ],
+        "_id": "block-017"
+      },
+      {
+        "type": "p",
+        "id": "block-018",
+        "children": [
+          {
+            "text": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to electing a candidate."
+          }
+        ],
+        "_id": "block-018"
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "block-001",
+        "type": "h2",
+        "order": 0,
+        "hash": "27edc5127c5360596ccc722cd1a56637978e0ba63834dbe2a2de0a348294ec60",
+        "text_preview": "Voting systems overview"
+      },
+      {
+        "block_id": "yoPILQEbJy",
+        "type": "p",
+        "order": 1,
+        "hash": "2bb4673c52e609bdf346b52651ce96b97e069cfeea89dc048524a141495e1aff",
+        "text_preview": "Test change. Change nonce: 5"
+      },
+      {
+        "block_id": "5kr-MzpePB",
+        "type": "p",
+        "order": 2,
+        "hash": "22cad3fd33ac24515d633e2c8fb06ae605867830f0377fabe4b499a8b06cca8e",
+        "text_preview": ""
+      },
+      {
+        "block_id": "V89liVJRZi",
+        "type": "p",
+        "order": 3,
+        "hash": "76bc4f3adc1a20a2c73bee66e78d984416478ef2a9f4fa7fcf2aeb58391910a2",
+        "text_preview": ""
+      },
+      {
+        "block_id": "DWbIRtVqfr",
+        "type": "p",
+        "order": 4,
+        "hash": "074ce61764f41138a731ac4ddc23cfea630f21ae36cd9deaf37fc94c7bb350a5",
+        "text_preview": ""
+      },
+      {
+        "block_id": "x1dtkXqE5z",
+        "type": "p",
+        "order": 5,
+        "hash": "dd9ee6e78cfdafb73e1122f0946229533163606f236d73dbc4f790f821dedad6",
+        "text_preview": "SODA"
+      },
+      {
+        "block_id": "rNxVWI2ySj",
+        "type": "p",
+        "order": 6,
+        "hash": "4ab1d85a5f90611bfe84532b7eee7dfafa3c9df310072f147d33b7fac3ffea03",
+        "text_preview": ""
+      },
+      {
+        "block_id": "e49b3617-d405-4918-99ea-c6ff5a5a0259",
+        "type": "evidence_block",
+        "order": 7,
+        "hash": "90e8e5c130b014c98963cbb9030499c5fdcf43350e1f006363b50e1d1c837592",
+        "text_preview": "quote: The pee was golden; the poo, a luscious brown."
+      },
+      {
+        "block_id": "9ISaZNCh1-",
+        "type": "p",
+        "order": 8,
+        "hash": "fdc3fdec3b11ca7764975db67f08ad9cce7c546a24959eb4f191eb97247785e8",
+        "text_preview": ""
+      },
+      {
+        "block_id": "8479a306-1e9e-4b02-9b75-0555a3a1a244",
+        "type": "mermaid_block",
+        "order": 9,
+        "hash": "ed1e1917ff4dbcac9d6869d767844891d6fcd015158740d7716c339794f2dfee",
+        "text_preview": "mermaid: pie title NETFLIX"
+      },
+      {
+        "block_id": "R4sdJtoJEi",
+        "type": "p",
+        "order": 10,
+        "hash": "3659d77ae0de7e5f5493104a85214158149f2981668f22db0669fbb0689d5b08",
+        "text_preview": ""
+      },
+      {
+        "block_id": "7d5c2339-d72c-44b8-ab96-96d4286f9a22",
+        "type": "procedure_block",
+        "order": 11,
+        "hash": "cd5c38644ac49e193313aab7452b7c1411b949add0319da4afc735647e852354",
+        "text_preview": "procedure: procedure Example(x)"
+      },
+      {
+        "block_id": "gBfB2meEkC",
+        "type": "p",
+        "order": 12,
+        "hash": "66a1fc14d478c63210bd4bb064c8459cf640301cb7eec43146cf96d2e3180c99",
+        "text_preview": ""
+      },
+      {
+        "block_id": "XF9PvNhg8Q",
+        "type": "p",
+        "order": 13,
+        "hash": "6e3f8b31b3f2f8cd5da6ebaae10c216830b5afad065ae233c9ce4fe99b1b902a",
+        "text_preview": ""
+      },
+      {
+        "block_id": "GliYmcWo-q",
+        "type": "p",
+        "order": 14,
+        "hash": "f0d2fc5fa21cdbb831186e6097e2da0417b16324c9f1fa165f1c1e82839ca6b6",
+        "text_preview": ""
+      },
+      {
+        "block_id": "551915a0-abcd-43e8-8f5a-92d5f9187184",
+        "type": "math_block",
+        "order": 15,
+        "hash": "25d2f83da686cc5be87f9d6c4777ee5cd0535a70b7798f8fbed0451938fef1fb",
+        "text_preview": "$$p*p = p^2$$"
+      },
+      {
+        "block_id": "block-002",
+        "type": "p",
+        "order": 16,
+        "hash": "6e2a6516a097d11ace7c5dd4bd3fca9413849c36d0d5f46ba7b3f70de36e07cb",
+        "text_preview": ""
+      },
+      {
+        "block_id": "0c5f4f94-3893-4011-bf1e-1825fe2ad9e4",
+        "type": "data_block",
+        "order": 17,
+        "hash": "b003539c6bf0278aeb998256ae82f561756c35c767f861c9cef33edf720b1ce3",
+        "text_preview": "json: {"
+      },
+      {
+        "block_id": "L_f6yF4uhs",
+        "type": "p",
+        "order": 18,
+        "hash": "2d3016ef6eaf15404d4f123da5f0bca44565f0405b9e2406a1cd71c0143e503b",
+        "text_preview": ""
+      },
+      {
+        "block_id": "vQE2t6nSGN",
+        "type": "p",
+        "order": 19,
+        "hash": "89757800fab819535a247ce56d387b1a3cb1eeee2cef482211d717c1394209a7",
+        "text_preview": "This page summarizes the main families of electoral systems and the design choices that shape representation, legitimacy, and governance outcomes."
+      },
+      {
+        "block_id": "block-003",
+        "type": "h2",
+        "order": 20,
+        "hash": "312888a6d3a5073e4996ff3661146ffc1ebcf7180c1155558cb898c219f2465d",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "block-004",
+        "type": "p",
+        "order": 21,
+        "hash": "f1f4fde76ed12c75dcdc359278f1de723a067154fa902802668cf8fa10dfb0c1",
+        "text_preview": "Typical goals include proportional representation, clear accountability, local geographic representation, and stable governing majorities. Tradeoffs are unav..."
+      },
+      {
+        "block_id": "block-005",
+        "type": "h2",
+        "order": 22,
+        "hash": "c9ac1a037017df566b70d24bb0ee3f77c0ecb906a6bca15dd448d185ddc68f34",
+        "text_preview": "Common systems"
+      },
+      {
+        "block_id": "block-006",
+        "type": "p",
+        "order": 23,
+        "hash": "45d94934a7342cf60fdb8cce506c2b0eaaed2637fb37c07d1b91427f0321b3df",
+        "text_preview": "Plurality (first-past-the-post) is simple but can distort representation. Proportional representation allocates seats by vote share. Mixed systems combine di..."
+      },
+      {
+        "block_id": "block-007",
+        "type": "h2",
+        "order": 24,
+        "hash": "f5a677f2a9b6b92bc95cb2b4f43b2c381ec5d7f816d6b51fe54dcc1d25e1c08f",
+        "text_preview": "Key tradeoffs"
+      },
+      {
+        "block_id": "block-008",
+        "type": "p",
+        "order": 25,
+        "hash": "8667c2c6b2a59a5f9c4a3c16a2cce054347174be80e656146acf01e1dc44a4ac",
+        "text_preview": "Designers balance simplicity versus expressiveness, district-based representation versus proportionality, and resilience to strategic voting."
+      },
+      {
+        "block_id": "block-009",
+        "type": "h2",
+        "order": 26,
+        "hash": "f1596fe64081c61d0ccc57e3564b35798979352817a6f8a5d8975267d9cc6ecf",
+        "text_preview": "Design questions"
+      },
+      {
+        "block_id": "block-010",
+        "type": "p",
+        "order": 27,
+        "hash": "8748a162c6f460051aa91f0e92d9295657e9b61a9c994ce7fe7ce008ea7e7aa5",
+        "text_preview": "What magnitude of districts is feasible? How will thresholds affect small parties? How will ballots be counted and audited? What is the expected voter educat..."
+      },
+      {
+        "block_id": "block-011",
+        "type": "h2",
+        "order": 28,
+        "hash": "eebbbf20a00fa32ff050b6968f3d0d153fe72a9cb0c089ff5fda4b74398a992a",
+        "text_preview": "Ballot design"
+      },
+      {
+        "block_id": "block-012",
+        "type": "p",
+        "order": 29,
+        "hash": "e0d01f8d26c6e8f83dfe3d3431b2242fc04a66c752c52c89c9ba54acb723ca7d",
+        "text_preview": "Ballots should minimize cognitive load while capturing voter intent. Ranking systems require clear instructions; party-list ballots benefit from strong visua..."
+      },
+      {
+        "block_id": "block-013",
+        "type": "h2",
+        "order": 30,
+        "hash": "9d053f17892f3b36580e67ba5fb15b14d80077ab90b2ec859050473d348326c5",
+        "text_preview": "Counting and audits"
+      },
+      {
+        "block_id": "block-014",
+        "type": "p",
+        "order": 31,
+        "hash": "b4c3a4fe57ae53affb8d5acbe953c961f36436eecdf518e5b24c1486f835c482",
+        "text_preview": "Tabulation methods shape transparency. Risk-limiting audits add confidence but require robust chain-of-custody procedures and clear escalation paths for disc..."
+      },
+      {
+        "block_id": "block-015",
+        "type": "h2",
+        "order": 32,
+        "hash": "b29e57b85618892233c3ca453be7a76d016174d8bd4590528b12dd2c25b03a68",
+        "text_preview": "Case examples"
+      },
+      {
+        "block_id": "block-016",
+        "type": "p",
+        "order": 33,
+        "hash": "e7b01cb22d7a512ed0da38356ee6310fd9ae3ceabf700b1e813bb5033bf7b405",
+        "text_preview": "New Zealand uses MMP to balance local and proportional seats. Ireland uses single transferable vote to rank candidates. Germany combines district plurality w..."
+      },
+      {
+        "block_id": "block-017",
+        "type": "h2",
+        "order": 34,
+        "hash": "9b12c8be95f06dbc77d69af0230461fb63498a543400d3a0da0b275cc87053fc",
+        "text_preview": "Glossary"
+      },
+      {
+        "block_id": "block-018",
+        "type": "p",
+        "order": 35,
+        "hash": "5a8e085829bb0cf239a1069f70a01aba1f03d85b0737c45dc6f25f2aa88aee18",
+        "text_preview": "District magnitude: number of seats per district. Threshold: minimum vote share to gain representation. Wasted vote: a vote that does not contribute to elect..."
+      }
+    ],
+    "doc_root_hash": "b2b4c49e882e1dc760d9aa3f312a4cbeff659492b1dc8d60455dbba1b0be172c",
     "schema_version": 2
   }
 ]

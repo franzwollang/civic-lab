@@ -12,6 +12,11 @@ import { renderTexToSvgHtml, validateTexWithMathJax } from "@/editor/mathjax";
 import { useCollapseContext } from "@/editor/collapse";
 import { useMathJaxTick } from "@/editor/useMathJaxTick";
 import { applyTabToText, TAB_SPACES } from "@/editor/tabSpaces";
+import {
+  consumeVoidEntryIntent,
+  getVoidEntrySelection,
+  handleVoidBlockTextareaArrowExit,
+} from "@/editor/voidNavigation";
 
 type MathInlineElement = {
   type: "math_inline";
@@ -212,12 +217,14 @@ function MathInlineComponent(props: PlateElementProps) {
   );
 }
 
-function MathBlockComponent(props: PlateElementProps) {
+export function MathBlockComponent(
+  props: PlateElementProps & { embedded?: boolean },
+) {
+  const embedded = (props as { embedded?: boolean }).embedded === true;
   const el = props.element as unknown as MathBlockElement;
   const id = typeof el.id === "string" ? el.id : undefined;
   const collapse = useCollapseContext();
   const hidden = id ? collapse?.isHidden(id) : false;
-  if (hidden) return null;
   const selected = useSelected();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   // Subscribe so we re-render when MathJax finishes async validation/rendering.
@@ -227,6 +234,10 @@ function MathBlockComponent(props: PlateElementProps) {
   const pendingSelection = useRef<{ start: number; end: number } | null>(null);
   const active = selected;
   const renderRef = useRef<HTMLDivElement | null>(null);
+  const isHiddenNode = (node: unknown) => {
+    const id = (node as any)?.id as string | undefined;
+    return id ? collapse?.isHidden(id) : false;
+  };
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const displayLatex = active ? draftLatex : latex;
 
@@ -297,6 +308,23 @@ function MathBlockComponent(props: PlateElementProps) {
   }, [active]);
 
   useEffect(() => {
+    if (!active) return;
+    const intent = consumeVoidEntryIntent(el, props.path);
+    if (!intent) return;
+    const next = getVoidEntrySelection(displayLatex, intent);
+    pendingSelection.current = next;
+    requestAnimationFrame(() => {
+      if (!textareaRef.current) return;
+      try {
+        textareaRef.current.selectionStart = next.start;
+        textareaRef.current.selectionEnd = next.end;
+      } catch {
+        // ignore
+      }
+    });
+  }, [active, displayLatex, el, props.path]);
+
+  useEffect(() => {
     if (active) return;
     setDraftLatex(latex);
   }, [active, latex]);
@@ -314,12 +342,24 @@ function MathBlockComponent(props: PlateElementProps) {
     }
   }, [active, displayLatex]);
 
+  if (hidden) return null;
+
   return (
     <PlateElement
       as="div"
       {...props}
-      className="group relative my-3 rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
+      className={
+        embedded
+          ? "group relative rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
+          : "group relative my-3 rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
+      }
     >
+      <div
+        contentEditable={false}
+        className="absolute right-2 top-2 rounded bg-neutral-100 px-2 py-0.5 text-[11px] font-semibold text-neutral-700"
+      >
+        Math
+      </div>
       <div
         contentEditable={false}
         className="cursor-text overflow-x-auto text-center"
@@ -381,6 +421,16 @@ function MathBlockComponent(props: PlateElementProps) {
               // Prevent Slate key handlers from acting on the (still-selected) void element.
               e.stopPropagation();
 
+              if (handleVoidBlockTextareaArrowExit(
+                props.editor,
+                props.path,
+                displayLatex,
+                e,
+                isHiddenNode,
+              )) {
+                return;
+              }
+
               const key = e.key;
               if (key === "Tab") {
                 e.preventDefault();
@@ -408,42 +458,6 @@ function MathBlockComponent(props: PlateElementProps) {
                 });
                 return;
               }
-              if (
-                key !== "ArrowUp" &&
-                key !== "ArrowDown" &&
-                key !== "ArrowLeft" &&
-                key !== "ArrowRight"
-              ) {
-                return;
-              }
-
-              const start = (e.currentTarget.selectionStart ?? 0);
-              const end = (e.currentTarget.selectionEnd ?? 0);
-              if (start !== end) return;
-
-              const atStart = start === 0;
-              const atEnd = start === displayLatex.length;
-              const isFirstLine = displayLatex.lastIndexOf("\n", start - 1) === -1;
-              const isLastLine = displayLatex.indexOf("\n", start) === -1;
-
-              if (key === "ArrowUp" && !isFirstLine) return;
-              if (key === "ArrowDown" && !isLastLine) return;
-              if (key === "ArrowLeft" && !atStart) return;
-              if (key === "ArrowRight" && !atEnd) return;
-
-              const point =
-                key === "ArrowUp" || key === "ArrowLeft"
-                  ? Editor.before(props.editor, props.path)
-                  : Editor.after(props.editor, props.path);
-              if (!point) return;
-
-              e.preventDefault();
-              Transforms.select(props.editor, point);
-              requestAnimationFrame(() => {
-                document
-                  .querySelector<HTMLElement>("[data-slate-editor=\"true\"]")
-                  ?.focus();
-              });
             }}
             onMouseDown={(e) => e.stopPropagation()}
             className={
@@ -462,15 +476,17 @@ function MathBlockComponent(props: PlateElementProps) {
         {props.children}
       </span>
 
-      <button
-        type="button"
-        contentEditable={false}
-        onMouseDown={handleRemove}
-        aria-label="Remove math block"
-        className="absolute -right-2 -top-2 hidden h-6 w-6 items-center justify-center rounded border border-neutral-200 bg-white text-xs text-neutral-600 shadow-sm hover:bg-neutral-100 group-hover:flex"
-      >
-        x
-      </button>
+      {!embedded ? (
+        <button
+          type="button"
+          contentEditable={false}
+          onMouseDown={handleRemove}
+          aria-label="Remove math block"
+          className="absolute -right-2 -top-2 hidden h-6 w-6 items-center justify-center rounded border border-neutral-200 bg-white text-xs text-neutral-600 shadow-sm hover:bg-neutral-100 group-hover:flex"
+        >
+          x
+        </button>
+      ) : null}
 
     </PlateElement>
   );
