@@ -135,5 +135,35 @@
         "created_at": "2026-07-09T11:00:00.000Z"
       }
     ]
+  },
+  {
+    "thread_id": "thread-us-overview-merged",
+    "home_dossier_id": "us-voting-1",
+    "title": "RFC: US overview baseline citations (merged seed)",
+    "state": "decided",
+    "decision_outcome": "merged",
+    "is_redteam": false,
+    "parent_thread_id": null,
+    "merge_artifact_id": "us-overview",
+    "created_at": "2026-06-01T10:00:00.000Z",
+    "targets": [
+      { "target_kind": "artifact", "target_id": "us-overview" }
+    ],
+    "posts": [
+      {
+        "post_id": "post-us-overview-merged-1",
+        "author_id": "user-alice",
+        "type": "comment",
+        "body": "Leaf RFC for overview citation hygiene — merged seed for reputation scaffolding.",
+        "created_at": "2026-06-01T10:00:00.000Z"
+      },
+      {
+        "post_id": "post-us-overview-merged-2",
+        "author_id": "user-bob",
+        "type": "comment",
+        "body": "Reviewed RevSet; citations look consistent with Descriptive lane.",
+        "created_at": "2026-06-02T11:00:00.000Z"
+      }
+    ]
   }
 ]

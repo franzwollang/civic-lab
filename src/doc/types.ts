@@ -119,6 +119,33 @@ export type RequirementSatisfactionSnapshot = {
   other: number;
 };
 
+/** CONCEPT §9.2 advisory reputation contributor (Collection-scoped). */
+export type ReputationSignalCounts = {
+  merged_revsets: number;
+  review_labor: number;
+  red_team_findings: number;
+  adjudications: number;
+  accepted_risk_signs: number;
+  endorsements: number;
+};
+
+export type ReputationContributorRow = {
+  user_id: string;
+  display_name: string | null;
+  signals: ReputationSignalCounts;
+  signal_event_count: number;
+  advisory_score: number;
+};
+
+export type CollectionReputationBoard = {
+  advisory: true;
+  grants_permissions: false;
+  n: number;
+  public_board_eligible: boolean;
+  contributors: ReputationContributorRow[];
+  note: string;
+};
+
 export type CollectionDashboard = {
   collection: CollectionRow;
   stats: {
@@ -148,6 +175,8 @@ export type CollectionDashboard = {
   red_team: {
     recent_count: number;
   };
+  /** CONCEPT §9.2 / §5.9 — advisory non-scorable contribution board. */
+  reputation: CollectionReputationBoard;
 };
 
 /** CONCEPT §2.3 Section wire shape (persisted; synced from headings). */

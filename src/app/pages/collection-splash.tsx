@@ -6,6 +6,7 @@ import {
   LineChart,
   ShieldAlert,
   Layers,
+  TrendingUp,
 } from "lucide-react";
 import { Header } from "../components/header";
 import { DossierCard } from "../components/cards";
@@ -237,6 +238,16 @@ function CollectionDashboardView({
           ) : null}
         </Card>
 
+        <Card className="border border-neutral-200 bg-white p-6 lg:col-span-2">
+          <div className="mb-2 flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-neutral-600" />
+            <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
+              Advisory reputation
+            </h2>
+          </div>
+          <ReputationPanel board={dashboard.reputation} />
+        </Card>
+
         {/* Manuals-only panels keep chrome slot even when deferred */}
         {isManual && dashboard.lane_coverage && (
           <Card className="border border-neutral-200 bg-white p-6">
@@ -373,6 +384,69 @@ function ClaimMetricsPanel({
           </ul>
         )}
       </div>
+    </div>
+  );
+}
+
+function ReputationPanel({
+  board,
+}: {
+  board: CollectionDashboard["reputation"];
+}) {
+  if (board.n === 0 || board.contributors.length === 0) {
+    return (
+      <p className="text-sm text-neutral-500">
+        No non-scorable contribution signals in this Collection yet.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-3 text-sm text-neutral-700">
+      <p className="text-xs text-neutral-500">{board.note}</p>
+      <ul className="space-y-2">
+        {board.contributors.slice(0, 8).map((c) => (
+          <li
+            key={c.user_id}
+            className="flex flex-wrap items-baseline justify-between gap-2 border-b border-neutral-100 pb-2 last:border-0"
+          >
+            <div>
+              <span className="font-medium text-neutral-900">
+                {c.display_name ?? c.user_id}
+              </span>
+              <span className="ml-2 text-xs text-neutral-500">
+                score {c.advisory_score} · {c.signal_event_count} signals
+              </span>
+            </div>
+            <span className="text-xs text-neutral-600">
+              {[
+                c.signals.merged_revsets
+                  ? `${c.signals.merged_revsets} merged RevSet`
+                  : null,
+                c.signals.review_labor
+                  ? `${c.signals.review_labor} review`
+                  : null,
+                c.signals.red_team_findings
+                  ? `${c.signals.red_team_findings} finding`
+                  : null,
+                c.signals.adjudications
+                  ? `${c.signals.adjudications} adjudication`
+                  : null,
+                c.signals.accepted_risk_signs
+                  ? `${c.signals.accepted_risk_signs} AR sign`
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </span>
+          </li>
+        ))}
+      </ul>
+      {!board.public_board_eligible ? (
+        <p className="text-xs text-neutral-500">
+          Public leaderboard chrome stays preview-only until n ≥ 20 (anti-gaming).
+        </p>
+      ) : null}
     </div>
   );
 }

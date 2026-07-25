@@ -107,9 +107,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - [ ] **Manuals 3D globe picker** — SVG map+list satisfies CONCEPT map+list; optional 3D polish deferred.
 - [ ] **Requirements Matrix artifact type** (CONCEPT §9) — **superseded**: use Claims + citations instead (see §E).
 - [ ] **Auth + real-identity policy hooks** (CONCEPT §8.6) — after impersonation era.
-- [ ] **Reputation layer** for non-scorable contributions (CONCEPT §8.2).
+- Reputation layer (CONCEPT §9.2): **done** (M9 first cut) — Collection dashboard advisory board from merged RevSets / review labor / RT findings / adjudications / AR signs; n≥20 anti-gaming floor; `smoke-reputation`.
 - Charter as living gated artifact: **done** (M9 first cut) — `canon-governance-1` + `canon-charter` (`owner_merge_only`); `/constitution` → artifact; Owner edit gate; `smoke-charter`.
-- [ ] **Anti-gaming / scoring leaderboard policy**.
+- [ ] **Anti-gaming / scoring leaderboard policy** — forecast boards already gate n≥20; reputation board same floor; Owner board-hide + audit still open.
 - [ ] **Moderator tools + audit logs**.
 - [ ] **External artifact whitelist** (CONCEPT App D) — deferred until evidence/editor bridge solid.
 

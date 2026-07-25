@@ -44,6 +44,11 @@ import {
   computeRequirementSatisfactionSnapshot,
 } from "../src/lib/claimMetrics";
 import {
+  computeReputationBoard,
+  type ReputationSignalEvent,
+} from "../src/lib/reputation";
+import { getPrototypeUser } from "../src/app/lib/prototype-users";
+import {
   artifactHref,
   claimHref,
   clampSearchLimit,
@@ -192,6 +197,32 @@ export type RequirementSatisfactionSnapshot = {
   other: number;
 };
 
+export type ReputationSignalCounts = {
+  merged_revsets: number;
+  review_labor: number;
+  red_team_findings: number;
+  adjudications: number;
+  accepted_risk_signs: number;
+  endorsements: number;
+};
+
+export type ReputationContributorRow = {
+  user_id: string;
+  display_name: string | null;
+  signals: ReputationSignalCounts;
+  signal_event_count: number;
+  advisory_score: number;
+};
+
+export type CollectionReputationBoard = {
+  advisory: true;
+  grants_permissions: false;
+  n: number;
+  public_board_eligible: boolean;
+  contributors: ReputationContributorRow[];
+  note: string;
+};
+
 export type CollectionDashboard = {
   collection: CollectionRow;
   stats: {
@@ -226,6 +257,8 @@ export type CollectionDashboard = {
   red_team: {
     recent_count: number;
   };
+  /** CONCEPT §9.2 / §5.9 — advisory non-scorable contribution board. */
+  reputation: CollectionReputationBoard;
 };
 
 /** CONCEPT §2.3 Section wire shape. */
@@ -667,6 +700,16 @@ export async function getCollectionDashboard(
     .length;
   const recent_count = collectionFindings.length;
 
+  const reputationEvents = await collectReputationSignals(dossierIds);
+  const reputationBoard = computeReputationBoard(reputationEvents);
+  const reputation: CollectionReputationBoard = {
+    ...reputationBoard,
+    contributors: reputationBoard.contributors.map((c) => ({
+      ...c,
+      display_name: getPrototypeUser(c.user_id)?.display_name ?? null,
+    })),
+  };
+
   return {
     collection,
     stats: {
@@ -688,7 +731,117 @@ export async function getCollectionDashboard(
     red_team: {
       recent_count,
     },
+    reputation,
   };
+}
+
+/**
+ * Gather CONCEPT §9.2 reputation signal events for dossiers in a Collection.
+ * Scope = thread home dossier (or claim artifact dossier for adjudications).
+ */
+async function collectReputationSignals(
+  dossierIds: string[],
+): Promise<ReputationSignalEvent[]> {
+  if (dossierIds.length === 0) return [];
+
+  const events: ReputationSignalEvent[] = [];
+  const prisma = getPrisma();
+
+  const threads = await prisma.thread.findMany({
+    where: { homeDossierId: { in: dossierIds } },
+    select: {
+      threadId: true,
+      homeDossierId: true,
+      state: true,
+      decisionOutcome: true,
+      posts: {
+        select: {
+          authorId: true,
+          createdAt: true,
+        },
+      },
+      revSets: {
+        select: {
+          authorId: true,
+          createdAt: true,
+        },
+      },
+      findings: {
+        select: {
+          authorId: true,
+          createdAt: true,
+        },
+      },
+      acceptedRisk: {
+        select: {
+          signerId: true,
+          signedAt: true,
+        },
+      },
+    },
+  });
+
+  for (const th of threads) {
+    const dossier_id = th.homeDossierId;
+    for (const post of th.posts) {
+      events.push({
+        user_id: post.authorId,
+        kind: "review_labor",
+        dossier_id,
+        created_at: post.createdAt.toISOString(),
+      });
+    }
+    if (th.state === "decided" && th.decisionOutcome === "merged") {
+      for (const rs of th.revSets) {
+        events.push({
+          user_id: rs.authorId,
+          kind: "merged_revset",
+          dossier_id,
+          created_at: rs.createdAt.toISOString(),
+        });
+      }
+    }
+    for (const f of th.findings) {
+      events.push({
+        user_id: f.authorId,
+        kind: "red_team_finding",
+        dossier_id,
+        created_at: f.createdAt.toISOString(),
+      });
+    }
+    if (th.acceptedRisk) {
+      events.push({
+        user_id: th.acceptedRisk.signerId,
+        kind: "accepted_risk_sign",
+        dossier_id,
+        created_at: th.acceptedRisk.signedAt.toISOString(),
+      });
+    }
+  }
+
+  const adjudicated = await prisma.claim.findMany({
+    where: {
+      adjudicatedBy: { not: null },
+      artifact: { dossierId: { in: dossierIds } },
+    },
+    select: {
+      adjudicatedBy: true,
+      adjudicatedAt: true,
+      artifact: { select: { dossierId: true } },
+    },
+  });
+
+  for (const c of adjudicated) {
+    if (!c.adjudicatedBy) continue;
+    events.push({
+      user_id: c.adjudicatedBy,
+      kind: "adjudication",
+      dossier_id: c.artifact.dossierId,
+      created_at: c.adjudicatedAt?.toISOString() ?? null,
+    });
+  }
+
+  return events;
 }
 
 /**

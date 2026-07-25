@@ -7,5 +7,14 @@
     "author_id": "user-alice",
     "created_at": "2026-07-12T11:00:00.000Z",
     "summary": "Clarify intake portals and ID→provisional routing language"
+  },
+  {
+    "revset_id": "revset-us-overview-merged-1",
+    "thread_id": "thread-us-overview-merged",
+    "version": 1,
+    "artifact_revision_id": "rev-us-overview-1",
+    "author_id": "user-alice",
+    "created_at": "2026-06-01T12:00:00.000Z",
+    "summary": "Seed merged RevSet for advisory reputation signal (CONCEPT §9.2)"
   }
 ]

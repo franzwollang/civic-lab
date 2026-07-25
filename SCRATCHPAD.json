@@ -1,23 +1,23 @@
 {
-  "updated_at": "2026-07-25T16:40Z",
-  "turn": 46,
+  "updated_at": "2026-07-25T16:55Z",
+  "turn": 47,
   "focus": {
     "milestone": "M9",
-    "issue": "Reputation layer scaffolding",
-    "goal": "Advisory reputation signals (CONCEPT §8.2 / §9.2)"
+    "issue": "Anti-gaming board-hide / real auth",
+    "goal": "Owner board-hide + audit or auth policy hooks"
   },
   "recent": [
-    "Merged PR #32 (M8) onto cron branch 52cb",
-    "M9 Charter: canon-governance-1 + living owner_merge_only artifact",
-    "/constitution redirects; Owner edit gate; smoke-charter; 29/29"
+    "Merged PR #33 (M9 Charter) onto cron branch 1248",
+    "M9 reputation: src/lib/reputation.ts + Collection dashboard panel",
+    "Seed merged RevSet thread; smoke-reputation; hand off anti-gaming/auth"
   ],
   "discoveries": [
     "Prefer merge latest progression PR before coding on fresh cron branches"
   ],
   "open_threads": [
-    "M9 reputation + anti-gaming + real auth remain",
+    "M9 anti-gaming board-hide + real auth remain",
     "Editor MVP gaps + evidence registries still open"
   ],
-  "next_step": "M9: reputation scaffolding (merged RevSets / RT / adjudication signals) or anti-gaming n≥20 board policy",
+  "next_step": "M9: Owner board-hide/audit for abuse OR real-identity auth hooks; else editor/evidence residuals",
   "blockers": []
 }
