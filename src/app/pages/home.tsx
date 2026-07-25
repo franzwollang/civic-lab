@@ -51,13 +51,13 @@ export function Home() {
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Button asChild size="lg">
-                    <Link to="/dossier/canon-1">
+                    <Link to="/canon">
                       Explore Canon
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
-                    <Link to="/dossier/manual-us-1">Browse Manuals</Link>
+                    <Link to="/manuals">Browse Manuals</Link>
                   </Button>
                   <Button
                     asChild
@@ -142,7 +142,7 @@ export function Home() {
             </Link>
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
-            <Link to="/dossier/canon-1">
+            <Link to="/canon">
               <Card className="group cursor-pointer border-2 border-neutral-900 bg-white p-8 transition-all hover:border-neutral-700 hover:shadow-lg">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-900">
@@ -169,7 +169,7 @@ export function Home() {
               </Card>
             </Link>
 
-            <Link to="/dossier/manual-us-1">
+            <Link to="/manuals">
               <Card className="group cursor-pointer border-2 border-neutral-900 bg-white p-8 transition-all hover:border-neutral-700 hover:shadow-lg">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-900">

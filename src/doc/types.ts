@@ -39,6 +39,29 @@ export type ArtifactRow = {
   slug: string;
   current_revision_id: string | null;
   created_at: string;
+  dossier_id?: string | null;
+};
+
+export type AreaRow = {
+  area_id: string;
+  kind: string;
+  title: string;
+};
+
+export type CollectionRow = {
+  collection_id: string;
+  area_id: string;
+  title: string;
+  country_code: string | null;
+  summary: string | null;
+};
+
+export type DossierRow = {
+  dossier_id: string;
+  collection_id: string;
+  title: string;
+  summary: string | null;
+  tags: string[];
 };
 
 /** @deprecated Prefer ArtifactRow */

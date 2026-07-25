@@ -1,0 +1,12 @@
+[
+  {
+    "area_id": "area-canon",
+    "kind": "canon",
+    "title": "Canon"
+  },
+  {
+    "area_id": "area-manuals",
+    "kind": "manuals",
+    "title": "Country Manuals"
+  }
+]

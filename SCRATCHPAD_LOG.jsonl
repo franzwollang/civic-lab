@@ -17,3 +17,4 @@
 {"ts":"2026-07-25T06:55Z","focus":"M3 content bridge","summary":"Artifact naming path + Section extractor + live product reader for voting-systems","next":"Prisma Artifact rename with @@map or product edit path"}
 {"ts":"2026-07-25T07:15Z","focus":"M3 Artifact rename","summary":"Prisma Page→Artifact/ArtifactRevision with @@map; product Edit→/test/editor/:id; smoke-artifact-rename","next":"in-chrome editor or wire artifact_id; else MVP gaps"}
 {"ts":"2026-07-25T07:35Z","focus":"M3 dual-emit + product edit","summary":"Wire artifact_id dual-emit; Plate under dossier /edit; M3 done","next":"M4 Area/Collection/Dossier or §A MVP gaps"}
+{"ts":"2026-07-25T07:55Z","focus":"M4 corpus IA","summary":"Area/Collection/Dossier seeds+API; /canon /manuals; dossier overview data-driven","next":"home from store or Manuals map picker"}

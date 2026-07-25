@@ -1,6 +1,9 @@
 import type {
+  AreaRow,
   ArtifactRevisionRow,
   ArtifactRow,
+  CollectionRow,
+  DossierRow,
   PageRevisionRow,
   PageRow,
 } from "../doc/types";
@@ -123,6 +126,56 @@ export async function resolveArtifactRef(
         a.page_id === ref,
     ) ?? null
   );
+}
+
+export async function getAreas(): Promise<AreaRow[]> {
+  const response = await fetch(`${API_BASE}/areas`);
+  return handleResponse<AreaRow[]>(response);
+}
+
+export async function getCollections(opts?: {
+  areaId?: string;
+  kind?: string;
+}): Promise<CollectionRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.areaId) params.set("area_id", opts.areaId);
+  if (opts?.kind) params.set("kind", opts.kind);
+  const qs = params.toString();
+  const response = await fetch(
+    `${API_BASE}/collections${qs ? `?${qs}` : ""}`,
+  );
+  return handleResponse<CollectionRow[]>(response);
+}
+
+export async function getCollection(
+  collectionId: string,
+): Promise<CollectionRow> {
+  const response = await fetch(`${API_BASE}/collections/${collectionId}`);
+  return handleResponse<CollectionRow>(response);
+}
+
+export async function getDossiers(opts?: {
+  collectionId?: string;
+}): Promise<DossierRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.collectionId) params.set("collection_id", opts.collectionId);
+  const qs = params.toString();
+  const response = await fetch(`${API_BASE}/dossiers${qs ? `?${qs}` : ""}`);
+  return handleResponse<DossierRow[]>(response);
+}
+
+export async function getDossier(dossierId: string): Promise<DossierRow> {
+  const response = await fetch(`${API_BASE}/dossiers/${dossierId}`);
+  return handleResponse<DossierRow>(response);
+}
+
+export async function getDossierArtifacts(
+  dossierId: string,
+): Promise<ArtifactRow[]> {
+  const response = await fetch(
+    `${API_BASE}/dossiers/${dossierId}/artifacts`,
+  );
+  return handleResponse<ArtifactRow[]>(response);
 }
 
 export async function getAttributions(): Promise<AttributionRegistry> {

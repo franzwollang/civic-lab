@@ -6,9 +6,16 @@ import {
   createArtifactRevision,
   getArtifact,
   getAttributions,
+  getAreaByKind,
+  getCollection,
+  getDossier,
   getTerms,
+  listAreas,
   listArtifactRevisions,
   listArtifacts,
+  listArtifactsByDossier,
+  listCollections,
+  listDossiers,
   putAttributions,
   putTerms,
   setPrisma,
@@ -219,6 +226,83 @@ app.post("/api/pages/:pageId/revisions", handleCreateRevision);
 
 app.patch("/api/artifacts/:artifactId", handlePatchArtifact);
 app.patch("/api/pages/:pageId", handlePatchArtifact);
+
+// M4 corpus IA — Area → Collection → Dossier
+app.get("/api/areas", async (_req, res) => {
+  res.json(await listAreas());
+});
+
+app.get("/api/areas/:areaId/collections", async (req, res) => {
+  const area = await listAreas().then((rows) =>
+    rows.find((a) => a.area_id === req.params.areaId),
+  );
+  if (!area) {
+    res.status(404).json({ error: "Area not found" });
+    return;
+  }
+  res.json(await listCollections(req.params.areaId));
+});
+
+app.get("/api/collections", async (req, res) => {
+  const areaId =
+    typeof req.query.area_id === "string" ? req.query.area_id : undefined;
+  const kind =
+    typeof req.query.kind === "string" ? req.query.kind : undefined;
+  if (kind) {
+    const area = await getAreaByKind(kind);
+    if (!area) {
+      res.json([]);
+      return;
+    }
+    res.json(await listCollections(area.area_id));
+    return;
+  }
+  res.json(await listCollections(areaId));
+});
+
+app.get("/api/collections/:collectionId", async (req, res) => {
+  const collection = await getCollection(req.params.collectionId);
+  if (!collection) {
+    res.status(404).json({ error: "Collection not found" });
+    return;
+  }
+  res.json(collection);
+});
+
+app.get("/api/collections/:collectionId/dossiers", async (req, res) => {
+  const collection = await getCollection(req.params.collectionId);
+  if (!collection) {
+    res.status(404).json({ error: "Collection not found" });
+    return;
+  }
+  res.json(await listDossiers(req.params.collectionId));
+});
+
+app.get("/api/dossiers", async (req, res) => {
+  const collectionId =
+    typeof req.query.collection_id === "string"
+      ? req.query.collection_id
+      : undefined;
+  res.json(await listDossiers(collectionId));
+});
+
+app.get("/api/dossiers/:dossierId", async (req, res) => {
+  const dossier = await getDossier(req.params.dossierId);
+  if (!dossier) {
+    res.status(404).json({ error: "Dossier not found" });
+    return;
+  }
+  res.json(dossier);
+});
+
+app.get("/api/dossiers/:dossierId/artifacts", async (req, res) => {
+  const dossier = await getDossier(req.params.dossierId);
+  if (!dossier) {
+    res.status(404).json({ error: "Dossier not found" });
+    return;
+  }
+  res.json(await listArtifactsByDossier(req.params.dossierId));
+});
 
 async function main() {
   const client = await bootstrapDatabase();

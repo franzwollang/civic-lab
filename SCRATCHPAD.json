@@ -1,25 +1,26 @@
 {
-  "updated_at": "2026-07-25T07:35Z",
-  "turn": 19,
+  "updated_at": "2026-07-25T07:55Z",
+  "turn": 20,
   "focus": {
     "milestone": "M4",
     "issue": "Top-level IA: Area → Collection → Dossier",
-    "goal": "Start M4 corpus IA / data-driven routes"
+    "goal": "M4 first cut landed; finish map picker / home store"
   },
   "recent": [
-    "Merged PR #8 onto fresh cron branch",
-    "Dual-emit artifact_id + page_id on wire",
-    "Product /edit route with Plate + SidebarNav",
-    "M3 marked done; Section DB sync → M5"
+    "Merged PR #9 (M3) onto fresh cron branch",
+    "Prisma Area/Collection/Dossier + seeds + APIs",
+    "Routes /canon /manuals /collection/:id; dossier from DB",
+    "smoke-corpus-ia OK"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
-    "Prisma --force-reset blocked in Cursor; use fresh SQLite file instead"
+    "Prisma --force-reset blocked; use fresh SQLite file for smokes"
   ],
   "open_threads": [
-    "Section DB sync deferred until ThreadTarget (M5)",
-    "validateDocumentForMerge still unused — MVP gaps"
+    "Manuals 3D map picker still deferred",
+    "Home trending cards still static JSX",
+    "Section DB sync deferred until ThreadTarget (M5)"
   ],
-  "next_step": "M4: Area/Collection/Dossier Prisma models + seeds, or §A Editor MVP gaps triage",
+  "next_step": "M4 remainder: home from store and/or Manuals map; else §A MVP gaps",
   "blockers": []
 }

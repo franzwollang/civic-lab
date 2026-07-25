@@ -17,14 +17,16 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ---
 
-## C. Product shell vs real data (after M1)
+## C. Product shell vs real data (M4 in progress)
 
 - [ ] **Add CONCEPT tables + seeds incrementally**
-  - Order roughly: Area/Collection/Dossier → Artifact meta (+ rename from Page) → Section → Thread/Post/Target → Claim → Finding/AcceptedRisk.
-  - Hardcoded US-voting JSX → seeds or discard.
+  - Done this cut: Area / Collection / Dossier (+ `Artifact.dossier_id`).
+  - Next: Section → Thread/Post/Target → Claim → Finding/AcceptedRisk as later milestones need them.
+  - Hardcoded US-voting JSX still present on some panels — retire as seeds grow.
 
 - [ ] **Make product routes data-driven**
-  - Route params select Prisma records; dossier tabs real lists; home from same store.
+  - Done: `/canon`, `/manuals`, `/collection/:id`, `/dossier/:id` load Prisma records; header/home CTAs point at Area entry routes.
+  - Remaining: home trending cards / metrics from store; dossier tabs (threads/RFCs) when M5 exists.
 
 - [ ] **Unify artifact body with revisioned editor documents**
   - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader when id/slug resolves; unresolved ids still use static fixtures.
@@ -33,10 +35,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Remaining: replace more hardcoded fixture artifacts with seeds as M4 grows the corpus.
 
 - [ ] **Top-level IA: Area → Collection → Dossier**
-  - Canon Area + singleton Collection; Manuals Area + per-country Collections.
-  - Shared Collection splash/dashboard; Manuals picker = 3D map + list/search.
-  - Dossier = subforum-like UX.
-  - Taxonomy: Area, Collection, Dossier, Artifact (typed), Section, Thread, RFC (+ sub-RFC), RevSet, Claim, Finding, Accepted Risk, lanes, bridge (soft).
+  - Done: Canon Area + singleton Collection; Manuals Area + US Collection; shared Collection splash; Manuals list/search index; dossier subforum shell from DB.
+  - Remaining: Manuals **3D map** picker; richer Collection dashboard panels (CONCEPT §11).
 
 - [ ] **Migrate site copy into artifacts (incremental)**
   - About, FAQ, Constitution/Charter, home explainer → artifact-backed when feasible.

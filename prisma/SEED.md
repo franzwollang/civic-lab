@@ -1,13 +1,22 @@
-# Seed vs runtime (M1)
+# Seed vs runtime (M1 + M4 corpus)
 
 ## What lives where
 
 | Path | Role |
 |---|---|
-| `prisma/seed/*.json` | **Seed-only** fixtures (former `db/*.json`). Edit these to change the default corpus. |
+| `prisma/seed/*.json` | **Seed-only** fixtures (former `db/*.json` + M4 Area/Collection/Dossier). Edit these to change the default corpus. |
 | `prisma/dev.db` | **Runtime** SQLite file (gitignored). Created on first startup. |
 | `prisma/schema.prisma` | Schema; prototype uses `prisma db push` (no migration history yet). |
 | `SeedMeta` table | Marker that seed was applied. If missing ⇒ DB treated as empty ⇒ re-seed. |
+
+## M4 hierarchy seeds
+
+| File | Entities |
+|---|---|
+| `areas.json` | `area-canon`, `area-manuals` |
+| `collections.json` | `collection-canon` (singleton), `collection-us` (`country_code: US`) |
+| `dossiers.json` | `electoral-1`, `alignment-1` (Canon); `us-voting-1` (US Manual) |
+| `pages.json` | Artifacts; optional `dossier_id` (e.g. `page-001` → `electoral-1`) |
 
 ## Startup sequence (`pnpm run dev` → API)
 
@@ -36,13 +45,13 @@ rm -f prisma/dev.db prisma/dev.db-journal && pnpm run dev
 
 ## Adding a seed file
 
-1. Add or edit JSON under `prisma/seed/` (keep shapes: pages array, revisions array, terms/attributions `{ version, items }`).
+1. Add or edit JSON under `prisma/seed/` (shapes: areas/collections/dossiers arrays; pages array with optional `dossier_id`; revisions array; terms/attributions `{ version, items }`).
 2. Reset runtime (`pnpm db:seed -- --force` or delete `prisma/dev.db`) so `SeedMeta` is cleared and startup re-seeds.
 3. Empty re-seed is **intentional** for this local prototype — disposable data, not production migration.
 
 ## API contract
 
-Prisma models are `Artifact` / `ArtifactRevision` mapped onto legacy tables
-`pages` / `page_revisions` (`page_id` column ≡ artifact id). Wire JSON still uses
-snake_case `page_id` / `content_json` so `/test/editor` and `/test/preview` keep
-working; `/api/artifacts` is the preferred path (legacy `/api/pages` still works).
+- Corpus: `/api/areas`, `/api/collections`, `/api/dossiers` (+ nested dossier artifacts).
+- Documents: Prisma `Artifact` / `ArtifactRevision` mapped onto legacy tables
+  `pages` / `page_revisions` (`page_id` column ≡ artifact id). Wire JSON dual-emits
+  `artifact_id` + `page_id`; `/api/artifacts` preferred (legacy `/api/pages` works).

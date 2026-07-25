@@ -1,4 +1,4 @@
-// Civic Lab M3 — editor store entities.
+// Civic Lab M4 — Area → Collection → Dossier + editor store entities.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
 // Wire JSON dual-emits `artifact_id` (preferred) + `page_id` (same value).
@@ -13,14 +13,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Artifact {
-  artifactId         String              @id @map("page_id")
-  title              String
-  slug               String
-  currentRevisionId  String?             @map("current_revision_id")
-  createdAt          DateTime            @map("created_at")
-  revisions          ArtifactRevision[]
+/// CONCEPT §2.0 — `canon` | `manuals`
+model Area {
+  areaId      String       @id @map("area_id")
+  kind        String
+  title       String
+  collections Collection[]
 
+  @@map("areas")
+}
+
+/// CONCEPT §2.0 — Canon singleton; Manuals one per country (`country_code`).
+model Collection {
+  collectionId String    @id @map("collection_id")
+  areaId       String    @map("area_id")
+  title        String
+  countryCode  String?   @map("country_code")
+  summary      String?
+  area         Area      @relation(fields: [areaId], references: [areaId], onDelete: Cascade)
+  dossiers     Dossier[]
+
+  @@index([areaId])
+  @@map("collections")
+}
+
+/// CONCEPT §2.1 — subforum-owning semantic unit within a Collection.
+model Dossier {
+  dossierId    String     @id @map("dossier_id")
+  collectionId String     @map("collection_id")
+  title        String
+  summary      String?
+  tags         Json       @default("[]")
+  collection   Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
+  artifacts    Artifact[]
+
+  @@index([collectionId])
+  @@map("dossiers")
+}
+
+model Artifact {
+  artifactId        String             @id @map("page_id")
+  title             String
+  slug              String
+  currentRevisionId String?            @map("current_revision_id")
+  createdAt         DateTime           @map("created_at")
+  dossierId         String?            @map("dossier_id")
+  dossier           Dossier?           @relation(fields: [dossierId], references: [dossierId], onDelete: SetNull)
+  revisions         ArtifactRevision[]
+
+  @@index([dossierId])
   @@map("pages")
 }
 

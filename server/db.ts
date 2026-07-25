@@ -19,6 +19,28 @@ export function getPrisma(): PrismaClient {
   return prisma;
 }
 
+export type AreaRow = {
+  area_id: string;
+  kind: string;
+  title: string;
+};
+
+export type CollectionRow = {
+  collection_id: string;
+  area_id: string;
+  title: string;
+  country_code: string | null;
+  summary: string | null;
+};
+
+export type DossierRow = {
+  dossier_id: string;
+  collection_id: string;
+  title: string;
+  summary: string | null;
+  tags: string[];
+};
+
 /** Wire shape — dual-emits `artifact_id` + legacy `page_id`. */
 export type ArtifactRow = {
   artifact_id: string;
@@ -27,6 +49,7 @@ export type ArtifactRow = {
   slug: string;
   current_revision_id: string | null;
   created_at: string;
+  dossier_id: string | null;
 };
 
 /** @deprecated Prefer ArtifactRow */
@@ -50,12 +73,60 @@ export type RegistryPayload = {
   items: unknown[];
 };
 
+function mapArea(row: {
+  areaId: string;
+  kind: string;
+  title: string;
+}): AreaRow {
+  return {
+    area_id: row.areaId,
+    kind: row.kind,
+    title: row.title,
+  };
+}
+
+function mapCollection(row: {
+  collectionId: string;
+  areaId: string;
+  title: string;
+  countryCode: string | null;
+  summary: string | null;
+}): CollectionRow {
+  return {
+    collection_id: row.collectionId,
+    area_id: row.areaId,
+    title: row.title,
+    country_code: row.countryCode,
+    summary: row.summary,
+  };
+}
+
+function mapDossier(row: {
+  dossierId: string;
+  collectionId: string;
+  title: string;
+  summary: string | null;
+  tags: unknown;
+}): DossierRow {
+  const tags = Array.isArray(row.tags)
+    ? row.tags.filter((t): t is string => typeof t === "string")
+    : [];
+  return {
+    dossier_id: row.dossierId,
+    collection_id: row.collectionId,
+    title: row.title,
+    summary: row.summary,
+    tags,
+  };
+}
+
 function mapArtifact(row: {
   artifactId: string;
   title: string;
   slug: string;
   currentRevisionId: string | null;
   createdAt: Date;
+  dossierId: string | null;
 }): ArtifactRow {
   return {
     artifact_id: row.artifactId,
@@ -64,7 +135,69 @@ function mapArtifact(row: {
     slug: row.slug,
     current_revision_id: row.currentRevisionId,
     created_at: row.createdAt.toISOString(),
+    dossier_id: row.dossierId,
   };
+}
+
+export async function listAreas(): Promise<AreaRow[]> {
+  const rows = await getPrisma().area.findMany({
+    orderBy: { areaId: "asc" },
+  });
+  return rows.map(mapArea);
+}
+
+export async function getArea(areaId: string): Promise<AreaRow | null> {
+  const row = await getPrisma().area.findUnique({ where: { areaId } });
+  return row ? mapArea(row) : null;
+}
+
+export async function getAreaByKind(kind: string): Promise<AreaRow | null> {
+  const row = await getPrisma().area.findFirst({ where: { kind } });
+  return row ? mapArea(row) : null;
+}
+
+export async function listCollections(areaId?: string): Promise<CollectionRow[]> {
+  const rows = await getPrisma().collection.findMany({
+    where: areaId ? { areaId } : undefined,
+    orderBy: { title: "asc" },
+  });
+  return rows.map(mapCollection);
+}
+
+export async function getCollection(
+  collectionId: string,
+): Promise<CollectionRow | null> {
+  const row = await getPrisma().collection.findUnique({
+    where: { collectionId },
+  });
+  return row ? mapCollection(row) : null;
+}
+
+export async function listDossiers(
+  collectionId?: string,
+): Promise<DossierRow[]> {
+  const rows = await getPrisma().dossier.findMany({
+    where: collectionId ? { collectionId } : undefined,
+    orderBy: { title: "asc" },
+  });
+  return rows.map(mapDossier);
+}
+
+export async function getDossier(dossierId: string): Promise<DossierRow | null> {
+  const row = await getPrisma().dossier.findUnique({
+    where: { dossierId },
+  });
+  return row ? mapDossier(row) : null;
+}
+
+export async function listArtifactsByDossier(
+  dossierId: string,
+): Promise<ArtifactRow[]> {
+  const rows = await getPrisma().artifact.findMany({
+    where: { dossierId },
+    orderBy: { createdAt: "asc" },
+  });
+  return rows.map(mapArtifact);
 }
 
 function mapRevision(row: {
@@ -114,6 +247,7 @@ export async function updateArtifact(
     title: string;
     slug: string;
     current_revision_id: string | null;
+    dossier_id: string | null;
   }>,
 ): Promise<ArtifactRow | null> {
   const existing = await getPrisma().artifact.findUnique({
@@ -128,6 +262,9 @@ export async function updateArtifact(
       ...(patch.slug !== undefined ? { slug: patch.slug } : {}),
       ...(patch.current_revision_id !== undefined
         ? { currentRevisionId: patch.current_revision_id }
+        : {}),
+      ...(patch.dossier_id !== undefined
+        ? { dossierId: patch.dossier_id }
         : {}),
     },
   });

@@ -1,0 +1,16 @@
+[
+  {
+    "collection_id": "collection-canon",
+    "area_id": "area-canon",
+    "title": "Canon",
+    "country_code": null,
+    "summary": "Universal ideal framework — parameterized models adaptable to circumstances."
+  },
+  {
+    "collection_id": "collection-us",
+    "area_id": "area-manuals",
+    "title": "United States",
+    "country_code": "US",
+    "summary": "Country Manual for US institutions, procedures, and realpolitik constraints."
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "dossier_id": "electoral-1",
+    "collection_id": "collection-canon",
+    "title": "Voting Systems",
+    "summary": "Ideal models of electoral systems, criteria, and trade-offs.",
+    "tags": ["elections", "voting", "canon"]
+  },
+  {
+    "dossier_id": "alignment-1",
+    "collection_id": "collection-canon",
+    "title": "Alignment",
+    "summary": "How Manuals relate to Canon ideals — gaps, bridges, and quality claims.",
+    "tags": ["alignment", "canon"]
+  },
+  {
+    "dossier_id": "us-voting-1",
+    "collection_id": "collection-us",
+    "title": "US Voting Implementation Guide",
+    "summary": "State-by-state procedures, legal requirements, and operational workflows for conducting elections in the United States.",
+    "tags": ["elections", "USA", "procedures"]
+  }
+]
