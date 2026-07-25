@@ -132,6 +132,25 @@ type RevSetSeedRow = {
   summary?: string | null;
 };
 
+type FindingTargetSeed = {
+  target_kind: string;
+  target_id: string;
+};
+
+type FindingSeedRow = {
+  finding_id: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood?: string | null;
+  status?: string;
+  evidence?: string | null;
+  attack_path?: string | null;
+  author_id: string;
+  created_at: string;
+  targets?: FindingTargetSeed[];
+};
+
 async function readSeedJson<T>(name: string): Promise<T> {
   const raw = await fs.readFile(path.join(SEED_DIR, name), "utf-8");
   return JSON.parse(raw) as T;
@@ -147,6 +166,8 @@ export async function seedIfEmpty(
   }
 
   if (options.force) {
+    await prisma.findingTarget.deleteMany();
+    await prisma.finding.deleteMany();
     await prisma.claim.deleteMany();
     await prisma.revSet.deleteMany();
     await prisma.threadTarget.deleteMany();
@@ -171,6 +192,7 @@ export async function seedIfEmpty(
   const threads = await readSeedJson<ThreadSeedRow[]>("threads.json");
   const revsets = await readSeedJson<RevSetSeedRow[]>("revsets.json");
   const claims = await readSeedJson<ClaimSeedRow[]>("claims.json");
+  const findings = await readSeedJson<FindingSeedRow[]>("findings.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
@@ -352,6 +374,33 @@ export async function seedIfEmpty(
             : null,
         },
       });
+    }
+
+    // CONCEPT §7.3 Findings (after threads exist).
+    for (const f of findings) {
+      await tx.finding.create({
+        data: {
+          findingId: f.finding_id,
+          threadId: f.thread_id,
+          title: f.title,
+          severity: f.severity,
+          likelihood: f.likelihood ?? null,
+          status: f.status ?? "open",
+          evidence: f.evidence ?? null,
+          attackPath: f.attack_path ?? null,
+          authorId: f.author_id,
+          createdAt: new Date(f.created_at),
+        },
+      });
+      for (const target of f.targets ?? []) {
+        await tx.findingTarget.create({
+          data: {
+            findingId: f.finding_id,
+            targetKind: target.target_kind,
+            targetId: target.target_id,
+          },
+        });
+      }
     }
 
     await tx.termsRegistry.create({

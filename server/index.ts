@@ -8,6 +8,7 @@ import {
   createArtifact,
   createArtifactRevision,
   createClaim,
+  createFinding,
   createRevSet,
   createThreadPost,
   decideThread,
@@ -18,6 +19,7 @@ import {
   getCollection,
   getCollectionDashboard,
   getDossier,
+  getFinding,
   getSection,
   getTerms,
   getThread,
@@ -29,6 +31,7 @@ import {
   listClaims,
   listCollections,
   listDossiers,
+  listFindings,
   listRevSets,
   listSections,
   listThreads,
@@ -277,6 +280,35 @@ const adjudicateSchema = z.object({
   status: z.string().min(1),
   rationale: z.string().min(1),
   require_queued: z.boolean().optional(),
+});
+
+const findingBodySchema = z.object({
+  finding_id: z.string().min(1).optional(),
+  thread_id: z.string().min(1),
+  title: z.string().min(1),
+  severity: z.enum(["low", "med", "high", "critical"]),
+  likelihood: z.string().nullable().optional(),
+  status: z
+    .enum(["open", "mitigated", "accepted_risk", "disputed"])
+    .optional(),
+  evidence: z.string().nullable().optional(),
+  attack_path: z.string().nullable().optional(),
+  author_id: z.string().min(1),
+  created_at: z.string().optional(),
+  targets: z
+    .array(
+      z.object({
+        target_kind: z.enum([
+          "artifact",
+          "claim",
+          "section",
+          "thread",
+          "dossier",
+        ]),
+        target_id: z.string().min(1),
+      }),
+    )
+    .optional(),
 });
 
 // CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
@@ -637,6 +669,54 @@ app.post("/api/claims", async (c) => {
     return c.json({ error: result.error }, status);
   }
   return c.json(result.claim, 201);
+});
+
+// M7 Findings (CONCEPT §7.3) — thread-required; Red Team create
+app.get("/api/findings", async (c) => {
+  const threadId = c.req.query("thread_id");
+  const collectionId = c.req.query("collection_id");
+  const severity = c.req.query("severity");
+  const status = c.req.query("status");
+  return c.json(
+    await listFindings({ threadId, collectionId, severity, status }),
+  );
+});
+
+app.get("/api/findings/:findingId", async (c) => {
+  const finding = await getFinding(c.req.param("findingId"));
+  if (!finding) {
+    return c.json({ error: "Finding not found" }, 404);
+  }
+  return c.json(finding);
+});
+
+app.get("/api/threads/:threadId/findings", async (c) => {
+  const threadId = c.req.param("threadId");
+  const thread = await getThread(threadId);
+  if (!thread) {
+    return c.json({ error: "Thread not found" }, 404);
+  }
+  return c.json(await listFindings({ threadId }));
+});
+
+app.post("/api/findings", async (c) => {
+  const parsed = findingBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid finding payload" }, 400);
+  }
+  const result = await createFinding(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden"
+          ? 403
+          : 422;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(result.finding, 201);
 });
 
 // M6 adjudication scaffolding (CONCEPT §8.3) — global queue + resolve

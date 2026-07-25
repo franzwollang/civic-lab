@@ -19,15 +19,6 @@ type LoadState =
   | { status: "error"; message: string }
   | { status: "ready"; dashboard: CollectionDashboard };
 
-function DeferredNote({ milestone, label }: { milestone: string; label: string }) {
-  return (
-    <p className="mt-3 text-xs text-neutral-500">
-      {label} arrives with{" "}
-      <span className="font-medium text-neutral-700">{milestone}</span>.
-    </p>
-  );
-}
-
 /**
  * Shared Collection splash/dashboard chrome (CONCEPT §11 / M4).
  * Used for Canon singleton and each country Manual.
@@ -191,7 +182,7 @@ function CollectionDashboardView({
         )}
       </section>
 
-      {/* Shared deferred panels — chrome parity across Collections */}
+      {/* Shared Collection panels (CONCEPT §11) */}
       <div className="mb-12 grid gap-4 lg:grid-cols-2">
         <Card className="border border-neutral-200 bg-white p-6">
           <div className="mb-2 flex items-center gap-2">
@@ -204,10 +195,6 @@ function CollectionDashboardView({
             {dashboard.open_threads.count} open ·{" "}
             {dashboard.open_threads.critical_findings} Critical findings
           </p>
-          <DeferredNote
-            milestone={dashboard.open_threads.deferred}
-            label="Critical findings count"
-          />
         </Card>
 
         <Card className="border border-neutral-200 bg-white p-6">
@@ -230,10 +217,11 @@ function CollectionDashboardView({
           <p className="text-sm text-neutral-700">
             {dashboard.red_team.recent_count} recent findings in this Collection
           </p>
-          <DeferredNote
-            milestone={dashboard.red_team.deferred}
-            label="Findings feed"
-          />
+          {dashboard.red_team.recent_count === 0 ? (
+            <p className="mt-3 text-xs text-neutral-500">
+              No Findings filed against threads in this Collection yet.
+            </p>
+          ) : null}
         </Card>
 
         {/* Manuals-only panels keep chrome slot even when deferred */}

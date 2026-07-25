@@ -62,20 +62,19 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 ## E. Scorable claims + lanes (CONCEPT §§4–6)
 
 - Claim table, legality, immutable Manual lanes, adjudication, authoring UX, and Collection quality/forecast metrics panels are landed (M6).
-- Remaining later: Model→forecast implication graph (deferred); Critical-findings counts once Findings exist (M7).
+- Remaining later: Model→forecast implication graph (deferred).
 
 ---
 
 ## F. Red Team + oversight (CONCEPT §§7–8)
 
 - [ ] **Findings (thread-required context)**
-  - Finding always linked to originating thread; also targets artifact/claim/etc.
-  - Severity, likelihood, status, evidence links.
-  - Candidate → Finding promotion (can start stubbed).
+  - Done: Prisma `Finding` / `FindingTarget`; seed (`prisma/seed/findings.json`); API `GET|POST /api/findings`, `GET /api/findings/:id`, `GET /api/threads/:id/findings`; Red Team-only create (`user-dave`); Collection dashboard `critical_findings` + `red_team.recent_count` live; `listOpenCriticalFindingsForMerge` helper for gate.
+  - Remaining: Candidate → Finding promotion (can stay stubbed); Findings timeline UX / filters on thread pages.
 
 - [ ] **Accepted Risk + merge gating**
   - Attaches to **merging** (1:1) RFC; signer = impersonated user.
-  - Gate: no merge with open Critical finding unless Accepted Risk exists.
+  - Gate: no merge with open Critical finding unless Accepted Risk exists (blocker list helper ready; wire into `decideThread`).
 
 - [ ] **Role separation via impersonation**
   - Seed users/roles include Owner (`user-eve`), editor, steward, red_team, contributor (`src/app/lib/prototype-users.ts`); reply composer + decide paths use acting id.

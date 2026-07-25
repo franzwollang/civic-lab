@@ -126,8 +126,6 @@ export type CollectionDashboard = {
   open_threads: {
     count: number;
     critical_findings: number;
-    /** Critical findings count still M7. */
-    deferred: "M7";
   };
   claims: {
     empirical_quality: CollectionEmpiricalQuality;
@@ -145,7 +143,6 @@ export type CollectionDashboard = {
   };
   red_team: {
     recent_count: number;
-    deferred: "M7";
   };
 };
 
@@ -252,6 +249,27 @@ export type ClaimRow = {
   adjudicated_by: string | null;
   adjudicated_at: string | null;
   adjudication_pending?: boolean;
+};
+
+/** CONCEPT §7.3 Finding target join. */
+export type FindingTargetRow = {
+  target_kind: string;
+  target_id: string;
+};
+
+/** CONCEPT §7.3 Finding wire shape. */
+export type FindingRow = {
+  finding_id: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood: string | null;
+  status: string;
+  evidence: string | null;
+  attack_path: string | null;
+  author_id: string;
+  created_at: string;
+  targets: FindingTargetRow[];
 };
 
 /** @deprecated Prefer ArtifactRow */

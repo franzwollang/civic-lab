@@ -1,23 +1,23 @@
 {
-  "updated_at": "2026-07-25T13:50Z",
-  "turn": 39,
+  "updated_at": "2026-07-25T14:10Z",
+  "turn": 40,
   "focus": {
     "milestone": "M7",
-    "issue": "Findings (thread-required context)",
-    "goal": "Prisma Finding + seed + API; Critical counts on dashboard"
+    "issue": "Accepted Risk + merge gating",
+    "goal": "AcceptedRisk on leaf RFC + block Critical merge without AR"
   },
   "recent": [
-    "M6 metrics: claimMetrics lib + dashboard quality/forecast panels",
-    "Seeded resolved forecasts + requirement satisfaction snapshot",
-    "M6 marked done; handoff to M7 Findings / Accepted Risk"
+    "Merged M6 metrics PR onto cron branch",
+    "M7 Findings: Prisma Finding/FindingTarget + seed + API",
+    "Dashboard Critical/recent counts live; smoke-findings"
   ],
   "discoveries": [
-    "Public forecast boards stay gated at n≥20; seeds keep n small"
+    "listOpenCriticalFindingsForMerge ready for decideThread gate"
   ],
   "open_threads": [
-    "Accepted Risk on leaf deferred to M7",
+    "Candidate→Finding promotion still stubbed",
     "Global impersonation chrome → M8"
   ],
-  "next_step": "M7: Finding model + thread link + Critical merge gate scaffolding",
+  "next_step": "M7: AcceptedRisk model + wire Critical gate into decideThread merge",
   "blockers": []
 }

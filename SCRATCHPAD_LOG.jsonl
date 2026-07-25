@@ -37,3 +37,4 @@
 {"ts":"2026-07-25T13:25Z","focus":"MVP unblocked from Dullahan","summary":"Deleted stubs/dullahan-web + editorPageModel; saveRevision local; planning updated","next":"M6 metrics or M7"}
 {"ts":"2026-07-25T13:30Z","focus":"Hono API","summary":"Express→Hono migration complete; PLANNING/SEED updated","next":"M6 metrics or M7"}
 {"ts":"2026-07-25T13:50Z","focus":"M6 metrics","summary":"Collection claim quality/forecast panels live; M6 exit; next M7 Findings","next":"Finding model + Critical merge gate"}
+{"ts":"2026-07-25T14:10Z","focus":"M7 Findings","summary":"Finding model/API/dashboard counts landed; handoff to Accepted Risk merge gate","next":"AcceptedRisk + decideThread Critical gate"}

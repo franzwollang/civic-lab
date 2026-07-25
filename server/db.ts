@@ -43,7 +43,15 @@ import {
   computeForecastAccuracy,
   computeRequirementSatisfactionSnapshot,
 } from "../src/lib/claimMetrics";
+import {
+  actorMayCreateFinding,
+  isFindingSeverity,
+  isFindingStatus,
+  isFindingTargetKind,
+  isOpenCriticalFinding,
+} from "../src/lib/findings";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
+import { randomUUID } from "crypto";
 
 let prisma: PrismaClient | null = null;
 
@@ -173,11 +181,10 @@ export type CollectionDashboard = {
     empty_dossier_count: number;
   };
   dossiers: CollectionDashboardDossier[];
-  /** Open/rfc/review thread count is live (M5); Critical findings still M7. */
+  /** Open/rfc/review thread count + open Critical Findings (CONCEPT §7 / §11). */
   open_threads: {
     count: number;
     critical_findings: number;
-    deferred: "M7";
   };
   /** CONCEPT §5.5–5.9 claim quality + forecast accuracy (Collection-scoped). */
   claims: {
@@ -196,10 +203,9 @@ export type CollectionDashboard = {
     total: number;
     snapshot: RequirementSatisfactionSnapshot;
   };
-  /** Stub until Findings (M7). */
+  /** Recent Findings in this Collection (CONCEPT §7 / §11). */
   red_team: {
     recent_count: number;
-    deferred: "M7";
   };
 };
 
@@ -310,6 +316,27 @@ export type ClaimRow = {
   adjudicated_at: string | null;
   /** Derived: pending on global adjudication queue. */
   adjudication_pending?: boolean;
+};
+
+/** CONCEPT §7.3 Finding target join. */
+export type FindingTargetRow = {
+  target_kind: string;
+  target_id: string;
+};
+
+/** CONCEPT §7.3 Finding wire shape. */
+export type FindingRow = {
+  finding_id: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood: string | null;
+  status: string;
+  evidence: string | null;
+  attack_path: string | null;
+  author_id: string;
+  created_at: string;
+  targets: FindingTargetRow[];
 };
 
 function mapArea(row: {
@@ -476,7 +503,7 @@ function laneHintForDossier(d: DossierRow): "Descriptive" | "Prescriptive" | "Al
 
 /**
  * CONCEPT §11 Collection dashboard payload.
- * Real dossier health, open threads, claim quality/forecast panels; RT still M7.
+ * Real dossier health, open threads, claim metrics, Findings counts.
  */
 export async function getCollectionDashboard(
   collectionId: string,
@@ -564,6 +591,18 @@ export async function getCollectionDashboard(
           },
         });
 
+  // CONCEPT §7 / §11 — Findings scoped via originating thread home dossier.
+  const collectionFindings =
+    dossierIds.length === 0
+      ? []
+      : await getPrisma().finding.findMany({
+          where: { thread: { homeDossierId: { in: dossierIds } } },
+          select: { severity: true, status: true },
+        });
+  const critical_findings = collectionFindings.filter(isOpenCriticalFinding)
+    .length;
+  const recent_count = collectionFindings.length;
+
   return {
     collection,
     stats: {
@@ -574,8 +613,7 @@ export async function getCollectionDashboard(
     dossiers: withHealth,
     open_threads: {
       count: openThreadCount,
-      critical_findings: 0,
-      deferred: "M7",
+      critical_findings,
     },
     claims: {
       empirical_quality: computeEmpiricalQuality(metricInputs),
@@ -584,8 +622,7 @@ export async function getCollectionDashboard(
     lane_coverage,
     requirement_satisfaction,
     red_team: {
-      recent_count: 0,
-      deferred: "M7",
+      recent_count,
     },
   };
 }
@@ -2176,4 +2213,224 @@ export async function listAdjudicationQueue(): Promise<ClaimRow[]> {
     orderBy: { adjudicationRequestedAt: "asc" },
   });
   return rows.map(mapClaim).filter((c) => c.adjudication_pending);
+}
+
+function mapFindingTarget(row: {
+  targetKind: string;
+  targetId: string;
+}): FindingTargetRow {
+  return {
+    target_kind: row.targetKind,
+    target_id: row.targetId,
+  };
+}
+
+function mapFinding(row: {
+  findingId: string;
+  threadId: string;
+  title: string;
+  severity: string;
+  likelihood: string | null;
+  status: string;
+  evidence: string | null;
+  attackPath: string | null;
+  authorId: string;
+  createdAt: Date;
+  targets?: { targetKind: string; targetId: string }[];
+}): FindingRow {
+  return {
+    finding_id: row.findingId,
+    thread_id: row.threadId,
+    title: row.title,
+    severity: row.severity,
+    likelihood: row.likelihood,
+    status: row.status,
+    evidence: row.evidence,
+    attack_path: row.attackPath,
+    author_id: row.authorId,
+    created_at: row.createdAt.toISOString(),
+    targets: (row.targets ?? []).map(mapFindingTarget),
+  };
+}
+
+export async function listFindings(opts?: {
+  threadId?: string;
+  collectionId?: string;
+  severity?: string;
+  status?: string;
+}): Promise<FindingRow[]> {
+  const rows = await getPrisma().finding.findMany({
+    where: {
+      ...(opts?.threadId ? { threadId: opts.threadId } : {}),
+      ...(opts?.severity ? { severity: opts.severity } : {}),
+      ...(opts?.status ? { status: opts.status } : {}),
+      ...(opts?.collectionId
+        ? { thread: { homeDossier: { collectionId: opts.collectionId } } }
+        : {}),
+    },
+    include: { targets: true },
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapFinding);
+}
+
+export async function getFinding(
+  findingId: string,
+): Promise<FindingRow | null> {
+  const row = await getPrisma().finding.findUnique({
+    where: { findingId },
+    include: { targets: true },
+  });
+  return row ? mapFinding(row) : null;
+}
+
+export type CreateFindingInput = {
+  finding_id?: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood?: string | null;
+  status?: string;
+  evidence?: string | null;
+  attack_path?: string | null;
+  author_id: string;
+  created_at?: string;
+  targets?: { target_kind: string; target_id: string }[];
+};
+
+export type CreateFindingError =
+  | { code: "not_found"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "invalid_severity"; message: string }
+  | { code: "invalid_status"; message: string }
+  | { code: "invalid_target"; message: string };
+
+/**
+ * CONCEPT §7.3 — create a Finding (Red Team only). Always linked to a thread.
+ */
+export async function createFinding(
+  input: CreateFindingInput,
+): Promise<
+  { ok: true; finding: FindingRow } | { ok: false; error: CreateFindingError }
+> {
+  if (!actorMayCreateFinding(input.author_id)) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Only Red Team members may create Findings",
+      },
+    };
+  }
+  if (!isFindingSeverity(input.severity)) {
+    return {
+      ok: false,
+      error: {
+        code: "invalid_severity",
+        message: `severity must be one of low|med|high|critical`,
+      },
+    };
+  }
+  const status = input.status ?? "open";
+  if (!isFindingStatus(status)) {
+    return {
+      ok: false,
+      error: {
+        code: "invalid_status",
+        message: `status must be one of open|mitigated|accepted_risk|disputed`,
+      },
+    };
+  }
+
+  const thread = await getPrisma().thread.findUnique({
+    where: { threadId: input.thread_id },
+    select: { threadId: true },
+  });
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
+
+  const targets = input.targets ?? [];
+  for (const t of targets) {
+    if (!isFindingTargetKind(t.target_kind) || !t.target_id.trim()) {
+      return {
+        ok: false,
+        error: {
+          code: "invalid_target",
+          message: `Invalid target ${t.target_kind}:${t.target_id}`,
+        },
+      };
+    }
+  }
+
+  const findingId = input.finding_id?.trim() || `finding-${randomUUID()}`;
+  const createdAt = input.created_at
+    ? new Date(input.created_at)
+    : new Date();
+
+  const row = await getPrisma().finding.create({
+    data: {
+      findingId,
+      threadId: input.thread_id,
+      title: input.title.trim(),
+      severity: input.severity,
+      likelihood: input.likelihood ?? null,
+      status,
+      evidence: input.evidence ?? null,
+      attackPath: input.attack_path ?? null,
+      authorId: input.author_id,
+      createdAt,
+      targets: {
+        create: targets.map((t) => ({
+          targetKind: t.target_kind,
+          targetId: t.target_id,
+        })),
+      },
+    },
+    include: { targets: true },
+  });
+
+  return { ok: true, finding: mapFinding(row) };
+}
+
+/**
+ * Open Critical Findings that block leaf RFC merge (CONCEPT §7.6).
+ * Matches findings targeting the RFC thread id or merge artifact id.
+ * AcceptedRisk gate is a later M7 slice — this helper only lists blockers.
+ */
+export async function listOpenCriticalFindingsForMerge(opts: {
+  threadId: string;
+  mergeArtifactId: string | null;
+}): Promise<FindingRow[]> {
+  const or: Array<Record<string, unknown>> = [
+    { threadId: opts.threadId },
+    {
+      targets: {
+        some: { targetKind: "thread", targetId: opts.threadId },
+      },
+    },
+  ];
+  if (opts.mergeArtifactId) {
+    or.push({
+      targets: {
+        some: {
+          targetKind: "artifact",
+          targetId: opts.mergeArtifactId,
+        },
+      },
+    });
+  }
+  const rows = await getPrisma().finding.findMany({
+    where: {
+      severity: "critical",
+      status: "open",
+      OR: or,
+    },
+    include: { targets: true },
+    orderBy: { createdAt: "asc" },
+  });
+  return rows.map(mapFinding);
 }
