@@ -1,24 +1,25 @@
 {
-  "updated_at": "2026-07-25T07:15Z",
-  "turn": 18,
+  "updated_at": "2026-07-25T07:35Z",
+  "turn": 19,
   "focus": {
-    "milestone": "M3",
-    "issue": "Unify artifact body",
-    "goal": "Finish M3: in-chrome editor + wire artifact_id"
+    "milestone": "M4",
+    "issue": "Top-level IA: Area → Collection → Dossier",
+    "goal": "Start M4 corpus IA / data-driven routes"
   },
   "recent": [
-    "Merged PR #7 onto fresh cron branch",
-    "Prisma Page→Artifact rename with @@map(pages)",
-    "Product Edit → /test/editor/:artifactId"
+    "Merged PR #8 onto fresh cron branch",
+    "Dual-emit artifact_id + page_id on wire",
+    "Product /edit route with Plate + SidebarNav",
+    "M3 marked done; Section DB sync → M5"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
     "Prisma --force-reset blocked in Cursor; use fresh SQLite file instead"
   ],
   "open_threads": [
-    "Section DB sync deferred until ThreadTarget",
+    "Section DB sync deferred until ThreadTarget (M5)",
     "validateDocumentForMerge still unused — MVP gaps"
   ],
-  "next_step": "Embed Plate editor in product chrome or dual-emit artifact_id on wire; else §A MVP gaps",
+  "next_step": "M4: Area/Collection/Dossier Prisma models + seeds, or §A Editor MVP gaps triage",
   "blockers": []
 }

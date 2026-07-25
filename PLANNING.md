@@ -68,7 +68,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
 
-**Next build:** M3 Content bridge (in progress — Prisma Artifact rename + product Edit→Plate path landed; wire `artifact_id` + in-chrome editor remain).
+**Next build:** M4 Corpus IA (Area/Collection/Dossier; data-driven routes).
 
 ---
 
@@ -79,7 +79,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M0 — Orientation** | `done` | CONCEPT/PLANNING coherent; residual gaps defaulted |
 | **M1 — Persistence** | `done` | Prisma/SQLite; seeds; db push; seed-if-empty; Express via Prisma |
 | **M2 — Editor solidity** | `done` | Void nav ✓; clipboard ✓; a11y ✓; full preview ✓; server validate ✓ |
-| **M3 — Content bridge** | `in progress` | Shared reader ✓; Artifact naming (API + Prisma `@@map`) ✓; Section extractor ✓; product Edit→`/test/editor/:id` ✓; in-chrome editor + wire `artifact_id` remain |
+| **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
 | **M4 — Corpus IA** | `not started` | Area/Collection/Dossier; shared splash; map picker; data-driven routes |
 | **M5 — Threads + RFC** | `not started` | Posts, targets, leaf/wrapper RFC, RevSet→revision, authority rules |
 | **M6 — Claims + lanes** | `not started` | Claim table + profiles; lane immutability; adjudication scaffolding |
@@ -110,4 +110,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: finish **M3** (Prisma Page→Artifact rename with `@@map`, product edit path) or triage Editor MVP gaps; then **M4** corpus IA.
+- Next: **M4** Corpus IA (or §A Editor MVP gaps polish in parallel).

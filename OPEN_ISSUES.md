@@ -28,9 +28,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 - [ ] **Unify artifact body with revisioned editor documents**
   - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader when id/slug resolves; unresolved ids still use static fixtures.
-  - Prisma models renamed `Page` → `Artifact` / `PageRevision` → `ArtifactRevision` with `@@map("pages")` / `@@map("page_revisions")` (column `page_id` retained).
-  - Product chrome **Edit** links to `/test/editor/:artifactId` (Plate save pipeline); editor accepts artifact id from the route.
-  - Remaining: embed editor in product chrome (not only `/test/editor`); eventually prefer `artifact_id` in wire JSON.
+  - Prisma models renamed `Artifact` / `ArtifactRevision` with `@@map`; wire dual-emits `artifact_id` + legacy `page_id`.
+  - Product chrome **Edit** → `/dossier/:dossierId/artifact/:artifactId/edit` (Plate + SidebarNav); `/test/editor` retained for isolated work.
+  - Remaining: replace more hardcoded fixture artifacts with seeds as M4 grows the corpus.
 
 - [ ] **Top-level IA: Area → Collection → Dossier**
   - Canon Area + singleton Collection; Manuals Area + per-country Collections.
