@@ -91,8 +91,21 @@ async function main() {
     if (!ca || ca.stats.dossier_count < 1) {
       throw new Error("CA collection should have a seed dossier");
     }
-    if (ca.dossiers.every((d) => d.health !== "empty")) {
-      throw new Error("new Manual dossiers should start empty (no artifacts yet)");
+    const caElections = ca.dossiers.find((d) => d.dossier_id === "ca-elections-1");
+    if (!caElections || caElections.health !== "seeded") {
+      throw new Error("ca-elections-1 should be seeded health after Manual stubs");
+    }
+    if (ca.stats.artifact_count < 2) {
+      throw new Error("CA collection should have ≥2 seeded artifacts");
+    }
+
+    const gb = await getCollectionDashboard("collection-gb");
+    const de = await getCollectionDashboard("collection-de");
+    if (!gb || gb.dossiers.every((d) => d.health !== "seeded")) {
+      throw new Error("GB Manual dossiers should include a seeded dossier");
+    }
+    if (!de || de.dossiers.every((d) => d.health !== "seeded")) {
+      throw new Error("DE Manual dossiers should include a seeded dossier");
     }
 
     const missing = await getCollectionDashboard("collection-nope");

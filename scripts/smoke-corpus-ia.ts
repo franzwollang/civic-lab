@@ -107,6 +107,17 @@ async function main() {
       }
     }
 
+    for (const [dossierId, minCount] of [
+      ["ca-elections-1", 2],
+      ["gb-elections-1", 2],
+      ["de-elections-1", 2],
+    ] as const) {
+      const arts = await prisma.artifact.findMany({ where: { dossierId } });
+      if (arts.length < minCount) {
+        throw new Error(`${dossierId} artifacts: ${arts.length}`);
+      }
+    }
+
     console.log("smoke-corpus-ia: OK");
   } finally {
     await prisma.$disconnect();
