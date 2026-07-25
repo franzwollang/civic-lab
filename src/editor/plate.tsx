@@ -2,6 +2,7 @@ import type { MouseEvent, ReactNode } from "react";
 import type { PlateElementProps } from "platejs/react";
 import { ParagraphPlugin, PlateElement } from "platejs/react";
 import {
+  BlockquotePlugin,
   H2Plugin,
   H3Plugin,
   H4Plugin,
@@ -140,11 +141,24 @@ function SubsubheadingElement(props: PlateElementProps) {
   );
 }
 
+function BlockquoteElement(props: PlateElementProps) {
+  return (
+    <PlateElement
+      as="blockquote"
+      className="mb-3 border-l-2 border-neutral-300 pl-4 text-sm italic leading-7 text-neutral-600"
+      {...props}
+    >
+      {props.children}
+    </PlateElement>
+  );
+}
+
 export const editorPlugins = [
   ParagraphPlugin.withComponent(ParagraphElement),
   H2Plugin.configure({ node: { component: HeadingElement } }),
   H3Plugin.configure({ node: { component: SubheadingElement } }),
   H4Plugin.configure({ node: { component: SubsubheadingElement } }),
+  BlockquotePlugin.withComponent(BlockquoteElement),
   IndentListPluginConfigured,
   ListPluginConfigured,
   LinkPluginConfigured,

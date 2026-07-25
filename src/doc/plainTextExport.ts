@@ -143,6 +143,14 @@ export function serializeNode(node: unknown): string {
       const prefix = "#".repeat(level);
       return `${prefix} ${getChildText(node)}`;
     }
+    case "blockquote": {
+      const body = getChildText(node);
+      if (!body) return ">";
+      return body
+        .split("\n")
+        .map((line) => `> ${line}`)
+        .join("\n");
+    }
     case "p": {
       const listStyleType =
         typeof node.listStyleType === "string" ? node.listStyleType : null;

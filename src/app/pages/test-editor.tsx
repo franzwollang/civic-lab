@@ -47,6 +47,10 @@ import {
   toggleBulletedList,
   toggleNumberedList,
 } from "@/editor/listLinkCommands";
+import {
+  isBlockquoteActive,
+  toggleBlockquote,
+} from "@/editor/blockquoteCommands";
 import type { AttributionEntity, TermEntity } from "@/doc/evidence";
 import {
   AttributionEditorDialog,
@@ -888,6 +892,17 @@ function TestEditorInner() {
                       }}
                     >
                       Link
+                    </Button>
+                    <Button
+                      variant={isBlockquoteActive(editor) ? "default" : "outline"}
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        toggleBlockquote(editor);
+                      }}
+                    >
+                      Quote
                     </Button>
                   </div>
                 </div>

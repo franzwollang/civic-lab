@@ -777,6 +777,15 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
           </div>
         );
       }
+      case ELEMENT_TYPES.BLOCKQUOTE:
+        return (
+          <blockquote
+            key={key}
+            className="mb-4 border-l-2 border-neutral-300 pl-4 text-sm italic leading-7 text-neutral-600"
+          >
+            {children}
+          </blockquote>
+        );
       case ELEMENT_TYPES.PARAGRAPH: {
         const listStyleType =
           typeof node.listStyleType === "string" ? node.listStyleType : null;
@@ -858,6 +867,7 @@ export const DOCUMENT_READER_NODE_TYPES = [
   ELEMENT_TYPES.H2,
   ELEMENT_TYPES.H3,
   ELEMENT_TYPES.H4,
+  ELEMENT_TYPES.BLOCKQUOTE,
   ELEMENT_TYPES.MATH_INLINE,
   ELEMENT_TYPES.MATH_BLOCK,
   ELEMENT_TYPES.MERMAID_BLOCK,

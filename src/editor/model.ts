@@ -5,6 +5,7 @@ export const ELEMENT_TYPES = {
   H2: "h2",
   H3: "h3",
   H4: "h4",
+  BLOCKQUOTE: "blockquote",
 
   DATA_BLOCK: "data_block",
   MATH_BLOCK: "math_block",
