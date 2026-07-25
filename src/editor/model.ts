@@ -20,6 +20,7 @@ export const ELEMENT_TYPES = {
   EVIDENCE_BLOCK_MATH: "evidence_block_math",
   CITATION_INLINE: "citation_inline",
   TERM_INLINE: "term_inline",
+  LINK: "a",
 } as const;
 
 export type ElementType = (typeof ELEMENT_TYPES)[keyof typeof ELEMENT_TYPES];

@@ -115,6 +115,11 @@ export function serializeNode(node: unknown): string {
       const label = getChildText(node) || "term";
       return `[term:${ref}|${label}]`;
     }
+    case "a": {
+      const url = typeof node.url === "string" ? node.url : "";
+      const text = getChildText(node) || url;
+      return url ? `[${text}](${url})` : text;
+    }
     case "evidence_block":
       return serializeEvidence(node);
     case "h2":
@@ -124,11 +129,39 @@ export function serializeNode(node: unknown): string {
       const prefix = "#".repeat(level);
       return `${prefix} ${getChildText(node)}`;
     }
-    case "p":
+    case "p": {
+      const listStyleType =
+        typeof node.listStyleType === "string" ? node.listStyleType : null;
+      if (listStyleType) {
+        const indent =
+          typeof node.indent === "number" && node.indent > 0 ? node.indent : 1;
+        const pad = "  ".repeat(Math.max(0, indent - 1));
+        const ordered = isOrderedListStyle(listStyleType);
+        const start =
+          typeof node.listStart === "number" && node.listStart > 0
+            ? node.listStart
+            : 1;
+        const marker = ordered ? `${start}. ` : "- ";
+        return `${pad}${marker}${getChildText(node)}`;
+      }
       return getChildText(node);
+    }
     default:
       return getChildText(node);
   }
+}
+
+function isOrderedListStyle(listStyleType: string): boolean {
+  return (
+    listStyleType === "decimal" ||
+    listStyleType === "decimal-leading-zero" ||
+    listStyleType === "lower-alpha" ||
+    listStyleType === "upper-alpha" ||
+    listStyleType === "lower-roman" ||
+    listStyleType === "upper-roman" ||
+    listStyleType === "lower-latin" ||
+    listStyleType === "upper-latin"
+  );
 }
 
 /** Serialize a fragment or document (top-level nodes) to plain text. */

@@ -25,6 +25,12 @@ import {
   TermInlinePlugin,
 } from "./evidence-nodes";
 import { VoidClipboardPlugin } from "./voidClipboard";
+import {
+  IndentListPluginConfigured,
+  LinkPluginConfigured,
+  ListPluginConfigured,
+  listItemStyle,
+} from "./listLinkPlugins";
 
 export { CollapseProvider } from "./collapse";
 
@@ -80,6 +86,16 @@ function CollapsibleBlock({
 }
 
 function ParagraphElement(props: PlateElementProps) {
+  const list = listItemStyle(
+    props.element as { listStyleType?: unknown; indent?: unknown },
+  );
+  if (list) {
+    return (
+      <PlateElement as="div" className={list.className} style={list.style} {...props}>
+        {props.children}
+      </PlateElement>
+    );
+  }
   return (
     <CollapsibleBlock
       as="p"
@@ -128,6 +144,9 @@ export const editorPlugins = [
   H2Plugin.configure({ node: { component: HeadingElement } }),
   H3Plugin.configure({ node: { component: SubheadingElement } }),
   H4Plugin.configure({ node: { component: SubsubheadingElement } }),
+  IndentListPluginConfigured,
+  ListPluginConfigured,
+  LinkPluginConfigured,
   MathInlinePlugin,
   MathBlockPlugin,
   CitationInlinePlugin,

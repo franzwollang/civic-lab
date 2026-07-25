@@ -556,6 +556,22 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
             {children}
           </TermRead>
         );
+      case ELEMENT_TYPES.LINK: {
+        const url = typeof node.url === "string" ? node.url : "";
+        const target =
+          typeof node.target === "string" ? node.target : undefined;
+        return (
+          <a
+            key={key}
+            href={url || undefined}
+            target={target}
+            rel={target === "_blank" ? "noopener noreferrer" : undefined}
+            className="font-medium text-sky-800 underline underline-offset-2"
+          >
+            {children}
+          </a>
+        );
+      }
       case ELEMENT_TYPES.EVIDENCE_BLOCK: {
         const kind =
           node.kind === "data" || node.kind === "math" ? node.kind : "text";
@@ -680,7 +696,33 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
           </div>
         );
       }
-      case ELEMENT_TYPES.PARAGRAPH:
+      case ELEMENT_TYPES.PARAGRAPH: {
+        const listStyleType =
+          typeof node.listStyleType === "string" ? node.listStyleType : null;
+        if (listStyleType) {
+          const indent =
+            typeof node.indent === "number" && node.indent > 0
+              ? node.indent
+              : 1;
+          return (
+            <div
+              key={key}
+              className="mb-1 list-item text-sm leading-7 text-neutral-700"
+              style={{
+                listStyleType,
+                marginLeft: `${indent * 1.25}rem`,
+              }}
+            >
+              {children}
+            </div>
+          );
+        }
+        return (
+          <p key={key} className="mb-4 text-sm leading-7 text-neutral-700">
+            {children}
+          </p>
+        );
+      }
       default:
         return (
           <p key={key} className="mb-4 text-sm leading-7 text-neutral-700">
@@ -748,4 +790,5 @@ export const DOCUMENT_READER_NODE_TYPES = [
   ELEMENT_TYPES.EVIDENCE_BLOCK_MATH,
   ELEMENT_TYPES.CITATION_INLINE,
   ELEMENT_TYPES.TERM_INLINE,
+  ELEMENT_TYPES.LINK,
 ] as const;

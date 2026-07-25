@@ -39,6 +39,13 @@ import {
   insertEvidenceBlock,
   insertTermInline,
 } from "@/editor/evidenceCommands";
+import {
+  isBulletedListActive,
+  isNumberedListActive,
+  promptUpsertLink,
+  toggleBulletedList,
+  toggleNumberedList,
+} from "@/editor/listLinkCommands";
 import type { AttributionEntity, TermEntity } from "@/doc/evidence";
 import {
   AttributionEditorDialog,
@@ -847,6 +854,39 @@ function TestEditorInner() {
                       }}
                     >
                       H4
+                    </Button>
+                    <Button
+                      variant={isBulletedListActive(editor) ? "default" : "outline"}
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        toggleBulletedList(editor);
+                      }}
+                    >
+                      Bullets
+                    </Button>
+                    <Button
+                      variant={isNumberedListActive(editor) ? "default" : "outline"}
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        toggleNumberedList(editor);
+                      }}
+                    >
+                      Numbered
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        promptUpsertLink(editor);
+                      }}
+                    >
+                      Link
                     </Button>
                   </div>
                 </div>
