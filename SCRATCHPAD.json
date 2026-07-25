@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-07-25T07:55Z",
-  "turn": 20,
+  "updated_at": "2026-07-25T08:15Z",
+  "turn": 21,
   "focus": {
     "milestone": "M4",
     "issue": "Top-level IA: Area → Collection → Dossier",
-    "goal": "M4 first cut landed; finish map picker / home store"
+    "goal": "Home store + Manuals map landed; finish Collection dashboards"
   },
   "recent": [
-    "Merged PR #9 (M3) onto fresh cron branch",
-    "Prisma Area/Collection/Dossier + seeds + APIs",
-    "Routes /canon /manuals /collection/:id; dossier from DB",
-    "smoke-corpus-ia OK"
+    "Merged PR #10 onto fresh cron branch",
+    "Home Trending Dossiers from /api/dossiers",
+    "Dossier list joins artifact_count + collection",
+    "Manuals SVG map + list/search picker"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
     "Prisma --force-reset blocked; use fresh SQLite file for smokes"
   ],
   "open_threads": [
-    "Manuals 3D map picker still deferred",
-    "Home trending cards still static JSX",
+    "3D globe map still deferred (flat SVG satisfies CONCEPT map+list)",
+    "Home RFC/Red Team panels still fixtures until M5/M7",
     "Section DB sync deferred until ThreadTarget (M5)"
   ],
-  "next_step": "M4 remainder: home from store and/or Manuals map; else §A MVP gaps",
+  "next_step": "M4 remainder: Collection §11 dashboard panels or more fixture→seed; else §A MVP gaps",
   "blockers": []
 }

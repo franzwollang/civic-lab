@@ -26,7 +26,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 - [ ] **Make product routes data-driven**
   - Done: `/canon`, `/manuals`, `/collection/:id`, `/dossier/:id` load Prisma records; header/home CTAs point at Area entry routes.
-  - Remaining: home trending cards / metrics from store; dossier tabs (threads/RFCs) when M5 exists.
+  - Done: home **Trending Dossiers** from `/api/dossiers` (artifact_count + collection join).
+  - Remaining: dossier tabs (threads/RFCs) when M5 exists; home RFC/Red Team panels still fixture until those tables exist.
 
 - [ ] **Unify artifact body with revisioned editor documents**
   - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader when id/slug resolves; unresolved ids still use static fixtures.
@@ -36,7 +37,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 - [ ] **Top-level IA: Area → Collection → Dossier**
   - Done: Canon Area + singleton Collection; Manuals Area + US Collection; shared Collection splash; Manuals list/search index; dossier subforum shell from DB.
-  - Remaining: Manuals **3D map** picker; richer Collection dashboard panels (CONCEPT §11).
+  - Done: Manuals **SVG map + list/search** picker (seeded countries lit; others planned). Full **3D** globe still deferred.
+  - Remaining: richer Collection dashboard panels (CONCEPT §11); more country Manual seeds.
 
 - [ ] **Migrate site copy into artifacts (incremental)**
   - About, FAQ, Constitution/Charter, home explainer → artifact-backed when feasible.
