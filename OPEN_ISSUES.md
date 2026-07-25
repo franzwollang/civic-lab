@@ -12,8 +12,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Done: `validateDocumentStructureForMerge` wired into `createRevSet` + `decideThread` merge (warnings → errors; `content_invalid`).
   - Done: term dialog uses editor context scope (`dossier` in product chrome, else `global`); edits preserve scope.
   - Done: Plate **lists + links** — `@platejs/{indent,list,link}@52.0.11`; toolbar Bullets/Numbered/Link; DocumentReader + plainTextExport; `smoke-editor-lists-links`.
-  - Remaining: blockquotes / tables — defer tables; blockquotes optional follow-up.
-  - Remaining: Images require `.webp` only; no upload pipeline.
+  - Done: Plate **blockquotes** — `BlockquotePlugin`; toolbar Quote toggle; DocumentReader + `> …` export; `smoke-editor-blockquotes`.
+  - Remaining: tables — defer; Images require `.webp` only; no upload pipeline.
   - Done: Attribution `immutable_ref` editor field + PUT validation/normalize (GitHub SHA / DOI / arXiv / OSF); reader tooltips.
 
 ---
@@ -127,4 +127,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (36 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (37 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.

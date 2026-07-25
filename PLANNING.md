@@ -71,9 +71,9 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | Seed users + **header impersonation** (M8) + **identity attestation hooks** (M9 §8.6); full OAuth/IdP deferred |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (35/35) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (37/37) |
 
-**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor blockquotes/tables/images, moderator tools, Fumadocs unpin, content migration). Home RFC/RT panels + attribution/`immutable_ref`/`external_artifact` landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
+**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor tables/images, moderator tools, Fumadocs unpin, About/FAQ artifact migration). Blockquotes + home RFC/RT panels + attribution/`immutable_ref`/`external_artifact` landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
 
 ---
 
@@ -115,4 +115,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: residual open work — evidence registries / `immutable_ref`, image upload, blockquotes (optional), moderator tools, or Fumadocs unpin (see `OPEN_ISSUES.md`).
+- Next: residual open work — moderator tools, About/FAQ artifact migration, image upload / tables, or Fumadocs unpin (see `OPEN_ISSUES.md`).
