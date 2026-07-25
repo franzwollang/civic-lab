@@ -1,4 +1,4 @@
-// Civic Lab M7 — Findings (CONCEPT §7); M6 Claims + Manual lanes retained.
+// Civic Lab M7 — Findings + Accepted Risk merge gate (CONCEPT §7); M6 Claims retained.
 // M5 Threads + posts + flexible targets retained.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
@@ -73,11 +73,28 @@ model Thread {
   targets         ThreadTarget[]
   revSets         RevSet[]
   findings        Finding[]
+  acceptedRisk    AcceptedRisk?
 
   @@index([homeDossierId])
   @@index([state])
   @@index([parentThreadId])
   @@map("threads")
+}
+
+/// CONCEPT §7.6 — Accepted Risk on a merging (leaf) RFC; passes Critical merge gate.
+model AcceptedRisk {
+  acceptedRiskId     String   @id @map("accepted_risk_id")
+  threadId           String   @unique @map("thread_id")
+  description        String
+  rationale          String
+  evidenceConsidered String?  @map("evidence_considered")
+  reopenTriggers     String?  @map("reopen_triggers")
+  signerId           String   @map("signer_id")
+  signedAt           DateTime @map("signed_at")
+  thread             Thread   @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+
+  @@index([signerId])
+  @@map("accepted_risks")
 }
 
 /// CONCEPT §7.3 — Red Team Finding; always tied to originating thread.

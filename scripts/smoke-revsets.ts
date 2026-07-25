@@ -13,6 +13,7 @@ import {
   getThread,
   listRevSets,
   promoteThreadToRfc,
+  createAcceptedRisk,
   createRevSet,
   decideThread,
   getArtifact,
@@ -327,6 +328,27 @@ async function main() {
       throw new Error(
         `contributor merge should be forbidden; got ${JSON.stringify(forbiddenBob)}`,
       );
+    }
+
+    // Seeded Critical Finding requires Accepted Risk before merge (§7.6).
+    const needsAr = await decideThread({
+      thread_id: "thread-us-voter-reg-rfc",
+      outcome: "merged",
+      author_id: "user-alice",
+    });
+    if (needsAr.ok || needsAr.error.code !== "critical_unaccepted") {
+      throw new Error(
+        `seeded leaf merge without AR should be critical_unaccepted; got ${JSON.stringify(needsAr)}`,
+      );
+    }
+    const ar = await createAcceptedRisk({
+      thread_id: "thread-us-voter-reg-rfc",
+      description: "Accept residual risk for RevSet smoke merge.",
+      rationale: "Clears Critical gate for steward merge.",
+      signer_id: "user-alice",
+    });
+    if (!ar.ok) {
+      throw new Error(`Accepted Risk failed: ${JSON.stringify(ar.error)}`);
     }
 
     const seedMerge = await decideThread({

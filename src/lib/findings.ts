@@ -3,7 +3,7 @@
  *
  * Findings always attach to an originating thread. Open Critical findings
  * that target a leaf RFC’s artifact (or the RFC thread) block merge unless
- * an AcceptedRisk exists (gate wired in a later M7 slice).
+ * an AcceptedRisk exists on that RFC (CONCEPT §7.6).
  */
 
 import {

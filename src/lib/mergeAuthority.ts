@@ -3,7 +3,7 @@
  *
  * | Artifact location | Who may decide a leaf RFC |
  * | Canon, routine    | Editors (Owner always)    |
- * | Canon, restricted | Owner only (`owner_merge_only`; Critical-AR → M7) |
+ * | Canon, restricted | Owner only (`owner_merge_only` or Critical/AR path) |
  * | Country Manual    | Stewards of that Collection (Owner meta-veto) |
  *
  * Thread home dossier never overrides this table.
@@ -29,7 +29,8 @@ export type MergeAuthorityContext = {
   area_kind: AreaKind;
   country_code: string | null;
   owner_merge_only: boolean;
-  /** Critical Finding / Accepted Risk path deferred to M7. */
+  /** True when open Critical Finding and/or AcceptedRisk applies (Canon → Owner). */
+  critical_or_accepted_risk_path?: boolean;
   authority_class: MergeAuthorityClass;
   required_roles: PrototypeRole[];
 };
@@ -37,9 +38,13 @@ export type MergeAuthorityContext = {
 export function classifyMergeAuthority(input: {
   area_kind: string;
   owner_merge_only: boolean;
+  /** CONCEPT §3.4 — Canon Critical Finding / Accepted Risk path → Owner only. */
+  critical_or_accepted_risk_path?: boolean;
 }): MergeAuthorityClass {
   if (input.area_kind === "manuals") return "manual_steward";
-  if (input.owner_merge_only) return "canon_owner_only";
+  if (input.owner_merge_only || input.critical_or_accepted_risk_path) {
+    return "canon_owner_only";
+  }
   return "canon_editor";
 }
 

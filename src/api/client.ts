@@ -1,4 +1,5 @@
 import type {
+  AcceptedRiskRow,
   AreaRow,
   ArtifactRevisionRow,
   ArtifactRow,
@@ -428,6 +429,44 @@ export async function createFinding(body: {
     body: JSON.stringify(body),
   });
   return handleResponse<FindingRow>(response);
+}
+
+export async function getAcceptedRisk(
+  threadId: string,
+): Promise<AcceptedRiskRow | null> {
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/accepted-risk`,
+  );
+  return handleResponse<AcceptedRiskRow | null>(response);
+}
+
+export async function createAcceptedRisk(
+  threadId: string,
+  body: {
+    accepted_risk_id?: string;
+    description: string;
+    rationale: string;
+    evidence_considered?: string | null;
+    reopen_triggers?: string | null;
+    signer_id: string;
+    signed_at?: string;
+  },
+): Promise<{
+  accepted_risk: AcceptedRiskRow;
+  findings_updated: string[];
+}> {
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/accepted-risk`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+  return handleResponse<{
+    accepted_risk: AcceptedRiskRow;
+    findings_updated: string[];
+  }>(response);
 }
 
 export async function getAdjudicationQueue(): Promise<ClaimRow[]> {

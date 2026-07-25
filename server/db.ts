@@ -50,6 +50,7 @@ import {
   isFindingTargetKind,
   isOpenCriticalFinding,
 } from "../src/lib/findings";
+import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
 import { randomUUID } from "crypto";
 
@@ -271,7 +272,25 @@ export type ThreadRow = {
     required_roles: PrototypeRole[];
     description: string;
     allowed_user_ids: string[];
+    /** True when open Critical and/or AcceptedRisk upgrades Canon to Owner-only. */
+    critical_or_accepted_risk_path?: boolean;
   } | null;
+  /** CONCEPT §7.6 — Accepted Risk on this leaf RFC (if any). */
+  accepted_risk?: AcceptedRiskRow | null;
+  /** Open Critical Findings that would block merge without Accepted Risk. */
+  open_critical_findings?: { finding_id: string; title: string }[];
+};
+
+/** CONCEPT §7.6 Accepted Risk wire shape. */
+export type AcceptedRiskRow = {
+  accepted_risk_id: string;
+  thread_id: string;
+  description: string;
+  rationale: string;
+  evidence_considered: string | null;
+  reopen_triggers: string | null;
+  signer_id: string;
+  signed_at: string;
 };
 
 /** CONCEPT §3.3 RevSet — proposed ArtifactRevision on a leaf RFC. */
@@ -1151,10 +1170,26 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
   }));
   mapped.rfc_kind = deriveRfcKind(mapped);
   if (mapped.merge_artifact_id) {
-    const auth = await resolveMergeAuthorityForArtifact(mapped.merge_artifact_id);
+    const auth = await resolveMergeAuthorityForArtifact(
+      mapped.merge_artifact_id,
+      { threadId: mapped.thread_id },
+    );
     mapped.merge_authority = auth
-      ? buildMergeAuthoritySummary(auth)
+      ? {
+          ...buildMergeAuthoritySummary(auth),
+          critical_or_accepted_risk_path:
+            auth.critical_or_accepted_risk_path ?? false,
+        }
       : null;
+    const blockers = await listOpenCriticalFindingsForMerge({
+      threadId: mapped.thread_id,
+      mergeArtifactId: mapped.merge_artifact_id,
+    });
+    mapped.open_critical_findings = blockers.map((f) => ({
+      finding_id: f.finding_id,
+      title: f.title,
+    }));
+    mapped.accepted_risk = await getAcceptedRiskForThread(mapped.thread_id);
   }
   return mapped;
 }
@@ -1162,6 +1197,7 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
 /** Resolve CONCEPT §3.4 context from merge artifact → dossier → collection → area. */
 export async function resolveMergeAuthorityForArtifact(
   artifactId: string,
+  opts?: { threadId?: string },
 ): Promise<MergeAuthorityContext | null> {
   const row = await getPrisma().artifact.findUnique({
     where: { artifactId },
@@ -1187,9 +1223,23 @@ export async function resolveMergeAuthorityForArtifact(
   const areaKindRaw = row.dossier.collection.area.kind;
   const area_kind: AreaKind =
     areaKindRaw === "manuals" ? "manuals" : "canon";
+
+  let critical_or_accepted_risk_path = false;
+  if (opts?.threadId) {
+    const [blockers, ar] = await Promise.all([
+      listOpenCriticalFindingsForMerge({
+        threadId: opts.threadId,
+        mergeArtifactId: artifactId,
+      }),
+      getAcceptedRiskForThread(opts.threadId),
+    ]);
+    critical_or_accepted_risk_path = blockers.length > 0 || ar != null;
+  }
+
   const authority_class = classifyMergeAuthority({
     area_kind,
     owner_merge_only: row.ownerMergeOnly,
+    critical_or_accepted_risk_path,
   });
   return {
     artifact_id: row.artifactId,
@@ -1198,6 +1248,7 @@ export async function resolveMergeAuthorityForArtifact(
     area_kind,
     country_code: row.dossier.collection.countryCode,
     owner_merge_only: row.ownerMergeOnly,
+    critical_or_accepted_risk_path,
     authority_class,
     required_roles: requiredRolesForClass(authority_class),
   };
@@ -1673,6 +1724,12 @@ export type DecideThreadError =
       required_roles: PrototypeRole[];
       collection_id: string;
       area_kind: AreaKind;
+    }
+  | {
+      /** CONCEPT §7.6 — open Critical Finding(s) and no AcceptedRisk on this leaf. */
+      code: "critical_unaccepted";
+      finding_ids: string[];
+      message: string;
     };
 
 const DECISION_OUTCOMES: DecisionOutcome[] = ["merged", "rejected", "parked"];
@@ -1698,7 +1755,7 @@ function aggregateChildOutcomes(
  * Wrapper parents are never decided directly; when all children are decided,
  * the parent cascades to decided with an aggregated outcome (CONCEPT §3.3).
  * Collection merge authority (CONCEPT §3.4) is enforced for all decide outcomes.
- * Accepted Risk / Critical Finding gates remain deferred to M7.
+ * Open Critical Findings block merge unless AcceptedRisk exists (CONCEPT §7.6).
  */
 export async function decideThread(input: {
   thread_id: string;
@@ -1756,7 +1813,9 @@ export async function decideThread(input: {
   }
 
   const authorId = input.author_id ?? "system";
-  const authority = await resolveMergeAuthorityForArtifact(row.mergeArtifactId);
+  const authority = await resolveMergeAuthorityForArtifact(row.mergeArtifactId, {
+    threadId: input.thread_id,
+  });
   if (!authority) {
     return {
       ok: false,
@@ -1783,6 +1842,25 @@ export async function decideThread(input: {
   const now = new Date();
 
   if (input.outcome === "merged") {
+    const blockers = await listOpenCriticalFindingsForMerge({
+      threadId: input.thread_id,
+      mergeArtifactId: row.mergeArtifactId,
+    });
+    if (blockers.length > 0) {
+      const ar = await getAcceptedRiskForThread(input.thread_id);
+      if (!ar) {
+        return {
+          ok: false,
+          error: {
+            code: "critical_unaccepted",
+            finding_ids: blockers.map((f) => f.finding_id),
+            message:
+              "Open Critical Finding(s) block merge until Accepted Risk is signed on this leaf RFC",
+          },
+        };
+      }
+    }
+
     if (row.revSets.length === 0) {
       return { ok: false, error: { code: "merge_requires_revset" } };
     }
@@ -1812,6 +1890,11 @@ export async function decideThread(input: {
       };
     }
 
+    const arNote =
+      blockers.length > 0
+        ? " Accepted Risk present; Critical gate cleared."
+        : "";
+
     await prisma.$transaction(async (tx) => {
       await tx.artifact.update({
         where: { artifactId: row.mergeArtifactId! },
@@ -1830,7 +1913,7 @@ export async function decideThread(input: {
           threadId: input.thread_id,
           authorId,
           type: "comment",
-          body: `Decision: merged (applied RevSet v${chosen.version} → ${revision.revisionId}) by ${authorId} under ${authority.authority_class}. Accepted Risk gate deferred to M7.`,
+          body: `Decision: merged (applied RevSet v${chosen.version} → ${revision.revisionId}) by ${authorId} under ${authority.authority_class}.${arNote}`,
           createdAt: now,
         },
       });
@@ -2399,7 +2482,7 @@ export async function createFinding(
 /**
  * Open Critical Findings that block leaf RFC merge (CONCEPT §7.6).
  * Matches findings targeting the RFC thread id or merge artifact id.
- * AcceptedRisk gate is a later M7 slice — this helper only lists blockers.
+ * Merge is allowed when an AcceptedRisk exists on the leaf (see decideThread).
  */
 export async function listOpenCriticalFindingsForMerge(opts: {
   threadId: string;
@@ -2433,4 +2516,189 @@ export async function listOpenCriticalFindingsForMerge(opts: {
     orderBy: { createdAt: "asc" },
   });
   return rows.map(mapFinding);
+}
+
+function mapAcceptedRisk(row: {
+  acceptedRiskId: string;
+  threadId: string;
+  description: string;
+  rationale: string;
+  evidenceConsidered: string | null;
+  reopenTriggers: string | null;
+  signerId: string;
+  signedAt: Date;
+}): AcceptedRiskRow {
+  return {
+    accepted_risk_id: row.acceptedRiskId,
+    thread_id: row.threadId,
+    description: row.description,
+    rationale: row.rationale,
+    evidence_considered: row.evidenceConsidered,
+    reopen_triggers: row.reopenTriggers,
+    signer_id: row.signerId,
+    signed_at: row.signedAt.toISOString(),
+  };
+}
+
+export async function getAcceptedRiskForThread(
+  threadId: string,
+): Promise<AcceptedRiskRow | null> {
+  const row = await getPrisma().acceptedRisk.findUnique({
+    where: { threadId },
+  });
+  return row ? mapAcceptedRisk(row) : null;
+}
+
+export type CreateAcceptedRiskInput = {
+  accepted_risk_id?: string;
+  thread_id: string;
+  description: string;
+  rationale: string;
+  evidence_considered?: string | null;
+  reopen_triggers?: string | null;
+  signer_id: string;
+  signed_at?: string;
+};
+
+export type CreateAcceptedRiskError =
+  | { code: "not_found"; message: string }
+  | { code: "not_leaf"; message: string }
+  | { code: "not_decidable"; message: string; state: string }
+  | { code: "already_exists"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "authority_context_missing"; message: string };
+
+/**
+ * CONCEPT §7.6 — sign Accepted Risk on a leaf RFC.
+ * Marks open Critical Findings that would block this merge as `accepted_risk`.
+ */
+export async function createAcceptedRisk(
+  input: CreateAcceptedRiskInput,
+): Promise<
+  | { ok: true; accepted_risk: AcceptedRiskRow; findings_updated: string[] }
+  | { ok: false; error: CreateAcceptedRiskError }
+> {
+  const prisma = getPrisma();
+  const thread = await prisma.thread.findUnique({
+    where: { threadId: input.thread_id },
+  });
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
+  if (!thread.mergeArtifactId) {
+    return {
+      ok: false,
+      error: {
+        code: "not_leaf",
+        message: "Accepted Risk attaches only to merging (leaf) RFCs",
+      },
+    };
+  }
+  if (thread.state !== "rfc" && thread.state !== "review") {
+    return {
+      ok: false,
+      error: {
+        code: "not_decidable",
+        message: "Accepted Risk only on open leaf RFCs",
+        state: thread.state,
+      },
+    };
+  }
+
+  const existing = await prisma.acceptedRisk.findUnique({
+    where: { threadId: input.thread_id },
+  });
+  if (existing) {
+    return {
+      ok: false,
+      error: {
+        code: "already_exists",
+        message: "Accepted Risk already signed for this leaf RFC",
+      },
+    };
+  }
+
+  const authority = await resolveMergeAuthorityForArtifact(
+    thread.mergeArtifactId,
+    { threadId: input.thread_id },
+  );
+  if (!authority) {
+    return {
+      ok: false,
+      error: {
+        code: "authority_context_missing",
+        message: "Could not resolve Collection for merge artifact",
+      },
+    };
+  }
+  if (!actorMaySignAcceptedRisk(input.signer_id, authority.area_kind)) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message:
+          authority.area_kind === "manuals"
+            ? "Only Collection stewards (or Owner) may sign Accepted Risk on Manual RFCs"
+            : "Only Owner may sign Accepted Risk on Canon RFCs",
+      },
+    };
+  }
+
+  const blockers = await listOpenCriticalFindingsForMerge({
+    threadId: input.thread_id,
+    mergeArtifactId: thread.mergeArtifactId,
+  });
+
+  const acceptedRiskId =
+    input.accepted_risk_id?.trim() || `ar-${randomUUID()}`;
+  const signedAt = input.signed_at ? new Date(input.signed_at) : new Date();
+
+  const findingIds = blockers.map((f) => f.finding_id);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.acceptedRisk.create({
+      data: {
+        acceptedRiskId,
+        threadId: input.thread_id,
+        description: input.description.trim(),
+        rationale: input.rationale.trim(),
+        evidenceConsidered: input.evidence_considered?.trim() || null,
+        reopenTriggers: input.reopen_triggers?.trim() || null,
+        signerId: input.signer_id,
+        signedAt,
+      },
+    });
+    if (findingIds.length > 0) {
+      await tx.finding.updateMany({
+        where: { findingId: { in: findingIds } },
+        data: { status: "accepted_risk" },
+      });
+    }
+    await tx.threadPost.create({
+      data: {
+        postId: randomUUID(),
+        threadId: input.thread_id,
+        authorId: input.signer_id,
+        type: "comment",
+        body: `Accepted Risk signed by ${input.signer_id}.${
+          findingIds.length > 0
+            ? ` Critical Finding(s) marked accepted_risk: ${findingIds.join(", ")}.`
+            : ""
+        } ${input.description.trim()}`,
+        createdAt: signedAt,
+      },
+    });
+  });
+
+  const row = await prisma.acceptedRisk.findUniqueOrThrow({
+    where: { acceptedRiskId },
+  });
+  return {
+    ok: true,
+    accepted_risk: mapAcceptedRisk(row),
+    findings_updated: findingIds,
+  };
 }

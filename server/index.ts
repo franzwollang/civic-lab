@@ -7,11 +7,13 @@ import { bootstrapDatabase } from "./bootstrap";
 import {
   createArtifact,
   createArtifactRevision,
+  createAcceptedRisk,
   createClaim,
   createFinding,
   createRevSet,
   createThreadPost,
   decideThread,
+  getAcceptedRiskForThread,
   getArtifact,
   getAttributions,
   getAreaByKind,
@@ -309,6 +311,16 @@ const findingBodySchema = z.object({
       }),
     )
     .optional(),
+});
+
+const acceptedRiskBodySchema = z.object({
+  accepted_risk_id: z.string().min(1).optional(),
+  description: z.string().min(1),
+  rationale: z.string().min(1),
+  evidence_considered: z.string().nullable().optional(),
+  reopen_triggers: z.string().nullable().optional(),
+  signer_id: z.string().min(1),
+  signed_at: z.string().optional(),
 });
 
 // CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
@@ -613,7 +625,8 @@ app.post("/api/threads/:threadId/decide", async (c) => {
     const status =
       result.error.code === "not_found"
         ? 404
-        : result.error.code === "already_decided"
+        : result.error.code === "already_decided" ||
+            result.error.code === "critical_unaccepted"
           ? 409
           : result.error.code === "forbidden"
             ? 403
@@ -717,6 +730,47 @@ app.post("/api/findings", async (c) => {
     return c.json({ error: result.error }, status);
   }
   return c.json(result.finding, 201);
+});
+
+// M7 Accepted Risk (CONCEPT §7.6) — leaf RFC Critical merge gate
+app.get("/api/threads/:threadId/accepted-risk", async (c) => {
+  const thread = await getThread(c.req.param("threadId"));
+  if (!thread) {
+    return c.json({ error: "Thread not found" }, 404);
+  }
+  const ar = await getAcceptedRiskForThread(c.req.param("threadId"));
+  return c.json(ar);
+});
+
+app.post("/api/threads/:threadId/accepted-risk", async (c) => {
+  const parsed = acceptedRiskBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid Accepted Risk payload" }, 400);
+  }
+  const result = await createAcceptedRisk({
+    thread_id: c.req.param("threadId"),
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden"
+          ? 403
+          : result.error.code === "already_exists"
+            ? 409
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(
+    {
+      accepted_risk: result.accepted_risk,
+      findings_updated: result.findings_updated,
+    },
+    201,
+  );
 });
 
 // M6 adjudication scaffolding (CONCEPT §8.3) — global queue + resolve

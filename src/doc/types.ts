@@ -205,7 +205,24 @@ export type ThreadRow = {
     required_roles: string[];
     description: string;
     allowed_user_ids: string[];
+    critical_or_accepted_risk_path?: boolean;
   } | null;
+  /** CONCEPT §7.6 — Accepted Risk on this leaf RFC (if any). */
+  accepted_risk?: AcceptedRiskRow | null;
+  /** Open Critical Findings that block merge without Accepted Risk. */
+  open_critical_findings?: { finding_id: string; title: string }[];
+};
+
+/** CONCEPT §7.6 Accepted Risk wire shape. */
+export type AcceptedRiskRow = {
+  accepted_risk_id: string;
+  thread_id: string;
+  description: string;
+  rationale: string;
+  evidence_considered: string | null;
+  reopen_triggers: string | null;
+  signer_id: string;
+  signed_at: string;
 };
 
 /** CONCEPT §3.3 RevSet wire shape. */

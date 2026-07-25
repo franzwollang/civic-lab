@@ -12,6 +12,7 @@ import {
   setPrisma,
   getThread,
   promoteThreadToRfc,
+  createAcceptedRisk,
   createRevSet,
   decideThread,
   getArtifact,
@@ -129,6 +130,31 @@ async function main() {
       throw new Error(
         `carol (Canon editor) must not decide Manual: ${JSON.stringify(carolDeniedManual)}`,
       );
+    }
+
+    // Seeded Critical Finding blocks merge until Accepted Risk (CONCEPT §7.6).
+    const blockedCritical = await decideThread({
+      thread_id: "thread-us-voter-reg-rfc",
+      outcome: "merged",
+      author_id: "user-alice",
+    });
+    if (
+      blockedCritical.ok ||
+      blockedCritical.error.code !== "critical_unaccepted"
+    ) {
+      throw new Error(
+        `alice merge without AR should be critical_unaccepted: ${JSON.stringify(blockedCritical)}`,
+      );
+    }
+
+    const ar = await createAcceptedRisk({
+      thread_id: "thread-us-voter-reg-rfc",
+      description: "Accept residual handoff gap for authority smoke merge.",
+      rationale: "Tracked follow-up; steward clears Critical gate.",
+      signer_id: "user-alice",
+    });
+    if (!ar.ok) {
+      throw new Error(`Accepted Risk failed: ${JSON.stringify(ar.error)}`);
     }
 
     const aliceOk = await decideThread({

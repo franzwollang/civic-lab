@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../components/ui/tooltip";
-import { decideThread, getThread, getThreadRevSets } from "../../api/client";
+import { decideThread, getThread, getThreadRevSets, createAcceptedRisk } from "../../api/client";
 import type {
   RevSetRow as RevSetWire,
   ThreadPostRow,
@@ -29,6 +29,7 @@ import {
   readActingUserId,
 } from "../lib/prototype-users";
 import { actorMayDecide } from "../../lib/mergeAuthority";
+import { actorMaySignAcceptedRisk } from "../../lib/acceptedRisk";
 
 function statusLabel(
   thread: ThreadRow,
@@ -56,6 +57,7 @@ export function RfcThreadPage() {
   const [revsets, setRevsets] = useState<RevSetWire[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [deciding, setDeciding] = useState(false);
+  const [signingAr, setSigningAr] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -99,6 +101,30 @@ export function RfcThreadPage() {
     }
   }
 
+  async function onSignAcceptedRisk() {
+    if (!id || !thread || thread.state === "decided") return;
+    if (thread.rfc_kind !== "leaf") return;
+    setSigningAr(true);
+    try {
+      await createAcceptedRisk(id, {
+        description:
+          "Prototype Accepted Risk for open Critical Finding(s) on this leaf RFC.",
+        rationale:
+          "Steward/Owner accepts residual risk so merge may proceed under CONCEPT §7.6.",
+        evidence_considered: "Seeded Finding evidence + RevSet proposal.",
+        reopen_triggers: "New Critical Finding or material RevSet change.",
+        signer_id: readActingUserId(),
+      });
+      const refreshed = await getThread(id);
+      setThread(refreshed);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Accepted Risk failed");
+    } finally {
+      setSigningAr(false);
+    }
+  }
+
   function onPosted(post: ThreadPostRow) {
     setThread((prev) =>
       prev
@@ -115,6 +141,18 @@ export function RfcThreadPage() {
   const authorityOk =
     !thread?.merge_authority ||
     actorMayDecide(actingId, thread.merge_authority.authority_class);
+  const criticalBlockers = thread?.open_critical_findings ?? [];
+  const hasAcceptedRisk = Boolean(thread?.accepted_risk);
+  const mergeBlockedByCritical =
+    criticalBlockers.length > 0 && !hasAcceptedRisk;
+  const canSignAr =
+    thread != null &&
+    thread.rfc_kind === "leaf" &&
+    (thread.state === "rfc" || thread.state === "review") &&
+    !hasAcceptedRisk &&
+    thread.merge_authority != null &&
+    actorMaySignAcceptedRisk(actingId, thread.merge_authority.area_kind) &&
+    !signingAr;
   const canDecide =
     thread != null &&
     thread.rfc_kind === "leaf" &&
@@ -165,7 +203,7 @@ export function RfcThreadPage() {
                         <p className="text-xs">
                           {thread.rfc_kind === "wrapper"
                             ? "Wrapper RFC coordinates sub-RFCs; it does not merge content. Parent becomes decided when all children are decided."
-                            : "Leaf RFC: Merge applies the latest RevSet to the artifact. Decide authority follows the artifact Collection (CONCEPT §3.4). Accepted Risk deferred to M7."}
+                            : "Leaf RFC: Merge applies the latest RevSet to the artifact. Decide authority follows the artifact Collection (CONCEPT §3.4). Open Critical Findings block merge unless Accepted Risk is signed (§7.6)."}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -337,8 +375,14 @@ export function RfcThreadPage() {
                       </>
                     ) : (
                       "."
-                    )}{" "}
-                    Accepted Risk / Critical Finding gate deferred to M7.
+                    )}
+                    {thread.accepted_risk ? (
+                      <>
+                        {" "}
+                        Accepted Risk on file (
+                        {thread.accepted_risk.accepted_risk_id}).
+                      </>
+                    ) : null}
                   </p>
                 ) : thread.rfc_kind === "wrapper" ? (
                   <p className="mb-4 text-sm text-neutral-600">
@@ -350,8 +394,43 @@ export function RfcThreadPage() {
                     <p className="mb-4 text-sm text-neutral-600">
                       Merge applies the latest RevSet. Reject / park close without
                       writing content. Authority follows the merge artifact&apos;s
-                      Collection (CONCEPT §3.4).
+                      Collection (CONCEPT §3.4). Open Critical Findings block
+                      merge unless Accepted Risk is signed (§7.6).
                     </p>
+                    {criticalBlockers.length > 0 && (
+                      <div className="mb-4 rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">
+                        <div className="font-medium">
+                          Open Critical Finding
+                          {criticalBlockers.length > 1 ? "s" : ""} block merge
+                        </div>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-xs">
+                          {criticalBlockers.map((f) => (
+                            <li key={f.finding_id}>
+                              <code>{f.finding_id}</code> — {f.title}
+                            </li>
+                          ))}
+                        </ul>
+                        {!hasAcceptedRisk && (
+                          <p className="mt-2 text-xs">
+                            Sign Accepted Risk to clear the gate, then merge.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    {thread.accepted_risk && (
+                      <div className="mb-4 rounded border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-950">
+                        <div className="font-medium">Accepted Risk on file</div>
+                        <p className="mt-1 text-xs">
+                          Signed by {thread.accepted_risk.signer_id} ·{" "}
+                          {new Date(
+                            thread.accepted_risk.signed_at,
+                          ).toLocaleString()}
+                        </p>
+                        <p className="mt-1 text-xs">
+                          {thread.accepted_risk.description}
+                        </p>
+                      </div>
+                    )}
                     {thread.merge_authority && (
                       <div className="mb-4 rounded border border-neutral-200 bg-neutral-50 p-3 text-sm text-neutral-700">
                         <div className="font-medium text-neutral-900">
@@ -363,6 +442,9 @@ export function RfcThreadPage() {
                           {" · "}
                           required roles:{" "}
                           {thread.merge_authority.required_roles.join(", ")}
+                          {thread.merge_authority.critical_or_accepted_risk_path
+                            ? " · Critical/AR path"
+                            : ""}
                         </div>
                         <div className="mt-1 text-xs text-neutral-500">
                           Acting as{" "}
@@ -375,11 +457,26 @@ export function RfcThreadPage() {
                         </div>
                       </div>
                     )}
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3">
+                      {canSignAr && (
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          disabled={!canSignAr}
+                          onClick={() => void onSignAcceptedRisk()}
+                        >
+                          {signingAr ? "Signing…" : "Sign Accepted Risk"}
+                        </Button>
+                      )}
                       <Button
                         variant="default"
                         size="lg"
-                        disabled={!canDecide || revsets.length === 0}
+                        disabled={
+                          !canDecide ||
+                          !authorityOk ||
+                          revsets.length === 0 ||
+                          mergeBlockedByCritical
+                        }
                         onClick={() => onDecide("merged")}
                       >
                         {deciding ? "Working…" : "Merge RFC"}
@@ -387,7 +484,7 @@ export function RfcThreadPage() {
                       <Button
                         variant="outline"
                         size="lg"
-                        disabled={!canDecide}
+                        disabled={!canDecide || !authorityOk}
                         onClick={() => onDecide("rejected")}
                       >
                         Reject
@@ -395,7 +492,7 @@ export function RfcThreadPage() {
                       <Button
                         variant="outline"
                         size="lg"
-                        disabled={!canDecide}
+                        disabled={!canDecide || !authorityOk}
                         onClick={() => onDecide("parked")}
                       >
                         Park
