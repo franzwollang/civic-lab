@@ -9,14 +9,8 @@ import {
   type EmpiricalType,
   type CanonScope,
 } from "../../lib/claimLegality";
-import {
-  DEFAULT_PROTOTYPE_USER_ID,
-  PROTOTYPE_USERS,
-  formatUserLabel,
-  getPrototypeUser,
-  readActingUserId,
-  writeActingUserId,
-} from "../lib/prototype-users";
+import { useActingUserOptional } from "../lib/acting-user";
+import { ActingAsHint } from "./acting-as-hint";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
@@ -66,7 +60,7 @@ export function ClaimComposer({
     [ownerContext],
   );
 
-  const [authorId, setAuthorId] = useState(DEFAULT_PROTOTYPE_USER_ID);
+  const { userId: authorId } = useActingUserOptional();
   const [profile, setProfile] = useState<ClaimProfile>(
     legalProfiles[0] ?? "empirical",
   );
@@ -81,10 +75,6 @@ export function ClaimComposer({
   const [sectionId, setSectionId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setAuthorId(readActingUserId());
-  }, []);
 
   useEffect(() => {
     if (legalProfiles.length === 0) return;
@@ -104,11 +94,6 @@ export function ClaimComposer({
         </p>
       </Card>
     );
-  }
-
-  function onAuthorChange(next: string) {
-    setAuthorId(next);
-    writeActingUserId(next);
   }
 
   function resetForm() {
@@ -192,7 +177,6 @@ export function ClaimComposer({
     }
   }
 
-  const author = getPrototypeUser(authorId);
   const canSubmit = enabled && !submitting && text.trim().length > 0;
   const isCanonEmpirical =
     profile === "empirical" && ownerContext.area_kind === "canon";
@@ -201,38 +185,7 @@ export function ClaimComposer({
   return (
     <Card className="border border-neutral-200 bg-white p-4">
       <form onSubmit={onSubmit} className="space-y-3">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div className="min-w-[180px] flex-1 space-y-1.5">
-            <Label
-              htmlFor="claim-author"
-              className="text-xs uppercase tracking-wider text-neutral-500"
-            >
-              Author as (impersonate)
-            </Label>
-            <Select
-              value={authorId}
-              onValueChange={onAuthorChange}
-              disabled={!enabled || submitting}
-            >
-              <SelectTrigger id="claim-author" className="w-full bg-white">
-                <SelectValue placeholder="Choose user" />
-              </SelectTrigger>
-              <SelectContent>
-                {PROTOTYPE_USERS.map((u) => (
-                  <SelectItem key={u.id} value={u.id}>
-                    {formatUserLabel(u)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          {author && (
-            <p className="text-xs text-neutral-500">
-              Acting as{" "}
-              <span className="font-medium text-neutral-700">{author.id}</span>
-            </p>
-          )}
-        </div>
+        <ActingAsHint requireCapability="author_claims" capabilityLabel="author claims" />
 
         {legalProfiles.length > 1 && (
           <div className="space-y-1.5">

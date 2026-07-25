@@ -9,7 +9,7 @@ import { GitBranch } from "lucide-react";
 import { useParams, Link, useNavigate } from "react-router";
 import { getThread, promoteThread } from "../../api/client";
 import type { ThreadPostRow, ThreadRow } from "../../doc/types";
-import { readActingUserId } from "../lib/prototype-users";
+import { useActingUser } from "../lib/acting-user";
 import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
 import { buildHierarchyCrumbs } from "../lib/object-nav";
 
@@ -33,6 +33,7 @@ function statusLabel(
 export function ThreadPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { userId: actingId } = useActingUser();
   const [thread, setThread] = useState<ThreadRow | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [promoting, setPromoting] = useState(false);
@@ -63,7 +64,7 @@ export function ThreadPage() {
     setPromoting(true);
     try {
       const updated = await promoteThread(id, {
-        author_id: readActingUserId(),
+        author_id: actingId,
       });
       setThread(updated);
       navigate(`/thread/${id}/rfc`);

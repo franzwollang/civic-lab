@@ -42,3 +42,4 @@
 {"ts":"2026-07-25T14:55Z","focus":"M7 Candidate→Finding timeline","summary":"Candidate promotion + thread timeline UX landed; M7 done; handoff to M8 Search","next":"M8 first-cut search API + header wiring"}
 {"ts":"2026-07-25T15:35Z","focus":"M8 Search","summary":"Corpus search API + header results landed; handoff to breadcrumbs","next":"M8 breadcrumbs + up-links; then impersonation chrome"}
 {"ts":"2026-07-25T15:55Z","focus":"M8 Breadcrumbs","summary":"Hierarchy breadcrumbs + up-nav context landed; handoff to impersonation chrome","next":"M8 global header acting-user switcher + role affordances"}
+{"ts":"2026-07-25T16:10Z","focus":"M8 impersonation chrome","summary":"Global acting-user switcher + role affordances; M8 done","next":"M9 Policy start or editor/evidence residuals"}

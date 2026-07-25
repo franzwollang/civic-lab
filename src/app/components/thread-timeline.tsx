@@ -16,10 +16,9 @@ import {
   postMatchesTimelineFilter,
   type TimelineFilter,
 } from "../../lib/candidateFindings";
-import {
-  getPrototypeUser,
-  readActingUserId,
-} from "../lib/prototype-users";
+import { useActingUserOptional } from "../lib/acting-user";
+import { getPrototypeUser } from "../lib/prototype-users";
+import { ActingAsHint } from "./acting-as-hint";
 import {
   ReplyComposer,
   authorDisplayName,
@@ -64,10 +63,10 @@ export function ThreadTimeline({
   onPosted,
   heading = "Discussion",
 }: ThreadTimelineProps) {
+  const { userId: actingId } = useActingUserOptional();
   const [filter, setFilter] = useState<TimelineFilter>("all");
   const [findings, setFindings] = useState<FindingRow[]>([]);
   const [candidates, setCandidates] = useState<CandidateFindingRow[]>([]);
-  const [actingId, setActingId] = useState(readActingUserId());
   const [busyPostId, setBusyPostId] = useState<string | null>(null);
   const [busyCandidateId, setBusyCandidateId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -96,19 +95,6 @@ export function ThreadTimeline({
       cancelled = true;
     };
   }, [threadId]);
-
-  useEffect(() => {
-    const onStorage = () => setActingId(readActingUserId());
-    window.addEventListener("storage", onStorage);
-    const id = window.setInterval(() => {
-      const next = readActingUserId();
-      setActingId((prev) => (prev === next ? prev : next));
-    }, 1000);
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      window.clearInterval(id);
-    };
-  }, []);
 
   const candidatesByPost = useMemo(() => {
     const map = new Map<string, CandidateFindingRow>();
@@ -149,11 +135,10 @@ export function ThreadTimeline({
     try {
       const candidate = await flagCandidateFinding(threadId, {
         post_id: post.post_id,
-        flagger_id: readActingUserId(),
+        flagger_id: actingId,
         note: "Flagged from thread timeline",
       });
       setCandidates((prev) => [...prev, candidate]);
-      setActingId(readActingUserId());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Flag failed");
     } finally {
@@ -167,7 +152,7 @@ export function ThreadTimeline({
     setError(null);
     try {
       const result = await promoteCandidateFinding(candidate.candidate_id, {
-        author_id: readActingUserId(),
+        author_id: actingId,
         severity: "med",
         title: `Candidate from ${candidate.post_id}`,
         targets: [{ target_kind: "thread", target_id: threadId }],
@@ -180,7 +165,6 @@ export function ThreadTimeline({
             : c,
         ),
       );
-      setActingId(readActingUserId());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Promote failed");
     } finally {
@@ -467,9 +451,13 @@ export function ThreadTimeline({
               </ul>
             )}
             {!canPromote && (
-              <p className="mt-2 text-xs text-neutral-500">
-                Impersonate Dave (red_team) to promote candidates.
-              </p>
+              <div className="mt-2">
+                <ActingAsHint
+                  className="text-xs text-neutral-500"
+                  requireCapability="create_findings"
+                  capabilityLabel="promote candidates"
+                />
+              </div>
             )}
           </Card>
         </aside>

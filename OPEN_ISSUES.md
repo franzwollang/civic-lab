@@ -49,7 +49,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 - [ ] **Thread + posts + flexible anchors**
   - Done: Prisma `Thread` / `ThreadPost` / `ThreadTarget`; seed (`prisma/seed/threads.json`); API `GET /api/threads`, `GET /api/threads/:id`, `GET /api/dossiers/:id/threads`, `POST …/posts`; dossier Threads/RFCs tabs list store data; Collection dashboard open-thread counts live; section targets via persisted `Section` rows; **reply composer** on thread + RFC pages with seed-user impersonation (`src/app/lib/prototype-users.ts`, `ReplyComposer`).
-  - Remaining: typed posts (finding/mitigation) later; global header role switcher / affordances → M8.
+  - Remaining: typed posts (finding/mitigation) later.
+  - Global header acting-user switcher + role affordances: done (M8).
   - States seeded: `open` | `rfc` (also model `review` | `decided` | `archived`).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
@@ -69,9 +70,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 ## F. Red Team + oversight (CONCEPT §§7–8)
 
 - Findings, Candidate→Finding promotion, timeline filters, Accepted Risk, and Critical merge gate are landed (M7).
-- [ ] **Role separation via impersonation**
-  - Seed users/roles include Owner (`user-eve`), editor, steward, red_team, contributor (`src/app/lib/prototype-users.ts`); reply composer + decide / AR / promote paths use acting id.
-  - Remaining: global header switcher + distinct affordances per role (M8); do not collapse into one admin.
+- Role separation via impersonation (global header switcher + role affordances) landed (M8).
 
 ---
 

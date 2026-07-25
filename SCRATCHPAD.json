@@ -1,22 +1,23 @@
 {
-  "updated_at": "2026-07-25T15:55Z",
-  "turn": 44,
+  "updated_at": "2026-07-25T16:10Z",
+  "turn": 45,
   "focus": {
-    "milestone": "M8",
-    "issue": "Role separation via impersonation",
-    "goal": "Global header acting-user switcher + role affordances"
+    "milestone": "M9",
+    "issue": null,
+    "goal": "M8 done; hand off to M9 Policy or editor/evidence residuals"
   },
   "recent": [
-    "Merged PR #30 (M6–M8 search) onto cron branch 4d50",
-    "ObjectBreadcrumbs + dossier/thread nav fields; 6 surfaces wired",
-    "27/27 smokes + vite build green; breadcrumbs issue closed"
+    "Merged PR #31 (M6–M8 breadcrumbs) onto cron branch 691f",
+    "ActingUserProvider + header switcher + role affordances",
+    "Composers/RFC/timeline use global acting user; smoke-impersonation"
   ],
   "discoveries": [
-    "getThread joins home dossier for area/collection titles (no extra client fetch)"
+    "Prefer merge latest progression PR before coding on fresh cron branches"
   ],
   "open_threads": [
-    "Global impersonation chrome → M8 last exit criterion"
+    "M9 real auth after impersonation era",
+    "Editor MVP gaps + evidence registries still open"
   ],
-  "next_step": "M8: header acting-user switcher + distinct role affordances; then mark M8 done",
+  "next_step": "M9: start Charter-as-artifact or reputation scaffolding; else editor MathDecorate/validateDocument cleanup",
   "blockers": []
 }

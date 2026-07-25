@@ -14,18 +14,21 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../components/ui/tooltip";
-import { decideThread, getThread, getThreadRevSets, createAcceptedRisk } from "../../api/client";
+import {
+  decideThread,
+  getThread,
+  getThreadRevSets,
+  createAcceptedRisk,
+} from "../../api/client";
 import type {
   RevSetRow as RevSetWire,
   ThreadPostRow,
   ThreadRow,
 } from "../../doc/types";
-import {
-  getPrototypeUser,
-  readActingUserId,
-} from "../lib/prototype-users";
+import { useActingUser } from "../lib/acting-user";
 import { actorMayDecide } from "../../lib/mergeAuthority";
 import { actorMaySignAcceptedRisk } from "../../lib/acceptedRisk";
+import { ActingAsHint } from "../components/acting-as-hint";
 import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
 import {
   buildHierarchyCrumbs,
@@ -55,6 +58,7 @@ function statusLabel(
 
 export function RfcThreadPage() {
   const { id } = useParams();
+  const { userId: actingId } = useActingUser();
   const [thread, setThread] = useState<ThreadRow | null>(null);
   const [revsets, setRevsets] = useState<RevSetWire[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +93,7 @@ export function RfcThreadPage() {
     try {
       const result = await decideThread(id, {
         outcome,
-        author_id: readActingUserId(),
+        author_id: actingId,
       });
       setThread(result.thread);
       setError(null);
@@ -115,7 +119,7 @@ export function RfcThreadPage() {
           "Steward/Owner accepts residual risk so merge may proceed under CONCEPT §7.6.",
         evidence_considered: "Seeded Finding evidence + RevSet proposal.",
         reopen_triggers: "New Critical Finding or material RevSet change.",
-        signer_id: readActingUserId(),
+        signer_id: actingId,
       });
       const refreshed = await getThread(id);
       setThread(refreshed);
@@ -138,8 +142,6 @@ export function RfcThreadPage() {
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
   const latestVersion =
     revsets.length > 0 ? Math.max(...revsets.map((r) => r.version)) : 0;
-  const actingId = readActingUserId();
-  const actingUser = getPrototypeUser(actingId);
   const authorityOk =
     !thread?.merge_authority ||
     actorMayDecide(actingId, thread.merge_authority.authority_class);
@@ -476,13 +478,18 @@ export function RfcThreadPage() {
                             : ""}
                         </div>
                         <div className="mt-1 text-xs text-neutral-500">
-                          Acting as{" "}
-                          {actingUser
-                            ? `${actingUser.display_name} (${actingUser.roles.join(", ")})`
-                            : actingId}
-                          {authorityOk
-                            ? " — authorized"
-                            : " — not authorized to decide"}
+                          <ActingAsHint
+                            className="text-xs text-neutral-500"
+                            requireCapability={
+                              thread.merge_authority.area_kind === "manuals"
+                                ? "merge_manual"
+                                : thread.merge_authority.authority_class ===
+                                    "canon_owner_only"
+                                  ? "merge_canon_restricted"
+                                  : "merge_canon_routine"
+                            }
+                            capabilityLabel="decide this RFC"
+                          />
                         </div>
                       </div>
                     )}

@@ -1,14 +1,9 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { createThreadPost } from "../../api/client";
 import type { ThreadPostRow } from "../../doc/types";
-import {
-  DEFAULT_PROTOTYPE_USER_ID,
-  PROTOTYPE_USERS,
-  formatUserLabel,
-  getPrototypeUser,
-  readActingUserId,
-  writeActingUserId,
-} from "../lib/prototype-users";
+import { useActingUserOptional } from "../lib/acting-user";
+import { getPrototypeUser } from "../lib/prototype-users";
+import { ActingAsHint } from "./acting-as-hint";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Label } from "./ui/label";
@@ -36,20 +31,11 @@ export function ReplyComposer({
   onPosted,
   allowMitigation = false,
 }: ReplyComposerProps) {
-  const [authorId, setAuthorId] = useState(DEFAULT_PROTOTYPE_USER_ID);
+  const { userId: authorId, user: actingUser } = useActingUserOptional();
   const [body, setBody] = useState("");
   const [postType, setPostType] = useState<"comment" | "mitigation">("comment");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setAuthorId(readActingUserId());
-  }, []);
-
-  function onAuthorChange(next: string) {
-    setAuthorId(next);
-    writeActingUserId(next);
-  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -73,35 +59,15 @@ export function ReplyComposer({
     }
   }
 
-  const author = getPrototypeUser(authorId);
+  const canMitigate = Boolean(actingUser?.roles.includes("red_team"));
   const canSubmit = enabled && !submitting && body.trim().length > 0;
 
   return (
     <Card className="border border-neutral-200 bg-white p-6">
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <div className="min-w-[220px] flex-1 space-y-1.5">
-            <Label htmlFor="reply-author" className="text-xs uppercase tracking-wider text-neutral-500">
-              Post as (impersonate)
-            </Label>
-            <Select
-              value={authorId}
-              onValueChange={onAuthorChange}
-              disabled={!enabled || submitting}
-            >
-              <SelectTrigger id="reply-author" className="w-full bg-white">
-                <SelectValue placeholder="Choose user" />
-              </SelectTrigger>
-              <SelectContent>
-                {PROTOTYPE_USERS.map((u) => (
-                  <SelectItem key={u.id} value={u.id}>
-                    {formatUserLabel(u)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          {allowMitigation && (
+          <ActingAsHint className="min-w-[220px] flex-1 text-xs text-neutral-500" />
+          {allowMitigation && canMitigate && (
             <div className="min-w-[160px] space-y-1.5">
               <Label
                 htmlFor="reply-type"
@@ -125,11 +91,6 @@ export function ReplyComposer({
                 </SelectContent>
               </Select>
             </div>
-          )}
-          {author && (
-            <p className="text-xs text-neutral-500">
-              Acting as <span className="font-medium text-neutral-700">{author.id}</span>
-            </p>
           )}
         </div>
 
