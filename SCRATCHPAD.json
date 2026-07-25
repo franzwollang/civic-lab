@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-07-25T11:15Z",
-  "turn": 30,
+  "updated_at": "2026-07-25T11:40Z",
+  "turn": 31,
   "focus": {
-    "milestone": "M5",
-    "issue": "Thread reply composer",
-    "goal": "Impersonated reply composer on thread + RFC pages"
+    "milestone": "M6",
+    "issue": "Claim table + profile legality",
+    "goal": "Start M6 claims scaffolding after M5 exit"
   },
   "recent": [
-    "Merged PR #19 (decide cascade) onto cron branch 52bc",
-    "Added PROTOTYPE_USERS + localStorage acting-user helper",
-    "ReplyComposer on thread-page + rfc-thread-page",
-    "smoke-reply-composer script added"
+    "Merged PR #20 (reply composer) onto cron branch a862",
+    "Implemented CONCEPT §3.4 Collection merge authority on decide",
+    "Seeded canon-charter owner_merge_only + user-eve owner",
+    "smoke-merge-authority + smoke-revsets green; M5 marked done"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
     "Prisma --force-reset blocked; use fresh SQLite file for smokes"
   ],
   "open_threads": [
-    "Collection merge authority still open (last M5 gate)",
     "Accepted Risk on leaf deferred to M7",
-    "Global impersonation chrome → M8"
+    "Global impersonation chrome → M8",
+    "Per-Collection steward membership still global role prototype"
   ],
-  "next_step": "Implement Collection merge authority scaffolding",
+  "next_step": "Begin M6 Claim table + profile legality (empirical|requirement)",
   "blockers": []
 }

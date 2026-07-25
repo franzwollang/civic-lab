@@ -46,6 +46,8 @@ type ArtifactSeedRow = {
   current_revision_id: string | null;
   created_at: string;
   dossier_id?: string | null;
+  /** CONCEPT §3.4 restricted Canon — Owner-only merge. */
+  owner_merge_only?: boolean;
 };
 
 type RevisionSeedRow = {
@@ -183,6 +185,7 @@ export async function seedIfEmpty(
           currentRevisionId: page.current_revision_id,
           createdAt: new Date(page.created_at),
           dossierId: page.dossier_id ?? null,
+          ownerMergeOnly: page.owner_merge_only ?? false,
         },
       });
     }

@@ -29,13 +29,19 @@ async function main() {
   await fs.rm(DB_PATH, { force: true });
   await fs.rm(`${DB_PATH}-journal`, { force: true });
 
-  if (PROTOTYPE_USERS.length < 4) {
-    throw new Error("expected ≥4 prototype users for impersonation");
+  if (PROTOTYPE_USERS.length < 5) {
+    throw new Error("expected ≥5 prototype users for impersonation");
   }
   if (DEFAULT_PROTOTYPE_USER_ID !== "user-alice") {
     throw new Error("default acting user should be user-alice");
   }
-  for (const id of ["user-alice", "user-bob", "user-carol", "user-dave"]) {
+  for (const id of [
+    "user-alice",
+    "user-bob",
+    "user-carol",
+    "user-dave",
+    "user-eve",
+  ]) {
     const u = getPrototypeUser(id);
     if (!u) throw new Error(`missing prototype user ${id}`);
     if (!formatUserLabel(u).includes(u.display_name)) {

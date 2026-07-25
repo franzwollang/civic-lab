@@ -8584,7 +8584,7 @@
         "id": "us-pb-h5",
         "children": [
           {
-            "text": "Critical alert \u2014 chain of custody"
+            "text": "Critical alert — chain of custody"
           }
         ]
       },
@@ -8696,7 +8696,7 @@
         "type": "h2",
         "order": 8,
         "hash": "seed-us-pb-h5",
-        "text_preview": "Critical alert \u2014 chain of custody"
+        "text_preview": "Critical alert — chain of custody"
       },
       {
         "block_id": "us-pb-p5",
@@ -9345,7 +9345,7 @@
         "id": "de-ov-p2",
         "children": [
           {
-            "text": "Provide a Manual baseline for federal election administration so L\u00e4nder practice and Civic Lab Alignment claims share a common procedural reference."
+            "text": "Provide a Manual baseline for federal election administration so Länder practice and Civic Lab Alignment claims share a common procedural reference."
           }
         ]
       },
@@ -9413,7 +9413,7 @@
         "type": "p",
         "order": 3,
         "hash": "seed-de-ov-p2",
-        "text_preview": "Provide a Manual baseline for federal election administration so L\u00e4nder practice"
+        "text_preview": "Provide a Manual baseline for federal election administration so Länder practice"
       },
       {
         "block_id": "de-ov-h3",
@@ -9523,7 +9523,7 @@
         "id": "de-bw-p4",
         "children": [
           {
-            "text": "Route electoral complaints to the competent Wahlpr\u00fcfungsverfahren path. Document open Critical findings before any Manual merge that depends on disputed procedure."
+            "text": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document open Critical findings before any Manual merge that depends on disputed procedure."
           }
         ]
       }
@@ -9583,11 +9583,56 @@
         "type": "p",
         "order": 7,
         "hash": "seed-de-bw-p4",
-        "text_preview": "Route electoral complaints to the competent Wahlpr\u00fcfungsverfahren path. Document"
+        "text_preview": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document"
       }
     ],
     "doc_root_hash": "seed-root-de-bundeswahl",
     "schema_version": 1,
     "note": "DE Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-canon-charter-1",
+    "page_id": "canon-charter",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "charter-h1",
+        "children": [
+          {
+            "text": "Civic Lab Charter"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p1",
+        "children": [
+          {
+            "text": "Living Canon governance premises (owner_merge_only). Full prose migrates from the static Constitution page over time."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "charter-h2",
+        "children": [
+          {
+            "text": "Minimum premises"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p2",
+        "children": [
+          {
+            "text": "Separation of powers: stewards merge Manuals; editors merge routine Canon; Owner merges restricted Canon and may revert."
+          }
+        ]
+      }
+    ]
   }
 ]

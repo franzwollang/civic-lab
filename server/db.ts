@@ -9,6 +9,16 @@ import {
   extractSectionsFromContent,
   sectionIdFor,
 } from "../src/doc/sections";
+import {
+  actorMayDecide,
+  buildMergeAuthoritySummary,
+  classifyMergeAuthority,
+  requiredRolesForClass,
+  type AreaKind,
+  type MergeAuthorityClass,
+  type MergeAuthorityContext,
+} from "../src/lib/mergeAuthority";
+import type { PrototypeRole } from "../src/app/lib/prototype-users";
 
 let prisma: PrismaClient | null = null;
 
@@ -50,7 +60,7 @@ export type DossierRow = {
   country_code?: string | null;
 };
 
-/** Wire shape — dual-emits `artifact_id` + legacy `page_id`. */
+/** Wire artifact meta. Dual-emits `artifact_id` + legacy `page_id`. */
 export type ArtifactRow = {
   artifact_id: string;
   page_id: string;
@@ -59,6 +69,8 @@ export type ArtifactRow = {
   current_revision_id: string | null;
   created_at: string;
   dossier_id: string | null;
+  /** CONCEPT §3.4 — Owner-only merge when true (Canon restricted). */
+  owner_merge_only: boolean;
 };
 
 /** @deprecated Prefer ArtifactRow */
@@ -180,6 +192,16 @@ export type ThreadRow = {
   child_threads?: ThreadChildSummary[];
   /** Derived: leaf has merge_artifact_id; wrapper is rfc with children and no merge. */
   rfc_kind?: "leaf" | "wrapper" | null;
+  /** CONCEPT §3.4 — present on leaf RFCs when merge artifact Collection resolves. */
+  merge_authority?: {
+    artifact_id: string;
+    collection_id: string;
+    area_kind: AreaKind;
+    authority_class: MergeAuthorityClass;
+    required_roles: PrototypeRole[];
+    description: string;
+    allowed_user_ids: string[];
+  } | null;
 };
 
 /** CONCEPT §3.3 RevSet — proposed ArtifactRevision on a leaf RFC. */
@@ -256,6 +278,7 @@ function mapArtifact(row: {
   currentRevisionId: string | null;
   createdAt: Date;
   dossierId: string | null;
+  ownerMergeOnly?: boolean;
 }): ArtifactRow {
   return {
     artifact_id: row.artifactId,
@@ -265,6 +288,7 @@ function mapArtifact(row: {
     current_revision_id: row.currentRevisionId,
     created_at: row.createdAt.toISOString(),
     dossier_id: row.dossierId,
+    owner_merge_only: row.ownerMergeOnly ?? false,
   };
 }
 
@@ -815,7 +839,57 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
     decision_outcome: c.decisionOutcome,
   }));
   mapped.rfc_kind = deriveRfcKind(mapped);
+  if (mapped.merge_artifact_id) {
+    const auth = await resolveMergeAuthorityForArtifact(mapped.merge_artifact_id);
+    mapped.merge_authority = auth
+      ? buildMergeAuthoritySummary(auth)
+      : null;
+  }
   return mapped;
+}
+
+/** Resolve CONCEPT §3.4 context from merge artifact → dossier → collection → area. */
+export async function resolveMergeAuthorityForArtifact(
+  artifactId: string,
+): Promise<MergeAuthorityContext | null> {
+  const row = await getPrisma().artifact.findUnique({
+    where: { artifactId },
+    select: {
+      artifactId: true,
+      ownerMergeOnly: true,
+      dossier: {
+        select: {
+          collectionId: true,
+          collection: {
+            select: {
+              collectionId: true,
+              countryCode: true,
+              areaId: true,
+              area: { select: { areaId: true, kind: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!row?.dossier?.collection?.area) return null;
+  const areaKindRaw = row.dossier.collection.area.kind;
+  const area_kind: AreaKind =
+    areaKindRaw === "manuals" ? "manuals" : "canon";
+  const authority_class = classifyMergeAuthority({
+    area_kind,
+    owner_merge_only: row.ownerMergeOnly,
+  });
+  return {
+    artifact_id: row.artifactId,
+    collection_id: row.dossier.collection.collectionId,
+    area_id: row.dossier.collection.area.areaId,
+    area_kind,
+    country_code: row.dossier.collection.countryCode,
+    owner_merge_only: row.ownerMergeOnly,
+    authority_class,
+    required_roles: requiredRolesForClass(authority_class),
+  };
 }
 
 function deriveRfcKind(thread: ThreadRow): "leaf" | "wrapper" | null {
@@ -1279,7 +1353,16 @@ export type DecideThreadError =
   | { code: "wrapper_not_direct" }
   | { code: "merge_requires_revset" }
   | { code: "revset_missing"; revset_version: number }
-  | { code: "revision_missing"; artifact_revision_id: string };
+  | { code: "revision_missing"; artifact_revision_id: string }
+  | { code: "authority_context_missing"; artifact_id: string }
+  | {
+      code: "forbidden";
+      author_id: string;
+      authority_class: MergeAuthorityClass;
+      required_roles: PrototypeRole[];
+      collection_id: string;
+      area_kind: AreaKind;
+    };
 
 const DECISION_OUTCOMES: DecisionOutcome[] = ["merged", "rejected", "parked"];
 
@@ -1303,7 +1386,8 @@ function aggregateChildOutcomes(
  * - rejected / parked: no content write
  * Wrapper parents are never decided directly; when all children are decided,
  * the parent cascades to decided with an aggregated outcome (CONCEPT §3.3).
- * Collection merge authority / Accepted Risk gates remain deferred.
+ * Collection merge authority (CONCEPT §3.4) is enforced for all decide outcomes.
+ * Accepted Risk / Critical Finding gates remain deferred to M7.
  */
 export async function decideThread(input: {
   thread_id: string;
@@ -1361,6 +1445,30 @@ export async function decideThread(input: {
   }
 
   const authorId = input.author_id ?? "system";
+  const authority = await resolveMergeAuthorityForArtifact(row.mergeArtifactId);
+  if (!authority) {
+    return {
+      ok: false,
+      error: {
+        code: "authority_context_missing",
+        artifact_id: row.mergeArtifactId,
+      },
+    };
+  }
+  if (!actorMayDecide(authorId, authority.authority_class)) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        author_id: authorId,
+        authority_class: authority.authority_class,
+        required_roles: authority.required_roles,
+        collection_id: authority.collection_id,
+        area_kind: authority.area_kind,
+      },
+    };
+  }
+
   const now = new Date();
 
   if (input.outcome === "merged") {
@@ -1411,7 +1519,7 @@ export async function decideThread(input: {
           threadId: input.thread_id,
           authorId,
           type: "comment",
-          body: `Decision: merged (applied RevSet v${chosen.version} → ${revision.revisionId}). Collection merge authority / Accepted Risk still deferred.`,
+          body: `Decision: merged (applied RevSet v${chosen.version} → ${revision.revisionId}) by ${authorId} under ${authority.authority_class}. Accepted Risk gate deferred to M7.`,
           createdAt: now,
         },
       });
@@ -1432,7 +1540,7 @@ export async function decideThread(input: {
           threadId: input.thread_id,
           authorId,
           type: "comment",
-          body: `Decision: ${input.outcome}.`,
+          body: `Decision: ${input.outcome} by ${authorId} under ${authority.authority_class}.`,
           createdAt: now,
         },
       });

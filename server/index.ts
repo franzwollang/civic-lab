@@ -491,7 +491,9 @@ app.post("/api/threads/:threadId/decide", async (req, res) => {
         ? 404
         : result.error.code === "already_decided"
           ? 409
-          : 400;
+          : result.error.code === "forbidden"
+            ? 403
+            : 400;
     res.status(status).json({ error: result.error });
     return;
   }

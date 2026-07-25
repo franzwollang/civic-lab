@@ -131,6 +131,8 @@ model Artifact {
   currentRevisionId String?            @map("current_revision_id")
   createdAt         DateTime           @map("created_at")
   dossierId         String?            @map("dossier_id")
+  /// CONCEPT §3.4 — Canon restricted (Charter / governance); Owner-only merge.
+  ownerMergeOnly    Boolean            @default(false) @map("owner_merge_only")
   dossier           Dossier?           @relation(fields: [dossierId], references: [dossierId], onDelete: SetNull)
   revisions         ArtifactRevision[]
   sections          Section[]

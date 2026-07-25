@@ -317,11 +317,22 @@ async function main() {
       );
     }
 
-    // Seeded leaf RFC merge (has RevSet).
-    const seedMerge = await decideThread({
+    // Seeded leaf RFC merge (has RevSet) — Manual steward required.
+    const forbiddenBob = await decideThread({
       thread_id: "thread-us-voter-reg-rfc",
       outcome: "merged",
       author_id: "user-bob",
+    });
+    if (forbiddenBob.ok || forbiddenBob.error.code !== "forbidden") {
+      throw new Error(
+        `contributor merge should be forbidden; got ${JSON.stringify(forbiddenBob)}`,
+      );
+    }
+
+    const seedMerge = await decideThread({
+      thread_id: "thread-us-voter-reg-rfc",
+      outcome: "merged",
+      author_id: "user-alice",
     });
     if (!seedMerge.ok) {
       throw new Error(`seeded leaf merge failed: ${JSON.stringify(seedMerge.error)}`);
@@ -332,9 +343,11 @@ async function main() {
     }
 
     // Reject without RevSet is allowed; merge without RevSet is not.
+    // Authority checked before RevSet — use an authorized steward.
     const provisional = await decideThread({
       thread_id: "thread-us-provisional-open",
       outcome: "merged",
+      author_id: "user-alice",
     });
     if (provisional.ok || provisional.error.code !== "merge_requires_revset") {
       throw new Error(

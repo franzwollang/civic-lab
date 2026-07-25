@@ -24,7 +24,11 @@ import type {
   ThreadPostRow,
   ThreadRow,
 } from "../../doc/types";
-import { readActingUserId } from "../lib/prototype-users";
+import {
+  getPrototypeUser,
+  readActingUserId,
+} from "../lib/prototype-users";
+import { actorMayDecide } from "../../lib/mergeAuthority";
 
 function statusLabel(
   thread: ThreadRow,
@@ -106,6 +110,11 @@ export function RfcThreadPage() {
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
   const latestVersion =
     revsets.length > 0 ? Math.max(...revsets.map((r) => r.version)) : 0;
+  const actingId = readActingUserId();
+  const actingUser = getPrototypeUser(actingId);
+  const authorityOk =
+    !thread?.merge_authority ||
+    actorMayDecide(actingId, thread.merge_authority.authority_class);
   const canDecide =
     thread != null &&
     thread.rfc_kind === "leaf" &&
@@ -156,7 +165,7 @@ export function RfcThreadPage() {
                         <p className="text-xs">
                           {thread.rfc_kind === "wrapper"
                             ? "Wrapper RFC coordinates sub-RFCs; it does not merge content. Parent becomes decided when all children are decided."
-                            : "Leaf RFC: Merge applies the latest RevSet to the artifact. Collection merge authority / Accepted Risk still deferred."}
+                            : "Leaf RFC: Merge applies the latest RevSet to the artifact. Decide authority follows the artifact Collection (CONCEPT §3.4). Accepted Risk deferred to M7."}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -317,7 +326,19 @@ export function RfcThreadPage() {
                     <span className="font-medium">
                       {thread.decision_outcome ?? "—"}
                     </span>
-                    . Collection merge authority checks remain deferred.
+                    {thread.merge_authority ? (
+                      <>
+                        {" "}
+                        under{" "}
+                        <span className="font-medium">
+                          {thread.merge_authority.authority_class}
+                        </span>
+                        .
+                      </>
+                    ) : (
+                      "."
+                    )}{" "}
+                    Accepted Risk / Critical Finding gate deferred to M7.
                   </p>
                 ) : thread.rfc_kind === "wrapper" ? (
                   <p className="mb-4 text-sm text-neutral-600">
@@ -328,8 +349,32 @@ export function RfcThreadPage() {
                   <>
                     <p className="mb-4 text-sm text-neutral-600">
                       Merge applies the latest RevSet. Reject / park close without
-                      writing content. Collection merge authority still deferred.
+                      writing content. Authority follows the merge artifact&apos;s
+                      Collection (CONCEPT §3.4).
                     </p>
+                    {thread.merge_authority && (
+                      <div className="mb-4 rounded border border-neutral-200 bg-neutral-50 p-3 text-sm text-neutral-700">
+                        <div className="font-medium text-neutral-900">
+                          {thread.merge_authority.description}
+                        </div>
+                        <div className="mt-1 text-xs text-neutral-500">
+                          Collection{" "}
+                          <code>{thread.merge_authority.collection_id}</code>
+                          {" · "}
+                          required roles:{" "}
+                          {thread.merge_authority.required_roles.join(", ")}
+                        </div>
+                        <div className="mt-1 text-xs text-neutral-500">
+                          Acting as{" "}
+                          {actingUser
+                            ? `${actingUser.display_name} (${actingUser.roles.join(", ")})`
+                            : actingId}
+                          {authorityOk
+                            ? " — authorized"
+                            : " — not authorized to decide"}
+                        </div>
+                      </div>
+                    )}
                     <div className="flex gap-3">
                       <Button
                         variant="default"

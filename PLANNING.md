@@ -68,7 +68,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
 
-**Next build:** **M5 Threads + RFC** (`in progress` — Thread/Post/Target ✓; Section sync ✓; leaf + wrapper promote + RevSet ✓; leaf decide + parent cascade ✓; reply composer ✓; remaining: Collection merge authority). Optional Manuals 3D globe deferred.
+**Next build:** **M6 Claims + lanes** (`not started`). M5 Threads + RFC is `done` (including Collection merge authority). Accepted Risk on leaf stays M7.
 
 ---
 
@@ -81,7 +81,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M2 — Editor solidity** | `done` | Void nav ✓; clipboard ✓; a11y ✓; full preview ✓; server validate ✓ |
 | **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |
-| **M5 — Threads + RFC** | `in progress` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer (impersonated) ✓; remaining: Collection merge authority |
+| **M5 — Threads + RFC** | `done` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer ✓; Collection merge authority (§3.4) ✓ |
 | **M6 — Claims + lanes** | `not started` | Claim table + profiles; lane immutability; adjudication scaffolding |
 | **M7 — Red Team** | `not started` | Findings; Accepted Risk on leaf; Critical merge gate |
 | **M8 — Discovery** | `not started` | Search; breadcrumbs; impersonation role UX |
@@ -110,4 +110,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: **M5** Threads + RFC (or §A Editor MVP gaps polish in parallel).
+- Next: **M6** Claims + lanes (Accepted Risk / Critical merge gate remains M7).

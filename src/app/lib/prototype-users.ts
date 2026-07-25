@@ -1,6 +1,13 @@
 /**
  * Seed prototype identities for impersonation (CONCEPT Appendix A User sketch).
- * Full role-gated UX is M8; reply composer only needs switchable authors.
+ * Reply composer + merge authority use these; full role-gated chrome is M8.
+ *
+ * Roles (CONCEPT §8 / §3.4):
+ * - owner — Eve (restricted Canon / meta-veto)
+ * - editor — Carol (routine Canon merge)
+ * - steward — Alice (Manual Collection merge)
+ * - red_team — Dave (findings; no merge)
+ * - contributor — Bob (discuss / RevSets; no merge)
  */
 
 export type PrototypeRole =
@@ -38,6 +45,11 @@ export const PROTOTYPE_USERS: readonly PrototypeUser[] = [
     id: "user-dave",
     display_name: "Dave Rivera",
     roles: ["red_team", "contributor"],
+  },
+  {
+    id: "user-eve",
+    display_name: "Eve Okada",
+    roles: ["owner"],
   },
 ] as const;
 

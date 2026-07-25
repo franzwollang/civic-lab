@@ -5,7 +5,17 @@
     "slug": "voting-systems",
     "current_revision_id": "c806630d-cc1f-4829-a49a-d31835cfed88",
     "created_at": "2026-02-07T00:00:00.000Z",
-    "dossier_id": "electoral-1"
+    "dossier_id": "electoral-1",
+    "owner_merge_only": false
+  },
+  {
+    "page_id": "canon-charter",
+    "title": "Civic Lab Charter",
+    "slug": "charter",
+    "current_revision_id": "rev-canon-charter-1",
+    "created_at": "2026-07-01T00:00:00.000Z",
+    "dossier_id": "electoral-1",
+    "owner_merge_only": true
   },
   {
     "page_id": "us-overview",

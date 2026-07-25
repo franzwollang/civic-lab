@@ -40,6 +40,8 @@ export type ArtifactRow = {
   current_revision_id: string | null;
   created_at: string;
   dossier_id?: string | null;
+  /** CONCEPT §3.4 — Owner-only merge when true (Canon restricted). */
+  owner_merge_only?: boolean;
 };
 
 export type AreaRow = {
@@ -155,6 +157,19 @@ export type ThreadRow = {
     decision_outcome: string | null;
   }[];
   rfc_kind?: "leaf" | "wrapper" | null;
+  /** CONCEPT §3.4 — present on leaf RFCs when merge artifact Collection resolves. */
+  merge_authority?: {
+    artifact_id: string;
+    collection_id: string;
+    area_kind: "canon" | "manuals";
+    authority_class:
+      | "manual_steward"
+      | "canon_editor"
+      | "canon_owner_only";
+    required_roles: string[];
+    description: string;
+    allowed_user_ids: string[];
+  } | null;
 };
 
 /** CONCEPT §3.3 RevSet wire shape. */
