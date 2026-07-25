@@ -27,8 +27,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Route params select Prisma records; dossier tabs real lists; home from same store.
 
 - [ ] **Unify artifact body with revisioned editor documents**
-  - Artifact pages load current ArtifactRevision `content_json` via shared reader.
-  - Edit via Plate save pipeline.
+  - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader when id/slug resolves; unresolved ids still use static fixtures.
+  - Edit via Plate save pipeline from product chrome (not only `/test/editor`).
+  - Prisma rename `Page` → `Artifact` (keep `@@map` during cutover); eventually prefer `artifact_id` in wire JSON.
 
 - [ ] **Top-level IA: Area → Collection → Dossier**
   - Canon Area + singleton Collection; Manuals Area + per-country Collections.
@@ -55,8 +56,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Reply composer (local/impersonated author OK).
 
 - [ ] **Section entities for anchoring**
-  - Stable Section rows synced from artifact structure (e.g. heading blocks with stable ids).
-  - Threads can target section without brittle text offsets.
+  - Extractor exists (`src/doc/sections.ts`; `stable_key` = heading block id).
+  - Remaining: Prisma `Section` rows + sync-on-save; threads target via `stable_key` (no text offsets).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
   - 1:1 leaf merges only; multi ⇒ same-Collection wrapper + subs.

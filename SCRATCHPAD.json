@@ -1,23 +1,24 @@
 {
-  "updated_at": "2026-07-25T06:25Z",
-  "turn": 16,
+  "updated_at": "2026-07-25T06:55Z",
+  "turn": 17,
   "focus": {
     "milestone": "M3",
-    "issue": "Editor MVP gaps / content bridge",
-    "goal": "Triage MVP gaps or start Artifact naming + Section plan"
+    "issue": "Unify artifact body / Section persistence",
+    "goal": "Finish M3: Prisma Artifact rename + product edit path"
   },
   "recent": [
-    "Merged PR #5 (M1+M2 through DocumentReader) onto fresh cron branch",
-    "Server revision validation: Zod pageRevisionSchema + structuralValidation",
-    "POST /revisions returns 400 with issues; smoke + live curl checks"
+    "Merged PR #6 (M1+M2) onto fresh cron branch",
+    "Artifact API aliases + ArtifactRow types; Section extractor",
+    "Product /artifact/voting-systems loads live DocumentReader"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
-    "Structural validation is Node-safe; MathJax/Mermaid stay client-only"
+    "page_id ≡ artifact id on wire until Prisma rename with @@map"
   ],
   "open_threads": [
-    "validateDocumentForMerge still unused — wire or delete in MVP gaps"
+    "validateDocumentForMerge still unused — MVP gaps",
+    "Section DB sync deferred until ThreadTarget"
   ],
-  "next_step": "Triage OPEN_ISSUES §A Editor MVP gaps, or start M3 Artifact rename/Section plan",
+  "next_step": "Prisma Page→Artifact rename (@@map) or wire product Edit→Plate; else MVP gaps triage",
   "blockers": []
 }
