@@ -1,27 +1,27 @@
 {
-  "updated_at": "2026-07-25T10:35Z",
-  "turn": 28,
+  "updated_at": "2026-07-25T10:55Z",
+  "turn": 29,
   "focus": {
     "milestone": "M5",
     "issue": "RFC promotion + parent/sub-RFC + RevSets",
-    "goal": "Parent decided cascade or reply composer next"
+    "goal": "Reply composer or Collection merge authority next"
   },
   "recent": [
-    "Merged PR #17 (RevSet/leaf) onto cron branch 5b73",
-    "Multi-artifact promote → wrapper + sub-RFCs (same Collection)",
-    "cross_collection 409; seed thread-us-multi-open; UI child links",
-    "smoke-revsets/threads/section-sync green"
+    "Merged PR #18 (wrapper promote) onto cron branch 142b",
+    "POST /threads/:id/decide — merge/reject/park on leaves",
+    "Merge applies latest RevSet; parent cascades when all children decided",
+    "smoke-revsets green (merge + cascade + wrapper_not_direct)"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
     "Prisma --force-reset blocked; use fresh SQLite file for smokes",
-    "Wrapper has null merge_artifact_id; only leaf sub-RFCs take RevSets"
+    "Mixed child outcomes → wrapper decision_outcome parked"
   ],
   "open_threads": [
-    "Parent decided when all children decided still open",
-    "Merge authority + Merge/Reject/Park still open",
-    "Reply composer (impersonated author) still open"
+    "Collection merge authority still open",
+    "Reply composer (impersonated author) still open",
+    "Accepted Risk on leaf deferred to M7"
   ],
-  "next_step": "Implement parent decided cascade OR reply composer (impersonated)",
+  "next_step": "Implement reply composer (impersonated) OR Collection merge authority",
   "blockers": []
 }

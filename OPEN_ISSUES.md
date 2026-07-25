@@ -53,9 +53,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - States seeded: `open` | `rfc` (also model `review` | `decided` | `archived`).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
-  - Done (leaf + wrapper cut): Prisma `RevSet`; seed `revsets.json` + proposal revision on `thread-us-voter-reg-rfc`; seed multi-artifact open `thread-us-multi-open`; `POST /api/threads/:id/promote` (1:1 leaf **or** same-Collection wrapper + sub-RFCs; cross-Collection → `cross_collection`); `GET|POST /api/threads/:id/revsets` (leaf only; proposals do not flip `current_revision_id`); `getThread` returns `child_threads` + `rfc_kind`; dossier/thread/RFC UI links; `scripts/smoke-revsets.ts` covers wrapper + cross-collection.
-  - Remaining: parent `decided` when all children decided; merge authority by Collection; Accepted Risk on leaf; Merge/Reject/Park decision controls.
-  - RevSet → `ArtifactRevision` (propose ✓; merge apply still open).
+  - Done (leaf + wrapper + decide): Prisma `RevSet`; seed `revsets.json` + proposal revision on `thread-us-voter-reg-rfc`; seed multi-artifact open `thread-us-multi-open`; `POST /api/threads/:id/promote` (1:1 leaf **or** same-Collection wrapper + sub-RFCs; cross-Collection → `cross_collection`); `GET|POST /api/threads/:id/revsets` (leaf only; proposals do not flip `current_revision_id` until merge); `POST /api/threads/:id/decide` (`merged`|`rejected`|`parked`) on leaves — merge applies latest RevSet → `current_revision_id` + Section sync; wrappers reject direct decide (`wrapper_not_direct`); parent cascades to `decided` when all children decided (mixed outcomes → `parked`); RFC UI Merge/Reject/Park wired; `scripts/smoke-revsets.ts` covers merge + cascade.
+  - Remaining: Collection merge authority; Accepted Risk on leaf (M7).
+  - RevSet → `ArtifactRevision` (propose ✓; merge apply ✓).
 
 ---
 

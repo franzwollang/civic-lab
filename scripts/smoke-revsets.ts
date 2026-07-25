@@ -14,6 +14,7 @@ import {
   listRevSets,
   promoteThreadToRfc,
   createRevSet,
+  decideThread,
   getArtifact,
   listArtifactRevisions,
 } from "../server/db";
@@ -229,6 +230,127 @@ async function main() {
     const page = await getArtifact("page-001");
     if (page?.current_revision_id === newRs.revset.artifact_revision_id) {
       throw new Error("RevSet must not flip current_revision_id");
+    }
+
+    // --- Leaf decide: merge applies latest RevSet ---
+    const merged = await decideThread({
+      thread_id: "thread-canon-goals-section",
+      outcome: "merged",
+      author_id: "user-carol",
+    });
+    if (!merged.ok) {
+      throw new Error(`merge decide failed: ${JSON.stringify(merged.error)}`);
+    }
+    if (
+      merged.thread.state !== "decided" ||
+      merged.thread.decision_outcome !== "merged"
+    ) {
+      throw new Error("leaf merge should set decided/merged");
+    }
+    const pageAfter = await getArtifact("page-001");
+    if (pageAfter?.current_revision_id !== newRs.revset.artifact_revision_id) {
+      throw new Error("merge should flip current_revision_id to RevSet revision");
+    }
+
+    // Re-decide should fail.
+    const againDecide = await decideThread({
+      thread_id: "thread-canon-goals-section",
+      outcome: "rejected",
+    });
+    if (againDecide.ok || againDecide.error.code !== "already_decided") {
+      throw new Error("second decide should fail already_decided");
+    }
+
+    // Wrapper cannot be decided directly.
+    const wrapDirect = await decideThread({
+      thread_id: "thread-us-multi-open",
+      outcome: "parked",
+    });
+    if (wrapDirect.ok || wrapDirect.error.code !== "wrapper_not_direct") {
+      throw new Error(
+        `wrapper direct decide should fail; got ${JSON.stringify(wrapDirect)}`,
+      );
+    }
+
+    // Parent cascade: decide both sub-RFCs → wrapper decided.
+    // One child already has a RevSet (us-voter-reg); park the other.
+    const childA = "thread-us-multi-open--us-voter-reg";
+    const childB = "thread-us-multi-open--us-provisional";
+
+    const parkB = await decideThread({
+      thread_id: childB,
+      outcome: "parked",
+      author_id: "user-alice",
+    });
+    if (!parkB.ok || parkB.parent_cascaded) {
+      throw new Error(
+        `parking one child should not cascade yet; got ${JSON.stringify(parkB)}`,
+      );
+    }
+    const wrapMid = await getThread("thread-us-multi-open");
+    if (!wrapMid || wrapMid.state !== "rfc") {
+      throw new Error("wrapper should stay rfc until all children decided");
+    }
+
+    const mergeA = await decideThread({
+      thread_id: childA,
+      outcome: "merged",
+      author_id: "user-alice",
+    });
+    if (!mergeA.ok || !mergeA.parent_cascaded) {
+      throw new Error(
+        `second child decide should cascade parent; got ${JSON.stringify(mergeA)}`,
+      );
+    }
+    const wrapDone = await getThread("thread-us-multi-open");
+    if (
+      !wrapDone ||
+      wrapDone.state !== "decided" ||
+      wrapDone.decision_outcome !== "parked"
+    ) {
+      // mixed merged+parked → aggregated parked
+      throw new Error(
+        `wrapper should be decided/parked (mixed); got ${JSON.stringify({
+          state: wrapDone?.state,
+          outcome: wrapDone?.decision_outcome,
+        })}`,
+      );
+    }
+
+    // Seeded leaf RFC merge (has RevSet).
+    const seedMerge = await decideThread({
+      thread_id: "thread-us-voter-reg-rfc",
+      outcome: "merged",
+      author_id: "user-bob",
+    });
+    if (!seedMerge.ok) {
+      throw new Error(`seeded leaf merge failed: ${JSON.stringify(seedMerge.error)}`);
+    }
+    const voter = await getArtifact("us-voter-reg");
+    if (voter?.current_revision_id !== "rev-us-voter-reg-rfc-1") {
+      throw new Error("seeded leaf merge should apply rev-us-voter-reg-rfc-1");
+    }
+
+    // Reject without RevSet is allowed; merge without RevSet is not.
+    const provisional = await decideThread({
+      thread_id: "thread-us-provisional-open",
+      outcome: "merged",
+    });
+    if (provisional.ok || provisional.error.code !== "merge_requires_revset") {
+      throw new Error(
+        `merge without RevSet should fail; got ${JSON.stringify(provisional)}`,
+      );
+    }
+    const rejected = await decideThread({
+      thread_id: "thread-us-provisional-open",
+      outcome: "rejected",
+      author_id: "user-alice",
+    });
+    if (
+      !rejected.ok ||
+      rejected.thread.decision_outcome !== "rejected"
+    ) {
+      throw new Error(`reject failed: ${JSON.stringify(rejected)}`);
     }
 
     console.log("smoke-revsets: OK");

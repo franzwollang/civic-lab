@@ -24,3 +24,4 @@
 {"ts":"2026-07-25T09:55Z","summary":"M5: Prisma Section rows + sync-on-save; section ThreadTargets seeded","added":[],"edited":[{"id":"thread-posts-anchors","note":"section targets enabled via Section rows"}],"resolved":[{"id":"section-entities","note":"Section model + seed sync + sync-on-save; GET sections API"}]}
 {"ts":"2026-07-25T10:05Z","summary":"M5 leaf RFC: RevSet model + promote API + seed proposal; wrapper/merge still open","added":[],"edited":["RFC-promotion-RevSets"],"resolved":[]}
 {"ts":"2026-07-25T10:35Z","summary":"M5 wrapper parent/sub-RFC promote for multi-artifact","added":[],"edited":[{"id":"rfc-promotion","note":"wrapper+sub-RFCs same Collection; cross_collection reject; seed multi-open"}],"resolved":[]}
+{"ts":"2026-07-25T10:55Z","summary":"M5 leaf decide + parent cascade; Merge/Reject/Park + merge apply RevSet","added":[],"edited":[{"id":"rfc-promotion","note":"decide API; parent cascade; merge applies RevSet; UI wired"}],"resolved":[]}

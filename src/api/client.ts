@@ -290,6 +290,25 @@ export async function createThreadRevSet(
   return handleResponse<RevSetRow>(response);
 }
 
+/** Decide a leaf RFC: merged | rejected | parked (wrappers cascade from children). */
+export async function decideThread(
+  threadId: string,
+  body: {
+    outcome: "merged" | "rejected" | "parked";
+    author_id?: string;
+    revset_version?: number;
+  },
+): Promise<{ thread: ThreadRow; parent_cascaded: boolean }> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/decide`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<{ thread: ThreadRow; parent_cascaded: boolean }>(
+    response,
+  );
+}
+
 export async function getAttributions(): Promise<AttributionRegistry> {
   const response = await fetch(`${API_BASE}/attributions`);
   return handleResponse<AttributionRegistry>(response);

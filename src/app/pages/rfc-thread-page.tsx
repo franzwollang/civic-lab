@@ -13,14 +13,35 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../components/ui/tooltip";
-import { getThread, getThreadRevSets } from "../../api/client";
+import { decideThread, getThread, getThreadRevSets } from "../../api/client";
 import type { RevSetRow as RevSetWire, ThreadRow } from "../../doc/types";
+
+function statusLabel(
+  thread: ThreadRow,
+): "Open" | "RFC" | "Review" | "Decided" | "Merged" | "Parked" {
+  if (thread.state === "decided") {
+    if (thread.decision_outcome === "merged") return "Merged";
+    if (thread.decision_outcome === "parked") return "Parked";
+    return "Decided";
+  }
+  switch (thread.state) {
+    case "rfc":
+      return "RFC";
+    case "review":
+      return "Review";
+    case "archived":
+      return "Parked";
+    default:
+      return "Open";
+  }
+}
 
 export function RfcThreadPage() {
   const { id } = useParams();
   const [thread, setThread] = useState<ThreadRow | null>(null);
   const [revsets, setRevsets] = useState<RevSetWire[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [deciding, setDeciding] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -43,9 +64,35 @@ export function RfcThreadPage() {
     };
   }, [id]);
 
+  async function onDecide(outcome: "merged" | "rejected" | "parked") {
+    if (!id || !thread || thread.state === "decided") return;
+    if (thread.rfc_kind === "wrapper") return;
+    setDeciding(true);
+    try {
+      const result = await decideThread(id, {
+        outcome,
+        author_id: "user-alice",
+      });
+      setThread(result.thread);
+      setError(null);
+      if (result.parent_cascaded && result.thread.parent_thread_id) {
+        // Refresh is enough for this leaf; parent cascade happened server-side.
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Decide failed");
+    } finally {
+      setDeciding(false);
+    }
+  }
+
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
   const latestVersion =
     revsets.length > 0 ? Math.max(...revsets.map((r) => r.version)) : 0;
+  const canDecide =
+    thread != null &&
+    thread.rfc_kind === "leaf" &&
+    (thread.state === "rfc" || thread.state === "review") &&
+    !deciding;
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -68,7 +115,7 @@ export function RfcThreadPage() {
             <>
               <div className="mb-8">
                 <div className="mb-4 flex items-center gap-3">
-                  <StatusBadge status="RFC" />
+                  <StatusBadge status={statusLabel(thread)} />
                   <span className="text-sm text-neutral-500">
                     {thread.thread_id}
                   </span>
@@ -90,8 +137,8 @@ export function RfcThreadPage() {
                       <TooltipContent className="max-w-xs">
                         <p className="text-xs">
                           {thread.rfc_kind === "wrapper"
-                            ? "Wrapper RFC coordinates sub-RFCs; it does not merge content. Each child leaf holds RevSets for one artifact."
-                            : "Leaf RFC: RevSets propose ArtifactRevisions against the merge artifact. Merge authority / Accepted Risk still deferred."}
+                            ? "Wrapper RFC coordinates sub-RFCs; it does not merge content. Parent becomes decided when all children are decided."
+                            : "Leaf RFC: Merge applies the latest RevSet to the artifact. Collection merge authority / Accepted Risk still deferred."}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -143,6 +190,14 @@ export function RfcThreadPage() {
                         No merge_artifact_id — wrapper RFCs do not merge content.
                       </p>
                     )}
+                    {thread.decision_outcome && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-neutral-600">Outcome:</span>
+                        <span className="font-medium text-neutral-900">
+                          {thread.decision_outcome}
+                        </span>
+                      </div>
+                    )}
                     {(thread.child_threads?.length ?? 0) > 0 && (
                       <div className="pt-2">
                         <div className="mb-1 text-xs font-medium uppercase tracking-wider text-neutral-500">
@@ -159,6 +214,9 @@ export function RfcThreadPage() {
                               </Link>
                               <span className="ml-2 text-neutral-500">
                                 → {child.merge_artifact_id} · {child.state}
+                                {child.decision_outcome
+                                  ? ` (${child.decision_outcome})`
+                                  : ""}
                               </span>
                             </li>
                           ))}
@@ -182,18 +240,18 @@ export function RfcThreadPage() {
                 <p className="text-sm text-neutral-800">
                   {thread.rfc_kind === "wrapper" ? (
                     <>
-                      Wrapper RFC: open each sub-RFC to attach RevSets. Parent
-                      becomes <code className="text-xs">decided</code> only when
-                      all children are decided (decision controls still deferred).
+                      Wrapper RFC: open each sub-RFC to attach RevSets and decide.
+                      Parent becomes <code className="text-xs">decided</code>{" "}
+                      automatically when all children are decided.
                     </>
                   ) : (
                     <>
-                      Leaf RFC scaffolding: RevSets below point at proposed
-                      ArtifactRevisions. Merging those into{" "}
+                      Leaf RFC: RevSets propose ArtifactRevisions. Merge applies
+                      the latest RevSet to{" "}
                       <code className="text-xs">
                         {thread.merge_artifact_id ?? "—"}
-                      </code>{" "}
-                      still lands in a later M5 cut.
+                      </code>
+                      .
                     </>
                   )}
                 </p>
@@ -208,7 +266,7 @@ export function RfcThreadPage() {
                   {revsets.length === 0 ? (
                     <p className="p-6 text-center text-sm text-neutral-500">
                       No RevSets yet. POST /api/threads/:id/revsets to propose a
-                      revision.
+                      revision. Merge requires at least one RevSet.
                     </p>
                   ) : (
                     [...revsets]
@@ -235,22 +293,53 @@ export function RfcThreadPage() {
                 <h3 className="mb-4 text-lg font-semibold text-neutral-900">
                   Decision
                 </h3>
-                <p className="mb-4 text-sm text-neutral-600">
-                  {thread.rfc_kind === "wrapper"
-                    ? "Wrapper decisions follow children (all decided → parent decided). Merge / reject / park controls still deferred."
-                    : "Merge / reject / park and Collection merge authority are still deferred within M5."}
-                </p>
-                <div className="flex gap-3">
-                  <Button variant="default" size="lg" disabled>
-                    Merge RFC
-                  </Button>
-                  <Button variant="outline" size="lg" disabled>
-                    Reject
-                  </Button>
-                  <Button variant="outline" size="lg" disabled>
-                    Park
-                  </Button>
-                </div>
+                {thread.state === "decided" ? (
+                  <p className="text-sm text-neutral-700">
+                    Decided:{" "}
+                    <span className="font-medium">
+                      {thread.decision_outcome ?? "—"}
+                    </span>
+                    . Collection merge authority checks remain deferred.
+                  </p>
+                ) : thread.rfc_kind === "wrapper" ? (
+                  <p className="mb-4 text-sm text-neutral-600">
+                    Wrapper decisions follow children (all decided → parent
+                    decided). Decide each leaf sub-RFC instead.
+                  </p>
+                ) : (
+                  <>
+                    <p className="mb-4 text-sm text-neutral-600">
+                      Merge applies the latest RevSet. Reject / park close without
+                      writing content. Collection merge authority still deferred.
+                    </p>
+                    <div className="flex gap-3">
+                      <Button
+                        variant="default"
+                        size="lg"
+                        disabled={!canDecide || revsets.length === 0}
+                        onClick={() => onDecide("merged")}
+                      >
+                        {deciding ? "Working…" : "Merge RFC"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        disabled={!canDecide}
+                        onClick={() => onDecide("rejected")}
+                      >
+                        Reject
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        disabled={!canDecide}
+                        onClick={() => onDecide("parked")}
+                      >
+                        Park
+                      </Button>
+                    </div>
+                  </>
+                )}
               </Card>
 
               <div className="mt-8">

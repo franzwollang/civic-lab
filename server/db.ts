@@ -1269,3 +1269,233 @@ export async function createThreadPost(input: {
   });
   return mapThreadPost(row);
 }
+
+export type DecisionOutcome = "merged" | "rejected" | "parked";
+
+export type DecideThreadError =
+  | { code: "not_found" }
+  | { code: "already_decided"; decision_outcome: string | null }
+  | { code: "not_decidable"; state: string; merge_artifact_id: string | null }
+  | { code: "wrapper_not_direct" }
+  | { code: "merge_requires_revset" }
+  | { code: "revset_missing"; revset_version: number }
+  | { code: "revision_missing"; artifact_revision_id: string };
+
+const DECISION_OUTCOMES: DecisionOutcome[] = ["merged", "rejected", "parked"];
+
+function aggregateChildOutcomes(
+  outcomes: (string | null)[],
+): DecisionOutcome {
+  const normalized = outcomes.map((o) =>
+    o && DECISION_OUTCOMES.includes(o as DecisionOutcome)
+      ? (o as DecisionOutcome)
+      : "parked",
+  );
+  const unique = [...new Set(normalized)];
+  if (unique.length === 1) return unique[0]!;
+  // Mixed leaf outcomes → wrapper parked (coordination closed, no uniform result).
+  return "parked";
+}
+
+/**
+ * Decide a leaf RFC: merged | rejected | parked.
+ * - merged: apply latest (or specified) RevSet → Artifact.current_revision_id + Section sync
+ * - rejected / parked: no content write
+ * Wrapper parents are never decided directly; when all children are decided,
+ * the parent cascades to decided with an aggregated outcome (CONCEPT §3.3).
+ * Collection merge authority / Accepted Risk gates remain deferred.
+ */
+export async function decideThread(input: {
+  thread_id: string;
+  outcome: DecisionOutcome;
+  author_id?: string;
+  /** Optional RevSet version to apply on merge; default latest. */
+  revset_version?: number;
+}): Promise<
+  | { ok: true; thread: ThreadRow; parent_cascaded: boolean }
+  | { ok: false; error: DecideThreadError }
+> {
+  const prisma = getPrisma();
+  const row = await prisma.thread.findUnique({
+    where: { threadId: input.thread_id },
+    include: {
+      revSets: { orderBy: { version: "desc" } },
+    },
+  });
+  if (!row) return { ok: false, error: { code: "not_found" } };
+
+  if (row.state === "decided") {
+    return {
+      ok: false,
+      error: {
+        code: "already_decided",
+        decision_outcome: row.decisionOutcome,
+      },
+    };
+  }
+
+  // Leaf RFCs have merge_artifact_id. Wrappers coordinate only via children.
+  if (!row.mergeArtifactId) {
+    if (row.state === "rfc" || row.state === "review") {
+      return { ok: false, error: { code: "wrapper_not_direct" } };
+    }
+    return {
+      ok: false,
+      error: {
+        code: "not_decidable",
+        state: row.state,
+        merge_artifact_id: row.mergeArtifactId,
+      },
+    };
+  }
+
+  if (row.state !== "rfc" && row.state !== "review") {
+    return {
+      ok: false,
+      error: {
+        code: "not_decidable",
+        state: row.state,
+        merge_artifact_id: row.mergeArtifactId,
+      },
+    };
+  }
+
+  const authorId = input.author_id ?? "system";
+  const now = new Date();
+
+  if (input.outcome === "merged") {
+    if (row.revSets.length === 0) {
+      return { ok: false, error: { code: "merge_requires_revset" } };
+    }
+    const chosen =
+      input.revset_version != null
+        ? row.revSets.find((r) => r.version === input.revset_version)
+        : row.revSets[0];
+    if (!chosen) {
+      return {
+        ok: false,
+        error: {
+          code: "revset_missing",
+          revset_version: input.revset_version!,
+        },
+      };
+    }
+    const revision = await prisma.artifactRevision.findUnique({
+      where: { revisionId: chosen.artifactRevisionId },
+    });
+    if (!revision || revision.artifactId !== row.mergeArtifactId) {
+      return {
+        ok: false,
+        error: {
+          code: "revision_missing",
+          artifact_revision_id: chosen.artifactRevisionId,
+        },
+      };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.artifact.update({
+        where: { artifactId: row.mergeArtifactId! },
+        data: { currentRevisionId: revision.revisionId },
+      });
+      await tx.thread.update({
+        where: { threadId: input.thread_id },
+        data: {
+          state: "decided",
+          decisionOutcome: "merged",
+        },
+      });
+      await tx.threadPost.create({
+        data: {
+          postId: crypto.randomUUID(),
+          threadId: input.thread_id,
+          authorId,
+          type: "comment",
+          body: `Decision: merged (applied RevSet v${chosen.version} → ${revision.revisionId}). Collection merge authority / Accepted Risk still deferred.`,
+          createdAt: now,
+        },
+      });
+    });
+    await syncSectionsForArtifact(row.mergeArtifactId, revision.contentJson);
+  } else {
+    await prisma.$transaction(async (tx) => {
+      await tx.thread.update({
+        where: { threadId: input.thread_id },
+        data: {
+          state: "decided",
+          decisionOutcome: input.outcome,
+        },
+      });
+      await tx.threadPost.create({
+        data: {
+          postId: crypto.randomUUID(),
+          threadId: input.thread_id,
+          authorId,
+          type: "comment",
+          body: `Decision: ${input.outcome}.`,
+          createdAt: now,
+        },
+      });
+    });
+  }
+
+  let parentCascaded = false;
+  if (row.parentThreadId) {
+    parentCascaded = await maybeCascadeParentDecision(
+      row.parentThreadId,
+      authorId,
+    );
+  }
+
+  const thread = await getThread(input.thread_id);
+  if (!thread) return { ok: false, error: { code: "not_found" } };
+  return { ok: true, thread, parent_cascaded: parentCascaded };
+}
+
+/** When every child leaf is decided, set parent wrapper to decided. */
+async function maybeCascadeParentDecision(
+  parentThreadId: string,
+  authorId: string,
+): Promise<boolean> {
+  const prisma = getPrisma();
+  const parent = await prisma.thread.findUnique({
+    where: { threadId: parentThreadId },
+    include: {
+      childThreads: {
+        select: {
+          threadId: true,
+          state: true,
+          decisionOutcome: true,
+        },
+      },
+    },
+  });
+  if (!parent || parent.state === "decided") return false;
+  if (parent.childThreads.length === 0) return false;
+  if (parent.childThreads.some((c) => c.state !== "decided")) return false;
+
+  const outcome = aggregateChildOutcomes(
+    parent.childThreads.map((c) => c.decisionOutcome),
+  );
+  const now = new Date();
+  await prisma.$transaction(async (tx) => {
+    await tx.thread.update({
+      where: { threadId: parentThreadId },
+      data: {
+        state: "decided",
+        decisionOutcome: outcome,
+      },
+    });
+    await tx.threadPost.create({
+      data: {
+        postId: crypto.randomUUID(),
+        threadId: parentThreadId,
+        authorId,
+        type: "comment",
+        body: `Wrapper decided (${outcome}): all ${parent.childThreads.length} sub-RFCs are decided.`,
+        createdAt: now,
+      },
+    });
+  });
+  return true;
+}

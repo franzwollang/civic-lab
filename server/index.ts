@@ -6,6 +6,7 @@ import {
   createArtifactRevision,
   createRevSet,
   createThreadPost,
+  decideThread,
   getArtifact,
   getAttributions,
   getAreaByKind,
@@ -466,6 +467,38 @@ app.post("/api/threads/:threadId/revsets", async (req, res) => {
     return;
   }
   res.status(201).json(result.revset);
+});
+
+const decideBodySchema = z.object({
+  outcome: z.enum(["merged", "rejected", "parked"]),
+  author_id: z.string().min(1).optional(),
+  revset_version: z.number().int().positive().optional(),
+});
+
+app.post("/api/threads/:threadId/decide", async (req, res) => {
+  const parsed = decideBodySchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid decide payload" });
+    return;
+  }
+  const result = await decideThread({
+    thread_id: req.params.threadId,
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "already_decided"
+          ? 409
+          : 400;
+    res.status(status).json({ error: result.error });
+    return;
+  }
+  res.json({
+    thread: result.thread,
+    parent_cascaded: result.parent_cascaded,
+  });
 });
 
 async function main() {
