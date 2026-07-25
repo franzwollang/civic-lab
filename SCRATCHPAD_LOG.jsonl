@@ -40,3 +40,4 @@
 {"ts":"2026-07-25T14:10Z","focus":"M7 Findings","summary":"Finding model/API/dashboard counts landed; handoff to Accepted Risk merge gate","next":"AcceptedRisk + decideThread Critical gate"}
 {"ts":"2026-07-25T14:30Z","focus":"M7 Accepted Risk gate","summary":"AcceptedRisk + Critical merge gate landed; handoff to Findings timeline or M8","next":"Findings timeline UX or Candidate→Finding; else M8 Search"}
 {"ts":"2026-07-25T14:55Z","focus":"M7 Candidate→Finding timeline","summary":"Candidate promotion + thread timeline UX landed; M7 done; handoff to M8 Search","next":"M8 first-cut search API + header wiring"}
+{"ts":"2026-07-25T15:35Z","focus":"M8 Search","summary":"Corpus search API + header results landed; handoff to breadcrumbs","next":"M8 breadcrumbs + up-links; then impersonation chrome"}

@@ -1,23 +1,23 @@
 {
-  "updated_at": "2026-07-25T14:55Z",
-  "turn": 42,
+  "updated_at": "2026-07-25T15:35Z",
+  "turn": 43,
   "focus": {
     "milestone": "M8",
-    "issue": "Search",
-    "goal": "First-cut API/fixture search over dossiers/artifacts/threads/claims"
+    "issue": "Breadcrumbs + cross-links",
+    "goal": "Up-nav on artifact/thread pages; consistent parent links"
   },
   "recent": [
-    "Merged PR #28 (metrics+Findings+AR) onto cron branch",
-    "CandidateFinding + flag/promote APIs + ThreadTimeline UX",
-    "M7 marked done; 25/25 smokes + vite build green"
+    "Merged PR #29 (M6+M7) onto cron branch 4557",
+    "GET /api/search + HeaderSearch dropdown + smoke-search",
+    "26/26 smokes + vite build green; Search issue closed"
   ],
   "discoveries": [
-    "Timeline Findings are first-class rows interleaved with posts; mitigation type filters with Findings+responses"
+    "Claim hits deep-link to artifact reader with #claim-<id> (no claim route yet)"
   ],
   "open_threads": [
     "Global impersonation chrome → M8",
-    "Header search still inert"
+    "Breadcrumbs still uneven across object pages"
   ],
-  "next_step": "M8: first-cut search API + header wiring (dossiers/artifacts/threads/claims)",
+  "next_step": "M8: breadcrumbs + up-links on artifact/thread/dossier surfaces",
   "blockers": []
 }
