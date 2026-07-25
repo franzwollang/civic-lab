@@ -73,7 +73,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Auth | Seed users + **header impersonation** (M8) + **identity attestation hooks** (M9 §8.6); full OAuth/IdP deferred |
 | Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (35/35) |
 
-**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor blockquotes/tables/images, moderator tools, Fumadocs unpin, content, home RFC/RT fixture retirement). Attribution registries + `immutable_ref` + `external_artifact` App D node landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
+**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor blockquotes/tables/images, moderator tools, Fumadocs unpin, content migration). Home RFC/RT panels + attribution/`immutable_ref`/`external_artifact` landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
 
 ---
 

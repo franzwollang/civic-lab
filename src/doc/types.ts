@@ -276,6 +276,9 @@ export type FindingRow = {
   targets: FindingTargetRow[];
   source_post_id?: string | null;
   source_candidate_id?: string | null;
+  /** Present on list/get when thread home dossier resolves (home panels). */
+  home_dossier_id?: string | null;
+  home_dossier_title?: string | null;
 };
 
 export type ThreadRow = {

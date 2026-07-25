@@ -52,3 +52,4 @@
 {"ts":"2026-07-25T18:20Z","focus":"editor lists+links","summary":"Plate Indent/List/Link + toolbar + reader/export + smoke-editor-lists-links; 34/34 smokes","next":"evidence registries or immutable_ref / App D"}
 {"ts":"2026-07-25T19:20Z","focus":"evidence registries","summary":"richer seeds + immutable_ref validate/UI; 35/35 smokes","next":"external_artifact node / App D or home fixture retirement"}
 {"ts":"2026-07-25T19:26Z","focus":"external_artifact App D","summary":"Plate node + whitelist + smoke; merged #41 tip first","next":"home RFC/RT fixtures or blockquotes / mod tools"}
+{"ts":"2026-07-25T19:42Z","focus":"home RFC/RT fixtures","summary":"Merged #42 tip; live home RFC+Findings; findings home_dossier enrich; smoke-home-store","next":"blockquotes or moderator tools residual"}

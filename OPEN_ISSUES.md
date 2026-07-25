@@ -22,14 +22,15 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 - [ ] **Add CONCEPT tables + seeds incrementally**
   - Done: Area / Collection / Dossier (+ `Artifact.dossier_id`); Manual seeds for US/CA/GB/DE.
-  - Next: Finding/AcceptedRisk as later milestones need them. Claim table landed in M6.
-  - Hardcoded US-voting JSX still present on some panels (home RFC/Red Team, thread pages) — retire as M5/M7 tables arrive.
+  - Done: Finding/AcceptedRisk/Claim tables landed with M6–M7.
+  - Remaining fixture JSX: some thread/artifact side panels still demo-hardcoded — retire incrementally.
 
 - [ ] **Make product routes data-driven**
   - Done: `/canon`, `/manuals`, `/collection/:id`, `/dossier/:id` load Prisma records; header/home CTAs point at Area entry routes.
   - Done: home **Trending Dossiers** from `/api/dossiers` (artifact_count + collection join).
   - Done: Collection splash loads **`/api/collections/:id/dashboard`** (CONCEPT §11 chrome; claim quality/forecast + Critical/Red Team counts live).
-  - Remaining: dossier tabs show live threads (M5 first cut); home RFC/Red Team panels still fixture until RFC/Findings tables mature.
+  - Done: home **Recent RFCs** + **Recent Red Team Findings** from `/api/threads` + `/api/findings` (dossier-scoped links).
+  - Remaining: residual dossier/artifact placeholder widgets where still stubbed.
 
 - [ ] **Unify artifact body with revisioned editor documents**
   - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader; related-artifacts sidebar from dossier API.

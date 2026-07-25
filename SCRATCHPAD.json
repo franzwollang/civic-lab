@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-07-25T19:26Z",
-  "turn": 54,
+  "updated_at": "2026-07-25T19:42Z",
+  "turn": 55,
   "focus": {
     "milestone": null,
-    "issue": "external_artifact App D node",
-    "goal": "Plate void + provider whitelist + structural validation"
+    "issue": "Home RFC/RT fixture retirement",
+    "goal": "Wire home Recent RFCs + Findings to live store APIs"
   },
   "recent": [
-    "Merged PR #41 tip (evidence registries) onto cron branch",
-    "Added src/lib/externalArtifact.ts provider whitelist",
-    "external_artifact Plate void + reader + clipboard fence",
-    "smoke-external-artifact; OPEN_ISSUES App D resolved"
+    "Merged PR #42 tip onto cron branch 5218",
+    "Home RFC/Findings panels load /api/threads + /api/findings",
+    "Findings list carries home_dossier_id/title",
+    "Extended smoke-home-store for RFC+RT panel feed"
   ],
   "discoveries": [
     "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
     "Optional blockquotes; tables + image upload deferred",
-    "Home RFC/RT fixture retirement still open"
+    "Moderator tools residual; Fumadocs unpin"
   ],
-  "next_step": "Home RFC/RT fixture retirement, optional blockquotes, or moderator tools residual",
+  "next_step": "Optional blockquotes, moderator tools residual, or About/FAQ artifact migration",
   "blockers": []
 }

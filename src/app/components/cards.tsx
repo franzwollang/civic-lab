@@ -26,10 +26,12 @@ interface ArtifactCardProps {
 interface ThreadRowProps {
   id: string;
   title: string;
-  status: "Open" | "RFC" | "Review" | "Decided";
+  status: "Open" | "RFC" | "Review" | "Decided" | "Merged" | "Parked";
   author: string;
   messageCount: number;
   lastActivity: string;
+  /** Override default `/thread/:id` (e.g. RFC detail). */
+  to?: string;
 }
 
 interface FindingCardProps {
@@ -132,9 +134,10 @@ export function ThreadRow({
   author,
   messageCount,
   lastActivity,
+  to,
 }: ThreadRowProps) {
   return (
-    <Link to={`/thread/${id}`}>
+    <Link to={to ?? `/thread/${id}`}>
       <div className="group flex cursor-pointer items-center gap-4 border-b border-neutral-200 py-3 transition-colors hover:bg-neutral-50">
         <div className="flex-1">
           <div className="mb-1 flex items-center gap-2">

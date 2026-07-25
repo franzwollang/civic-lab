@@ -8,9 +8,16 @@ import { PrismaClient } from "@prisma/client";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { seedIfEmpty } from "../prisma/seed";
-import { setPrisma, listDossiers, listCollections } from "../server/db";
+import {
+  setPrisma,
+  listDossiers,
+  listCollections,
+  listThreads,
+  listFindings,
+} from "../server/db";
 import { laneForDossier } from "../src/app/lib/dossier-display";
 
+const RFC_HOME_STATES = new Set(["rfc", "review", "decided"]);
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
 const DB_PATH = path.join(ROOT, "prisma", "smoke-home.db");
@@ -71,6 +78,27 @@ async function main() {
     const manualCountries = manuals.filter((c) => c.country_code);
     if (!manualCountries.some((c) => c.country_code === "US")) {
       throw new Error("expected US manual collection for map picker");
+    }
+
+    const threads = await listThreads();
+    const homeRfcs = threads.filter((t) => RFC_HOME_STATES.has(t.state));
+    if (homeRfcs.length < 1) {
+      throw new Error("expected ≥1 RFC/review/decided thread for home panel");
+    }
+    if (!homeRfcs.some((t) => t.state === "rfc")) {
+      throw new Error("expected at least one state=rfc thread");
+    }
+
+    const findings = await listFindings();
+    if (findings.length < 2) {
+      throw new Error(`expected ≥2 findings for home RT panel, got ${findings.length}`);
+    }
+    const withHome = findings.find((f) => f.home_dossier_id && f.home_dossier_title);
+    if (!withHome) {
+      throw new Error("findings should carry home_dossier_id + title for home panel");
+    }
+    if (!findings.some((f) => f.severity === "critical")) {
+      throw new Error("expected a seeded critical finding on home panel feed");
     }
 
     console.log("smoke-home-store: OK");

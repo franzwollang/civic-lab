@@ -2834,6 +2834,10 @@ function mapFinding(row: {
   sourcePostId?: string | null;
   sourceCandidateId?: string | null;
   targets?: { targetKind: string; targetId: string }[];
+  thread?: {
+    homeDossierId: string;
+    homeDossier?: { title: string } | null;
+  } | null;
 }): FindingRow {
   return {
     finding_id: row.findingId,
@@ -2849,6 +2853,8 @@ function mapFinding(row: {
     targets: (row.targets ?? []).map(mapFindingTarget),
     source_post_id: row.sourcePostId ?? null,
     source_candidate_id: row.sourceCandidateId ?? null,
+    home_dossier_id: row.thread?.homeDossierId ?? null,
+    home_dossier_title: row.thread?.homeDossier?.title ?? null,
   };
 }
 
@@ -2874,6 +2880,16 @@ function mapCandidateFinding(row: {
   };
 }
 
+const findingHomeInclude = {
+  targets: true,
+  thread: {
+    select: {
+      homeDossierId: true,
+      homeDossier: { select: { title: true } },
+    },
+  },
+} as const;
+
 export async function listFindings(opts?: {
   threadId?: string;
   collectionId?: string;
@@ -2889,7 +2905,7 @@ export async function listFindings(opts?: {
         ? { thread: { homeDossier: { collectionId: opts.collectionId } } }
         : {}),
     },
-    include: { targets: true },
+    include: findingHomeInclude,
     orderBy: { createdAt: "desc" },
   });
   return rows.map(mapFinding);
@@ -2900,7 +2916,7 @@ export async function getFinding(
 ): Promise<FindingRow | null> {
   const row = await getPrisma().finding.findUnique({
     where: { findingId },
-    include: { targets: true },
+    include: findingHomeInclude,
   });
   return row ? mapFinding(row) : null;
 }
