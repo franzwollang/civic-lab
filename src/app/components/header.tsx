@@ -1,6 +1,5 @@
 import { Link } from "react-router";
-import { Search } from "lucide-react";
-import { Input } from "./ui/input";
+import { HeaderSearch } from "./header-search";
 
 export function Header() {
   return (
@@ -16,14 +15,7 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-            <Input
-              type="search"
-              placeholder="Search dossiers, threads, artifacts..."
-              className="h-9 w-96 border-neutral-200 pl-9 text-sm"
-            />
-          </div>
+          <HeaderSearch />
 
           <nav className="flex items-center gap-6 text-sm">
             <Link

@@ -46,6 +46,7 @@ import {
   putTerms,
   requestClaimAdjudication,
   adjudicateClaim,
+  searchCorpus,
   setPrisma,
   updateArtifact,
 } from "./db";
@@ -543,6 +544,15 @@ app.get("/api/collections/:collectionId/dossiers", async (c) => {
 app.get("/api/dossiers", async (c) => {
   const collectionId = c.req.query("collection_id");
   return c.json(await listDossiers(collectionId));
+});
+
+/** M8 first-cut discovery search over dossiers / artifacts / threads / claims. */
+app.get("/api/search", async (c) => {
+  const q = c.req.query("q") ?? "";
+  const limitRaw = c.req.query("limit");
+  const limit =
+    limitRaw != null && limitRaw !== "" ? Number(limitRaw) : undefined;
+  return c.json(await searchCorpus(q, limit));
 });
 
 app.get("/api/dossiers/:dossierId", async (c) => {

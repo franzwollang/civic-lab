@@ -306,6 +306,23 @@ export type ClaimRow = {
 /** @deprecated Prefer ArtifactRow */
 export type PageRow = ArtifactRow;
 
+/** M8 first-cut corpus search hit. */
+export type SearchHitKind = "dossier" | "artifact" | "thread" | "claim";
+
+export type SearchHit = {
+  kind: SearchHitKind;
+  id: string;
+  title: string;
+  subtitle: string | null;
+  href: string;
+  score: number;
+};
+
+export type SearchResponse = {
+  query: string;
+  hits: SearchHit[];
+};
+
 /**
  * Resolve the artifact id from a wire row that may carry either field
  * (older responses may only have `page_id`).

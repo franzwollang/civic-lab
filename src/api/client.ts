@@ -12,6 +12,7 @@ import type {
   PageRevisionRow,
   PageRow,
   RevSetRow,
+  SearchResponse,
   SectionRow,
   ThreadPostRow,
   ThreadRow,
@@ -566,6 +567,18 @@ export async function adjudicateClaim(
 export async function getAttributions(): Promise<AttributionRegistry> {
   const response = await fetch(`${API_BASE}/attributions`);
   return handleResponse<AttributionRegistry>(response);
+}
+
+/** M8 first-cut corpus search (dossiers / artifacts / threads / claims). */
+export async function searchCorpus(opts: {
+  q: string;
+  limit?: number;
+}): Promise<SearchResponse> {
+  const params = new URLSearchParams();
+  params.set("q", opts.q);
+  if (opts.limit != null) params.set("limit", String(opts.limit));
+  const response = await fetch(`${API_BASE}/search?${params.toString()}`);
+  return handleResponse<SearchResponse>(response);
 }
 
 export async function getTerms(): Promise<TermRegistry> {
