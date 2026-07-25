@@ -449,13 +449,13 @@ export function About() {
               </div>
               <div className="flex flex-wrap gap-3">
                 <Button asChild>
-                  <Link to="/dossier/canon-1">
+                  <Link to="/canon">
                     Explore Canon
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link to="/dossier/manual-us-1">Browse Manuals</Link>
+                  <Link to="/manuals">Browse Manuals</Link>
                 </Button>
               </div>
             </div>
