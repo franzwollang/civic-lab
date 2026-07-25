@@ -14,6 +14,7 @@ import {
   setPrisma,
   updatePage,
 } from "./db";
+import { validateRevisionPayload } from "./validateRevision";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8787;
@@ -152,17 +153,12 @@ app.put("/api/terms", async (req, res) => {
 });
 
 app.post("/api/pages/:pageId/revisions", async (req, res) => {
-  const payload = req.body;
-  if (!payload || payload.page_id !== req.params.pageId) {
-    res.status(400).json({ error: "Invalid revision payload" });
-    return;
-  }
-  if (typeof payload.revision_id !== "string" || !payload.revision_id) {
-    res.status(400).json({ error: "revision_id required" });
-    return;
-  }
-  if (typeof payload.author !== "string") {
-    res.status(400).json({ error: "author required" });
+  const validated = await validateRevisionPayload(req.params.pageId, req.body);
+  if (!validated.ok) {
+    res.status(400).json({
+      error: validated.error,
+      issues: validated.issues,
+    });
     return;
   }
 
@@ -172,7 +168,7 @@ app.post("/api/pages/:pageId/revisions", async (req, res) => {
     return;
   }
 
-  const created = await createRevision(payload);
+  const created = await createRevision(validated.revision);
   res.status(201).json(created);
 });
 

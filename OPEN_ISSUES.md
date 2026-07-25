@@ -7,10 +7,6 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## A. Editor correctness (working surface: `/test/editor`)
 
-- [ ] **Server-side revision validation on save**
-  - **Context**: Client validates via `src/doc/validation.ts`; `POST /api/pages/:pageId/revisions` accepts arbitrary JSON (`server/index.ts`).
-  - **Acceptance**: Server rejects invalid revisions (schema + at least structural validation); optionally reuse/port `validateDocument` / Zod revision schema.
-
 - [ ] **Editor MVP gaps called out by codebase**
   - `MathDecoratePlugin` (`src/editor/math-plugin.ts`) unused — register or delete.
   - `validateDocumentForMerge` unused — wire into save/merge path or remove.

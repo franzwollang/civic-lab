@@ -1,21 +1,23 @@
 {
-  "updated_at": "2026-07-25T06:10Z",
-  "turn": 15,
+  "updated_at": "2026-07-25T06:25Z",
+  "turn": 16,
   "focus": {
-    "milestone": "M2",
-    "issue": "Server-side revision validation on save",
-    "goal": "Reject invalid revisions in Express POST using validateDocument/Zod"
+    "milestone": "M3",
+    "issue": "Editor MVP gaps / content bridge",
+    "goal": "Triage MVP gaps or start Artifact naming + Section plan"
   },
   "recent": [
-    "Merged PR #4 (M1+void-nav/clipboard/a11y) onto fresh cron branch",
-    "DocumentReader: math/mermaid/procedure/data/image/evidence/cite/term",
-    "test-preview wired with EvidenceRegistryProvider; smoke-document-reader"
+    "Merged PR #5 (M1+M2 through DocumentReader) onto fresh cron branch",
+    "Server revision validation: Zod pageRevisionSchema + structuralValidation",
+    "POST /revisions returns 400 with issues; smoke + live curl checks"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
-    "DocumentReader lives in src/doc/ for reuse by future artifact readers (M3)"
+    "Structural validation is Node-safe; MathJax/Mermaid stay client-only"
   ],
-  "open_threads": [],
-  "next_step": "Server-side revision validation on save (OPEN_ISSUES §A)",
+  "open_threads": [
+    "validateDocumentForMerge still unused — wire or delete in MVP gaps"
+  ],
+  "next_step": "Triage OPEN_ISSUES §A Editor MVP gaps, or start M3 Artifact rename/Section plan",
   "blockers": []
 }

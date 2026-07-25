@@ -9,12 +9,12 @@ const blockRowSchema = z.object({
 });
 
 export const pageRevisionSchema = z.object({
-  revision_id: z.string(),
-  page_id: z.string(),
+  revision_id: z.string().min(1),
+  page_id: z.string().min(1),
   parent_revision_id: z.string().nullable(),
   created_at: z.string(),
   author: z.string(),
-  content_json: z.unknown(),
+  content_json: z.array(z.unknown()),
   blocks: z.array(blockRowSchema),
   doc_root_hash: z.string(),
   note: z.string().optional(),

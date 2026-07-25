@@ -13,3 +13,4 @@
 {"ts":"2026-07-25T05:30Z","focus":"M2 void clipboard","summary":"Canonical plain-text export + paste round-trip for voids; handoff to embed a11y","next":"accessibility for rendered embeds"}
 {"ts":"2026-07-25T05:55Z","focus":"M2 void a11y","summary":"Embed a11y: ARIA, keyboard select/remove, DOMPurify on Prism+MathJax; next is full preview","next":"read preview renders full document model"}
 {"ts":"2026-07-25T06:10Z","focus":"M2 full preview","summary":"Shared DocumentReader for /test/preview; handoff to server revision validation","next":"server-side revision validation on save"}
+{"ts":"2026-07-25T06:25Z","focus":"M2 server revision validation","summary":"Zod+structuralValidation on POST /revisions; M2 done","next":"MVP gaps triage or M3 content bridge"}
