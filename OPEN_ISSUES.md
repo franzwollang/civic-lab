@@ -17,10 +17,10 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ---
 
-## C. Product shell vs real data (M4 in progress)
+## C. Product shell vs real data (M4 done — residual)
 
 - [ ] **Add CONCEPT tables + seeds incrementally**
-  - Done this cut: Area / Collection / Dossier (+ `Artifact.dossier_id`).
+  - Done: Area / Collection / Dossier (+ `Artifact.dossier_id`); Manual seeds for US/CA/GB/DE.
   - Next: Section → Thread/Post/Target → Claim → Finding/AcceptedRisk as later milestones need them.
   - Hardcoded US-voting JSX still present on some panels (home RFC/Red Team, thread pages) — retire as M5/M7 tables arrive.
 
@@ -31,18 +31,10 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Remaining: dossier tabs (threads/RFCs) when M5 exists; home RFC/Red Team panels still fixture until those tables exist.
 
 - [ ] **Unify artifact body with revisioned editor documents**
-  - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader when id/slug resolves; unresolved ids show not-found (no static provisional fixture).
+  - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader; related-artifacts sidebar from dossier API.
   - Prisma models renamed `Artifact` / `ArtifactRevision` with `@@map`; wire dual-emits `artifact_id` + legacy `page_id`.
   - Product chrome **Edit** → `/dossier/:dossierId/artifact/:artifactId/edit` (Plate + SidebarNav); `/test/editor` retained for isolated work.
-  - Done: `us-voting-1` fixture artifacts (`overview`, `voter-reg`, `polling`, `provisional`) retired into `prisma/seed/` with Plate `content_json`.
-  - Remaining: CA/GB/DE dossier stubs still have zero artifacts; optional richer seed bodies.
-
-- [ ] **Top-level IA: Area → Collection → Dossier**
-  - Done: Canon Area + singleton Collection; Manuals Area + US/CA/GB/DE Collections; shared Collection splash; Manuals list/search index; dossier subforum shell from DB.
-  - Done: Manuals **SVG map + list/search** picker (seeded countries lit; others planned). Full **3D** globe still deferred.
-  - Done: Collection §11 dashboard chrome (dossier health live; Manuals lane-coverage tally; deferred stubs for threads/claims/RT).
-  - Done: US Manual dossier artifacts seeded (no FIXTURE_ARTIFACTS map).
-  - Remaining: optional 3D globe polish; seed bodies for non-US Manual dossiers.
+  - Done: US (`us-voting-1`) + CA/GB/DE Manual dossier stub artifacts seeded with Plate `content_json`.
 
 - [ ] **Migrate site copy into artifacts (incremental)**
   - About, FAQ, Constitution/Charter, home explainer → artifact-backed when feasible.
@@ -145,6 +137,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## I. Later / policy-heavy (track, don’t start early)
 
+- [ ] **Manuals 3D globe picker** — SVG map+list satisfies CONCEPT map+list; optional 3D polish deferred.
 - [ ] **Requirements Matrix artifact type** (CONCEPT §9) — **superseded**: use Claims + citations instead (see §E).
 - [ ] **Auth + real-identity policy hooks** (CONCEPT §8.6) — after impersonation era.
 - [ ] **Reputation layer** for non-scorable contributions (CONCEPT §8.2).
