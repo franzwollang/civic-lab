@@ -206,7 +206,7 @@ function CollectionDashboardView({
           </p>
           <DeferredNote
             milestone={dashboard.open_threads.deferred}
-            label="Thread / RFC timelines"
+            label="Critical findings count"
           />
         </Card>
 
@@ -217,14 +217,7 @@ function CollectionDashboardView({
               Empirical claim quality
             </h2>
           </div>
-          <p className="text-sm text-neutral-700">
-            Quality and forecast accuracy panels are Collection-scoped once
-            claims exist.
-          </p>
-          <DeferredNote
-            milestone={dashboard.claims.deferred}
-            label="Claim metrics"
-          />
+          <ClaimMetricsPanel claims={dashboard.claims} />
         </Card>
 
         <Card className="border border-neutral-200 bg-white p-6">
@@ -273,9 +266,8 @@ function CollectionDashboardView({
                     {dashboard.requirement_satisfaction.total}
                   </span>
                 </div>
-                <DeferredNote
-                  milestone={dashboard.requirement_satisfaction.deferred}
-                  label="Adjudicated satisfaction snapshot"
+                <RequirementSnapshotList
+                  snapshot={dashboard.requirement_satisfaction.snapshot}
                 />
               </div>
             )}
@@ -283,6 +275,140 @@ function CollectionDashboardView({
         )}
       </div>
     </>
+  );
+}
+
+function fmtRate(rate: number | null): string {
+  if (rate === null) return "—";
+  return `${Math.round(rate * 1000) / 10}%`;
+}
+
+function fmtNum(n: number | null, digits = 3): string {
+  if (n === null) return "—";
+  return n.toFixed(digits);
+}
+
+function ClaimMetricsPanel({
+  claims,
+}: {
+  claims: CollectionDashboard["claims"];
+}) {
+  const q = claims.empirical_quality;
+  const f = claims.forecast_accuracy;
+
+  if (q.total === 0) {
+    return (
+      <p className="text-sm text-neutral-500">
+        No empirical claims in this Collection yet.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-4 text-sm text-neutral-700">
+      <ul className="space-y-1">
+        <li className="flex justify-between">
+          <span>Empirical claims</span>
+          <span className="font-medium">
+            {q.total} ({q.open} open · {q.resolved} resolved)
+          </span>
+        </li>
+        <li className="flex justify-between">
+          <span>Invalidated rate</span>
+          <span className="font-medium">{fmtRate(q.invalidated_rate)}</span>
+        </li>
+        <li className="flex justify-between">
+          <span>Ambiguity / conflict rate</span>
+          <span className="font-medium">{fmtRate(q.ambiguity_rate)}</span>
+        </li>
+        <li className="flex justify-between">
+          <span>Mean citation density</span>
+          <span className="font-medium">
+            {fmtNum(q.mean_citation_density, 2)}
+          </span>
+        </li>
+        <li className="flex justify-between">
+          <span>Mean days to resolution</span>
+          <span className="font-medium">
+            {fmtNum(q.mean_days_to_resolution, 1)}
+          </span>
+        </li>
+      </ul>
+
+      <div className="border-t border-neutral-100 pt-3">
+        <p className="mb-2 text-xs uppercase tracking-wider text-neutral-500">
+          Forecast accuracy
+        </p>
+        {f.n === 0 ? (
+          <p className="text-neutral-500">
+            No resolved scored forecasts yet.
+          </p>
+        ) : (
+          <ul className="space-y-1">
+            <li className="flex justify-between">
+              <span>Scored forecasts (n)</span>
+              <span className="font-medium">{f.n}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Mean Brier</span>
+              <span className="font-medium">{fmtNum(f.mean_brier)}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Mean log score</span>
+              <span className="font-medium">{fmtNum(f.mean_log_score)}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Skill vs baseline</span>
+              <span className="font-medium">
+                {fmtNum(f.mean_skill_vs_baseline)}
+              </span>
+            </li>
+            <li className="text-xs text-neutral-500">
+              Baseline: {f.baseline_label}
+              {f.public_board_eligible
+                ? " · public board eligible"
+                : ` · public boards need n ≥ 20 (have ${f.n})`}
+            </li>
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function RequirementSnapshotList({
+  snapshot,
+}: {
+  snapshot: NonNullable<
+    CollectionDashboard["requirement_satisfaction"]
+  >["snapshot"];
+}) {
+  const rows: { label: string; value: number }[] = [
+    { label: "Satisfied", value: snapshot.satisfied },
+    { label: "Accepted", value: snapshot.accepted },
+    { label: "Failed", value: snapshot.failed },
+    { label: "Disputed", value: snapshot.disputed },
+    { label: "Invalidated", value: snapshot.invalidated },
+    { label: "Superseded", value: snapshot.superseded },
+  ].filter((r) => r.value > 0);
+
+  if (rows.length === 0) {
+    return (
+      <p className="mt-2 text-xs text-neutral-500">
+        No adjudicated requirement outcomes yet.
+      </p>
+    );
+  }
+
+  return (
+    <ul className="mt-2 space-y-1 border-t border-neutral-100 pt-2 text-xs text-neutral-600">
+      {rows.map((r) => (
+        <li key={r.label} className="flex justify-between">
+          <span>{r.label}</span>
+          <span className="font-medium text-neutral-800">{r.value}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 

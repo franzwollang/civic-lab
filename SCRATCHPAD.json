@@ -1,24 +1,23 @@
 {
-  "updated_at": "2026-07-25T13:30Z",
-  "turn": 38,
+  "updated_at": "2026-07-25T13:50Z",
+  "turn": 39,
   "focus": {
-    "milestone": "M6",
-    "issue": "Metrics + Collection dashboard panels",
-    "goal": "Claim quality / forecast accuracy panels beyond counts"
+    "milestone": "M7",
+    "issue": "Findings (thread-required context)",
+    "goal": "Prisma Finding + seed + API; Critical counts on dashboard"
   },
   "recent": [
-    "Migrated server/ Express → Hono + @hono/node-server",
-    "All /api routes preserved; bodyLimit 2mb; CORS via hono/cors",
-    "build + 21/21 smokes + GET /api/areas HTTP check green"
+    "M6 metrics: claimMetrics lib + dashboard quality/forecast panels",
+    "Seeded resolved forecasts + requirement satisfaction snapshot",
+    "M6 marked done; handoff to M7 Findings / Accepted Risk"
   ],
   "discoveries": [
-    "Prisma stays server-only; SPA unchanged at localhost:8787/api"
+    "Public forecast boards stay gated at n≥20; seeds keep n small"
   ],
   "open_threads": [
     "Accepted Risk on leaf deferred to M7",
-    "Global impersonation chrome → M8",
-    "M6 metrics panels remaining"
+    "Global impersonation chrome → M8"
   ],
-  "next_step": "M6 metrics: Collection claim quality/forecast panels (or start M7 if deferring metrics)",
+  "next_step": "M7: Finding model + thread link + Critical merge gate scaffolding",
   "blockers": []
 }

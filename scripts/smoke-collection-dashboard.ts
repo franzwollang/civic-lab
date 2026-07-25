@@ -60,14 +60,23 @@ async function main() {
     if (canon.requirement_satisfaction !== null) {
       throw new Error("Canon must not expose requirement_satisfaction");
     }
-    if (canon.open_threads.deferred !== "M5") {
-      throw new Error("open_threads should defer RFC promotion to M5");
+    if (canon.open_threads.deferred !== "M7") {
+      throw new Error("open_threads Critical findings should defer to M7");
     }
     if (canon.open_threads.count < 1) {
       throw new Error("canon open_threads.count should include seeded threads");
     }
-    if (canon.claims.deferred !== "M6" || canon.red_team.deferred !== "M7") {
-      throw new Error("claims/red_team deferrals wrong");
+    if ("deferred" in canon.claims) {
+      throw new Error("claims panel should no longer defer M6");
+    }
+    if (canon.claims.empirical_quality.total < 1) {
+      throw new Error("canon should expose empirical_quality totals");
+    }
+    if (canon.claims.forecast_accuracy.n < 1) {
+      throw new Error("canon should expose scored forecast_accuracy");
+    }
+    if (canon.red_team.deferred !== "M7") {
+      throw new Error("red_team deferral wrong");
     }
 
     const electoral = canon.dossiers.find((d) => d.dossier_id === "electoral-1");
@@ -94,10 +103,13 @@ async function main() {
     }
     if (
       !us.requirement_satisfaction ||
-      us.requirement_satisfaction.deferred !== "M6" ||
-      us.requirement_satisfaction.total < 1
+      us.requirement_satisfaction.total < 1 ||
+      us.requirement_satisfaction.snapshot.satisfied < 1
     ) {
-      throw new Error("US requirement_satisfaction should count seeded claims");
+      throw new Error("US requirement_satisfaction should include seeded claims + snapshot");
+    }
+    if (us.claims.forecast_accuracy.n < 1) {
+      throw new Error("US forecast_accuracy should include scored seeds");
     }
 
     const ca = await getCollectionDashboard("collection-ca");
