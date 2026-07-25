@@ -15,7 +15,7 @@ import {
   createRevSet,
   getTerms,
 } from "../server/db";
-import { resolveDefaultTermScope } from "../src/app/components/evidence/term-dialogs";
+import { resolveDefaultTermScope } from "../src/lib/termScope";
 import {
   validateDocumentStructure,
   validateDocumentStructureForMerge,

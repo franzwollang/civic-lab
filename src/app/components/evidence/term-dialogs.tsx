@@ -19,29 +19,16 @@ import { Separator } from "@/app/components/ui/separator";
 import type { TermAlias, TermEntity, TermScope } from "@/doc/evidence";
 import { putTerms } from "@/api/client";
 import { useEvidenceRegistry } from "@/editor/evidenceRegistry";
+import {
+  formatTermScope,
+  resolveDefaultTermScope,
+} from "@/lib/termScope";
+
+export { resolveDefaultTermScope } from "@/lib/termScope";
 
 type TermDraft = Omit<TermEntity, "id"> & { id?: string };
 
 const normalize = (s: string) => s.trim().toLowerCase();
-
-/** Default term scope from editor context (product dossier vs isolated /test/editor). */
-export function resolveDefaultTermScope(opts: {
-  dossierId?: string | null;
-  countryCode?: string | null;
-}): TermScope {
-  if (opts.dossierId) {
-    return { kind: "dossier", ref: opts.dossierId };
-  }
-  if (opts.countryCode) {
-    return { kind: "country", ref: opts.countryCode };
-  }
-  return { kind: "global" };
-}
-
-function formatTermScope(scope: TermScope): string {
-  if (scope.kind === "global") return "global";
-  return `${scope.kind}:${scope.ref}`;
-}
 
 function defaultNewTerm(seedLabel: string, scope: TermScope): TermDraft {
   const label = seedLabel.trim() || "";

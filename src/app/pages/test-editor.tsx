@@ -47,8 +47,8 @@ import {
 import {
   TermEditorDialog,
   TermSearchDialog,
-  resolveDefaultTermScope,
 } from "@/app/components/evidence/term-dialogs";
+import { resolveDefaultTermScope } from "@/lib/termScope";
 import {
   EvidenceRegistryProvider,
   useEvidenceRegistry,
