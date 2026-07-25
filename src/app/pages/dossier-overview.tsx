@@ -3,17 +3,24 @@ import { Header } from "../components/header";
 import { SidebarNav } from "../components/sidebar-nav";
 import { StatusBadge } from "../components/badges";
 import { ArtifactCard } from "../components/cards";
+import { ClaimListItem } from "../components/claim-list-item";
 import { Card } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Button } from "../components/ui/button";
 import { Tag } from "lucide-react";
 import { useParams, Link } from "react-router";
 import {
+  getArtifactClaims,
   getDossier,
   getDossierArtifacts,
   getDossierThreads,
 } from "../../api/client";
-import type { ArtifactRow, DossierRow, ThreadRow } from "../../doc/types";
+import type {
+  ArtifactRow,
+  ClaimRow,
+  DossierRow,
+  ThreadRow,
+} from "../../doc/types";
 import { artifactIdOf } from "../../doc/types";
 
 function threadStatusLabel(
@@ -44,9 +51,17 @@ type LoadState =
       threads: ThreadRow[];
     };
 
+type DossierClaimGroup = {
+  artifact: ArtifactRow;
+  claims: ClaimRow[];
+};
+
 export function DossierOverview() {
   const { id } = useParams();
   const [state, setState] = useState<LoadState>({ status: "loading" });
+  const [claimGroups, setClaimGroups] = useState<DossierClaimGroup[]>([]);
+  const [claimsLoading, setClaimsLoading] = useState(false);
+  const [claimsError, setClaimsError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,6 +98,42 @@ export function DossierOverview() {
       cancelled = true;
     };
   }, [id]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadClaims() {
+      if (state.status !== "ready") {
+        setClaimGroups([]);
+        return;
+      }
+      setClaimsLoading(true);
+      setClaimsError(null);
+      try {
+        const groups = await Promise.all(
+          state.artifacts.map(async (artifact) => {
+            const claims = await getArtifactClaims(artifactIdOf(artifact));
+            return { artifact, claims };
+          }),
+        );
+        if (!cancelled) {
+          setClaimGroups(groups.filter((g) => g.claims.length > 0));
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setClaimsError(
+            err instanceof Error ? err.message : "Failed to load claims",
+          );
+          setClaimGroups([]);
+        }
+      } finally {
+        if (!cancelled) setClaimsLoading(false);
+      }
+    }
+    void loadClaims();
+    return () => {
+      cancelled = true;
+    };
+  }, [state]);
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -153,6 +204,7 @@ export function DossierOverview() {
                       <TabsTrigger value="artifacts">Artifacts</TabsTrigger>
                       <TabsTrigger value="threads">Threads</TabsTrigger>
                       <TabsTrigger value="rfcs">RFCs</TabsTrigger>
+                      <TabsTrigger value="claims">Claims</TabsTrigger>
                       <TabsTrigger value="red-team">Red Team</TabsTrigger>
                       <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                     </TabsList>
@@ -269,6 +321,59 @@ export function DossierOverview() {
                             No RFC threads in this dossier yet.
                           </p>
                         </Card>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="claims">
+                      {claimsLoading && (
+                        <p className="text-sm text-neutral-500">
+                          Loading claims…
+                        </p>
+                      )}
+                      {claimsError && (
+                        <Card className="border border-neutral-200 p-6">
+                          <p className="text-sm text-red-700" role="alert">
+                            {claimsError}
+                          </p>
+                        </Card>
+                      )}
+                      {!claimsLoading &&
+                        !claimsError &&
+                        claimGroups.length === 0 && (
+                          <Card className="border border-neutral-200 p-6">
+                            <p className="text-center text-sm text-neutral-500">
+                              No claims in this dossier yet. Author claims on an
+                              artifact page.
+                            </p>
+                          </Card>
+                        )}
+                      {!claimsLoading && claimGroups.length > 0 && (
+                        <div className="space-y-8">
+                          {claimGroups.map(({ artifact, claims }) => (
+                            <div key={artifactIdOf(artifact)}>
+                              <div className="mb-3 flex items-baseline justify-between gap-3">
+                                <h3 className="text-sm font-semibold text-neutral-900">
+                                  {artifact.title}
+                                </h3>
+                                <Link
+                                  to={`/dossier/${id}/artifact/${artifact.slug}`}
+                                  className="text-xs text-neutral-600 underline-offset-2 hover:underline"
+                                >
+                                  Open artifact →
+                                </Link>
+                              </div>
+                              <div className="space-y-3">
+                                {claims.map((c) => (
+                                  <ClaimListItem
+                                    key={c.claim_id}
+                                    claim={c}
+                                    artifactTitle={artifact.slug}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       )}
                     </TabsContent>
 

@@ -20,6 +20,7 @@ import {
 import { artifactIdOf } from "@/doc/types";
 import type { ArtifactRow, DossierRow } from "@/doc/types";
 import { getDossier, getDossierArtifacts } from "@/api/client";
+import { ArtifactClaimsPanel } from "../components/artifact-claims-panel";
 import { laneForDossier, laneLabelForArtifact } from "../lib/dossier-display";
 
 export function ArtifactPage() {
@@ -335,14 +336,11 @@ export function ArtifactPage() {
                 )}
 
                 {showLive && (
-                  <Card className="border border-neutral-200 p-6">
-                    <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-neutral-700">
-                      Threads & claims
-                    </h3>
-                    <p className="text-xs text-neutral-500">
-                      Linked threads, RFCs, and claims arrive with M5–M6.
-                    </p>
-                  </Card>
+                  <ArtifactClaimsPanel
+                    artifact={doc.artifact}
+                    dossier={dossier}
+                    sections={doc.sections}
+                  />
                 )}
               </div>
             </aside>
