@@ -42,4 +42,7 @@ rm -f prisma/dev.db prisma/dev.db-journal && pnpm run dev
 
 ## API contract
 
-Response shapes stay snake_case (`page_id`, `content_json`, …) matching the previous JSON files so `/test/editor` and `/test/preview` keep working.
+Prisma models are `Artifact` / `ArtifactRevision` mapped onto legacy tables
+`pages` / `page_revisions` (`page_id` column ≡ artifact id). Wire JSON still uses
+snake_case `page_id` / `content_json` so `/test/editor` and `/test/preview` keep
+working; `/api/artifacts` is the preferred path (legacy `/api/pages` still works).

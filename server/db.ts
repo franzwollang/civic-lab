@@ -1,6 +1,7 @@
 /**
  * Prisma-backed data access for the Express API.
- * JSON helpers under `db/` were retired in M1; seeds live in `prisma/seed/`.
+ * Domain models are Artifact / ArtifactRevision; SQLite tables remain
+ * `pages` / `page_revisions` via Prisma @@map. Wire JSON still uses `page_id`.
  */
 import type { PrismaClient } from "@prisma/client";
 
@@ -17,7 +18,8 @@ export function getPrisma(): PrismaClient {
   return prisma;
 }
 
-export type PageRow = {
+/** Wire shape — `page_id` ≡ artifact id until clients migrate to `artifact_id`. */
+export type ArtifactRow = {
   page_id: string;
   title: string;
   slug: string;
@@ -25,7 +27,10 @@ export type PageRow = {
   created_at: string;
 };
 
-export type RevisionRow = {
+/** @deprecated Prefer ArtifactRow */
+export type PageRow = ArtifactRow;
+
+export type ArtifactRevisionRow = {
   revision_id: string;
   page_id: string;
   parent_revision_id: string | null;
@@ -34,20 +39,23 @@ export type RevisionRow = {
   content_json: unknown;
 };
 
+/** @deprecated Prefer ArtifactRevisionRow */
+export type RevisionRow = ArtifactRevisionRow;
+
 export type RegistryPayload = {
   version: number;
   items: unknown[];
 };
 
-function mapPage(row: {
-  pageId: string;
+function mapArtifact(row: {
+  artifactId: string;
   title: string;
   slug: string;
   currentRevisionId: string | null;
   createdAt: Date;
-}): PageRow {
+}): ArtifactRow {
   return {
-    page_id: row.pageId,
+    page_id: row.artifactId,
     title: row.title,
     slug: row.slug,
     current_revision_id: row.currentRevisionId,
@@ -57,15 +65,15 @@ function mapPage(row: {
 
 function mapRevision(row: {
   revisionId: string;
-  pageId: string;
+  artifactId: string;
   parentRevisionId: string | null;
   createdAt: Date;
   author: string;
   contentJson: unknown;
-}): RevisionRow {
+}): ArtifactRevisionRow {
   return {
     revision_id: row.revisionId,
-    page_id: row.pageId,
+    page_id: row.artifactId,
     parent_revision_id: row.parentRevisionId,
     created_at: row.createdAt.toISOString(),
     author: row.author,
@@ -73,29 +81,43 @@ function mapRevision(row: {
   };
 }
 
-export async function listPages(): Promise<PageRow[]> {
-  const rows = await getPrisma().page.findMany({ orderBy: { createdAt: "asc" } });
-  return rows.map(mapPage);
+export async function listArtifacts(): Promise<ArtifactRow[]> {
+  const rows = await getPrisma().artifact.findMany({
+    orderBy: { createdAt: "asc" },
+  });
+  return rows.map(mapArtifact);
 }
 
-export async function getPage(pageId: string): Promise<PageRow | null> {
-  const row = await getPrisma().page.findUnique({ where: { pageId } });
-  return row ? mapPage(row) : null;
+/** @deprecated Prefer listArtifacts */
+export const listPages = listArtifacts;
+
+export async function getArtifact(
+  artifactId: string,
+): Promise<ArtifactRow | null> {
+  const row = await getPrisma().artifact.findUnique({
+    where: { artifactId },
+  });
+  return row ? mapArtifact(row) : null;
 }
 
-export async function updatePage(
-  pageId: string,
+/** @deprecated Prefer getArtifact */
+export const getPage = getArtifact;
+
+export async function updateArtifact(
+  artifactId: string,
   patch: Partial<{
     title: string;
     slug: string;
     current_revision_id: string | null;
   }>,
-): Promise<PageRow | null> {
-  const existing = await getPrisma().page.findUnique({ where: { pageId } });
+): Promise<ArtifactRow | null> {
+  const existing = await getPrisma().artifact.findUnique({
+    where: { artifactId },
+  });
   if (!existing) return null;
 
-  const row = await getPrisma().page.update({
-    where: { pageId },
+  const row = await getPrisma().artifact.update({
+    where: { artifactId },
     data: {
       ...(patch.title !== undefined ? { title: patch.title } : {}),
       ...(patch.slug !== undefined ? { slug: patch.slug } : {}),
@@ -104,29 +126,37 @@ export async function updatePage(
         : {}),
     },
   });
-  return mapPage(row);
+  return mapArtifact(row);
 }
 
-export async function listRevisions(pageId: string): Promise<RevisionRow[]> {
-  const rows = await getPrisma().pageRevision.findMany({
-    where: { pageId },
+/** @deprecated Prefer updateArtifact */
+export const updatePage = updateArtifact;
+
+export async function listArtifactRevisions(
+  artifactId: string,
+): Promise<ArtifactRevisionRow[]> {
+  const rows = await getPrisma().artifactRevision.findMany({
+    where: { artifactId },
     orderBy: { createdAt: "desc" },
   });
   return rows.map(mapRevision);
 }
 
-export async function createRevision(payload: {
+/** @deprecated Prefer listArtifactRevisions */
+export const listRevisions = listArtifactRevisions;
+
+export async function createArtifactRevision(payload: {
   revision_id: string;
   page_id: string;
   parent_revision_id?: string | null;
   created_at?: string;
   author: string;
   content_json: unknown;
-}): Promise<RevisionRow> {
-  const row = await getPrisma().pageRevision.create({
+}): Promise<ArtifactRevisionRow> {
+  const row = await getPrisma().artifactRevision.create({
     data: {
       revisionId: payload.revision_id,
-      pageId: payload.page_id,
+      artifactId: payload.page_id,
       parentRevisionId: payload.parent_revision_id ?? null,
       createdAt: payload.created_at
         ? new Date(payload.created_at)
@@ -137,6 +167,9 @@ export async function createRevision(payload: {
   });
   return mapRevision(row);
 }
+
+/** @deprecated Prefer createArtifactRevision */
+export const createRevision = createArtifactRevision;
 
 export async function getAttributions(): Promise<RegistryPayload> {
   const row = await getPrisma().attributionsRegistry.findUnique({

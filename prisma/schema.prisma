@@ -1,7 +1,7 @@
-// Civic Lab M1/M3 — editor store entities.
-// CONCEPT name is Artifact / ArtifactRevision; Prisma still uses Page /
-// PageRevision mapped to `pages` / `page_revisions` until M4 rename.
-// Wire JSON keeps `page_id`; API also exposes `/api/artifacts` aliases.
+// Civic Lab M3 — editor store entities.
+// CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
+// legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
+// Wire JSON still uses `page_id` (≡ artifact id); `/api/artifacts` is primary.
 // Prototype sync: `prisma db push` (no migration history yet).
 
 generator client {
@@ -13,27 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Page {
-  pageId             String         @id @map("page_id")
+model Artifact {
+  artifactId         String              @id @map("page_id")
   title              String
   slug               String
-  currentRevisionId  String?        @map("current_revision_id")
-  createdAt          DateTime       @map("created_at")
-  revisions          PageRevision[]
+  currentRevisionId  String?             @map("current_revision_id")
+  createdAt          DateTime            @map("created_at")
+  revisions          ArtifactRevision[]
 
   @@map("pages")
 }
 
-model PageRevision {
+model ArtifactRevision {
   revisionId       String   @id @map("revision_id")
-  pageId           String   @map("page_id")
+  artifactId       String   @map("page_id")
   parentRevisionId String?  @map("parent_revision_id")
   createdAt        DateTime @map("created_at")
   author           String
   contentJson      Json     @map("content_json")
-  page             Page     @relation(fields: [pageId], references: [pageId], onDelete: Cascade)
+  artifact         Artifact @relation(fields: [artifactId], references: [artifactId], onDelete: Cascade)
 
-  @@index([pageId])
+  @@index([artifactId])
   @@map("page_revisions")
 }
 

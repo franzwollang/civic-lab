@@ -44,6 +44,10 @@ export const router = createBrowserRouter([
     Component: TestEditor,
   },
   {
+    path: "/test/editor/:artifactId",
+    Component: TestEditor,
+  },
+  {
     path: "/test/preview/:pageId",
     Component: TestPreview,
   },

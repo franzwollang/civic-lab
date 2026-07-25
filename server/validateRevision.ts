@@ -1,5 +1,6 @@
 /**
- * Server-side revision validation for POST /api/pages/:pageId/revisions.
+ * Server-side revision validation for POST /api/artifacts/:id/revisions
+ * (and legacy /api/pages/:pageId/revisions).
  * Zod envelope (pageRevisionSchema) + structural document checks.
  */
 import { pageRevisionSchema } from "../src/api/schemas";

@@ -7,10 +7,10 @@ export type BlockRow = {
 };
 
 /**
- * Wire JSON still uses `page_id` (Prisma `pages` table) until the M4 schema
- * rename. CONCEPT calls this an Artifact — prefer Artifact* aliases in new code.
+ * Wire revision row. `page_id` is the artifact id (Prisma `Artifact.artifactId`
+ * mapped to column `page_id`). Prefer Artifact* names in new code.
  */
-export type PageRevisionRow = {
+export type ArtifactRevisionRow = {
   revision_id: string;
   page_id: string;
   parent_revision_id: string | null;
@@ -23,7 +23,11 @@ export type PageRevisionRow = {
   schema_version: number;
 };
 
-export type PageRow = {
+/** @deprecated Prefer ArtifactRevisionRow */
+export type PageRevisionRow = ArtifactRevisionRow;
+
+/** Wire artifact meta. `page_id` ≡ artifact id until clients migrate. */
+export type ArtifactRow = {
   page_id: string;
   title: string;
   slug: string;
@@ -31,13 +35,10 @@ export type PageRow = {
   created_at: string;
 };
 
-/** CONCEPT Artifact — same wire shape as PageRow (`page_id` ≡ artifact id). */
-export type ArtifactRow = PageRow;
+/** @deprecated Prefer ArtifactRow */
+export type PageRow = ArtifactRow;
 
-/** CONCEPT ArtifactRevision — same wire shape as PageRevisionRow. */
-export type ArtifactRevisionRow = PageRevisionRow;
-
-/** `page_id` on the wire is the artifact id until Prisma rename. */
+/** `page_id` on the wire is the artifact id. */
 export function artifactIdOf(row: { page_id: string }): string {
   return row.page_id;
 }

@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-07-25T06:55Z",
-  "turn": 17,
+  "updated_at": "2026-07-25T07:15Z",
+  "turn": 18,
   "focus": {
     "milestone": "M3",
-    "issue": "Unify artifact body / Section persistence",
-    "goal": "Finish M3: Prisma Artifact rename + product edit path"
+    "issue": "Unify artifact body",
+    "goal": "Finish M3: in-chrome editor + wire artifact_id"
   },
   "recent": [
-    "Merged PR #6 (M1+M2) onto fresh cron branch",
-    "Artifact API aliases + ArtifactRow types; Section extractor",
-    "Product /artifact/voting-systems loads live DocumentReader"
+    "Merged PR #7 onto fresh cron branch",
+    "Prisma Page→Artifact rename with @@map(pages)",
+    "Product Edit → /test/editor/:artifactId"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
-    "page_id ≡ artifact id on wire until Prisma rename with @@map"
+    "Prisma --force-reset blocked in Cursor; use fresh SQLite file instead"
   ],
   "open_threads": [
-    "validateDocumentForMerge still unused — MVP gaps",
-    "Section DB sync deferred until ThreadTarget"
+    "Section DB sync deferred until ThreadTarget",
+    "validateDocumentForMerge still unused — MVP gaps"
   ],
-  "next_step": "Prisma Page→Artifact rename (@@map) or wire product Edit→Plate; else MVP gaps triage",
+  "next_step": "Embed Plate editor in product chrome or dual-emit artifact_id on wire; else §A MVP gaps",
   "blockers": []
 }

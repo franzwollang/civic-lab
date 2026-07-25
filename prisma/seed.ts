@@ -13,7 +13,7 @@ const SEED_DIR = path.join(
   "seed",
 );
 
-type PageRow = {
+type ArtifactSeedRow = {
   page_id: string;
   title: string;
   slug: string;
@@ -21,7 +21,7 @@ type PageRow = {
   created_at: string;
 };
 
-type RevisionRow = {
+type RevisionSeedRow = {
   revision_id: string;
   page_id: string;
   parent_revision_id: string | null;
@@ -50,23 +50,23 @@ export async function seedIfEmpty(
   }
 
   if (options.force) {
-    await prisma.pageRevision.deleteMany();
-    await prisma.page.deleteMany();
+    await prisma.artifactRevision.deleteMany();
+    await prisma.artifact.deleteMany();
     await prisma.termsRegistry.deleteMany();
     await prisma.attributionsRegistry.deleteMany();
     await prisma.seedMeta.deleteMany();
   }
 
-  const pages = await readSeedJson<PageRow[]>("pages.json");
-  const revisions = await readSeedJson<RevisionRow[]>("page_revisions.json");
+  const pages = await readSeedJson<ArtifactSeedRow[]>("pages.json");
+  const revisions = await readSeedJson<RevisionSeedRow[]>("page_revisions.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
   await prisma.$transaction(async (tx) => {
     for (const page of pages) {
-      await tx.page.create({
+      await tx.artifact.create({
         data: {
-          pageId: page.page_id,
+          artifactId: page.page_id,
           title: page.title,
           slug: page.slug,
           currentRevisionId: page.current_revision_id,
@@ -76,10 +76,10 @@ export async function seedIfEmpty(
     }
 
     for (const rev of revisions) {
-      await tx.pageRevision.create({
+      await tx.artifactRevision.create({
         data: {
           revisionId: rev.revision_id,
-          pageId: rev.page_id,
+          artifactId: rev.page_id,
           parentRevisionId: rev.parent_revision_id,
           createdAt: new Date(rev.created_at),
           author: rev.author,

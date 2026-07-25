@@ -15,3 +15,4 @@
 {"ts":"2026-07-25T06:10Z","focus":"M2 full preview","summary":"Shared DocumentReader for /test/preview; handoff to server revision validation","next":"server-side revision validation on save"}
 {"ts":"2026-07-25T06:25Z","focus":"M2 server revision validation","summary":"Zod+structuralValidation on POST /revisions; M2 done","next":"MVP gaps triage or M3 content bridge"}
 {"ts":"2026-07-25T06:55Z","focus":"M3 content bridge","summary":"Artifact naming path + Section extractor + live product reader for voting-systems","next":"Prisma Artifact rename with @@map or product edit path"}
+{"ts":"2026-07-25T07:15Z","focus":"M3 Artifact rename","summary":"Prisma Page→Artifact/ArtifactRevision with @@map; product Edit→/test/editor/:id; smoke-artifact-rename","next":"in-chrome editor or wire artifact_id; else MVP gaps"}

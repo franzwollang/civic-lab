@@ -5,7 +5,7 @@ import { LaneBadge } from "../components/badges";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
-import { ExternalLink, MessageSquare, GitBranch, Info } from "lucide-react";
+import { ExternalLink, MessageSquare, GitBranch, Info, Pencil } from "lucide-react";
 import { useParams, Link } from "react-router";
 import {
   Tooltip,
@@ -221,8 +221,16 @@ export function ArtifactPage() {
               </div>
 
               <div className="mb-8 flex gap-3">
+                {showLive && (
+                  <Link to={`/test/editor/${doc.artifact.page_id}`}>
+                    <Button variant="default" size="sm">
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Edit
+                    </Button>
+                  </Link>
+                )}
                 <Link to="/thread/thread-1">
-                  <Button variant="default" size="sm">
+                  <Button variant={showLive ? "outline" : "default"} size="sm">
                     <MessageSquare className="mr-2 h-4 w-4" />
                     Start Thread
                   </Button>

@@ -3,16 +3,16 @@ import cors from "cors";
 import { z } from "zod";
 import { bootstrapDatabase } from "./bootstrap";
 import {
-  createRevision,
+  createArtifactRevision,
+  getArtifact,
   getAttributions,
-  getPage,
   getTerms,
-  listPages,
-  listRevisions,
+  listArtifactRevisions,
+  listArtifacts,
   putAttributions,
   putTerms,
   setPrisma,
-  updatePage,
+  updateArtifact,
 } from "./db";
 import { validateRevisionPayload } from "./validateRevision";
 
@@ -26,26 +26,26 @@ async function handleListArtifacts(
   _req: express.Request,
   res: express.Response,
 ) {
-  const pages = await listPages();
-  res.json(pages);
+  const artifacts = await listArtifacts();
+  res.json(artifacts);
 }
 
 async function handleGetArtifact(req: express.Request, res: express.Response) {
-  const id = req.params.pageId ?? req.params.artifactId;
-  const page = await getPage(id);
-  if (!page) {
+  const id = req.params.artifactId ?? req.params.pageId;
+  const artifact = await getArtifact(id);
+  if (!artifact) {
     res.status(404).json({ error: "Artifact not found" });
     return;
   }
-  res.json(page);
+  res.json(artifact);
 }
 
 async function handleListRevisions(
   req: express.Request,
   res: express.Response,
 ) {
-  const id = req.params.pageId ?? req.params.artifactId;
-  const filtered = await listRevisions(id);
+  const id = req.params.artifactId ?? req.params.pageId;
+  const filtered = await listArtifactRevisions(id);
   res.json(filtered);
 }
 
@@ -53,7 +53,7 @@ async function handleCreateRevision(
   req: express.Request,
   res: express.Response,
 ) {
-  const id = req.params.pageId ?? req.params.artifactId;
+  const id = req.params.artifactId ?? req.params.pageId;
   const validated = await validateRevisionPayload(id, req.body);
   if (!validated.ok) {
     res.status(400).json({
@@ -63,13 +63,13 @@ async function handleCreateRevision(
     return;
   }
 
-  const page = await getPage(id);
-  if (!page) {
+  const artifact = await getArtifact(id);
+  if (!artifact) {
     res.status(404).json({ error: "Artifact not found" });
     return;
   }
 
-  const created = await createRevision(validated.revision);
+  const created = await createArtifactRevision(validated.revision);
   res.status(201).json(created);
 }
 
@@ -77,13 +77,13 @@ async function handlePatchArtifact(
   req: express.Request,
   res: express.Response,
 ) {
-  const id = req.params.pageId ?? req.params.artifactId;
+  const id = req.params.artifactId ?? req.params.pageId;
   const patch = req.body as Partial<{
     title: string;
     slug: string;
     current_revision_id: string | null;
   }>;
-  const updated = await updatePage(id, patch);
+  const updated = await updateArtifact(id, patch);
 
   if (!updated) {
     res.status(404).json({ error: "Artifact not found" });
@@ -93,15 +93,15 @@ async function handlePatchArtifact(
   res.json(updated);
 }
 
-// Legacy `/api/pages` + CONCEPT `/api/artifacts` (same store; page_id ≡ artifact id).
-app.get("/api/pages", handleListArtifacts);
+// CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
 app.get("/api/artifacts", handleListArtifacts);
+app.get("/api/pages", handleListArtifacts);
 
-app.get("/api/pages/:pageId", handleGetArtifact);
 app.get("/api/artifacts/:artifactId", handleGetArtifact);
+app.get("/api/pages/:pageId", handleGetArtifact);
 
-app.get("/api/pages/:pageId/revisions", handleListRevisions);
 app.get("/api/artifacts/:artifactId/revisions", handleListRevisions);
+app.get("/api/pages/:pageId/revisions", handleListRevisions);
 
 app.get("/api/attributions", async (_req, res) => {
   const attributions = await getAttributions();
@@ -214,11 +214,11 @@ app.put("/api/terms", async (req, res) => {
   res.json(saved);
 });
 
-app.post("/api/pages/:pageId/revisions", handleCreateRevision);
 app.post("/api/artifacts/:artifactId/revisions", handleCreateRevision);
+app.post("/api/pages/:pageId/revisions", handleCreateRevision);
 
-app.patch("/api/pages/:pageId", handlePatchArtifact);
 app.patch("/api/artifacts/:artifactId", handlePatchArtifact);
+app.patch("/api/pages/:pageId", handlePatchArtifact);
 
 async function main() {
   const client = await bootstrapDatabase();

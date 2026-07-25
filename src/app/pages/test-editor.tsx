@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { Plate, PlateContent, usePlateEditor } from "platejs/react";
 import { v4 as uuidv4 } from "uuid";
 import { Editor, Range, Transforms } from "slate";
@@ -55,13 +55,13 @@ import { EvidenceModalProvider } from "@/editor/evidenceModals";
 import { extractBlockIndex } from "@/doc/blockIndex";
 import { merkleRoot } from "@/doc/merkle";
 import { diffBlocks } from "@/doc/diff";
-import type { PageRevisionRow, PageRow } from "@/doc/types";
-import { getPage, getRevisions } from "@/api/client";
+import type { ArtifactRevisionRow, ArtifactRow } from "@/doc/types";
+import { getArtifact, getArtifactRevisions } from "@/api/client";
 import { editorPageModel } from "@/app/models/editorPageModel";
 import { ClientPageProvider, toUserMessage } from "dullahan-web/client";
 import { validateDocument } from "@/doc/validation";
 
-const PAGE_ID = "page-001";
+const DEFAULT_ARTIFACT_ID = "page-001";
 
 export function TestEditor() {
   return (
@@ -74,9 +74,11 @@ export function TestEditor() {
 }
 
 function TestEditorInner() {
+  const { artifactId: artifactIdParam } = useParams();
+  const artifactId = artifactIdParam || DEFAULT_ARTIFACT_ID;
   const [value, setValue] = useState(initialValue);
-  const [page, setPage] = useState<PageRow | null>(null);
-  const [revisions, setRevisions] = useState<PageRevisionRow[]>([]);
+  const [page, setPage] = useState<ArtifactRow | null>(null);
+  const [revisions, setRevisions] = useState<ArtifactRevisionRow[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "saving" | "error">(
     "idle",
   );
@@ -226,8 +228,8 @@ function TestEditorInner() {
     setError(null);
     try {
       const [pageData, revisionsData] = await Promise.all([
-        getPage(PAGE_ID),
-        getRevisions(PAGE_ID),
+        getArtifact(artifactId),
+        getArtifactRevisions(artifactId),
       ]);
       setPage(pageData);
       setRevisions(revisionsData);
@@ -264,7 +266,7 @@ function TestEditorInner() {
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [artifactId]);
 
   useEffect(() => {
     void ensureMathJaxLoaded();
@@ -324,7 +326,7 @@ function TestEditorInner() {
       const docRootHash = merkleRoot(blocks.map((block) => block.hash));
       const revisionId = uuidv4();
 
-      const revision: PageRevisionRow = {
+      const revision: ArtifactRevisionRow = {
         revision_id: revisionId,
         page_id: page.page_id,
         parent_revision_id: page.current_revision_id,
@@ -1011,7 +1013,7 @@ function TestEditorInner() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Link
-                    to={`/test/preview/${page?.page_id ?? PAGE_ID}`}
+                    to={`/test/preview/${page?.page_id ?? artifactId}`}
                     className="text-[11px] font-medium text-neutral-600 hover:text-neutral-900"
                   >
                     Preview
