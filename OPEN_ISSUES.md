@@ -97,6 +97,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Dossier tab stubs, disabled Nominate-for-RFC where still stubbed, etc.
   - Thread/RFC reply composer: done (impersonated author).
   - Breadcrumbs + up-nav: done (Area→Collection→Dossier→leaf on corpus surfaces).
+  - Global header impersonation switcher + role affordances: done (M8).
 
 ---
 
@@ -127,4 +128,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (27 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (28 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
