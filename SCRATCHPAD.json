@@ -1,23 +1,23 @@
 {
-  "updated_at": "2026-07-25T16:10Z",
-  "turn": 45,
+  "updated_at": "2026-07-25T16:40Z",
+  "turn": 46,
   "focus": {
     "milestone": "M9",
-    "issue": null,
-    "goal": "M8 done; hand off to M9 Policy or editor/evidence residuals"
+    "issue": "Reputation layer scaffolding",
+    "goal": "Advisory reputation signals (CONCEPT §8.2 / §9.2)"
   },
   "recent": [
-    "Merged PR #31 (M6–M8 breadcrumbs) onto cron branch 691f",
-    "ActingUserProvider + header switcher + role affordances",
-    "Composers/RFC/timeline use global acting user; smoke-impersonation"
+    "Merged PR #32 (M8) onto cron branch 52cb",
+    "M9 Charter: canon-governance-1 + living owner_merge_only artifact",
+    "/constitution redirects; Owner edit gate; smoke-charter; 29/29"
   ],
   "discoveries": [
     "Prefer merge latest progression PR before coding on fresh cron branches"
   ],
   "open_threads": [
-    "M9 real auth after impersonation era",
+    "M9 reputation + anti-gaming + real auth remain",
     "Editor MVP gaps + evidence registries still open"
   ],
-  "next_step": "M9: start Charter-as-artifact or reputation scaffolding; else editor MathDecorate/validateDocument cleanup",
+  "next_step": "M9: reputation scaffolding (merged RevSets / RT / adjudication signals) or anti-gaming n≥20 board policy",
   "blockers": []
 }

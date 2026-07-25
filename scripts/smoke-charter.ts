@@ -8,7 +8,7 @@ import { PrismaClient } from "@prisma/client";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { seedIfEmpty } from "../prisma/seed";
-import { setPrisma, getArtifact, getArtifactRevisions } from "../server/db";
+import { setPrisma, getArtifact, listArtifactRevisions } from "../server/db";
 import {
   CHARTER_ARTIFACT_ID,
   CHARTER_DOSSIER_ID,
@@ -65,7 +65,7 @@ async function main() {
     const artifact = await getArtifact(CHARTER_ARTIFACT_ID);
     if (!artifact) throw new Error("canon-charter missing");
 
-    const revisions = await getArtifactRevisions(CHARTER_ARTIFACT_ID);
+    const revisions = await listArtifactRevisions(CHARTER_ARTIFACT_ID);
     const current = revisions.find(
       (r) => r.revision_id === artifact.current_revision_id,
     );

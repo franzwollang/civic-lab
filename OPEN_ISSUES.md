@@ -37,7 +37,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Done: US (`us-voting-1`) + CA/GB/DE Manual dossier stub artifacts seeded with Plate `content_json`.
 
 - [ ] **Migrate site copy into artifacts (incremental)**
-  - About, FAQ, Constitution/Charter, home explainer → artifact-backed when feasible.
+  - Done: Constitution/Charter → living `canon-charter` artifact (`/constitution` redirects).
+  - Remaining: About, FAQ, home explainer → artifact-backed when feasible.
   - Leave licensing/legal boilerplate code-static if needed.
 
 - [ ] **CONCEPT.md rewrite pass (drift + gaps)**
@@ -101,13 +102,13 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ---
 
-## I. Later / policy-heavy (track, don’t start early)
+## I. Later / policy-heavy (track; M9 in progress)
 
 - [ ] **Manuals 3D globe picker** — SVG map+list satisfies CONCEPT map+list; optional 3D polish deferred.
 - [ ] **Requirements Matrix artifact type** (CONCEPT §9) — **superseded**: use Claims + citations instead (see §E).
 - [ ] **Auth + real-identity policy hooks** (CONCEPT §8.6) — after impersonation era.
 - [ ] **Reputation layer** for non-scorable contributions (CONCEPT §8.2).
-- [ ] **Charter / Constitution as living gated artifact** — migrate from static page when artifact IA exists.
+- Charter as living gated artifact: **done** (M9 first cut) — `canon-governance-1` + `canon-charter` (`owner_merge_only`); `/constitution` → artifact; Owner edit gate; `smoke-charter`.
 - [ ] **Anti-gaming / scoring leaderboard policy**.
 - [ ] **Moderator tools + audit logs**.
 - [ ] **External artifact whitelist** (CONCEPT App D) — deferred until evidence/editor bridge solid.
@@ -128,4 +129,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (28 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (29 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
