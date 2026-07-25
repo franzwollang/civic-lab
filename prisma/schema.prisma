@@ -1,4 +1,5 @@
-// Civic Lab M4 — Area → Collection → Dossier + editor store entities.
+// Civic Lab M5 — Threads + posts + flexible targets (CONCEPT §3).
+// M4 Area → Collection → Dossier + editor store entities retained.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
 // Wire JSON dual-emits `artifact_id` (preferred) + `page_id` (same value).
@@ -46,9 +47,62 @@ model Dossier {
   tags         Json       @default("[]")
   collection   Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
   artifacts    Artifact[]
+  threads      Thread[]
 
   @@index([collectionId])
   @@map("dossiers")
+}
+
+/// CONCEPT §3 — thread-first social object. Home dossier ≠ only targets.
+/// state: open | rfc | review | decided | archived
+/// decision_outcome (when decided): merged | rejected | parked
+model Thread {
+  threadId        String         @id @map("thread_id")
+  homeDossierId   String         @map("home_dossier_id")
+  title           String
+  state           String
+  decisionOutcome String?        @map("decision_outcome")
+  isRedteam       Boolean        @default(false) @map("is_redteam")
+  parentThreadId  String?        @map("parent_thread_id")
+  mergeArtifactId String?        @map("merge_artifact_id")
+  createdAt       DateTime       @map("created_at")
+  homeDossier     Dossier        @relation(fields: [homeDossierId], references: [dossierId], onDelete: Cascade)
+  parentThread    Thread?        @relation("ThreadTree", fields: [parentThreadId], references: [threadId], onDelete: SetNull)
+  childThreads    Thread[]       @relation("ThreadTree")
+  posts           ThreadPost[]
+  targets         ThreadTarget[]
+
+  @@index([homeDossierId])
+  @@index([state])
+  @@index([parentThreadId])
+  @@map("threads")
+}
+
+/// CONCEPT §3 — timeline posts (typed later: comment / finding / mitigation).
+model ThreadPost {
+  postId    String   @id @map("post_id")
+  threadId  String   @map("thread_id")
+  authorId  String   @map("author_id")
+  type      String
+  body      String
+  createdAt DateTime @map("created_at")
+  thread    Thread   @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+
+  @@index([threadId])
+  @@map("thread_posts")
+}
+
+/// CONCEPT §3.2 — join across anchorable targets (dossier | artifact | section).
+model ThreadTarget {
+  id         Int    @id @default(autoincrement())
+  threadId   String @map("thread_id")
+  targetKind String @map("target_kind")
+  targetId   String @map("target_id")
+  thread     Thread @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+
+  @@unique([threadId, targetKind, targetId])
+  @@index([targetKind, targetId])
+  @@map("thread_targets")
 }
 
 model Artifact {

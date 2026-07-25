@@ -4,6 +4,7 @@ import { z } from "zod";
 import { bootstrapDatabase } from "./bootstrap";
 import {
   createArtifactRevision,
+  createThreadPost,
   getArtifact,
   getAttributions,
   getAreaByKind,
@@ -11,12 +12,14 @@ import {
   getCollectionDashboard,
   getDossier,
   getTerms,
+  getThread,
   listAreas,
   listArtifactRevisions,
   listArtifacts,
   listArtifactsByDossier,
   listCollections,
   listDossiers,
+  listThreads,
   putAttributions,
   putTerms,
   setPrisma,
@@ -313,6 +316,64 @@ app.get("/api/dossiers/:dossierId/artifacts", async (req, res) => {
     return;
   }
   res.json(await listArtifactsByDossier(req.params.dossierId));
+});
+
+// M5 Threads + posts + targets (CONCEPT §3)
+app.get("/api/threads", async (req, res) => {
+  const homeDossierId =
+    typeof req.query.home_dossier_id === "string"
+      ? req.query.home_dossier_id
+      : undefined;
+  const state =
+    typeof req.query.state === "string" ? req.query.state : undefined;
+  res.json(await listThreads({ homeDossierId, state }));
+});
+
+app.get("/api/threads/:threadId", async (req, res) => {
+  const thread = await getThread(req.params.threadId);
+  if (!thread) {
+    res.status(404).json({ error: "Thread not found" });
+    return;
+  }
+  res.json(thread);
+});
+
+app.get("/api/dossiers/:dossierId/threads", async (req, res) => {
+  const dossier = await getDossier(req.params.dossierId);
+  if (!dossier) {
+    res.status(404).json({ error: "Dossier not found" });
+    return;
+  }
+  const state =
+    typeof req.query.state === "string" ? req.query.state : undefined;
+  res.json(
+    await listThreads({ homeDossierId: req.params.dossierId, state }),
+  );
+});
+
+const threadPostBodySchema = z.object({
+  post_id: z.string().min(1).optional(),
+  author_id: z.string().min(1),
+  type: z.string().min(1).optional(),
+  body: z.string().min(1),
+  created_at: z.string().optional(),
+});
+
+app.post("/api/threads/:threadId/posts", async (req, res) => {
+  const parsed = threadPostBodySchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid post payload" });
+    return;
+  }
+  const created = await createThreadPost({
+    ...parsed.data,
+    thread_id: req.params.threadId,
+  });
+  if (!created) {
+    res.status(404).json({ error: "Thread not found" });
+    return;
+  }
+  res.status(201).json(created);
 });
 
 async function main() {

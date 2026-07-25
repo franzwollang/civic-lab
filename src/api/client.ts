@@ -7,6 +7,8 @@ import type {
   DossierRow,
   PageRevisionRow,
   PageRow,
+  ThreadPostRow,
+  ThreadRow,
 } from "../doc/types";
 import type { AttributionRegistry, TermRegistry } from "../doc/evidence";
 
@@ -187,6 +189,53 @@ export async function getDossierArtifacts(
     `${API_BASE}/dossiers/${dossierId}/artifacts`,
   );
   return handleResponse<ArtifactRow[]>(response);
+}
+
+export async function getThreads(opts?: {
+  homeDossierId?: string;
+  state?: string;
+}): Promise<ThreadRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.homeDossierId) params.set("home_dossier_id", opts.homeDossierId);
+  if (opts?.state) params.set("state", opts.state);
+  const qs = params.toString();
+  const response = await fetch(`${API_BASE}/threads${qs ? `?${qs}` : ""}`);
+  return handleResponse<ThreadRow[]>(response);
+}
+
+export async function getThread(threadId: string): Promise<ThreadRow> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}`);
+  return handleResponse<ThreadRow>(response);
+}
+
+export async function getDossierThreads(
+  dossierId: string,
+  opts?: { state?: string },
+): Promise<ThreadRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.state) params.set("state", opts.state);
+  const qs = params.toString();
+  const response = await fetch(
+    `${API_BASE}/dossiers/${dossierId}/threads${qs ? `?${qs}` : ""}`,
+  );
+  return handleResponse<ThreadRow[]>(response);
+}
+
+export async function createThreadPost(
+  threadId: string,
+  post: {
+    author_id: string;
+    body: string;
+    type?: string;
+    post_id?: string;
+  },
+): Promise<ThreadPostRow> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/posts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(post),
+  });
+  return handleResponse<ThreadPostRow>(response);
 }
 
 export async function getAttributions(): Promise<AttributionRegistry> {

@@ -28,7 +28,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Done: `/canon`, `/manuals`, `/collection/:id`, `/dossier/:id` load Prisma records; header/home CTAs point at Area entry routes.
   - Done: home **Trending Dossiers** from `/api/dossiers` (artifact_count + collection join).
   - Done: Collection splash loads **`/api/collections/:id/dashboard`** (CONCEPT §11 chrome; thread/claim/RT panels stubbed until M5–M7).
-  - Remaining: dossier tabs (threads/RFCs) when M5 exists; home RFC/Red Team panels still fixture until those tables exist.
+  - Remaining: dossier tabs show live threads (M5 first cut); home RFC/Red Team panels still fixture until RFC/Findings tables mature.
 
 - [ ] **Unify artifact body with revisioned editor documents**
   - Product `/artifact/:id` loads live `ArtifactRevision` via DocumentReader; related-artifacts sidebar from dossier API.
@@ -48,17 +48,16 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 ## D. Thread-first + RFC (CONCEPT §§3)
 
 - [ ] **Thread + posts + flexible anchors**
-  - `ThreadPost` timeline (typed posts later: comment / finding / mitigation).
-  - Default target: dossier-wide. Also artifact + **section** targets.
-  - `ThreadTarget` join across anchorable tables (dossier, artifact, section, …).
-  - States: `open` | `rfc` | `review` | `decided` | `archived`.
-  - Reply composer (local/impersonated author OK).
+  - Done: Prisma `Thread` / `ThreadPost` / `ThreadTarget`; seed (`prisma/seed/threads.json`); API `GET /api/threads`, `GET /api/threads/:id`, `GET /api/dossiers/:id/threads`, `POST …/posts`; dossier Threads/RFCs tabs list store data; Collection dashboard open-thread counts live.
+  - Remaining: reply composer UI (impersonated author); section target kind once Section rows exist; typed posts (finding/mitigation) later.
+  - States seeded: `open` | `rfc` (also model `review` | `decided` | `archived`).
 
 - [ ] **Section entities for anchoring**
   - Extractor exists (`src/doc/sections.ts`; `stable_key` = heading block id).
   - Remaining: Prisma `Section` rows + sync-on-save; threads target via `stable_key` (no text offsets).
 
 - [ ] **RFC promotion + parent/sub-RFC + RevSets**
+  - Seed includes one leaf RFC stub (`merge_artifact_id`); promotion UX + RevSet table not built.
   - 1:1 leaf merges only; multi ⇒ same-Collection wrapper + subs.
   - Parent `decided` when all children decided; outcomes merged|rejected|parked.
   - Merge authority follows artifact Collection; Accepted Risk on leaf.

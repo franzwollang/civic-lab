@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-07-25T09:15Z",
-  "turn": 24,
+  "updated_at": "2026-07-25T09:35Z",
+  "turn": 25,
   "focus": {
     "milestone": "M5",
-    "issue": "Thread + posts + flexible anchors",
-    "goal": "Start M5 Threads after M4 CA/GB/DE seeds"
+    "issue": "Section entities for anchoring",
+    "goal": "Prisma Section rows + sync-on-save for thread targets"
   },
   "recent": [
-    "Merged PR #13 onto fresh cron branch",
-    "Seeded CA/GB/DE Manual stub artifacts (2 each)",
-    "Artifact related sidebar from dossier API",
-    "M4 marked done; 3D globe deferred"
+    "Merged PR #14 (M4) onto cron branch 5819",
+    "Prisma Thread/ThreadPost/ThreadTarget + seed + API",
+    "Dossier Threads/RFCs tabs + dashboard open counts",
+    "smoke-threads green"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
     "Prisma --force-reset blocked; use fresh SQLite file for smokes"
   ],
   "open_threads": [
-    "Home RFC/Red Team panels still fixtures until M5/M7",
-    "Section DB sync still deferred to M5"
+    "RFC promotion + RevSets still open within M5",
+    "Home RFC/Red Team panels still fixtures until M5/M7"
   ],
-  "next_step": "Start M5: Prisma Thread/ThreadPost/ThreadTarget + seed + API stub",
+  "next_step": "Add Prisma Section + sync-on-save; enable section ThreadTargets",
   "blockers": []
 }

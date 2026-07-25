@@ -85,6 +85,7 @@ export type CollectionDashboard = {
   open_threads: {
     count: number;
     critical_findings: number;
+    /** RFC promotion / RevSets still incomplete within M5. */
     deferred: "M5";
   };
   claims: {
@@ -105,6 +106,36 @@ export type CollectionDashboard = {
     recent_count: number;
     deferred: "M7";
   };
+};
+
+/** CONCEPT §3 Thread wire shapes. */
+export type ThreadTargetRow = {
+  target_kind: string;
+  target_id: string;
+};
+
+export type ThreadPostRow = {
+  post_id: string;
+  thread_id: string;
+  author_id: string;
+  type: string;
+  body: string;
+  created_at: string;
+};
+
+export type ThreadRow = {
+  thread_id: string;
+  home_dossier_id: string;
+  title: string;
+  state: string;
+  decision_outcome: string | null;
+  is_redteam: boolean;
+  parent_thread_id: string | null;
+  merge_artifact_id: string | null;
+  created_at: string;
+  targets?: ThreadTargetRow[];
+  posts?: ThreadPostRow[];
+  post_count?: number;
 };
 
 /** @deprecated Prefer ArtifactRow */

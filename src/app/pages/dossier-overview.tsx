@@ -11,9 +11,27 @@ import { useParams, Link } from "react-router";
 import {
   getDossier,
   getDossierArtifacts,
+  getDossierThreads,
 } from "../../api/client";
-import type { ArtifactRow, DossierRow } from "../../doc/types";
+import type { ArtifactRow, DossierRow, ThreadRow } from "../../doc/types";
 import { artifactIdOf } from "../../doc/types";
+
+function threadStatusLabel(
+  state: string,
+): "Open" | "RFC" | "Review" | "Decided" | "Merged" | "Parked" {
+  switch (state) {
+    case "rfc":
+      return "RFC";
+    case "review":
+      return "Review";
+    case "decided":
+      return "Decided";
+    case "archived":
+      return "Parked";
+    default:
+      return "Open";
+  }
+}
 
 type LoadState =
   | { status: "loading" }
@@ -23,6 +41,7 @@ type LoadState =
       status: "ready";
       dossier: DossierRow;
       artifacts: ArtifactRow[];
+      threads: ThreadRow[];
     };
 
 export function DossierOverview() {
@@ -37,12 +56,13 @@ export function DossierOverview() {
         return;
       }
       try {
-        const [dossier, artifacts] = await Promise.all([
+        const [dossier, artifacts, threads] = await Promise.all([
           getDossier(id),
           getDossierArtifacts(id),
+          getDossierThreads(id),
         ]);
         if (!cancelled) {
-          setState({ status: "ready", dossier, artifacts });
+          setState({ status: "ready", dossier, artifacts, threads });
         }
       } catch (err) {
         if (!cancelled) {
@@ -164,19 +184,86 @@ export function DossierOverview() {
                     </TabsContent>
 
                     <TabsContent value="threads">
-                      <Card className="border border-neutral-200 p-6">
-                        <p className="text-center text-sm text-neutral-500">
-                          Thread list arrives with M5.
-                        </p>
-                      </Card>
+                      {state.threads.filter((t) => t.state !== "rfc").length >
+                      0 ? (
+                        <div className="space-y-2">
+                          {state.threads
+                            .filter((t) => t.state !== "rfc")
+                            .map((t) => (
+                              <Card
+                                key={t.thread_id}
+                                className="border border-neutral-200 p-4"
+                              >
+                                <div className="mb-1 flex items-center gap-2">
+                                  <StatusBadge
+                                    status={threadStatusLabel(t.state)}
+                                  />
+                                  <span className="text-xs text-neutral-500">
+                                    {t.post_count ?? t.posts?.length ?? 0} posts
+                                  </span>
+                                </div>
+                                <h3 className="text-sm font-medium text-neutral-900">
+                                  {t.title}
+                                </h3>
+                                <p className="mt-1 text-xs text-neutral-500">
+                                  {t.thread_id}
+                                  {t.targets && t.targets.length > 0
+                                    ? ` · ${t.targets
+                                        .map(
+                                          (x) =>
+                                            `${x.target_kind}:${x.target_id}`,
+                                        )
+                                        .join(", ")}`
+                                    : ""}
+                                </p>
+                              </Card>
+                            ))}
+                        </div>
+                      ) : (
+                        <Card className="border border-neutral-200 p-6">
+                          <p className="text-center text-sm text-neutral-500">
+                            No open discussion threads in this dossier yet.
+                          </p>
+                        </Card>
+                      )}
                     </TabsContent>
 
                     <TabsContent value="rfcs">
-                      <Card className="border border-neutral-200 p-6">
-                        <p className="text-center text-sm text-neutral-500">
-                          RFC list arrives with M5.
-                        </p>
-                      </Card>
+                      {state.threads.filter((t) => t.state === "rfc").length >
+                      0 ? (
+                        <div className="space-y-2">
+                          {state.threads
+                            .filter((t) => t.state === "rfc")
+                            .map((t) => (
+                              <Card
+                                key={t.thread_id}
+                                className="border border-neutral-200 p-4"
+                              >
+                                <div className="mb-1 flex items-center gap-2">
+                                  <StatusBadge status="RFC" />
+                                  {t.merge_artifact_id && (
+                                    <span className="text-xs text-neutral-500">
+                                      merge → {t.merge_artifact_id}
+                                    </span>
+                                  )}
+                                </div>
+                                <h3 className="text-sm font-medium text-neutral-900">
+                                  {t.title}
+                                </h3>
+                                <p className="mt-1 text-xs text-neutral-500">
+                                  {t.thread_id} · RevSets / promotion UI still
+                                  M5
+                                </p>
+                              </Card>
+                            ))}
+                        </div>
+                      ) : (
+                        <Card className="border border-neutral-200 p-6">
+                          <p className="text-center text-sm text-neutral-500">
+                            No RFC threads in this dossier yet.
+                          </p>
+                        </Card>
+                      )}
                     </TabsContent>
 
                     <TabsContent value="red-team">
@@ -211,12 +298,22 @@ export function DossierOverview() {
                         </div>
                         <div className="text-sm text-neutral-600">Artifacts</div>
                       </div>
+                      <div>
+                        <div className="mb-1 text-2xl font-bold text-neutral-900">
+                          {state.threads.length}
+                        </div>
+                        <div className="text-sm text-neutral-600">Threads</div>
+                      </div>
                       <div className="border-l-2 border-amber-500 pl-3">
                         <div className="mb-1 flex items-center gap-2">
                           <StatusBadge status="RFC" />
                         </div>
                         <h4 className="text-sm font-medium text-neutral-900">
-                          Threads / RFCs — M5
+                          {
+                            state.threads.filter((t) => t.state === "rfc")
+                              .length
+                          }{" "}
+                          RFCs (promotion/RevSets still M5)
                         </h4>
                       </div>
                     </div>

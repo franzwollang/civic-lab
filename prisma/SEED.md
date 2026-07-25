@@ -1,10 +1,10 @@
-# Seed vs runtime (M1 + M4 corpus)
+# Seed vs runtime (M1 + M4 corpus + M5 threads)
 
 ## What lives where
 
 | Path | Role |
 |---|---|
-| `prisma/seed/*.json` | **Seed-only** fixtures (former `db/*.json` + M4 Area/Collection/Dossier). Edit these to change the default corpus. |
+| `prisma/seed/*.json` | **Seed-only** fixtures (former `db/*.json` + M4 Area/Collection/Dossier + M5 Threads). Edit these to change the default corpus. |
 | `prisma/dev.db` | **Runtime** SQLite file (gitignored). Created on first startup. |
 | `prisma/schema.prisma` | Schema; prototype uses `prisma db push` (no migration history yet). |
 | `SeedMeta` table | Marker that seed was applied. If missing ⇒ DB treated as empty ⇒ re-seed. |
@@ -17,6 +17,12 @@
 | `collections.json` | `collection-canon` (singleton); Manuals `collection-us/ca/gb/de` |
 | `dossiers.json` | Canon `electoral-1`, `alignment-1`; Manuals `us-voting-1`, `ca-elections-1`, `gb-elections-1`, `de-elections-1` |
 | `pages.json` | Artifacts with optional `dossier_id` (Canon `page-001`; US `us-*`; CA/GB/DE Manual stubs) |
+
+## M5 thread seeds
+
+| File | Entities |
+|---|---|
+| `threads.json` | Sample `Thread` + nested `posts` / `targets` (dossier + artifact anchors). States include `open` and `rfc`. |
 
 ## Startup sequence (`pnpm run dev` → API)
 
@@ -45,13 +51,14 @@ rm -f prisma/dev.db prisma/dev.db-journal && pnpm run dev
 
 ## Adding a seed file
 
-1. Add or edit JSON under `prisma/seed/` (shapes: areas/collections/dossiers arrays; pages array with optional `dossier_id`; revisions array; terms/attributions `{ version, items }`).
+1. Add or edit JSON under `prisma/seed/` (shapes: areas/collections/dossiers arrays; pages array with optional `dossier_id`; revisions array; threads array with nested posts/targets; terms/attributions `{ version, items }`).
 2. Reset runtime (`pnpm db:seed -- --force` or delete `prisma/dev.db`) so `SeedMeta` is cleared and startup re-seeds.
 3. Empty re-seed is **intentional** for this local prototype — disposable data, not production migration.
 
 ## API contract
 
 - Corpus: `/api/areas`, `/api/collections`, `/api/dossiers` (+ nested dossier artifacts).
+- Threads: `/api/threads`, `/api/threads/:id`, `/api/dossiers/:id/threads`.
 - Documents: Prisma `Artifact` / `ArtifactRevision` mapped onto legacy tables
   `pages` / `page_revisions` (`page_id` column ≡ artifact id). Wire JSON dual-emits
   `artifact_id` + `page_id`; `/api/artifacts` preferred (legacy `/api/pages` works).

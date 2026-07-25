@@ -1,0 +1,80 @@
+[
+  {
+    "thread_id": "thread-us-provisional-open",
+    "home_dossier_id": "us-voting-1",
+    "title": "Provisional ballot rejection rates — discussion",
+    "state": "open",
+    "decision_outcome": null,
+    "is_redteam": false,
+    "parent_thread_id": null,
+    "merge_artifact_id": null,
+    "created_at": "2026-07-10T14:00:00.000Z",
+    "targets": [
+      { "target_kind": "dossier", "target_id": "us-voting-1" },
+      { "target_kind": "artifact", "target_id": "us-provisional" }
+    ],
+    "posts": [
+      {
+        "post_id": "post-us-prov-1",
+        "author_id": "user-alice",
+        "type": "comment",
+        "body": "Should we document provisional ballot handling as a Descriptive brief before any Alignment claims?",
+        "created_at": "2026-07-10T14:00:00.000Z"
+      },
+      {
+        "post_id": "post-us-prov-2",
+        "author_id": "user-bob",
+        "type": "comment",
+        "body": "Agree — keep this open until the Overview artifact cites the same definitions.",
+        "created_at": "2026-07-10T15:30:00.000Z"
+      }
+    ]
+  },
+  {
+    "thread_id": "thread-us-voter-reg-rfc",
+    "home_dossier_id": "us-voting-1",
+    "title": "RFC: clarify voter registration procedure steps",
+    "state": "rfc",
+    "decision_outcome": null,
+    "is_redteam": false,
+    "parent_thread_id": null,
+    "merge_artifact_id": "us-voter-reg",
+    "created_at": "2026-07-12T10:00:00.000Z",
+    "targets": [
+      { "target_kind": "artifact", "target_id": "us-voter-reg" }
+    ],
+    "posts": [
+      {
+        "post_id": "post-us-reg-1",
+        "author_id": "user-alice",
+        "type": "comment",
+        "body": "Promoting to RFC so we can attach a RevSet against us-voter-reg (leaf merge).",
+        "created_at": "2026-07-12T10:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "thread_id": "thread-canon-voting-open",
+    "home_dossier_id": "electoral-1",
+    "title": "Parameterized scoring models — open questions",
+    "state": "open",
+    "decision_outcome": null,
+    "is_redteam": false,
+    "parent_thread_id": null,
+    "merge_artifact_id": null,
+    "created_at": "2026-07-08T09:00:00.000Z",
+    "targets": [
+      { "target_kind": "dossier", "target_id": "electoral-1" },
+      { "target_kind": "artifact", "target_id": "page-001" }
+    ],
+    "posts": [
+      {
+        "post_id": "post-canon-1",
+        "author_id": "user-carol",
+        "type": "comment",
+        "body": "Which parameters belong in Canon vs Manual Descriptive baselines?",
+        "created_at": "2026-07-08T09:00:00.000Z"
+      }
+    ]
+  }
+]

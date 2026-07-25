@@ -61,7 +61,10 @@ async function main() {
       throw new Error("Canon must not expose requirement_satisfaction");
     }
     if (canon.open_threads.deferred !== "M5") {
-      throw new Error("open_threads should defer to M5");
+      throw new Error("open_threads should defer RFC promotion to M5");
+    }
+    if (canon.open_threads.count < 1) {
+      throw new Error("canon open_threads.count should include seeded threads");
     }
     if (canon.claims.deferred !== "M6" || canon.red_team.deferred !== "M7") {
       throw new Error("claims/red_team deferrals wrong");

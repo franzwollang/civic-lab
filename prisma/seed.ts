@@ -58,6 +58,33 @@ type RegistryFile = {
   items: unknown[];
 };
 
+type ThreadTargetSeed = {
+  target_kind: string;
+  target_id: string;
+};
+
+type ThreadPostSeed = {
+  post_id: string;
+  author_id: string;
+  type: string;
+  body: string;
+  created_at: string;
+};
+
+type ThreadSeedRow = {
+  thread_id: string;
+  home_dossier_id: string;
+  title: string;
+  state: string;
+  decision_outcome?: string | null;
+  is_redteam?: boolean;
+  parent_thread_id?: string | null;
+  merge_artifact_id?: string | null;
+  created_at: string;
+  targets?: ThreadTargetSeed[];
+  posts?: ThreadPostSeed[];
+};
+
 async function readSeedJson<T>(name: string): Promise<T> {
   const raw = await fs.readFile(path.join(SEED_DIR, name), "utf-8");
   return JSON.parse(raw) as T;
@@ -73,6 +100,9 @@ export async function seedIfEmpty(
   }
 
   if (options.force) {
+    await prisma.threadTarget.deleteMany();
+    await prisma.threadPost.deleteMany();
+    await prisma.thread.deleteMany();
     await prisma.artifactRevision.deleteMany();
     await prisma.artifact.deleteMany();
     await prisma.dossier.deleteMany();
@@ -88,6 +118,7 @@ export async function seedIfEmpty(
   const dossiers = await readSeedJson<DossierSeedRow[]>("dossiers.json");
   const pages = await readSeedJson<ArtifactSeedRow[]>("pages.json");
   const revisions = await readSeedJson<RevisionSeedRow[]>("page_revisions.json");
+  const threads = await readSeedJson<ThreadSeedRow[]>("threads.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
@@ -150,6 +181,49 @@ export async function seedIfEmpty(
           contentJson: rev.content_json as object,
         },
       });
+    }
+
+    // Parent threads first (null parent_thread_id), then children.
+    const sortedThreads = [...threads].sort((a, b) => {
+      const ap = a.parent_thread_id ? 1 : 0;
+      const bp = b.parent_thread_id ? 1 : 0;
+      return ap - bp;
+    });
+    for (const th of sortedThreads) {
+      await tx.thread.create({
+        data: {
+          threadId: th.thread_id,
+          homeDossierId: th.home_dossier_id,
+          title: th.title,
+          state: th.state,
+          decisionOutcome: th.decision_outcome ?? null,
+          isRedteam: th.is_redteam ?? false,
+          parentThreadId: th.parent_thread_id ?? null,
+          mergeArtifactId: th.merge_artifact_id ?? null,
+          createdAt: new Date(th.created_at),
+        },
+      });
+      for (const target of th.targets ?? []) {
+        await tx.threadTarget.create({
+          data: {
+            threadId: th.thread_id,
+            targetKind: target.target_kind,
+            targetId: target.target_id,
+          },
+        });
+      }
+      for (const post of th.posts ?? []) {
+        await tx.threadPost.create({
+          data: {
+            postId: post.post_id,
+            threadId: th.thread_id,
+            authorId: post.author_id,
+            type: post.type,
+            body: post.body,
+            createdAt: new Date(post.created_at),
+          },
+        });
+      }
     }
 
     await tx.termsRegistry.create({
