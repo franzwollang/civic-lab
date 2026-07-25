@@ -94,13 +94,10 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Home already has a preamble; ensure Canon vs Manuals, thread-first, scorable claims, Red Team, adjudicators are explicit with links to 1–2 live exemplars (once data-driven).
   - Avoid duplicating FAQ; deep links fine.
 
-- [ ] **Breadcrumbs + cross-links**
-  - Every object page navigates “up” (artifact → dossier, thread → targets).
-  - Search first-cut done (`GET /api/search` + header results); deepen cross-links from hits where useful.
-
 - [ ] **Replace remaining placeholder panels**
   - Dossier tab stubs, disabled Nominate-for-RFC where still stubbed, etc.
   - Thread/RFC reply composer: done (impersonated author).
+  - Breadcrumbs + up-nav: done (Area→Collection→Dossier→leaf on corpus surfaces).
 
 ---
 
@@ -131,4 +128,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (26 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (27 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.

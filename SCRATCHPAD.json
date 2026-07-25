@@ -1,23 +1,22 @@
 {
-  "updated_at": "2026-07-25T15:35Z",
-  "turn": 43,
+  "updated_at": "2026-07-25T15:55Z",
+  "turn": 44,
   "focus": {
     "milestone": "M8",
-    "issue": "Breadcrumbs + cross-links",
-    "goal": "Up-nav on artifact/thread pages; consistent parent links"
+    "issue": "Role separation via impersonation",
+    "goal": "Global header acting-user switcher + role affordances"
   },
   "recent": [
-    "Merged PR #29 (M6+M7) onto cron branch 4557",
-    "GET /api/search + HeaderSearch dropdown + smoke-search",
-    "26/26 smokes + vite build green; Search issue closed"
+    "Merged PR #30 (M6–M8 search) onto cron branch 4d50",
+    "ObjectBreadcrumbs + dossier/thread nav fields; 6 surfaces wired",
+    "27/27 smokes + vite build green; breadcrumbs issue closed"
   ],
   "discoveries": [
-    "Claim hits deep-link to artifact reader with #claim-<id> (no claim route yet)"
+    "getThread joins home dossier for area/collection titles (no extra client fetch)"
   ],
   "open_threads": [
-    "Global impersonation chrome → M8",
-    "Breadcrumbs still uneven across object pages"
+    "Global impersonation chrome → M8 last exit criterion"
   ],
-  "next_step": "M8: breadcrumbs + up-links on artifact/thread/dossier surfaces",
+  "next_step": "M8: header acting-user switcher + distinct role affordances; then mark M8 done",
   "blockers": []
 }

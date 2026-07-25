@@ -71,9 +71,9 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (26/26) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (27/27) |
 
-**Next build:** **M8 Discovery** (`in progress` — first-cut search ✓; breadcrumbs + impersonation role chrome remaining).
+**Next build:** **M8 Discovery** (`in progress` — search ✓; breadcrumbs ✓; impersonation role chrome remaining).
 
 ---
 
@@ -89,7 +89,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M5 — Threads + RFC** | `done` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer ✓; Collection merge authority (§3.4) ✓ |
 | **M6 — Claims + lanes** | `done` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; Collection quality/forecast metrics ✓ |
 | **M7 — Red Team** | `done` | Finding + FindingTarget ✓; dashboard Critical/recent counts ✓; Accepted Risk on leaf + Critical merge gate ✓; Candidate→Finding + timeline filters/sidebar ✓ |
-| **M8 — Discovery** | `in progress` | First-cut search API + header ✓; breadcrumbs; impersonation role UX |
+| **M8 — Discovery** | `in progress` | First-cut search API + header ✓; breadcrumbs + up-nav ✓; impersonation role UX remaining |
 | **M9 — Policy** | `not started` | Real auth; reputation; Charter artifact; anti-gaming |
 
 ---
