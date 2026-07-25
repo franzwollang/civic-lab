@@ -70,10 +70,10 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Product UI | Hybrid — Area/Collection/Dossier routes data-driven; many dossier panels still fixture |
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
-| Auth | Seed users + **header impersonation** (M8); real auth → M9 residual |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (31/31) |
+| Auth | Seed users + **header impersonation** (M8) + **identity attestation hooks** (M9 §8.6); full OAuth/IdP deferred |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (32/32) |
 
-**Next build:** **M9 Policy** (`in progress` — Charter + reputation + Owner board-hide/audit landed). Remaining: real-auth / identity policy hooks. Editor MVP residuals and evidence bridge remain available as side work.
+**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor MVP gaps, evidence bridge, moderator tools, Fumadocs unpin, content). Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
 
 ---
 
@@ -90,7 +90,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M6 — Claims + lanes** | `done` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; Collection quality/forecast metrics ✓ |
 | **M7 — Red Team** | `done` | Finding + FindingTarget ✓; dashboard Critical/recent counts ✓; Accepted Risk on leaf + Critical merge gate ✓; Candidate→Finding + timeline filters/sidebar ✓ |
 | **M8 — Discovery** | `done` | First-cut search API + header ✓; breadcrumbs + up-nav ✓; impersonation role UX ✓ |
-| **M9 — Policy** | `in progress` | Charter living `owner_merge_only` artifact ✓; reputation advisory board ✓; Owner board-hide + audit ✓; remaining: real auth |
+| **M9 — Policy** | `done` | Charter living `owner_merge_only` artifact ✓; reputation advisory board ✓; Owner board-hide + audit ✓; real-identity policy hooks (§8.6) ✓ (full OAuth deferred) |
 
 ---
 
@@ -115,4 +115,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: **M9** real-auth / identity policy hooks (CONCEPT §8.6); editor MVP residuals + evidence bridge remain open.
+- Next: residual open work — editor MVP gaps, evidence registries, moderator tools, or Fumadocs unpin (see `OPEN_ISSUES.md`).

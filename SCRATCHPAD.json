@@ -1,24 +1,25 @@
 {
-  "updated_at": "2026-07-25T17:20Z",
-  "turn": 48,
+  "updated_at": "2026-07-25T17:40Z",
+  "turn": 49,
   "focus": {
-    "milestone": "M9",
-    "issue": "Auth + real-identity policy hooks",
-    "goal": "CONCEPT §8.6 real-auth scaffolding after impersonation"
+    "milestone": null,
+    "issue": "Editor MVP gaps",
+    "goal": "Register/delete unused editor plugins; wire or remove merge validate"
   },
   "recent": [
-    "Merged PR #34 progression onto cron branch 7a86",
-    "M9 board-hide: BoardHide + AuditLog; Owner hide/lift APIs",
-    "Reputation boards filter hidden users; Collection splash Owner UI",
-    "smoke-board-hide; 31/31 smokes + vite build green"
+    "Merged PR #35 progression onto cron branch c6c9",
+    "M9 identity hooks: UserIdentity + attest/request APIs",
+    "Manual steward country/ties gate on decide + AR",
+    "smoke-identity-policy; 32/32 smokes + vite build green",
+    "M9 marked done — full OAuth deferred"
   ],
   "discoveries": [
-    "Prisma Json @default(\"{}\") breaks SQLite push — omit default, pass payload"
+    "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
-    "M9 real-auth / identity hooks remain",
+    "Full OAuth/IdP deferred past §8.6 hooks",
     "Editor MVP gaps + evidence registries still open"
   ],
-  "next_step": "M9: real-identity auth policy hooks (CONCEPT §8.6) or editor/evidence residuals",
+  "next_step": "Editor MVP: MathDecoratePlugin / validateDocumentForMerge / lists MVP vs defer",
   "blockers": []
 }
