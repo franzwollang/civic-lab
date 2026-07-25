@@ -1,4 +1,7 @@
-// Civic Lab M1 — editor store entities (Pages ≈ future Artifacts).
+// Civic Lab M1/M3 — editor store entities.
+// CONCEPT name is Artifact / ArtifactRevision; Prisma still uses Page /
+// PageRevision mapped to `pages` / `page_revisions` until M4 rename.
+// Wire JSON keeps `page_id`; API also exposes `/api/artifacts` aliases.
 // Prototype sync: `prisma db push` (no migration history yet).
 
 generator client {

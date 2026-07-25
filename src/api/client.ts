@@ -1,4 +1,9 @@
-import type { PageRevisionRow, PageRow } from "../doc/types";
+import type {
+  ArtifactRevisionRow,
+  ArtifactRow,
+  PageRevisionRow,
+  PageRow,
+} from "../doc/types";
 import type { AttributionRegistry, TermRegistry } from "../doc/evidence";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
@@ -48,6 +53,71 @@ export async function updatePage(
     body: JSON.stringify(patch),
   });
   return handleResponse<PageRow>(response);
+}
+
+/** CONCEPT naming — hits `/api/artifacts` (alias of `/api/pages`). */
+export async function getArtifacts(): Promise<ArtifactRow[]> {
+  const response = await fetch(`${API_BASE}/artifacts`);
+  return handleResponse<ArtifactRow[]>(response);
+}
+
+export async function getArtifact(artifactId: string): Promise<ArtifactRow> {
+  const response = await fetch(`${API_BASE}/artifacts/${artifactId}`);
+  return handleResponse<ArtifactRow>(response);
+}
+
+export async function getArtifactRevisions(
+  artifactId: string,
+): Promise<ArtifactRevisionRow[]> {
+  const response = await fetch(
+    `${API_BASE}/artifacts/${artifactId}/revisions`,
+  );
+  return handleResponse<ArtifactRevisionRow[]>(response);
+}
+
+export async function createArtifactRevision(
+  artifactId: string,
+  revision: ArtifactRevisionRow,
+): Promise<ArtifactRevisionRow> {
+  const response = await fetch(
+    `${API_BASE}/artifacts/${artifactId}/revisions`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(revision),
+    },
+  );
+  return handleResponse<ArtifactRevisionRow>(response);
+}
+
+export async function updateArtifact(
+  artifactId: string,
+  patch: Partial<ArtifactRow>,
+): Promise<ArtifactRow> {
+  const response = await fetch(`${API_BASE}/artifacts/${artifactId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(patch),
+  });
+  return handleResponse<ArtifactRow>(response);
+}
+
+/**
+ * Resolve a route param that may be a page/artifact id or a slug
+ * (e.g. `page-001` or `voting-systems`).
+ */
+export async function resolveArtifactRef(
+  ref: string,
+): Promise<ArtifactRow | null> {
+  try {
+    return await getArtifact(ref);
+  } catch {
+    // Fall through to slug lookup.
+  }
+  const artifacts = await getArtifacts();
+  return (
+    artifacts.find((a) => a.slug === ref || a.page_id === ref) ?? null
+  );
 }
 
 export async function getAttributions(): Promise<AttributionRegistry> {

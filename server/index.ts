@@ -22,24 +22,86 @@ const PORT = Number(process.env.PORT) || 8787;
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 
-app.get("/api/pages", async (_req, res) => {
+async function handleListArtifacts(
+  _req: express.Request,
+  res: express.Response,
+) {
   const pages = await listPages();
   res.json(pages);
-});
+}
 
-app.get("/api/pages/:pageId", async (req, res) => {
-  const page = await getPage(req.params.pageId);
+async function handleGetArtifact(req: express.Request, res: express.Response) {
+  const id = req.params.pageId ?? req.params.artifactId;
+  const page = await getPage(id);
   if (!page) {
-    res.status(404).json({ error: "Page not found" });
+    res.status(404).json({ error: "Artifact not found" });
     return;
   }
   res.json(page);
-});
+}
 
-app.get("/api/pages/:pageId/revisions", async (req, res) => {
-  const filtered = await listRevisions(req.params.pageId);
+async function handleListRevisions(
+  req: express.Request,
+  res: express.Response,
+) {
+  const id = req.params.pageId ?? req.params.artifactId;
+  const filtered = await listRevisions(id);
   res.json(filtered);
-});
+}
+
+async function handleCreateRevision(
+  req: express.Request,
+  res: express.Response,
+) {
+  const id = req.params.pageId ?? req.params.artifactId;
+  const validated = await validateRevisionPayload(id, req.body);
+  if (!validated.ok) {
+    res.status(400).json({
+      error: validated.error,
+      issues: validated.issues,
+    });
+    return;
+  }
+
+  const page = await getPage(id);
+  if (!page) {
+    res.status(404).json({ error: "Artifact not found" });
+    return;
+  }
+
+  const created = await createRevision(validated.revision);
+  res.status(201).json(created);
+}
+
+async function handlePatchArtifact(
+  req: express.Request,
+  res: express.Response,
+) {
+  const id = req.params.pageId ?? req.params.artifactId;
+  const patch = req.body as Partial<{
+    title: string;
+    slug: string;
+    current_revision_id: string | null;
+  }>;
+  const updated = await updatePage(id, patch);
+
+  if (!updated) {
+    res.status(404).json({ error: "Artifact not found" });
+    return;
+  }
+
+  res.json(updated);
+}
+
+// Legacy `/api/pages` + CONCEPT `/api/artifacts` (same store; page_id ≡ artifact id).
+app.get("/api/pages", handleListArtifacts);
+app.get("/api/artifacts", handleListArtifacts);
+
+app.get("/api/pages/:pageId", handleGetArtifact);
+app.get("/api/artifacts/:artifactId", handleGetArtifact);
+
+app.get("/api/pages/:pageId/revisions", handleListRevisions);
+app.get("/api/artifacts/:artifactId/revisions", handleListRevisions);
 
 app.get("/api/attributions", async (_req, res) => {
   const attributions = await getAttributions();
@@ -152,41 +214,11 @@ app.put("/api/terms", async (req, res) => {
   res.json(saved);
 });
 
-app.post("/api/pages/:pageId/revisions", async (req, res) => {
-  const validated = await validateRevisionPayload(req.params.pageId, req.body);
-  if (!validated.ok) {
-    res.status(400).json({
-      error: validated.error,
-      issues: validated.issues,
-    });
-    return;
-  }
+app.post("/api/pages/:pageId/revisions", handleCreateRevision);
+app.post("/api/artifacts/:artifactId/revisions", handleCreateRevision);
 
-  const page = await getPage(req.params.pageId);
-  if (!page) {
-    res.status(404).json({ error: "Page not found" });
-    return;
-  }
-
-  const created = await createRevision(validated.revision);
-  res.status(201).json(created);
-});
-
-app.patch("/api/pages/:pageId", async (req, res) => {
-  const patch = req.body as Partial<{
-    title: string;
-    slug: string;
-    current_revision_id: string | null;
-  }>;
-  const updated = await updatePage(req.params.pageId, patch);
-
-  if (!updated) {
-    res.status(404).json({ error: "Page not found" });
-    return;
-  }
-
-  res.json(updated);
-});
+app.patch("/api/pages/:pageId", handlePatchArtifact);
+app.patch("/api/artifacts/:artifactId", handlePatchArtifact);
 
 async function main() {
   const client = await bootstrapDatabase();
