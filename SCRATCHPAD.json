@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-25T08:15Z",
-  "turn": 21,
+  "updated_at": "2026-07-25T08:40Z",
+  "turn": 22,
   "focus": {
     "milestone": "M4",
     "issue": "Top-level IA: Area → Collection → Dossier",
-    "goal": "Home store + Manuals map landed; finish Collection dashboards"
+    "goal": "§11 dashboard chrome landed; retire more fixture artifacts"
   },
   "recent": [
-    "Merged PR #10 onto fresh cron branch",
-    "Home Trending Dossiers from /api/dossiers",
-    "Dossier list joins artifact_count + collection",
-    "Manuals SVG map + list/search picker"
+    "Merged PR #11 onto fresh cron branch",
+    "GET /api/collections/:id/dashboard (§11)",
+    "Collection splash panels + Manuals lane coverage",
+    "Seeded CA/GB/DE Manual collections"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
@@ -21,6 +21,6 @@
     "Home RFC/Red Team panels still fixtures until M5/M7",
     "Section DB sync deferred until ThreadTarget (M5)"
   ],
-  "next_step": "M4 remainder: Collection §11 dashboard panels or more fixture→seed; else §A MVP gaps",
+  "next_step": "M4 remainder: retire us-voting fixture artifacts into seeds; else start M5 Threads",
   "blockers": []
 }

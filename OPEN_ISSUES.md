@@ -27,6 +27,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - [ ] **Make product routes data-driven**
   - Done: `/canon`, `/manuals`, `/collection/:id`, `/dossier/:id` load Prisma records; header/home CTAs point at Area entry routes.
   - Done: home **Trending Dossiers** from `/api/dossiers` (artifact_count + collection join).
+  - Done: Collection splash loads **`/api/collections/:id/dashboard`** (CONCEPT §11 chrome; thread/claim/RT panels stubbed until M5–M7).
   - Remaining: dossier tabs (threads/RFCs) when M5 exists; home RFC/Red Team panels still fixture until those tables exist.
 
 - [ ] **Unify artifact body with revisioned editor documents**
@@ -36,9 +37,10 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Remaining: replace more hardcoded fixture artifacts with seeds as M4 grows the corpus.
 
 - [ ] **Top-level IA: Area → Collection → Dossier**
-  - Done: Canon Area + singleton Collection; Manuals Area + US Collection; shared Collection splash; Manuals list/search index; dossier subforum shell from DB.
+  - Done: Canon Area + singleton Collection; Manuals Area + US/CA/GB/DE Collections; shared Collection splash; Manuals list/search index; dossier subforum shell from DB.
   - Done: Manuals **SVG map + list/search** picker (seeded countries lit; others planned). Full **3D** globe still deferred.
-  - Remaining: richer Collection dashboard panels (CONCEPT §11); more country Manual seeds.
+  - Done: Collection §11 dashboard chrome (dossier health live; Manuals lane-coverage tally; deferred stubs for threads/claims/RT).
+  - Remaining: more fixture artifact retirement into seeds; optional 3D globe polish.
 
 - [ ] **Migrate site copy into artifacts (incremental)**
   - About, FAQ, Constitution/Charter, home explainer → artifact-backed when feasible.
@@ -86,7 +88,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Global adjudicators; empirical vs requirement status sets; request-adjudication queue.
 
 - [ ] **Metrics + Collection dashboard panels**
-  - Quality vs forecast accuracy; Collection-scoped chrome (CONCEPT §11).
+  - Chrome parity landed in M4 (`/api/collections/:id/dashboard` + Collection splash).
+  - Remaining: real quality vs forecast accuracy once Claim tables exist (M6); Critical-findings counts once Threads/Findings exist (M5/M7).
 
 ---
 
