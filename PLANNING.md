@@ -71,7 +71,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | Seed users + **header impersonation** (M8) + **identity attestation hooks** (M9 §8.6); full OAuth/IdP deferred |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (37/37) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (38/38) |
 
 **Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor tables/images, About/FAQ artifact migration, Fumadocs unpin, optional mod-queue polish). Moderator soft-delete + broader §9.4 audit coverage landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
 
