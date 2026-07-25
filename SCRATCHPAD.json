@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-07-25T08:40Z",
-  "turn": 22,
+  "updated_at": "2026-07-25T08:55Z",
+  "turn": 23,
   "focus": {
     "milestone": "M4",
     "issue": "Top-level IA: Area → Collection → Dossier",
-    "goal": "§11 dashboard chrome landed; retire more fixture artifacts"
+    "goal": "us-voting FIXTURE_ARTIFACTS retired into prisma seeds"
   },
   "recent": [
-    "Merged PR #11 onto fresh cron branch",
-    "GET /api/collections/:id/dashboard (§11)",
-    "Collection splash panels + Manuals lane coverage",
-    "Seeded CA/GB/DE Manual collections"
+    "Merged PR #12 onto fresh cron branch",
+    "Seeded us-overview/voter-reg/polling/provisional",
+    "Removed dossier FIXTURE_ARTIFACTS + StaticProvisionalBody",
+    "smoke-us-voting-seeds + corpus-ia extended"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
     "Prisma --force-reset blocked; use fresh SQLite file for smokes"
   ],
   "open_threads": [
-    "3D globe map still deferred (flat SVG satisfies CONCEPT map+list)",
+    "CA/GB/DE dossiers still stub (0 artifacts)",
     "Home RFC/Red Team panels still fixtures until M5/M7",
-    "Section DB sync deferred until ThreadTarget (M5)"
+    "3D globe map still deferred"
   ],
-  "next_step": "M4 remainder: retire us-voting fixture artifacts into seeds; else start M5 Threads",
+  "next_step": "Seed CA/GB/DE Manual dossier artifacts or start M5 Threads",
   "blockers": []
 }

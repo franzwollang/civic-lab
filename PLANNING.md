@@ -68,7 +68,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
 
-**Next build:** Finish M4 (more fixture→seed; optional 3D globe) or start M5 Threads.
+**Next build:** Finish M4 (CA/GB/DE seed artifacts; optional 3D globe) or start M5 Threads.
 
 ---
 
@@ -80,7 +80,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M1 — Persistence** | `done` | Prisma/SQLite; seeds; db push; seed-if-empty; Express via Prisma |
 | **M2 — Editor solidity** | `done` | Void nav ✓; clipboard ✓; a11y ✓; full preview ✓; server validate ✓ |
 | **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
-| **M4 — Corpus IA** | `in progress` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; more fixture→seed remaining |
+| **M4 — Corpus IA** | `in progress` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; us-voting fixtures→seeds ✓; CA/GB/DE bodies + optional 3D remaining |
 | **M5 — Threads + RFC** | `not started` | Posts, targets, leaf/wrapper RFC, RevSet→revision, authority rules |
 | **M6 — Claims + lanes** | `not started` | Claim table + profiles; lane immutability; adjudication scaffolding |
 | **M7 — Red Team** | `not started` | Findings; Accepted Risk on leaf; Critical merge gate |

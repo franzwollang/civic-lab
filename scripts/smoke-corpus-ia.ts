@@ -79,6 +79,34 @@ async function main() {
       throw new Error(`electoral-1 artifacts: ${underElectoral.length}`);
     }
 
+    const underUsVoting = await prisma.artifact.findMany({
+      where: { dossierId: "us-voting-1" },
+      orderBy: { slug: "asc" },
+    });
+    if (underUsVoting.length !== 4) {
+      throw new Error(`us-voting-1 artifacts: ${underUsVoting.length}`);
+    }
+    const usSlugs = underUsVoting.map((a) => a.slug).sort();
+    const expected = ["overview", "polling", "provisional", "voter-reg"];
+    if (JSON.stringify(usSlugs) !== JSON.stringify(expected)) {
+      throw new Error(`us-voting-1 slugs: ${usSlugs.join(",")}`);
+    }
+    for (const a of underUsVoting) {
+      if (!a.currentRevisionId) {
+        throw new Error(`${a.artifactId} missing current_revision_id`);
+      }
+      const rev = await prisma.artifactRevision.findUnique({
+        where: { revisionId: a.currentRevisionId },
+      });
+      if (!rev || rev.artifactId !== a.artifactId) {
+        throw new Error(`bad revision for ${a.artifactId}`);
+      }
+      const content = rev.contentJson;
+      if (!Array.isArray(content) || content.length === 0) {
+        throw new Error(`${a.artifactId} empty content_json`);
+      }
+    }
+
     console.log("smoke-corpus-ia: OK");
   } finally {
     await prisma.$disconnect();

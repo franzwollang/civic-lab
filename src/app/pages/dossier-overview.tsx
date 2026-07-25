@@ -15,51 +15,6 @@ import {
 import type { ArtifactRow, DossierRow } from "../../doc/types";
 import { artifactIdOf } from "../../doc/types";
 
-/** Static fixture artifacts for dossiers that still lack seeded bodies. */
-const FIXTURE_ARTIFACTS: Record<
-  string,
-  Array<{
-    id: string;
-    title: string;
-    description: string;
-    tags: string[];
-    pinned?: boolean;
-  }>
-> = {
-  "us-voting-1": [
-    {
-      id: "overview",
-      title: "Overview and Purpose",
-      description:
-        "High-level goals, scope, and intended audience for the US voting implementation guide.",
-      tags: ["overview", "meta"],
-      pinned: true,
-    },
-    {
-      id: "voter-reg",
-      title: "Voter Registration Procedures",
-      description:
-        "Step-by-step workflows for registering voters across all 50 states including ID requirements and deadlines.",
-      tags: ["registration", "state-specific"],
-      pinned: true,
-    },
-    {
-      id: "polling",
-      title: "Polling Place Operations",
-      description:
-        "Opening procedures, voter check-in, ballot distribution, and closing protocols for election day.",
-      tags: ["operations", "election-day"],
-    },
-    {
-      id: "provisional",
-      title: "Provisional Ballot Handling",
-      description:
-        "When to issue provisional ballots, verification process, and counting procedures.",
-      tags: ["provisional", "ballots"],
-    },
-  ],
-};
-
 type LoadState =
   | { status: "loading" }
   | { status: "missing" }
@@ -108,8 +63,6 @@ export function DossierOverview() {
       cancelled = true;
     };
   }, [id]);
-
-  const fixtures = (id && FIXTURE_ARTIFACTS[id]) || [];
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -186,49 +139,21 @@ export function DossierOverview() {
 
                     <TabsContent value="artifacts">
                       <div className="space-y-6">
-                        {state.artifacts.length > 0 && (
-                          <div>
-                            <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-neutral-500">
-                              Seeded artifacts
-                            </h3>
-                            <div className="space-y-2">
-                              {state.artifacts.map((a) => (
-                                <ArtifactCard
-                                  key={artifactIdOf(a)}
-                                  id={a.slug || artifactIdOf(a)}
-                                  dossierId={id || ""}
-                                  title={a.title}
-                                  description={`Revisioned document · ${artifactIdOf(a)}`}
-                                  tags={[a.slug]}
-                                  isPinned
-                                />
-                              ))}
-                            </div>
+                        {state.artifacts.length > 0 ? (
+                          <div className="space-y-2">
+                            {state.artifacts.map((a) => (
+                              <ArtifactCard
+                                key={artifactIdOf(a)}
+                                id={a.slug || artifactIdOf(a)}
+                                dossierId={id || ""}
+                                title={a.title}
+                                description={`Revisioned document · ${artifactIdOf(a)}`}
+                                tags={[a.slug]}
+                                isPinned
+                              />
+                            ))}
                           </div>
-                        )}
-
-                        {fixtures.length > 0 && (
-                          <div>
-                            <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-neutral-500">
-                              Fixture artifacts (not yet seeded)
-                            </h3>
-                            <div className="space-y-2">
-                              {fixtures.map((f) => (
-                                <ArtifactCard
-                                  key={f.id}
-                                  id={f.id}
-                                  dossierId={id || ""}
-                                  title={f.title}
-                                  description={f.description}
-                                  tags={f.tags}
-                                  isPinned={f.pinned}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {state.artifacts.length === 0 && fixtures.length === 0 && (
+                        ) : (
                           <Card className="border border-neutral-200 p-6">
                             <p className="text-sm text-neutral-500">
                               No artifacts linked to this dossier yet.
@@ -282,11 +207,9 @@ export function DossierOverview() {
                     <div className="space-y-4">
                       <div>
                         <div className="mb-1 text-2xl font-bold text-neutral-900">
-                          {state.artifacts.length + fixtures.length}
+                          {state.artifacts.length}
                         </div>
-                        <div className="text-sm text-neutral-600">
-                          Artifacts (seeded + fixture)
-                        </div>
+                        <div className="text-sm text-neutral-600">Artifacts</div>
                       </div>
                       <div className="border-l-2 border-amber-500 pl-3">
                         <div className="mb-1 flex items-center gap-2">

@@ -7931,5 +7931,669 @@
     ],
     "doc_root_hash": "b2b4c49e882e1dc760d9aa3f312a4cbeff659492b1dc8d60455dbba1b0be172c",
     "schema_version": 2
+  },
+  {
+    "revision_id": "rev-us-overview-1",
+    "page_id": "us-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals, scope, and intended audience for the US voting implementation guide."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p2",
+        "children": [
+          {
+            "text": "Give election administrators a shared, actionable Manual for conducting elections that aligns with Canon voting-system ideals where feasible."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p3",
+        "children": [
+          {
+            "text": "Covers federal elections and common state practices. State-specific statutes are noted where they diverge from the baseline workflow."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p4",
+        "children": [
+          {
+            "text": "County clerks, poll-worker trainers, and Civic Lab contributors drafting Manual Alignment claims."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "us-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-ov-p1",
+        "text_preview": "High-level goals, scope, and intended audience for the US voting implementation guide."
+      },
+      {
+        "block_id": "us-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "us-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-ov-p2",
+        "text_preview": "Give election administrators a shared, actionable Manual for conducting elections that aligns with Canon voting-system i"
+      },
+      {
+        "block_id": "us-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "us-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-ov-p3",
+        "text_preview": "Covers federal elections and common state practices. State-specific statutes are noted where they diverge from the basel"
+      },
+      {
+        "block_id": "us-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "us-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-ov-p4",
+        "text_preview": "County clerks, poll-worker trainers, and Civic Lab contributors drafting Manual Alignment claims."
+      }
+    ],
+    "doc_root_hash": "seed-root-us-overview",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-us-voter-reg-1",
+    "page_id": "us-voter-reg",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-vr-h1",
+        "children": [
+          {
+            "text": "Voter Registration Procedures"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p1",
+        "children": [
+          {
+            "text": "Step-by-step workflows for registering voters across all 50 states including ID requirements and deadlines."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h2",
+        "children": [
+          {
+            "text": "Baseline intake"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p2",
+        "children": [
+          {
+            "text": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdiction checklist before creating a registration record."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h3",
+        "children": [
+          {
+            "text": "Deadlines"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p3",
+        "children": [
+          {
+            "text": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day lane documented under Polling Place Operations."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h4",
+        "children": [
+          {
+            "text": "ID requirements"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p4",
+        "children": [
+          {
+            "text": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a ballot."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-vr-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-vr-h1",
+        "text_preview": "Voter Registration Procedures"
+      },
+      {
+        "block_id": "us-vr-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-vr-p1",
+        "text_preview": "Step-by-step workflows for registering voters across all 50 states including ID requirements and deadlines."
+      },
+      {
+        "block_id": "us-vr-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-vr-h2",
+        "text_preview": "Baseline intake"
+      },
+      {
+        "block_id": "us-vr-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-vr-p2",
+        "text_preview": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdict"
+      },
+      {
+        "block_id": "us-vr-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-vr-h3",
+        "text_preview": "Deadlines"
+      },
+      {
+        "block_id": "us-vr-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-vr-p3",
+        "text_preview": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day l"
+      },
+      {
+        "block_id": "us-vr-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-vr-h4",
+        "text_preview": "ID requirements"
+      },
+      {
+        "block_id": "us-vr-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-vr-p4",
+        "text_preview": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-voter-reg",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-us-polling-1",
+    "page_id": "us-polling",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:20:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-po-h1",
+        "children": [
+          {
+            "text": "Polling Place Operations"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p1",
+        "children": [
+          {
+            "text": "Opening procedures, voter check-in, ballot distribution, and closing protocols for election day."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-po-h2",
+        "children": [
+          {
+            "text": "Opening"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p2",
+        "children": [
+          {
+            "text": "Verify seals on ballot containers, zero-count tabulators or ballot scanners, and post required notices before admitting voters."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-po-h3",
+        "children": [
+          {
+            "text": "Check-in and ballot issue"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p3",
+        "children": [
+          {
+            "text": "Locate the voter in the poll book or e-pollbook. Issue the correct ballot style. If eligibility cannot be confirmed, follow Provisional Ballot Handling."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-po-h4",
+        "children": [
+          {
+            "text": "Closing"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p4",
+        "children": [
+          {
+            "text": "Reconcile issued, spoiled, and unused ballots. Seal containers with two-person custody and complete the precinct reconciliation sheet."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-po-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-po-h1",
+        "text_preview": "Polling Place Operations"
+      },
+      {
+        "block_id": "us-po-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-po-p1",
+        "text_preview": "Opening procedures, voter check-in, ballot distribution, and closing protocols for election day."
+      },
+      {
+        "block_id": "us-po-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-po-h2",
+        "text_preview": "Opening"
+      },
+      {
+        "block_id": "us-po-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-po-p2",
+        "text_preview": "Verify seals on ballot containers, zero-count tabulators or ballot scanners, and post required notices before admitting "
+      },
+      {
+        "block_id": "us-po-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-po-h3",
+        "text_preview": "Check-in and ballot issue"
+      },
+      {
+        "block_id": "us-po-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-po-p3",
+        "text_preview": "Locate the voter in the poll book or e-pollbook. Issue the correct ballot style. If eligibility cannot be confirmed, fol"
+      },
+      {
+        "block_id": "us-po-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-po-h4",
+        "text_preview": "Closing"
+      },
+      {
+        "block_id": "us-po-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-po-p4",
+        "text_preview": "Reconcile issued, spoiled, and unused ballots. Seal containers with two-person custody and complete the precinct reconci"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-polling",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-us-provisional-1",
+    "page_id": "us-provisional",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:30:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-pb-h1",
+        "children": [
+          {
+            "text": "Overview"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p1",
+        "children": [
+          {
+            "text": "Provisional ballots are a critical safeguard mechanism that ensures eligible voters can cast a ballot even when questions arise about their registration or eligibility at the polling place. This artifact defines when provisional ballots must be issued, how they should be handled, and the verification process for counting."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h2",
+        "children": [
+          {
+            "text": "Key principle"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p2",
+        "children": [
+          {
+            "text": "No eligible voter should be turned away from the polls. When in doubt, issue a provisional ballot and resolve eligibility during the canvassing period."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h3",
+        "children": [
+          {
+            "text": "When to issue provisional ballots"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p3",
+        "children": [
+          {
+            "text": "Poll workers must offer a provisional ballot when: the voter name does not appear in the poll book; registration cannot be verified; required ID is missing; eligibility is challenged; the voter moved within the jurisdiction to a different precinct; or absentee records show a mail ballot was issued but the voter claims not to have voted it."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h4",
+        "children": [
+          {
+            "text": "Issuance procedure"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p4",
+        "children": [
+          {
+            "text": "Explain the process; complete the provisional envelope with contact information and affirmation; mark the poll book with a unique identifier; allow the voter to mark the ballot privately; seal the ballot in the envelope; provide a tear-off receipt with a tracking number."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h5",
+        "children": [
+          {
+            "text": "Critical alert — chain of custody"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p5",
+        "children": [
+          {
+            "text": "Red Team Finding #RT-042: Current procedure lacks explicit chain of custody requirements for transporting provisional ballots from polling place to central counting facility. Flagged as Critical severity."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h6",
+        "children": [
+          {
+            "text": "Storage and transport"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p6",
+        "children": [
+          {
+            "text": "Keep provisional ballots separate from regular ballots. Store in a designated sealed container at the polling place. Transport to the central facility with two-person escort (requirement under review per RFC #RT-042). Log chain of custody at each transfer with timestamps and signatures."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h7",
+        "children": [
+          {
+            "text": "Verification process"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p7",
+        "children": [
+          {
+            "text": "The canvassing board must verify eligibility of each provisional ballot within 7 days of the election: check the registration database; verify signature; confirm the voter did not cast another ballot; determine correct jurisdiction; accept or reject with a documented reason code."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-pb-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-pb-h1",
+        "text_preview": "Overview"
+      },
+      {
+        "block_id": "us-pb-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-pb-p1",
+        "text_preview": "Provisional ballots are a critical safeguard mechanism that ensures eligible voters can cast a ballot even when question"
+      },
+      {
+        "block_id": "us-pb-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-pb-h2",
+        "text_preview": "Key principle"
+      },
+      {
+        "block_id": "us-pb-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-pb-p2",
+        "text_preview": "No eligible voter should be turned away from the polls. When in doubt, issue a provisional ballot and resolve eligibilit"
+      },
+      {
+        "block_id": "us-pb-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-pb-h3",
+        "text_preview": "When to issue provisional ballots"
+      },
+      {
+        "block_id": "us-pb-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-pb-p3",
+        "text_preview": "Poll workers must offer a provisional ballot when: the voter name does not appear in the poll book; registration cannot "
+      },
+      {
+        "block_id": "us-pb-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-pb-h4",
+        "text_preview": "Issuance procedure"
+      },
+      {
+        "block_id": "us-pb-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-pb-p4",
+        "text_preview": "Explain the process; complete the provisional envelope with contact information and affirmation; mark the poll book with"
+      },
+      {
+        "block_id": "us-pb-h5",
+        "type": "h2",
+        "order": 8,
+        "hash": "seed-us-pb-h5",
+        "text_preview": "Critical alert — chain of custody"
+      },
+      {
+        "block_id": "us-pb-p5",
+        "type": "p",
+        "order": 9,
+        "hash": "seed-us-pb-p5",
+        "text_preview": "Red Team Finding #RT-042: Current procedure lacks explicit chain of custody requirements for transporting provisional ba"
+      },
+      {
+        "block_id": "us-pb-h6",
+        "type": "h2",
+        "order": 10,
+        "hash": "seed-us-pb-h6",
+        "text_preview": "Storage and transport"
+      },
+      {
+        "block_id": "us-pb-p6",
+        "type": "p",
+        "order": 11,
+        "hash": "seed-us-pb-p6",
+        "text_preview": "Keep provisional ballots separate from regular ballots. Store in a designated sealed container at the polling place. Tra"
+      },
+      {
+        "block_id": "us-pb-h7",
+        "type": "h2",
+        "order": 12,
+        "hash": "seed-us-pb-h7",
+        "text_preview": "Verification process"
+      },
+      {
+        "block_id": "us-pb-p7",
+        "type": "p",
+        "order": 13,
+        "hash": "seed-us-pb-p7",
+        "text_preview": "The canvassing board must verify eligibility of each provisional ballot within 7 days of the election: check the registr"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-provisional",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
   }
 ]

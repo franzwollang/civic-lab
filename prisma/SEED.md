@@ -15,8 +15,8 @@
 |---|---|
 | `areas.json` | `area-canon`, `area-manuals` |
 | `collections.json` | `collection-canon` (singleton), `collection-us` (`country_code: US`) |
-| `dossiers.json` | `electoral-1`, `alignment-1` (Canon); `us-voting-1` (US Manual) |
-| `pages.json` | Artifacts; optional `dossier_id` (e.g. `page-001` → `electoral-1`) |
+| `dossiers.json` | `electoral-1`, `alignment-1` (Canon); `us-voting-1` (US Manual); CA/GB/DE stubs |
+| `pages.json` | Artifacts; optional `dossier_id` (`page-001` → `electoral-1`; `us-*` → `us-voting-1`) |
 
 ## Startup sequence (`pnpm run dev` → API)
 
