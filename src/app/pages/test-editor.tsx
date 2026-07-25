@@ -56,11 +56,16 @@ import { EvidenceModalProvider } from "@/editor/evidenceModals";
 import { extractBlockIndex } from "@/doc/blockIndex";
 import { merkleRoot } from "@/doc/merkle";
 import { diffBlocks } from "@/doc/diff";
-import type { ArtifactRevisionRow, ArtifactRow } from "@/doc/types";
+import type { ArtifactRevisionRow, ArtifactRow, DossierRow } from "@/doc/types";
 import { artifactIdOf } from "@/doc/types";
-import { getArtifact, getArtifactRevisions } from "@/api/client";
+import { getArtifact, getArtifactRevisions, getDossier } from "@/api/client";
 import { saveRevision, toUserMessage } from "@/api/actions";
 import { validateDocument } from "@/doc/validation";
+import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
+import {
+  areaKindFromCollection,
+  buildHierarchyCrumbs,
+} from "../lib/object-nav";
 
 const DEFAULT_ARTIFACT_ID = "page-001";
 
@@ -84,6 +89,7 @@ function TestEditorInner() {
     : `/test/preview/${artifactId}`;
   const [value, setValue] = useState(initialValue);
   const [page, setPage] = useState<ArtifactRow | null>(null);
+  const [dossier, setDossier] = useState<DossierRow | null>(null);
   const [revisions, setRevisions] = useState<ArtifactRevisionRow[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "saving" | "error">(
     "idle",
@@ -228,11 +234,13 @@ function TestEditorInner() {
     setStatus("loading");
     setError(null);
     try {
-      const [pageData, revisionsData] = await Promise.all([
+      const [pageData, revisionsData, dossierData] = await Promise.all([
         getArtifact(artifactId),
         getArtifactRevisions(artifactId),
+        dossierId ? getDossier(dossierId) : Promise.resolve(null),
       ]);
       setPage(pageData);
+      setDossier(dossierData);
       setRevisions(revisionsData);
 
       const currentRevision =
@@ -565,7 +573,26 @@ function TestEditorInner() {
       >
         <aside className="flex w-1/4 min-h-0 flex-col gap-6">
           <div className="pb-4">
-            {inProductChrome && (
+            {inProductChrome && dossier && dossierId && (
+              <ObjectBreadcrumbs
+                crumbs={buildHierarchyCrumbs({
+                  area_kind:
+                    dossier.area_kind ?? areaKindFromCollection(dossier),
+                  collection_id: dossier.collection_id,
+                  collection_title: dossier.collection_title ?? "Collection",
+                  dossier_id: dossier.dossier_id,
+                  dossier_title: dossier.title,
+                  leaf: [
+                    {
+                      label: page?.title || "Artifact",
+                      href: artifactViewPath,
+                    },
+                    { label: "Edit" },
+                  ],
+                })}
+              />
+            )}
+            {inProductChrome && !dossier && (
               <div className="mb-2 text-sm text-neutral-500">
                 <Link
                   to={artifactViewPath}

@@ -26,6 +26,12 @@ import {
 } from "../lib/prototype-users";
 import { actorMayDecide } from "../../lib/mergeAuthority";
 import { actorMaySignAcceptedRisk } from "../../lib/acceptedRisk";
+import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
+import {
+  buildHierarchyCrumbs,
+  collectionHref,
+  threadHref,
+} from "../lib/object-nav";
 
 function statusLabel(
   thread: ThreadRow,
@@ -175,6 +181,26 @@ export function RfcThreadPage() {
           {thread && (
             <>
               <div className="mb-8">
+                {thread.collection_id && thread.area_kind && (
+                  <ObjectBreadcrumbs
+                    crumbs={buildHierarchyCrumbs({
+                      area_kind: thread.area_kind,
+                      collection_id: thread.collection_id,
+                      collection_title:
+                        thread.collection_title ?? "Collection",
+                      dossier_id: thread.home_dossier_id,
+                      dossier_title:
+                        thread.home_dossier_title ?? thread.home_dossier_id,
+                      leaf: [
+                        {
+                          label: "Discussion",
+                          href: threadHref(thread.thread_id, "open"),
+                        },
+                        { label: `RFC: ${thread.title}` },
+                      ],
+                    })}
+                  />
+                )}
                 <div className="mb-4 flex items-center gap-3">
                   <StatusBadge status={statusLabel(thread)} />
                   <span className="text-sm text-neutral-500">
@@ -222,7 +248,7 @@ export function RfcThreadPage() {
                         to={`/dossier/${thread.home_dossier_id}`}
                         className="font-medium text-neutral-900 hover:text-neutral-700"
                       >
-                        {thread.home_dossier_id}
+                        {thread.home_dossier_title ?? thread.home_dossier_id}
                       </Link>
                     </div>
                     {thread.parent_thread_id && (
@@ -434,7 +460,14 @@ export function RfcThreadPage() {
                         </div>
                         <div className="mt-1 text-xs text-neutral-500">
                           Collection{" "}
-                          <code>{thread.merge_authority.collection_id}</code>
+                          <Link
+                            to={collectionHref(
+                              thread.merge_authority.collection_id,
+                            )}
+                            className="underline hover:text-neutral-800"
+                          >
+                            <code>{thread.merge_authority.collection_id}</code>
+                          </Link>
                           {" · "}
                           required roles:{" "}
                           {thread.merge_authority.required_roles.join(", ")}

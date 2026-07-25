@@ -22,6 +22,11 @@ import type {
   ThreadRow,
 } from "../../doc/types";
 import { artifactIdOf } from "../../doc/types";
+import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
+import {
+  areaKindFromCollection,
+  buildHierarchyCrumbs,
+} from "../lib/object-nav";
 
 function threadStatusLabel(
   state: string,
@@ -165,17 +170,21 @@ export function DossierOverview() {
           {state.status === "ready" && (
             <>
               <div className="mb-8">
-                <div className="mb-4 flex items-center gap-3">
-                  <Link
-                    to={`/collection/${state.dossier.collection_id}`}
-                    className="text-sm text-neutral-500 hover:text-neutral-800"
-                  >
-                    ↑ Collection
-                  </Link>
-                  <span className="text-sm text-neutral-500">
-                    Dossier #{state.dossier.dossier_id}
-                  </span>
-                </div>
+                <ObjectBreadcrumbs
+                  crumbs={buildHierarchyCrumbs({
+                    area_kind:
+                      state.dossier.area_kind ??
+                      areaKindFromCollection(state.dossier),
+                    collection_id: state.dossier.collection_id,
+                    collection_title:
+                      state.dossier.collection_title ?? "Collection",
+                    dossier_id: state.dossier.dossier_id,
+                    dossier_title: state.dossier.title,
+                  })}
+                />
+                <p className="mb-4 text-sm text-neutral-500">
+                  Dossier #{state.dossier.dossier_id}
+                </p>
                 <h1 className="mb-3 text-3xl font-bold text-neutral-900">
                   {state.dossier.title}
                 </h1>

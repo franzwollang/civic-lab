@@ -72,6 +72,10 @@ export type DossierRow = {
   artifact_count?: number;
   collection_title?: string | null;
   country_code?: string | null;
+  /** Present when API joins collection → area (M8 breadcrumbs). */
+  area_id?: string | null;
+  area_kind?: "canon" | "manuals" | null;
+  area_title?: string | null;
 };
 
 /** CONCEPT §11 Collection dashboard wire shape. */
@@ -216,6 +220,11 @@ export type ThreadRow = {
   parent_thread_id: string | null;
   merge_artifact_id: string | null;
   created_at: string;
+  /** Present on GET /api/threads/:id for up-nav (M8). */
+  home_dossier_title?: string | null;
+  collection_id?: string | null;
+  collection_title?: string | null;
+  area_kind?: "canon" | "manuals" | null;
   targets?: ThreadTargetRow[];
   posts?: ThreadPostRow[];
   post_count?: number;

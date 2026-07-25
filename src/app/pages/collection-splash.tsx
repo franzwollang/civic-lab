@@ -13,6 +13,11 @@ import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { getCollectionDashboard } from "../../api/client";
 import type { CollectionDashboard } from "../../doc/types";
+import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
+import {
+  areaKindFromCollection,
+  buildHierarchyCrumbs,
+} from "../lib/object-nav";
 
 type LoadState =
   | { status: "loading" }
@@ -95,10 +100,18 @@ function CollectionDashboardView({
 }) {
   const { collection, stats, dossiers } = dashboard;
   const isManual = Boolean(collection.country_code);
+  const area_kind = areaKindFromCollection(collection);
 
   return (
     <>
       <div className="mb-8">
+        <ObjectBreadcrumbs
+          crumbs={buildHierarchyCrumbs({
+            area_kind,
+            collection_id: collection.collection_id,
+            collection_title: collection.title,
+          })}
+        />
         <p className="mb-2 text-sm uppercase tracking-wider text-neutral-500">
           {isManual
             ? `Manual · ${collection.country_code}`

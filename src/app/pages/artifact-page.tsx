@@ -21,7 +21,12 @@ import { artifactIdOf } from "@/doc/types";
 import type { ArtifactRow, DossierRow } from "@/doc/types";
 import { getDossier, getDossierArtifacts } from "@/api/client";
 import { ArtifactClaimsPanel } from "../components/artifact-claims-panel";
+import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
 import { laneForDossier, laneLabelForArtifact } from "../lib/dossier-display";
+import {
+  areaKindFromCollection,
+  buildHierarchyCrumbs,
+} from "../lib/object-nav";
 
 export function ArtifactPage() {
   const { dossierId, artifactId } = useParams();
@@ -95,6 +100,20 @@ export function ArtifactPage() {
     });
   }, [related, doc, artifactId]);
 
+  const crumbs = useMemo(() => {
+    if (!dossier || !dossierId) return [];
+    const area_kind =
+      dossier.area_kind ?? areaKindFromCollection(dossier);
+    return buildHierarchyCrumbs({
+      area_kind,
+      collection_id: dossier.collection_id,
+      collection_title: dossier.collection_title ?? "Collection",
+      dossier_id: dossier.dossier_id,
+      dossier_title: dossier.title,
+      leaf: [{ label: title }],
+    });
+  }, [dossier, dossierId, title]);
+
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
@@ -105,15 +124,19 @@ export function ArtifactPage() {
           <div className="flex gap-8">
             <article className="flex-1">
               <div className="mb-6">
-                <div className="mb-2 text-sm text-neutral-500">
-                  <Link
-                    to={`/dossier/${dossierId}`}
-                    className="hover:text-neutral-700"
-                  >
-                    ↑ Dossier
-                  </Link>{" "}
-                  / Artifact
-                </div>
+                {crumbs.length > 0 ? (
+                  <ObjectBreadcrumbs crumbs={crumbs} />
+                ) : dossierId ? (
+                  <div className="mb-2 text-sm text-neutral-500">
+                    <Link
+                      to={`/dossier/${dossierId}`}
+                      className="hover:text-neutral-700"
+                    >
+                      ↑ Dossier
+                    </Link>{" "}
+                    / Artifact
+                  </div>
+                ) : null}
                 <div className="mb-4 flex items-center gap-3">
                   {lane && (
                     <>

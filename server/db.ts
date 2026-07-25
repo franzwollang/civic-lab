@@ -428,11 +428,21 @@ function mapDossier(row: {
   collection?: {
     title: string;
     countryCode: string | null;
+    areaId?: string;
+    area?: { areaId: string; kind: string; title: string } | null;
   } | null;
 }): DossierRow {
   const tags = Array.isArray(row.tags)
     ? row.tags.filter((t): t is string => typeof t === "string")
     : [];
+  const area = row.collection?.area ?? null;
+  const areaKindRaw = area?.kind;
+  const area_kind =
+    areaKindRaw === "manuals"
+      ? ("manuals" as const)
+      : areaKindRaw === "canon"
+        ? ("canon" as const)
+        : null;
   return {
     dossier_id: row.dossierId,
     collection_id: row.collectionId,
@@ -442,6 +452,9 @@ function mapDossier(row: {
     artifact_count: row._count?.artifacts,
     collection_title: row.collection?.title ?? null,
     country_code: row.collection?.countryCode ?? null,
+    area_id: area?.areaId ?? row.collection?.areaId ?? null,
+    area_kind,
+    area_title: area?.title ?? null,
   };
 }
 
@@ -812,6 +825,13 @@ export async function searchCorpus(
   };
 }
 
+const dossierCollectionNavInclude = {
+  title: true,
+  countryCode: true,
+  areaId: true,
+  area: { select: { areaId: true, kind: true, title: true } },
+} as const;
+
 export async function listDossiers(
   collectionId?: string,
 ): Promise<DossierRow[]> {
@@ -820,7 +840,7 @@ export async function listDossiers(
     orderBy: { title: "asc" },
     include: {
       _count: { select: { artifacts: true } },
-      collection: { select: { title: true, countryCode: true } },
+      collection: { select: dossierCollectionNavInclude },
     },
   });
   return rows.map(mapDossier);
@@ -831,7 +851,7 @@ export async function getDossier(dossierId: string): Promise<DossierRow | null> 
     where: { dossierId },
     include: {
       _count: { select: { artifacts: true } },
-      collection: { select: { title: true, countryCode: true } },
+      collection: { select: dossierCollectionNavInclude },
     },
   });
   return row ? mapDossier(row) : null;
@@ -1321,6 +1341,13 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
   });
   if (!row) return null;
   const mapped = mapThread(row);
+  const home = await getDossier(row.homeDossierId);
+  if (home) {
+    mapped.home_dossier_title = home.title;
+    mapped.collection_id = home.collection_id;
+    mapped.collection_title = home.collection_title ?? null;
+    mapped.area_kind = home.area_kind ?? null;
+  }
   const revArtifactIds = await resolveRevSetArtifactIds(
     row.revSets.map((r) => r.artifactRevisionId),
   );
