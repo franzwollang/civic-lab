@@ -93,8 +93,8 @@ async function main() {
     if (!canonDash || canonDash.open_threads.count < 1) {
       throw new Error("canon dashboard should count seeded open threads");
     }
-    if (canonDash.open_threads.deferred !== "M5") {
-      throw new Error("RFC promotion still deferred within M5");
+    if (canonDash.open_threads.deferred !== "M7") {
+      throw new Error("Critical findings still deferred to M7");
     }
 
     const usDash = await getCollectionDashboard("collection-us");

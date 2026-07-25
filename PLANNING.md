@@ -71,9 +71,9 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (21/21) |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (22/22) |
 
-**Next build:** **M6 Claims + lanes** (`in progress` — Claim table + immutable lanes + adjudication + authoring UX landed). Next: Collection claim metrics (quality/forecast panels). Accepted Risk on leaf stays M7.
+**Next build:** **M7 Red Team** (`not started`). M6 Claims + lanes complete (legality, lanes, adjudication, authoring, Collection quality/forecast metrics).
 
 ---
 
@@ -87,7 +87,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |
 | **M5 — Threads + RFC** | `done` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer ✓; Collection merge authority (§3.4) ✓ |
-| **M6 — Claims + lanes** | `in progress` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; metrics panels remaining |
+| **M6 — Claims + lanes** | `done` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; Collection quality/forecast metrics ✓ |
 | **M7 — Red Team** | `not started` | Findings; Accepted Risk on leaf; Critical merge gate |
 | **M8 — Discovery** | `not started` | Search; breadcrumbs; impersonation role UX |
 | **M9 — Policy** | `not started` | Real auth; reputation; Charter artifact; anti-gaming |
@@ -115,4 +115,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: **M6** Claims + lanes (Accepted Risk / Critical merge gate remains M7).
+- Next: **M7** Red Team (Findings + Accepted Risk + Critical merge gate).

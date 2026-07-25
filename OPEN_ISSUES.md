@@ -27,7 +27,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - [ ] **Make product routes data-driven**
   - Done: `/canon`, `/manuals`, `/collection/:id`, `/dossier/:id` load Prisma records; header/home CTAs point at Area entry routes.
   - Done: home **Trending Dossiers** from `/api/dossiers` (artifact_count + collection join).
-  - Done: Collection splash loads **`/api/collections/:id/dashboard`** (CONCEPT §11 chrome; thread/claim/RT panels stubbed until M5–M7).
+  - Done: Collection splash loads **`/api/collections/:id/dashboard`** (CONCEPT §11 chrome; claim quality/forecast live; Critical findings / Red Team still M7).
   - Remaining: dossier tabs show live threads (M5 first cut); home RFC/Red Team panels still fixture until RFC/Findings tables mature.
 
 - [ ] **Unify artifact body with revisioned editor documents**
@@ -61,10 +61,8 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## E. Scorable claims + lanes (CONCEPT §§4–6)
 
-- [ ] **Metrics + Collection dashboard panels**
-  - Chrome parity landed in M4; lane_coverage + requirement open/total counts live from Claim/lane rows.
-  - Claim authoring UX landed (artifact panel + dossier Claims tab).
-  - Remaining: real quality vs forecast accuracy scoring; Critical-findings counts once Findings exist (M7).
+- M6 claim stack (table, legality, lanes, adjudication, authoring, Collection quality/forecast metrics) is landed.
+- [ ] **Model→forecast implication graph** — deferred until claim UX is in use (CONCEPT §5.2 / defaults log).
 
 ---
 
@@ -144,4 +142,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (21 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (22 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
