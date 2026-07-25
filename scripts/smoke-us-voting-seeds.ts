@@ -35,8 +35,14 @@ async function main() {
     const bySlug = await prisma.artifact.findMany({
       where: { dossierId: "us-voting-1" },
     });
-    if (bySlug.length !== 4) {
-      throw new Error(`expected 4 us-voting artifacts, got ${bySlug.length}`);
+    if (bySlug.length !== 5) {
+      throw new Error(`expected 5 us-voting artifacts, got ${bySlug.length}`);
+    }
+    const alignment = await prisma.artifact.findFirst({
+      where: { slug: "alignment", dossierId: "us-voting-1" },
+    });
+    if (!alignment || alignment.lane !== "alignment") {
+      throw new Error("us-alignment seed missing or wrong lane");
     }
 
     const provisional = await prisma.artifact.findFirst({

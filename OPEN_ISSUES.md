@@ -21,7 +21,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 - [ ] **Add CONCEPT tables + seeds incrementally**
   - Done: Area / Collection / Dossier (+ `Artifact.dossier_id`); Manual seeds for US/CA/GB/DE.
-  - Next: Section → Thread/Post/Target → Claim → Finding/AcceptedRisk as later milestones need them.
+  - Next: Finding/AcceptedRisk as later milestones need them. Claim table landed in M6.
   - Hardcoded US-voting JSX still present on some panels (home RFC/Red Team, thread pages) — retire as M5/M7 tables arrive.
 
 - [ ] **Make product routes data-driven**
@@ -61,22 +61,20 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## E. Scorable claims + lanes (CONCEPT §§4–6)
 
-- [ ] **Claim table + profile legality**
-  - Profiles `empirical` | `requirement`; legal only on matching Area/lane (CONCEPT §5).
-  - Empirical types fact|forecast|model; Canon `scope` + anti-smuggle.
-  - Requirement claims must cite Canon; quality metrics only.
-  - UX for authoring (vs editor embeds) designed in M6; model implication graph deferred.
-
 - [ ] **Immutable lanes on Manual artifacts**
-  - Required at create; API/DB reject changes; Canon has no Manual lane.
-  - Cross-lane = links + computed composite label.
+  - **Done:** `Artifact.lane` (`descriptive` \| `prescriptive` \| `alignment`; null on Canon); seeds assign lanes; Collection dashboard tallies artifact lanes.
+  - **Remaining:** require lane at Manual create API; reject PATCH lane changes; computed composite/bridge soft-label for cross-lane links.
+
+- [ ] **Claim authoring UX (product surface)**
+  - Table + legality API landed (`Claim`, `/api/claims`, `claimLegality.ts`).
+  - Remaining: artifact/dossier claims panels + authoring UI (vs editor embeds); model implication graph still deferred.
 
 - [ ] **Claim resolution + adjudication scaffolding**
   - Global adjudicators; empirical vs requirement status sets; request-adjudication queue.
 
 - [ ] **Metrics + Collection dashboard panels**
-  - Chrome parity landed in M4 (`/api/collections/:id/dashboard` + Collection splash).
-  - Remaining: real quality vs forecast accuracy once Claim tables exist (M6); Critical-findings counts once Threads/Findings exist (M5/M7).
+  - Chrome parity landed in M4; lane_coverage + requirement open/total counts live from Claim/lane rows.
+  - Remaining: real quality vs forecast accuracy scoring; Critical-findings counts once Findings exist (M7).
 
 ---
 

@@ -42,6 +42,8 @@ export type ArtifactRow = {
   dossier_id?: string | null;
   /** CONCEPT §3.4 — Owner-only merge when true (Canon restricted). */
   owner_merge_only?: boolean;
+  /** CONCEPT §4 — Manual lane; null on Canon. */
+  lane?: string | null;
 };
 
 export type AreaRow = {
@@ -101,6 +103,8 @@ export type CollectionDashboard = {
     Alignment: number;
   };
   requirement_satisfaction: null | {
+    open: number;
+    total: number;
     deferred: "M6";
     snapshot: null;
   };
@@ -182,6 +186,30 @@ export type RevSetRow = {
   author_id: string;
   created_at: string;
   summary: string | null;
+};
+
+/** CONCEPT §5 Claim wire shape. */
+export type ClaimRow = {
+  claim_id: string;
+  artifact_id: string;
+  section_id: string | null;
+  profile: string;
+  text: string;
+  status: string;
+  empirical_type: string | null;
+  scope: string | null;
+  region_code: string | null;
+  region_label: string | null;
+  probability: number | null;
+  as_of: string | null;
+  deadline: string | null;
+  resolution_criteria: string | null;
+  preferred_sources: string[];
+  adjudication_rule: string | null;
+  canon_citations: string[];
+  links: unknown[];
+  created_at: string;
+  author_id: string | null;
 };
 
 /** @deprecated Prefer ArtifactRow */

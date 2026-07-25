@@ -48,6 +48,8 @@ type ArtifactSeedRow = {
   dossier_id?: string | null;
   /** CONCEPT §3.4 restricted Canon — Owner-only merge. */
   owner_merge_only?: boolean;
+  /** CONCEPT §4 Manual lane; null on Canon. */
+  lane?: string | null;
 };
 
 type RevisionSeedRow = {
@@ -57,6 +59,29 @@ type RevisionSeedRow = {
   created_at: string;
   author: string;
   content_json: unknown;
+};
+
+type ClaimSeedRow = {
+  claim_id: string;
+  artifact_id: string;
+  section_id?: string | null;
+  profile: string;
+  text: string;
+  status?: string;
+  empirical_type?: string | null;
+  scope?: string | null;
+  region_code?: string | null;
+  region_label?: string | null;
+  probability?: number | null;
+  as_of?: string | null;
+  deadline?: string | null;
+  resolution_criteria?: string | null;
+  preferred_sources?: string[];
+  adjudication_rule?: string | null;
+  canon_citations?: string[];
+  links?: unknown[];
+  created_at: string;
+  author_id?: string | null;
 };
 
 type RegistryFile = {
@@ -116,6 +141,7 @@ export async function seedIfEmpty(
   }
 
   if (options.force) {
+    await prisma.claim.deleteMany();
     await prisma.revSet.deleteMany();
     await prisma.threadTarget.deleteMany();
     await prisma.threadPost.deleteMany();
@@ -138,6 +164,7 @@ export async function seedIfEmpty(
   const revisions = await readSeedJson<RevisionSeedRow[]>("page_revisions.json");
   const threads = await readSeedJson<ThreadSeedRow[]>("threads.json");
   const revsets = await readSeedJson<RevSetSeedRow[]>("revsets.json");
+  const claims = await readSeedJson<ClaimSeedRow[]>("claims.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
@@ -186,6 +213,7 @@ export async function seedIfEmpty(
           createdAt: new Date(page.created_at),
           dossierId: page.dossier_id ?? null,
           ownerMergeOnly: page.owner_merge_only ?? false,
+          lane: page.lane ?? null,
         },
       });
     }
@@ -278,6 +306,34 @@ export async function seedIfEmpty(
           authorId: rs.author_id,
           createdAt: new Date(rs.created_at),
           summary: rs.summary ?? null,
+        },
+      });
+    }
+
+    // CONCEPT §5 claims (after artifacts/sections exist).
+    for (const c of claims) {
+      await tx.claim.create({
+        data: {
+          claimId: c.claim_id,
+          artifactId: c.artifact_id,
+          sectionId: c.section_id ?? null,
+          profile: c.profile,
+          text: c.text,
+          status: c.status ?? "open",
+          empiricalType: c.empirical_type ?? null,
+          scope: c.scope ?? null,
+          regionCode: c.region_code ?? null,
+          regionLabel: c.region_label ?? null,
+          probability: c.probability ?? null,
+          asOf: c.as_of ? new Date(c.as_of) : null,
+          deadline: c.deadline ? new Date(c.deadline) : null,
+          resolutionCriteria: c.resolution_criteria ?? null,
+          preferredSources: c.preferred_sources ?? [],
+          adjudicationRule: c.adjudication_rule ?? null,
+          canonCitations: c.canon_citations ?? [],
+          links: c.links ?? [],
+          createdAt: new Date(c.created_at),
+          authorId: c.author_id ?? null,
         },
       });
     }

@@ -9634,5 +9634,50 @@
         ]
       }
     ]
+  },
+  {
+    "revision_id": "rev-us-alignment-1",
+    "page_id": "us-alignment",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:40:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-align-h1",
+        "children": [
+          {
+            "text": "Alignment Steps — US Voting"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-align-p1",
+        "children": [
+          {
+            "text": "Requirement claims that cite Canon voting-system criteria and track Manual alignment steps for US elections."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-align-h2",
+        "children": [
+          {
+            "text": "Canon citations"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-align-p2",
+        "children": [
+          {
+            "text": "Every alignment RFC should cite page-001 (Voting Systems) criteria when claiming progress toward Canon ideals."
+          }
+        ]
+      }
+    ]
   }
 ]

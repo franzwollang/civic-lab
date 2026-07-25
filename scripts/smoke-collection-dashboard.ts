@@ -84,10 +84,20 @@ async function main() {
       throw new Error("US dashboard must include lane_coverage");
     }
     if (us.lane_coverage.Prescriptive < 1) {
-      throw new Error("US should tally Prescriptive dossiers");
+      throw new Error("US should tally Prescriptive artifacts");
     }
-    if (!us.requirement_satisfaction || us.requirement_satisfaction.deferred !== "M6") {
-      throw new Error("US requirement_satisfaction stub missing");
+    if (us.lane_coverage.Descriptive < 1) {
+      throw new Error("US should tally Descriptive artifacts");
+    }
+    if (us.lane_coverage.Alignment < 1) {
+      throw new Error("US should tally Alignment artifacts");
+    }
+    if (
+      !us.requirement_satisfaction ||
+      us.requirement_satisfaction.deferred !== "M6" ||
+      us.requirement_satisfaction.total < 1
+    ) {
+      throw new Error("US requirement_satisfaction should count seeded claims");
     }
 
     const ca = await getCollectionDashboard("collection-ca");

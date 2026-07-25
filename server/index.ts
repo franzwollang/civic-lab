@@ -4,12 +4,14 @@ import { z } from "zod";
 import { bootstrapDatabase } from "./bootstrap";
 import {
   createArtifactRevision,
+  createClaim,
   createRevSet,
   createThreadPost,
   decideThread,
   getArtifact,
   getAttributions,
   getAreaByKind,
+  getClaim,
   getCollection,
   getCollectionDashboard,
   getDossier,
@@ -20,6 +22,7 @@ import {
   listArtifactRevisions,
   listArtifacts,
   listArtifactsByDossier,
+  listClaims,
   listCollections,
   listDossiers,
   listRevSets,
@@ -501,6 +504,79 @@ app.post("/api/threads/:threadId/decide", async (req, res) => {
     thread: result.thread,
     parent_cascaded: result.parent_cascaded,
   });
+});
+
+// M6 Claims (CONCEPT §5) — profile legality by Area/lane
+app.get("/api/claims", async (req, res) => {
+  const artifactId =
+    typeof req.query.artifact_id === "string"
+      ? req.query.artifact_id
+      : undefined;
+  const profile =
+    typeof req.query.profile === "string" ? req.query.profile : undefined;
+  res.json(await listClaims({ artifactId, profile }));
+});
+
+app.get("/api/claims/:claimId", async (req, res) => {
+  const claim = await getClaim(req.params.claimId);
+  if (!claim) {
+    res.status(404).json({ error: "Claim not found" });
+    return;
+  }
+  res.json(claim);
+});
+
+app.get("/api/artifacts/:artifactId/claims", async (req, res) => {
+  const artifact = await getArtifact(req.params.artifactId);
+  if (!artifact) {
+    res.status(404).json({ error: "Artifact not found" });
+    return;
+  }
+  res.json(await listClaims({ artifactId: req.params.artifactId }));
+});
+
+const claimBodySchema = z.object({
+  claim_id: z.string().min(1).optional(),
+  artifact_id: z.string().min(1),
+  section_id: z.string().min(1).nullable().optional(),
+  profile: z.enum(["empirical", "requirement"]),
+  text: z.string().min(1),
+  status: z.string().min(1).optional(),
+  empirical_type: z.enum(["fact", "forecast", "model"]).nullable().optional(),
+  scope: z.enum(["global", "regional"]).nullable().optional(),
+  region_code: z.string().nullable().optional(),
+  region_label: z.string().nullable().optional(),
+  probability: z.number().nullable().optional(),
+  as_of: z.string().nullable().optional(),
+  deadline: z.string().nullable().optional(),
+  resolution_criteria: z.string().nullable().optional(),
+  preferred_sources: z.array(z.string()).optional(),
+  adjudication_rule: z.string().nullable().optional(),
+  canon_citations: z.array(z.string()).optional(),
+  links: z.array(z.unknown()).optional(),
+  author_id: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+});
+
+app.post("/api/claims", async (req, res) => {
+  const parsed = claimBodySchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid claim payload" });
+    return;
+  }
+  const result = await createClaim(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "section_mismatch" ||
+            result.error.code === "no_owner_context"
+          ? 400
+          : 422;
+    res.status(status).json({ error: result.error });
+    return;
+  }
+  res.status(201).json(result.claim);
 });
 
 async function main() {

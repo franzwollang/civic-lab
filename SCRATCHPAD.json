@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-25T11:40Z",
-  "turn": 31,
+  "updated_at": "2026-07-25T12:00Z",
+  "turn": 32,
   "focus": {
     "milestone": "M6",
-    "issue": "Claim table + profile legality",
-    "goal": "Start M6 claims scaffolding after M5 exit"
+    "issue": "Immutable lanes on Manual artifacts",
+    "goal": "Reject lane changes; require lane at Manual create"
   },
   "recent": [
-    "Merged PR #20 (reply composer) onto cron branch a862",
-    "Implemented CONCEPT §3.4 Collection merge authority on decide",
-    "Seeded canon-charter owner_merge_only + user-eve owner",
-    "smoke-merge-authority + smoke-revsets green; M5 marked done"
+    "Merged PR #21 (M5 merge authority) onto cron branch 7017",
+    "Claim table + profile legality (schema/API/seeds/smoke)",
+    "Artifact.lane seeded; dashboard lane_coverage from artifacts",
+    "Resolved OPEN claim-table; M6 marked in progress"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
@@ -18,9 +18,9 @@
   ],
   "open_threads": [
     "Accepted Risk on leaf deferred to M7",
-    "Global impersonation chrome → M8",
-    "Per-Collection steward membership still global role prototype"
+    "Claim authoring UX still open within M6",
+    "Global impersonation chrome → M8"
   ],
-  "next_step": "Begin M6 Claim table + profile legality (empirical|requirement)",
+  "next_step": "Enforce immutable lanes (create require + PATCH reject); then adjudication scaffolding",
   "blockers": []
 }

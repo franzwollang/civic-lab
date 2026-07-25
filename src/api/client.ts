@@ -2,6 +2,7 @@ import type {
   AreaRow,
   ArtifactRevisionRow,
   ArtifactRow,
+  ClaimRow,
   CollectionDashboard,
   CollectionRow,
   DossierRow,
@@ -307,6 +308,59 @@ export async function decideThread(
   return handleResponse<{ thread: ThreadRow; parent_cascaded: boolean }>(
     response,
   );
+}
+
+export async function getClaims(opts?: {
+  artifactId?: string;
+  profile?: string;
+}): Promise<ClaimRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.artifactId) params.set("artifact_id", opts.artifactId);
+  if (opts?.profile) params.set("profile", opts.profile);
+  const qs = params.toString();
+  const response = await fetch(`${API_BASE}/claims${qs ? `?${qs}` : ""}`);
+  return handleResponse<ClaimRow[]>(response);
+}
+
+export async function getClaim(claimId: string): Promise<ClaimRow> {
+  const response = await fetch(`${API_BASE}/claims/${claimId}`);
+  return handleResponse<ClaimRow>(response);
+}
+
+export async function getArtifactClaims(
+  artifactId: string,
+): Promise<ClaimRow[]> {
+  const response = await fetch(`${API_BASE}/artifacts/${artifactId}/claims`);
+  return handleResponse<ClaimRow[]>(response);
+}
+
+export async function createClaim(body: {
+  claim_id?: string;
+  artifact_id: string;
+  section_id?: string | null;
+  profile: "empirical" | "requirement";
+  text: string;
+  status?: string;
+  empirical_type?: "fact" | "forecast" | "model" | null;
+  scope?: "global" | "regional" | null;
+  region_code?: string | null;
+  region_label?: string | null;
+  probability?: number | null;
+  as_of?: string | null;
+  deadline?: string | null;
+  resolution_criteria?: string | null;
+  preferred_sources?: string[];
+  adjudication_rule?: string | null;
+  canon_citations?: string[];
+  links?: unknown[];
+  author_id?: string | null;
+}): Promise<ClaimRow> {
+  const response = await fetch(`${API_BASE}/claims`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<ClaimRow>(response);
 }
 
 export async function getAttributions(): Promise<AttributionRegistry> {

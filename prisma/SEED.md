@@ -1,10 +1,10 @@
-# Seed vs runtime (M1 + M4 corpus + M5 threads)
+# Seed vs runtime (M1 + M4 corpus + M5 threads + M6 claims)
 
 ## What lives where
 
 | Path | Role |
 |---|---|
-| `prisma/seed/*.json` | **Seed-only** fixtures (former `db/*.json` + M4 Area/Collection/Dossier + M5 Threads). Edit these to change the default corpus. |
+| `prisma/seed/*.json` | **Seed-only** fixtures (former `db/*.json` + M4 Area/Collection/Dossier + M5 Threads + M6 Claims). Edit these to change the default corpus. |
 | `prisma/dev.db` | **Runtime** SQLite file (gitignored). Created on first startup. |
 | `prisma/schema.prisma` | Schema; prototype uses `prisma db push` (no migration history yet). |
 | `SeedMeta` table | Marker that seed was applied. If missing ⇒ DB treated as empty ⇒ re-seed. |
@@ -16,7 +16,7 @@
 | `areas.json` | `area-canon`, `area-manuals` |
 | `collections.json` | `collection-canon` (singleton); Manuals `collection-us/ca/gb/de` |
 | `dossiers.json` | Canon `electoral-1`, `alignment-1`; Manuals `us-voting-1`, `ca-elections-1`, `gb-elections-1`, `de-elections-1` |
-| `pages.json` | Artifacts with optional `dossier_id` (Canon `page-001`; US `us-*`; CA/GB/DE Manual stubs) |
+| `pages.json` | Artifacts with optional `dossier_id` + Manual `lane` (`descriptive` \| `prescriptive` \| `alignment`; null on Canon) |
 
 ## M5 thread seeds
 
@@ -28,6 +28,14 @@
 Sections are not a separate seed file: on seed (and on each revision save) heading blocks with ids become Prisma `Section` rows (`stable_key` = block id; `section_id` = `sec_{artifactId}__{stableKey}`). ThreadTargets use `target_kind=section` + that `section_id`.
 
 Leaf RFC seed: `thread-us-voter-reg-rfc` + `revset-us-voter-reg-1` → `rev-us-voter-reg-rfc-1` (proposal; current stays `rev-us-voter-reg-1`).
+
+## M6 claim seeds
+
+| File | Entities |
+|---|---|
+| `claims.json` | Sample `Claim` rows: Canon empirical (+ `scope`), Manual Descriptive empirical, Manual Alignment requirement (+ `canon_citations`). |
+
+Profile legality (CONCEPT §5) is enforced on create: Manual Descriptive → `empirical`; Manual Alignment → `requirement`; Manual Prescriptive → none; Canon → `empirical` + `scope` (+ anti-smuggle).
 
 ## Startup sequence (`pnpm run dev` → API)
 

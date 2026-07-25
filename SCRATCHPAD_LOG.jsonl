@@ -29,3 +29,4 @@
 {"ts":"2026-07-25T10:55Z","focus":"M5 RFC decide cascade","summary":"Leaf decide + parent cascade + merge apply; smoke-revsets OK","next":"reply composer or Collection merge authority"}
 {"ts":"2026-07-25T11:15Z","focus":"M5 reply composer","summary":"ReplyComposer + prototype-users; wired thread and RFC discussion","next":"Collection merge authority"}
 {"ts":"2026-07-25T11:40Z","focus":"M5 merge authority","summary":"§3.4 decide gates + canon-charter seed + Eve owner; M5 done","next":"M6 Claim table + profile legality"}
+{"ts":"2026-07-25T12:00Z","focus":"M6 claim legality","summary":"Claim table+legality+lane seeds; smoke-claims green; M6 in progress","next":"immutable lane create/PATCH enforcement"}

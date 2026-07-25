@@ -6,7 +6,8 @@
     "current_revision_id": "c806630d-cc1f-4829-a49a-d31835cfed88",
     "created_at": "2026-02-07T00:00:00.000Z",
     "dossier_id": "electoral-1",
-    "owner_merge_only": false
+    "owner_merge_only": false,
+    "lane": null
   },
   {
     "page_id": "canon-charter",
@@ -15,7 +16,8 @@
     "current_revision_id": "rev-canon-charter-1",
     "created_at": "2026-07-01T00:00:00.000Z",
     "dossier_id": "electoral-1",
-    "owner_merge_only": true
+    "owner_merge_only": true,
+    "lane": null
   },
   {
     "page_id": "us-overview",
@@ -23,7 +25,8 @@
     "slug": "overview",
     "current_revision_id": "rev-us-overview-1",
     "created_at": "2026-07-01T00:00:00.000Z",
-    "dossier_id": "us-voting-1"
+    "dossier_id": "us-voting-1",
+    "lane": "descriptive"
   },
   {
     "page_id": "us-voter-reg",
@@ -31,7 +34,8 @@
     "slug": "voter-reg",
     "current_revision_id": "rev-us-voter-reg-1",
     "created_at": "2026-07-01T00:10:00.000Z",
-    "dossier_id": "us-voting-1"
+    "dossier_id": "us-voting-1",
+    "lane": "prescriptive"
   },
   {
     "page_id": "us-polling",
@@ -39,7 +43,8 @@
     "slug": "polling",
     "current_revision_id": "rev-us-polling-1",
     "created_at": "2026-07-01T00:20:00.000Z",
-    "dossier_id": "us-voting-1"
+    "dossier_id": "us-voting-1",
+    "lane": "prescriptive"
   },
   {
     "page_id": "us-provisional",
@@ -47,7 +52,17 @@
     "slug": "provisional",
     "current_revision_id": "rev-us-provisional-1",
     "created_at": "2026-07-01T00:30:00.000Z",
-    "dossier_id": "us-voting-1"
+    "dossier_id": "us-voting-1",
+    "lane": "prescriptive"
+  },
+  {
+    "page_id": "us-alignment",
+    "title": "Alignment Steps — US Voting",
+    "slug": "alignment",
+    "current_revision_id": "rev-us-alignment-1",
+    "created_at": "2026-07-01T00:40:00.000Z",
+    "dossier_id": "us-voting-1",
+    "lane": "alignment"
   },
   {
     "page_id": "ca-overview",
@@ -55,7 +70,8 @@
     "slug": "overview",
     "current_revision_id": "rev-ca-overview-1",
     "created_at": "2026-07-02T00:00:00.000Z",
-    "dossier_id": "ca-elections-1"
+    "dossier_id": "ca-elections-1",
+    "lane": "descriptive"
   },
   {
     "page_id": "ca-list-mgmt",
@@ -63,7 +79,8 @@
     "slug": "list-mgmt",
     "current_revision_id": "rev-ca-list-mgmt-1",
     "created_at": "2026-07-02T00:10:00.000Z",
-    "dossier_id": "ca-elections-1"
+    "dossier_id": "ca-elections-1",
+    "lane": "prescriptive"
   },
   {
     "page_id": "gb-overview",
@@ -71,7 +88,8 @@
     "slug": "overview",
     "current_revision_id": "rev-gb-overview-1",
     "created_at": "2026-07-03T00:00:00.000Z",
-    "dossier_id": "gb-elections-1"
+    "dossier_id": "gb-elections-1",
+    "lane": "descriptive"
   },
   {
     "page_id": "gb-returning-officer",
@@ -79,7 +97,8 @@
     "slug": "returning-officer",
     "current_revision_id": "rev-gb-returning-officer-1",
     "created_at": "2026-07-03T00:10:00.000Z",
-    "dossier_id": "gb-elections-1"
+    "dossier_id": "gb-elections-1",
+    "lane": "prescriptive"
   },
   {
     "page_id": "de-overview",
@@ -87,7 +106,8 @@
     "slug": "overview",
     "current_revision_id": "rev-de-overview-1",
     "created_at": "2026-07-04T00:00:00.000Z",
-    "dossier_id": "de-elections-1"
+    "dossier_id": "de-elections-1",
+    "lane": "descriptive"
   },
   {
     "page_id": "de-bundeswahl",
@@ -95,6 +115,7 @@
     "slug": "bundeswahl",
     "current_revision_id": "rev-de-bundeswahl-1",
     "created_at": "2026-07-04T00:10:00.000Z",
-    "dossier_id": "de-elections-1"
+    "dossier_id": "de-elections-1",
+    "lane": "prescriptive"
   }
 ]

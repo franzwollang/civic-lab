@@ -1,5 +1,5 @@
-// Civic Lab M5 — Threads + posts + flexible targets (CONCEPT §3).
-// M4 Area → Collection → Dossier + editor store entities retained.
+// Civic Lab M6 — Claims + Manual lanes (CONCEPT §§4–5).
+// M5 Threads + posts + flexible targets retained.
 // CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
 // legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
 // Wire JSON dual-emits `artifact_id` (preferred) + `page_id` (same value).
@@ -133,12 +133,53 @@ model Artifact {
   dossierId         String?            @map("dossier_id")
   /// CONCEPT §3.4 — Canon restricted (Charter / governance); Owner-only merge.
   ownerMergeOnly    Boolean            @default(false) @map("owner_merge_only")
+  /// CONCEPT §4 — Manual immutable lane: descriptive | prescriptive | alignment.
+  /// Null on Canon artifacts (no Manual lane).
+  lane              String?
   dossier           Dossier?           @relation(fields: [dossierId], references: [dossierId], onDelete: SetNull)
   revisions         ArtifactRevision[]
   sections          Section[]
+  claims            Claim[]
 
   @@index([dossierId])
   @@map("pages")
+}
+
+/// CONCEPT §5 — scorable claim owned by an artifact (optional section).
+/// profile: empirical | requirement (must be legal for Area/lane).
+/// empirical_type: fact | forecast | model (empirical only).
+/// scope: global | regional (Canon empirical only).
+model Claim {
+  claimId             String    @id @map("claim_id")
+  artifactId          String    @map("artifact_id")
+  sectionId           String?   @map("section_id")
+  profile             String
+  text                String
+  status              String    @default("open")
+  /// Empirical: fact | forecast | model
+  empiricalType       String?   @map("empirical_type")
+  /// Canon empirical: global | regional
+  scope               String?
+  regionCode          String?   @map("region_code")
+  regionLabel         String?   @map("region_label")
+  /// Forecast probability ∈ [0.01, 0.99]
+  probability         Float?
+  asOf                DateTime? @map("as_of")
+  deadline            DateTime?
+  resolutionCriteria  String?   @map("resolution_criteria")
+  preferredSources    Json      @default("[]") @map("preferred_sources")
+  adjudicationRule    String?   @map("adjudication_rule")
+  /// Requirement: Canon artifact ids / citation refs (JSON string[])
+  canonCitations      Json      @default("[]") @map("canon_citations")
+  links               Json      @default("[]")
+  createdAt           DateTime  @map("created_at")
+  authorId            String?   @map("author_id")
+  artifact            Artifact  @relation(fields: [artifactId], references: [artifactId], onDelete: Cascade)
+
+  @@index([artifactId])
+  @@index([profile])
+  @@index([status])
+  @@map("claims")
 }
 
 /// CONCEPT §2.3 — stable Section identities synced from heading block ids.

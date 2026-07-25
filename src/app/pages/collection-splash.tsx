@@ -265,10 +265,19 @@ function CollectionDashboardView({
               ))}
             </ul>
             {dashboard.requirement_satisfaction && (
-              <DeferredNote
-                milestone={dashboard.requirement_satisfaction.deferred}
-                label="Requirement-claim satisfaction"
-              />
+              <div className="mt-3 space-y-1 text-sm text-neutral-700">
+                <div className="flex justify-between">
+                  <span>Requirement claims</span>
+                  <span className="font-medium">
+                    {dashboard.requirement_satisfaction.open} open /{" "}
+                    {dashboard.requirement_satisfaction.total}
+                  </span>
+                </div>
+                <DeferredNote
+                  milestone={dashboard.requirement_satisfaction.deferred}
+                  label="Adjudicated satisfaction snapshot"
+                />
+              </div>
             )}
           </Card>
         )}
