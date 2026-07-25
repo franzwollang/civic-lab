@@ -61,7 +61,7 @@ async function main() {
     context: { area_kind: "manuals", country_code: "CA" },
     actor_country_codes: ["US"],
   });
-  if (!stewardCa.ok || stewardCa.code !== "steward_country_mismatch") {
+  if (stewardCa.ok || stewardCa.code !== "steward_country_mismatch") {
     throw new Error("US steward must not moderate CA Manual");
   }
 

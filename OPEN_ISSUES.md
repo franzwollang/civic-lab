@@ -108,7 +108,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Charter as living gated artifact: **done** (M9 first cut) — `canon-governance-1` + `canon-charter` (`owner_merge_only`); `/constitution` → artifact; Owner edit gate; `smoke-charter`.
 - Anti-gaming / scoring leaderboard policy: **done** (M9) — forecast + reputation boards gate n≥20; Owner board-hide + lift + append-only `AuditLog` (`smoke-board-hide`).
 - Auth + real-identity policy hooks: **done** (M9) — `UserIdentity` + Owner attest / self-request; Manual steward country / long-term-ties gate on decide + AR; header badges; `smoke-identity-policy`. Full OAuth/IdP deferred.
-- [ ] **Moderator tools + audit logs** — board-hide + identity attest audit landed; broader mod tools still open.
+- [ ] **Moderator tools + audit logs**
+  - Done: board-hide + identity attest audit; soft-delete ordinary `ThreadPost`s (`deleted_at` / `deleted_by`); append-only audits for merge / adjudication / claim_status_change / accepted_risk / post_soft_delete; Collection splash audit panel (steward/Owner); Soft-delete on thread timeline; `smoke-moderation`.
+  - Remaining: Owner Canon revert audit path; role-change audit when roles become mutable; richer mod queue UI (optional).
 - External artifact whitelist (CONCEPT App D): **done** — `external_artifact` node + provider allowlist (`smoke-external-artifact`); attribution `immutable_ref` patterns remain for registry snapshots.
 
 ---
@@ -127,4 +129,4 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 - Three parallel content systems today: Fumadocs `/docs`, static About/FAQ/Constitution, JSON page editor — unify deliberately, don’t accidentally fork a fourth.
 - Thread-first principle: no per-page micro comment sections; attach threads to targets.
 - Lane hygiene and separation of powers (stewards merge; Red Team findings; adjudicators resolve claims) are load-bearing CONCEPT constraints.
-- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (37 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.
+- Toolchain check: `pnpm install` (needs pnpm 9) → `pnpm build` → `pnpm test:smoke` (38 scripts). API: Hono on `:8787`. Smoke fixtures under `prisma/smoke-*.db` are disposable.

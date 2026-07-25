@@ -1,24 +1,25 @@
 {
-  "updated_at": "2026-07-25T20:15Z",
-  "turn": 56,
+  "updated_at": "2026-07-25T20:40Z",
+  "turn": 57,
   "focus": {
     "milestone": null,
-    "issue": "Editor blockquotes residual",
-    "goal": "Plate BlockquotePlugin + Quote toolbar + reader/export"
+    "issue": "Moderator tools + audit logs",
+    "goal": "Soft-delete posts + broader §9.4 audit coverage"
   },
   "recent": [
-    "Merged PR #43 tip onto cron branch 33b9",
-    "BlockquotePlugin + Quote toggle + DocumentReader",
-    "smoke-editor-blockquotes; suite 37/37 + vite build"
+    "Merged PR #44 tip onto cron branch 6cfb",
+    "Soft-delete ThreadPost + steward/Owner gates",
+    "Audits: merge/adjudication/AR/post_soft_delete; splash panel",
+    "smoke-moderation; suite 38/38 + vite build"
   ],
   "discoveries": [
     "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
     "Tables + image upload deferred",
-    "Moderator tools residual; Fumadocs unpin",
-    "About/FAQ artifact migration"
+    "About/FAQ artifact migration; Fumadocs unpin",
+    "Optional: Canon revert audit + mod queue UI"
   ],
-  "next_step": "Moderator tools residual, or About/FAQ artifact migration",
+  "next_step": "About/FAQ artifact migration (or tables/images / Fumadocs unpin)",
   "blockers": []
 }

@@ -73,7 +73,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Auth | Seed users + **header impersonation** (M8) + **identity attestation hooks** (M9 §8.6); full OAuth/IdP deferred |
 | Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (37/37) |
 
-**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor tables/images, moderator tools, Fumadocs unpin, About/FAQ artifact migration). Blockquotes + home RFC/RT panels + attribution/`immutable_ref`/`external_artifact` landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
+**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor tables/images, About/FAQ artifact migration, Fumadocs unpin, optional mod-queue polish). Moderator soft-delete + broader §9.4 audit coverage landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
 
 ---
 
@@ -115,4 +115,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: residual open work — moderator tools, About/FAQ artifact migration, image upload / tables, or Fumadocs unpin (see `OPEN_ISSUES.md`).
+- Next: residual open work — About/FAQ artifact migration, image upload / tables, or Fumadocs unpin (see `OPEN_ISSUES.md`).

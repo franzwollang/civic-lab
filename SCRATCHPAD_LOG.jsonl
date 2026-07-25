@@ -54,3 +54,4 @@
 {"ts":"2026-07-25T19:26Z","focus":"external_artifact App D","summary":"Plate node + whitelist + smoke; merged #41 tip first","next":"home RFC/RT fixtures or blockquotes / mod tools"}
 {"ts":"2026-07-25T19:42Z","focus":"home RFC/RT fixtures","summary":"Merged #42 tip; live home RFC+Findings; findings home_dossier enrich; smoke-home-store","next":"blockquotes or moderator tools residual"}
 {"ts":"2026-07-25T20:15Z","focus":"editor blockquotes","summary":"Merged #43 tip; BlockquotePlugin + Quote toggle + reader/export; 37/37 smokes","next":"moderator tools residual or About/FAQ artifact migration"}
+{"ts":"2026-07-25T20:40Z","focus":"moderator tools residual","summary":"soft-delete + audit wiring; 38/38 smokes","next":"About/FAQ artifact migration"}
