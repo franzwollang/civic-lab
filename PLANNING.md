@@ -68,7 +68,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
 
-**Next build:** **M6 Claims + lanes** (`in progress` — Claim table + profile legality landed). Next: immutable-lane create/PATCH enforcement, then adjudication scaffolding. Accepted Risk on leaf stays M7.
+**Next build:** **M6 Claims + lanes** (`in progress` — Claim table + immutable lanes landed). Next: adjudication scaffolding, then claim authoring UX. Accepted Risk on leaf stays M7.
 
 ---
 
@@ -82,7 +82,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |
 | **M5 — Threads + RFC** | `done` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer ✓; Collection merge authority (§3.4) ✓ |
-| **M6 — Claims + lanes** | `in progress` | Claim table + profile legality ✓; lane field + seed tallies ✓; immutability enforcement + adjudication scaffolding remaining |
+| **M6 — Claims + lanes** | `in progress` | Claim table + profile legality ✓; immutable Manual lanes (create require + PATCH reject + soft composite) ✓; adjudication scaffolding + claim authoring UX remaining |
 | **M7 — Red Team** | `not started` | Findings; Accepted Risk on leaf; Critical merge gate |
 | **M8 — Discovery** | `not started` | Search; breadcrumbs; impersonation role UX |
 | **M9 — Policy** | `not started` | Real auth; reputation; Charter artifact; anti-gaming |

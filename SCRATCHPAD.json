@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-07-25T12:00Z",
-  "turn": 32,
+  "updated_at": "2026-07-25T12:20Z",
+  "turn": 33,
   "focus": {
     "milestone": "M6",
-    "issue": "Immutable lanes on Manual artifacts",
-    "goal": "Reject lane changes; require lane at Manual create"
+    "issue": "Claim resolution + adjudication scaffolding",
+    "goal": "Global adjudicators + status sets + request queue"
   },
   "recent": [
-    "Merged PR #21 (M5 merge authority) onto cron branch 7017",
-    "Claim table + profile legality (schema/API/seeds/smoke)",
-    "Artifact.lane seeded; dashboard lane_coverage from artifacts",
-    "Resolved OPEN claim-table; M6 marked in progress"
+    "Merged PR #22 (claim legality) onto cron branch b29c",
+    "Immutable Manual lanes: create require + PATCH reject",
+    "Soft lane_soft_label composite from cross-lane claim links",
+    "smoke-immutable-lanes green; related smokes OK"
   ],
   "discoveries": [
     "Cron branches start at main — merge latest progression PR first",
@@ -21,6 +21,6 @@
     "Claim authoring UX still open within M6",
     "Global impersonation chrome → M8"
   ],
-  "next_step": "Enforce immutable lanes (create require + PATCH reject); then adjudication scaffolding",
+  "next_step": "Adjudication scaffolding (statuses, request queue, global adjudicators)",
   "blockers": []
 }

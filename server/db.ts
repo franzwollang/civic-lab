@@ -24,6 +24,14 @@ import {
   type ClaimLegalityError,
   type ClaimOwnerContext,
 } from "../src/lib/claimLegality";
+import {
+  artifactIdsFromClaimLinks,
+  computeSoftLaneLabel,
+  validateLaneOnCreate,
+  validateLaneOnPatch,
+  type LaneRuleError,
+  type SoftLaneLabel,
+} from "../src/lib/artifactLanes";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
 
 let prisma: PrismaClient | null = null;
@@ -77,8 +85,13 @@ export type ArtifactRow = {
   dossier_id: string | null;
   /** CONCEPT §3.4 — Owner-only merge when true (Canon restricted). */
   owner_merge_only: boolean;
-  /** CONCEPT §4 — Manual lane; null on Canon. */
+  /** CONCEPT §4 — Manual lane; null on Canon. Immutable after create. */
   lane: string | null;
+  /**
+   * CONCEPT §4.1 — computed soft label (`composite` / `bridge` when claim
+   * links reference other Manual lanes). Null on Canon / when not resolved.
+   */
+  lane_soft_label?: SoftLaneLabel | null;
 };
 
 /** @deprecated Prefer ArtifactRow */
@@ -305,16 +318,19 @@ function mapDossier(row: {
   };
 }
 
-function mapArtifact(row: {
-  artifactId: string;
-  title: string;
-  slug: string;
-  currentRevisionId: string | null;
-  createdAt: Date;
-  dossierId: string | null;
-  ownerMergeOnly?: boolean;
-  lane?: string | null;
-}): ArtifactRow {
+function mapArtifact(
+  row: {
+    artifactId: string;
+    title: string;
+    slug: string;
+    currentRevisionId: string | null;
+    createdAt: Date;
+    dossierId: string | null;
+    ownerMergeOnly?: boolean;
+    lane?: string | null;
+  },
+  extras?: { lane_soft_label?: SoftLaneLabel | null },
+): ArtifactRow {
   return {
     artifact_id: row.artifactId,
     page_id: row.artifactId,
@@ -325,7 +341,39 @@ function mapArtifact(row: {
     dossier_id: row.dossierId,
     owner_merge_only: row.ownerMergeOnly ?? false,
     lane: row.lane ?? null,
+    ...(extras?.lane_soft_label !== undefined
+      ? { lane_soft_label: extras.lane_soft_label }
+      : {}),
   };
+}
+
+/** Resolve soft composite/bridge label from claim links → other Manual lanes. */
+export async function resolveSoftLaneLabel(
+  artifactId: string,
+  primaryLane: string | null,
+): Promise<SoftLaneLabel | null> {
+  if (!primaryLane) return null;
+  const claims = await getPrisma().claim.findMany({
+    where: { artifactId },
+    select: { links: true },
+  });
+  const linkedIds = new Set<string>();
+  for (const c of claims) {
+    for (const id of artifactIdsFromClaimLinks(c.links)) {
+      if (id !== artifactId) linkedIds.add(id);
+    }
+  }
+  if (linkedIds.size === 0) {
+    return computeSoftLaneLabel(primaryLane, []);
+  }
+  const linked = await getPrisma().artifact.findMany({
+    where: { artifactId: { in: [...linkedIds] } },
+    select: { lane: true },
+  });
+  return computeSoftLaneLabel(
+    primaryLane,
+    linked.map((a) => a.lane),
+  );
 }
 
 export async function listAreas(): Promise<AreaRow[]> {
@@ -362,7 +410,7 @@ export async function getCollection(
   return row ? mapCollection(row) : null;
 }
 
-/** Display-only lane hint until M6 immutable Manual lanes exist. */
+/** Display-only dossier lane hint; prefer Artifact.lane (immutable after create). */
 function laneHintForDossier(d: DossierRow): "Descriptive" | "Prescriptive" | "Alignment" {
   const tags = d.tags.map((t) => t.toLowerCase());
   if (tags.includes("alignment") || /alignment/i.test(d.title)) {
@@ -544,11 +592,90 @@ export async function getArtifact(
   const row = await getPrisma().artifact.findUnique({
     where: { artifactId },
   });
-  return row ? mapArtifact(row) : null;
+  if (!row) return null;
+  const lane_soft_label = await resolveSoftLaneLabel(
+    row.artifactId,
+    row.lane ?? null,
+  );
+  return mapArtifact(row, { lane_soft_label });
 }
 
 /** @deprecated Prefer getArtifact */
 export const getPage = getArtifact;
+
+export type CreateArtifactError =
+  | { code: "dossier_not_found" }
+  | { code: "duplicate_id" }
+  | LaneRuleError;
+
+export type UpdateArtifactError =
+  | { code: "not_found" }
+  | LaneRuleError;
+
+/**
+ * Create an artifact. Manual dossiers require `lane` at create; Canon
+ * rejects any lane. Lane is immutable thereafter (CONCEPT §4).
+ */
+export async function createArtifact(input: {
+  artifact_id?: string;
+  title: string;
+  slug: string;
+  dossier_id: string;
+  lane?: string | null;
+  owner_merge_only?: boolean;
+  current_revision_id?: string | null;
+  created_at?: string;
+}): Promise<
+  { ok: true; artifact: ArtifactRow } | { ok: false; error: CreateArtifactError }
+> {
+  const dossier = await getPrisma().dossier.findUnique({
+    where: { dossierId: input.dossier_id },
+    select: {
+      dossierId: true,
+      collection: {
+        select: { area: { select: { kind: true } } },
+      },
+    },
+  });
+  if (!dossier?.collection?.area) {
+    return { ok: false, error: { code: "dossier_not_found" } };
+  }
+
+  const laneCheck = validateLaneOnCreate(
+    dossier.collection.area.kind,
+    input.lane,
+  );
+  if (!laneCheck.ok) {
+    return { ok: false, error: laneCheck.error };
+  }
+
+  const artifactId = input.artifact_id ?? crypto.randomUUID();
+  const existing = await getPrisma().artifact.findUnique({
+    where: { artifactId },
+  });
+  if (existing) {
+    return { ok: false, error: { code: "duplicate_id" } };
+  }
+
+  const row = await getPrisma().artifact.create({
+    data: {
+      artifactId,
+      title: input.title,
+      slug: input.slug,
+      dossierId: input.dossier_id,
+      lane: laneCheck.lane,
+      ownerMergeOnly: input.owner_merge_only ?? false,
+      currentRevisionId: input.current_revision_id ?? null,
+      createdAt: input.created_at ? new Date(input.created_at) : new Date(),
+    },
+  });
+  return {
+    ok: true,
+    artifact: mapArtifact(row, {
+      lane_soft_label: computeSoftLaneLabel(row.lane, []),
+    }),
+  };
+}
 
 export async function updateArtifact(
   artifactId: string,
@@ -557,12 +684,26 @@ export async function updateArtifact(
     slug: string;
     current_revision_id: string | null;
     dossier_id: string | null;
+    lane: string | null;
   }>,
-): Promise<ArtifactRow | null> {
+  opts?: { lanePresentInPatch?: boolean },
+): Promise<
+  | { ok: true; artifact: ArtifactRow }
+  | { ok: false; error: UpdateArtifactError }
+> {
+  const laneGuard = validateLaneOnPatch({
+    lanePresentInPatch: opts?.lanePresentInPatch ?? "lane" in patch,
+  });
+  if (!laneGuard.ok) {
+    return { ok: false, error: laneGuard.error };
+  }
+
   const existing = await getPrisma().artifact.findUnique({
     where: { artifactId },
   });
-  if (!existing) return null;
+  if (!existing) {
+    return { ok: false, error: { code: "not_found" } };
+  }
 
   const row = await getPrisma().artifact.update({
     where: { artifactId },
@@ -577,7 +718,11 @@ export async function updateArtifact(
         : {}),
     },
   });
-  return mapArtifact(row);
+  const lane_soft_label = await resolveSoftLaneLabel(
+    row.artifactId,
+    row.lane ?? null,
+  );
+  return { ok: true, artifact: mapArtifact(row, { lane_soft_label }) };
 }
 
 /** @deprecated Prefer updateArtifact */

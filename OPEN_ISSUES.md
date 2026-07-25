@@ -61,12 +61,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
 ## E. Scorable claims + lanes (CONCEPT §§4–6)
 
-- [ ] **Immutable lanes on Manual artifacts**
-  - **Done:** `Artifact.lane` (`descriptive` \| `prescriptive` \| `alignment`; null on Canon); seeds assign lanes; Collection dashboard tallies artifact lanes.
-  - **Remaining:** require lane at Manual create API; reject PATCH lane changes; computed composite/bridge soft-label for cross-lane links.
-
 - [ ] **Claim authoring UX (product surface)**
   - Table + legality API landed (`Claim`, `/api/claims`, `claimLegality.ts`).
+  - Lanes immutable: Manual create requires lane; PATCH rejects `lane`; soft `lane_soft_label` (composite) from cross-lane claim links.
   - Remaining: artifact/dossier claims panels + authoring UI (vs editor embeds); model implication graph still deferred.
 
 - [ ] **Claim resolution + adjudication scaffolding**

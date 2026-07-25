@@ -3,6 +3,7 @@ import cors from "cors";
 import { z } from "zod";
 import { bootstrapDatabase } from "./bootstrap";
 import {
+  createArtifact,
   createArtifactRevision,
   createClaim,
   createRevSet,
@@ -98,24 +99,74 @@ async function handlePatchArtifact(
   res: express.Response,
 ) {
   const id = req.params.artifactId ?? req.params.pageId;
-  const patch = req.body as Partial<{
+  const body = (req.body ?? {}) as Record<string, unknown>;
+  const lanePresentInPatch = Object.prototype.hasOwnProperty.call(body, "lane");
+  const patch = body as Partial<{
     title: string;
     slug: string;
     current_revision_id: string | null;
+    dossier_id: string | null;
+    lane: string | null;
   }>;
-  const updated = await updateArtifact(id, patch);
+  const result = await updateArtifact(id, patch, { lanePresentInPatch });
 
-  if (!updated) {
-    res.status(404).json({ error: "Artifact not found" });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "lane_immutable"
+          ? 409
+          : 400;
+    res.status(status).json({ error: result.error });
     return;
   }
 
-  res.json(updated);
+  res.json(result.artifact);
+}
+
+const artifactCreateBodySchema = z.object({
+  artifact_id: z.string().min(1).optional(),
+  title: z.string().min(1),
+  slug: z.string().min(1),
+  dossier_id: z.string().min(1),
+  lane: z
+    .enum(["descriptive", "prescriptive", "alignment"])
+    .nullable()
+    .optional(),
+  owner_merge_only: z.boolean().optional(),
+  current_revision_id: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+});
+
+async function handleCreateArtifact(
+  req: express.Request,
+  res: express.Response,
+) {
+  const parsed = artifactCreateBodySchema.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid artifact payload" });
+    return;
+  }
+  const result = await createArtifact(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "dossier_not_found"
+        ? 404
+        : result.error.code === "duplicate_id"
+          ? 409
+          : 422;
+    res.status(status).json({ error: result.error });
+    return;
+  }
+  res.status(201).json(result.artifact);
 }
 
 // CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
 app.get("/api/artifacts", handleListArtifacts);
 app.get("/api/pages", handleListArtifacts);
+
+app.post("/api/artifacts", handleCreateArtifact);
+app.post("/api/pages", handleCreateArtifact);
 
 app.get("/api/artifacts/:artifactId", handleGetArtifact);
 app.get("/api/pages/:pageId", handleGetArtifact);

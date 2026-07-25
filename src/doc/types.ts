@@ -42,8 +42,10 @@ export type ArtifactRow = {
   dossier_id?: string | null;
   /** CONCEPT §3.4 — Owner-only merge when true (Canon restricted). */
   owner_merge_only?: boolean;
-  /** CONCEPT §4 — Manual lane; null on Canon. */
+  /** CONCEPT §4 — Manual lane; null on Canon. Immutable after create. */
   lane?: string | null;
+  /** CONCEPT §4.1 — soft composite/bridge when claim links cross lanes. */
+  lane_soft_label?: string | null;
 };
 
 export type AreaRow = {

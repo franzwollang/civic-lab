@@ -113,6 +113,24 @@ export async function getSection(sectionId: string): Promise<SectionRow> {
   return handleResponse<SectionRow>(response);
 }
 
+export async function createArtifact(input: {
+  artifact_id?: string;
+  title: string;
+  slug: string;
+  dossier_id: string;
+  lane?: string | null;
+  owner_merge_only?: boolean;
+  current_revision_id?: string | null;
+  created_at?: string;
+}): Promise<ArtifactRow> {
+  const response = await fetch(`${API_BASE}/artifacts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  return handleResponse<ArtifactRow>(response);
+}
+
 export async function updateArtifact(
   artifactId: string,
   patch: Partial<ArtifactRow>,

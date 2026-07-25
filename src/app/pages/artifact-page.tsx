@@ -20,7 +20,7 @@ import {
 import { artifactIdOf } from "@/doc/types";
 import type { ArtifactRow, DossierRow } from "@/doc/types";
 import { getDossier, getDossierArtifacts } from "@/api/client";
-import { laneForDossier } from "../lib/dossier-display";
+import { laneForDossier, laneLabelForArtifact } from "../lib/dossier-display";
 
 export function ArtifactPage() {
   const { dossierId, artifactId } = useParams();
@@ -72,7 +72,16 @@ export function ArtifactPage() {
   }, [doc]);
 
   const showLive = doc.status === "ready";
-  const lane = dossier ? laneForDossier(dossier) : null;
+  const artifactLane =
+    doc.status === "ready"
+      ? laneLabelForArtifact(doc.artifact.lane)
+      : null;
+  const lane =
+    artifactLane ?? (dossier ? laneForDossier(dossier) : null);
+  const softLabel =
+    doc.status === "ready" && doc.artifact.lane_soft_label === "composite"
+      ? "composite"
+      : null;
 
   const relatedFiltered = useMemo(() => {
     const currentSlug =
@@ -108,6 +117,14 @@ export function ArtifactPage() {
                   {lane && (
                     <>
                       <LaneBadge lane={lane} />
+                      {softLabel === "composite" && (
+                        <Badge
+                          variant="outline"
+                          className="border border-amber-200 bg-amber-50 text-xs font-medium text-amber-800"
+                        >
+                          Composite
+                        </Badge>
+                      )}
                       {lane === "Prescriptive" && (
                         <TooltipProvider>
                           <Tooltip>
