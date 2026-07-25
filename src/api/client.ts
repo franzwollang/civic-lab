@@ -2,6 +2,7 @@ import type {
   AreaRow,
   ArtifactRevisionRow,
   ArtifactRow,
+  CollectionDashboard,
   CollectionRow,
   DossierRow,
   PageRevisionRow,
@@ -152,6 +153,16 @@ export async function getCollection(
 ): Promise<CollectionRow> {
   const response = await fetch(`${API_BASE}/collections/${collectionId}`);
   return handleResponse<CollectionRow>(response);
+}
+
+/** CONCEPT §11 Collection dashboard (scoped chrome). */
+export async function getCollectionDashboard(
+  collectionId: string,
+): Promise<CollectionDashboard> {
+  const response = await fetch(
+    `${API_BASE}/collections/${collectionId}/dashboard`,
+  );
+  return handleResponse<CollectionDashboard>(response);
 }
 
 export async function getDossiers(opts?: {

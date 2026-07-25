@@ -68,6 +68,45 @@ export type DossierRow = {
   country_code?: string | null;
 };
 
+/** CONCEPT §11 Collection dashboard wire shape. */
+export type CollectionDashboardDossier = DossierRow & {
+  health: "seeded" | "empty";
+  lane_hint: "Descriptive" | "Prescriptive" | "Alignment";
+};
+
+export type CollectionDashboard = {
+  collection: CollectionRow;
+  stats: {
+    dossier_count: number;
+    artifact_count: number;
+    empty_dossier_count: number;
+  };
+  dossiers: CollectionDashboardDossier[];
+  open_threads: {
+    count: number;
+    critical_findings: number;
+    deferred: "M5";
+  };
+  claims: {
+    empirical_quality: null;
+    forecast_accuracy: null;
+    deferred: "M6";
+  };
+  lane_coverage: null | {
+    Descriptive: number;
+    Prescriptive: number;
+    Alignment: number;
+  };
+  requirement_satisfaction: null | {
+    deferred: "M6";
+    snapshot: null;
+  };
+  red_team: {
+    recent_count: number;
+    deferred: "M7";
+  };
+};
+
 /** @deprecated Prefer ArtifactRow */
 export type PageRow = ArtifactRow;
 

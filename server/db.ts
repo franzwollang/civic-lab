@@ -78,6 +78,50 @@ export type RegistryPayload = {
   items: unknown[];
 };
 
+/** CONCEPT §11 Collection dashboard (shared chrome; data scoped to one Collection). */
+export type CollectionDashboardDossier = DossierRow & {
+  health: "seeded" | "empty";
+  lane_hint: "Descriptive" | "Prescriptive" | "Alignment";
+};
+
+export type CollectionDashboard = {
+  collection: CollectionRow;
+  stats: {
+    dossier_count: number;
+    artifact_count: number;
+    empty_dossier_count: number;
+  };
+  dossiers: CollectionDashboardDossier[];
+  /** Stub until Thread table (M5). */
+  open_threads: {
+    count: number;
+    critical_findings: number;
+    deferred: "M5";
+  };
+  /** Stub until Claim scoring (M6). */
+  claims: {
+    empirical_quality: null;
+    forecast_accuracy: null;
+    deferred: "M6";
+  };
+  /** Manuals only — display-lane tallies until M6 immutable lanes. */
+  lane_coverage: null | {
+    Descriptive: number;
+    Prescriptive: number;
+    Alignment: number;
+  };
+  /** Manuals only — stub until requirement claims (M6). */
+  requirement_satisfaction: null | {
+    deferred: "M6";
+    snapshot: null;
+  };
+  /** Stub until Findings (M7). */
+  red_team: {
+    recent_count: number;
+    deferred: "M7";
+  };
+};
+
 function mapArea(row: {
   areaId: string;
   kind: string;
@@ -184,6 +228,82 @@ export async function getCollection(
     where: { collectionId },
   });
   return row ? mapCollection(row) : null;
+}
+
+/** Display-only lane hint until M6 immutable Manual lanes exist. */
+function laneHintForDossier(d: DossierRow): "Descriptive" | "Prescriptive" | "Alignment" {
+  const tags = d.tags.map((t) => t.toLowerCase());
+  if (tags.includes("alignment") || /alignment/i.test(d.title)) {
+    return "Alignment";
+  }
+  if (d.country_code || tags.includes("prescriptive")) {
+    return "Prescriptive";
+  }
+  if (tags.includes("descriptive")) {
+    return "Descriptive";
+  }
+  return "Descriptive";
+}
+
+/**
+ * CONCEPT §11 Collection dashboard payload.
+ * Real dossier health from store; thread/claim/RT panels stubbed until M5–M7.
+ */
+export async function getCollectionDashboard(
+  collectionId: string,
+): Promise<CollectionDashboard | null> {
+  const collection = await getCollection(collectionId);
+  if (!collection) return null;
+
+  const dossiers = await listDossiers(collectionId);
+  const withHealth: CollectionDashboardDossier[] = dossiers.map((d) => ({
+    ...d,
+    health: (d.artifact_count ?? 0) > 0 ? "seeded" : "empty",
+    lane_hint: laneHintForDossier(d),
+  }));
+
+  const artifact_count = withHealth.reduce(
+    (sum, d) => sum + (d.artifact_count ?? 0),
+    0,
+  );
+  const empty_dossier_count = withHealth.filter((d) => d.health === "empty").length;
+
+  const isManual = Boolean(collection.country_code);
+  let lane_coverage: CollectionDashboard["lane_coverage"] = null;
+  if (isManual) {
+    lane_coverage = { Descriptive: 0, Prescriptive: 0, Alignment: 0 };
+    for (const d of withHealth) {
+      lane_coverage[d.lane_hint] += 1;
+    }
+  }
+
+  return {
+    collection,
+    stats: {
+      dossier_count: withHealth.length,
+      artifact_count,
+      empty_dossier_count,
+    },
+    dossiers: withHealth,
+    open_threads: {
+      count: 0,
+      critical_findings: 0,
+      deferred: "M5",
+    },
+    claims: {
+      empirical_quality: null,
+      forecast_accuracy: null,
+      deferred: "M6",
+    },
+    lane_coverage,
+    requirement_satisfaction: isManual
+      ? { deferred: "M6", snapshot: null }
+      : null,
+    red_team: {
+      recent_count: 0,
+      deferred: "M7",
+    },
+  };
 }
 
 export async function listDossiers(

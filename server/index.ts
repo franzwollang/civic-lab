@@ -8,6 +8,7 @@ import {
   getAttributions,
   getAreaByKind,
   getCollection,
+  getCollectionDashboard,
   getDossier,
   getTerms,
   listAreas,
@@ -267,6 +268,16 @@ app.get("/api/collections/:collectionId", async (req, res) => {
     return;
   }
   res.json(collection);
+});
+
+/** CONCEPT §11 shared Collection dashboard (dossier health + deferred stubs). */
+app.get("/api/collections/:collectionId/dashboard", async (req, res) => {
+  const dashboard = await getCollectionDashboard(req.params.collectionId);
+  if (!dashboard) {
+    res.status(404).json({ error: "Collection not found" });
+    return;
+  }
+  res.json(dashboard);
 });
 
 app.get("/api/collections/:collectionId/dossiers", async (req, res) => {

@@ -12,5 +12,26 @@
     "title": "United States",
     "country_code": "US",
     "summary": "Country Manual for US institutions, procedures, and realpolitik constraints."
+  },
+  {
+    "collection_id": "collection-ca",
+    "area_id": "area-manuals",
+    "title": "Canada",
+    "country_code": "CA",
+    "summary": "Country Manual for Canadian federal and provincial institutions."
+  },
+  {
+    "collection_id": "collection-gb",
+    "area_id": "area-manuals",
+    "title": "United Kingdom",
+    "country_code": "GB",
+    "summary": "Country Manual for UK parliamentary and devolved governance."
+  },
+  {
+    "collection_id": "collection-de",
+    "area_id": "area-manuals",
+    "title": "Germany",
+    "country_code": "DE",
+    "summary": "Country Manual for German federal institutions and Länder coordination."
   }
 ]
