@@ -1,0 +1,44 @@
+[
+  {
+    "dossier_id": "electoral-1",
+    "collection_id": "collection-canon",
+    "title": "Voting Systems",
+    "summary": "Ideal models of electoral systems, criteria, and trade-offs.",
+    "tags": ["elections", "voting", "canon", "descriptive"]
+  },
+  {
+    "dossier_id": "alignment-1",
+    "collection_id": "collection-canon",
+    "title": "Alignment",
+    "summary": "How Manuals relate to Canon ideals — gaps, bridges, and quality claims.",
+    "tags": ["alignment", "canon"]
+  },
+  {
+    "dossier_id": "us-voting-1",
+    "collection_id": "collection-us",
+    "title": "US Voting Implementation Guide",
+    "summary": "State-by-state procedures, legal requirements, and operational workflows for conducting elections in the United States.",
+    "tags": ["elections", "USA", "procedures", "prescriptive"]
+  },
+  {
+    "dossier_id": "ca-elections-1",
+    "collection_id": "collection-ca",
+    "title": "Canadian Federal Elections",
+    "summary": "Elections Canada procedures and federal riding workflows for Canadian federal elections.",
+    "tags": ["elections", "Canada", "prescriptive"]
+  },
+  {
+    "dossier_id": "gb-elections-1",
+    "collection_id": "collection-gb",
+    "title": "UK Electoral Administration",
+    "summary": "UK parliamentary elections and returning-officer practice.",
+    "tags": ["elections", "UK", "prescriptive"]
+  },
+  {
+    "dossier_id": "de-elections-1",
+    "collection_id": "collection-de",
+    "title": "German Federal Elections",
+    "summary": "Bundestag elections and Bundeswahlleiter coordination with Land and Kreis authorities.",
+    "tags": ["elections", "Germany", "prescriptive"]
+  }
+]

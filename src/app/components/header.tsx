@@ -33,13 +33,13 @@ export function Header() {
               About
             </Link>
             <Link
-              to="/dossier/canon-1"
+              to="/canon"
               className="text-neutral-600 transition-colors hover:text-neutral-900"
             >
               Canon
             </Link>
             <Link
-              to="/dossier/manual-us-1"
+              to="/manuals"
               className="text-neutral-600 transition-colors hover:text-neutral-900"
             >
               Manuals

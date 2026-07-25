@@ -1,0 +1,53 @@
+[
+  {
+    "claim_id": "claim-canon-turnout-trend",
+    "artifact_id": "page-001",
+    "section_id": null,
+    "profile": "empirical",
+    "text": "In OECD democracies, average national election turnout will remain between 60% and 80% through 2030.",
+    "status": "open",
+    "empirical_type": "forecast",
+    "scope": "global",
+    "probability": 0.65,
+    "deadline": "2030-12-31T00:00:00.000Z",
+    "resolution_criteria": "Mean of OECD national parliamentary/presidential turnout series for 2026–2030 falls in [0.60, 0.80].",
+    "preferred_sources": ["IDEA Voter Turnout Database", "OECD Government at a Glance"],
+    "adjudication_rule": "majority_adjudicator",
+    "canon_citations": [],
+    "links": [],
+    "created_at": "2026-07-10T12:00:00.000Z",
+    "author_id": "user-carol"
+  },
+  {
+    "claim_id": "claim-us-nvra-coverage",
+    "artifact_id": "us-overview",
+    "section_id": null,
+    "profile": "empirical",
+    "text": "As of 2024, at least 45 US states offered online voter registration or an equivalent digital update channel.",
+    "status": "open",
+    "empirical_type": "fact",
+    "as_of": "2024-11-01T00:00:00.000Z",
+    "resolution_criteria": "Count of states with online voter registration per NASS / state election office directories.",
+    "preferred_sources": ["NASS online registration survey", "state SOS websites"],
+    "canon_citations": [],
+    "links": [],
+    "created_at": "2026-07-10T12:10:00.000Z",
+    "author_id": "user-alice",
+    "adjudication_requested_at": "2026-07-12T09:00:00.000Z",
+    "adjudication_requested_by": "user-bob",
+    "adjudication_request_note": "NASS survey and state SOS pages disagree on three border states."
+  },
+  {
+    "claim_id": "claim-us-align-canon-criteria",
+    "artifact_id": "us-alignment",
+    "section_id": null,
+    "profile": "requirement",
+    "text": "US Manual procedure docs must cite Canon voting-system criteria when claiming alignment improvements.",
+    "status": "open",
+    "resolution_criteria": "Every Alignment RFC merge includes ≥1 Canon citation to page-001 (or successor) criteria section.",
+    "canon_citations": ["page-001"],
+    "links": [],
+    "created_at": "2026-07-10T12:20:00.000Z",
+    "author_id": "user-alice"
+  }
+]

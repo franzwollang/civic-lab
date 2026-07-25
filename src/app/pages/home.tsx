@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Header } from "../components/header";
 import { DossierCard, ThreadRow } from "../components/cards";
 import { Card } from "../components/ui/card";
@@ -7,9 +8,6 @@ import {
   ArrowRight,
   BookOpen,
   MapPin,
-  User,
-  Clock,
-  ChevronRight,
   Sparkles,
   MessageSquare,
   GitPullRequest,
@@ -19,8 +17,32 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Link } from "react-router";
+import { getDossiers } from "../../api/client";
+import type { DossierRow } from "../../doc/types";
+import { laneForDossier } from "../lib/dossier-display";
 
 export function Home() {
+  const [dossiers, setDossiers] = useState<DossierRow[] | null>(null);
+  const [dossiersError, setDossiersError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getDossiers()
+      .then((rows) => {
+        if (!cancelled) setDossiers(rows);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setDossiersError(
+            err instanceof Error ? err.message : "Failed to load dossiers",
+          );
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
@@ -51,13 +73,13 @@ export function Home() {
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Button asChild size="lg">
-                    <Link to="/dossier/canon-1">
+                    <Link to="/canon">
                       Explore Canon
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
-                    <Link to="/dossier/manual-us-1">Browse Manuals</Link>
+                    <Link to="/manuals">Browse Manuals</Link>
                   </Button>
                   <Button
                     asChild
@@ -142,7 +164,7 @@ export function Home() {
             </Link>
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
-            <Link to="/dossier/canon-1">
+            <Link to="/canon">
               <Card className="group cursor-pointer border-2 border-neutral-900 bg-white p-8 transition-all hover:border-neutral-700 hover:shadow-lg">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-900">
@@ -169,7 +191,7 @@ export function Home() {
               </Card>
             </Link>
 
-            <Link to="/dossier/manual-us-1">
+            <Link to="/manuals">
               <Card className="group cursor-pointer border-2 border-neutral-900 bg-white p-8 transition-all hover:border-neutral-700 hover:shadow-lg">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-900">
@@ -281,83 +303,48 @@ export function Home() {
 
         <section className="mb-12">
           <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-neutral-900">
-              Trending Dossiers
-            </h3>
+            <div>
+              <h3 className="text-xl font-semibold text-neutral-900">
+                Trending Dossiers
+              </h3>
+              <p className="mt-1 text-sm text-neutral-600">
+                Live from the corpus store (Area → Collection → Dossier).
+              </p>
+            </div>
             <Link
-              to="/"
+              to="/canon"
               className="text-sm font-medium text-neutral-600 hover:text-neutral-900"
             >
-              View all →
+              Browse Canon →
             </Link>
           </div>
           <div className="grid gap-4">
-            <DossierCard
-              id="electoral-1"
-              title="Electoral System Design"
-              description="Foundational principles for democratic electoral mechanisms, voting theory, and representation models."
-              lane="Descriptive"
-              steward="Dr. Sarah Chen"
-              lastUpdated="2 days ago"
-              artifactCount={12}
-              threadCount={8}
-            />
-            <DossierCard
-              id="us-voting-1"
-              title="US Voting Implementation Guide"
-              description="State-by-state procedures, legal requirements, and operational workflows for conducting elections in the United States."
-              lane="Prescriptive"
-              steward="Mark Johnson"
-              lastUpdated="3 hours ago"
-              artifactCount={24}
-              threadCount={15}
-            />
-            <Link to="/dossier/us-voting-1/artifact-descriptive/turnout-intel">
-              <Card className="group cursor-pointer border border-blue-200 bg-blue-50 p-6 transition-all hover:border-blue-300 hover:shadow-sm">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="mb-2 flex items-center gap-2">
-                      <Badge className="bg-blue-100 text-blue-700">
-                        Descriptive
-                      </Badge>
-                      <Badge variant="secondary">Example</Badge>
-                    </div>
-                    <h3 className="mb-2 text-lg font-semibold text-neutral-900 group-hover:text-neutral-700">
-                      2024 Election Turnout Intelligence
-                    </h3>
-                    <p className="mb-4 text-sm text-neutral-600">
-                      Intelligence gathering with structured, scorable claims
-                      showing forecast accuracy and claim quality metrics.
-                    </p>
-                    <div className="flex items-center gap-4 text-xs text-neutral-500">
-                      <div className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        <span>Research Team</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>1 day ago</span>
-                      </div>
-                      <span>·</span>
-                      <span>12 claims</span>
-                      <span>·</span>
-                      <span>2 threads</span>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-neutral-400 transition-transform group-hover:translate-x-1" />
-                </div>
+            {dossiersError && (
+              <Card className="border border-neutral-200 p-6 text-sm text-neutral-600">
+                {dossiersError}
               </Card>
-            </Link>
-            <DossierCard
-              id="alignment-1"
-              title="Canon ↔ US Manual Alignment Check"
-              description="Tracking alignment between ideal electoral principles and practical US implementation constraints."
-              lane="Alignment"
-              steward="Review Board"
-              lastUpdated="1 day ago"
-              artifactCount={8}
-              threadCount={12}
-            />
+            )}
+            {!dossiersError && dossiers === null && (
+              <p className="text-sm text-neutral-500">Loading dossiers…</p>
+            )}
+            {!dossiersError && dossiers && dossiers.length === 0 && (
+              <p className="text-sm text-neutral-500">
+                No dossiers seeded yet.
+              </p>
+            )}
+            {dossiers?.map((d) => (
+              <DossierCard
+                key={d.dossier_id}
+                id={d.dossier_id}
+                title={d.title}
+                description={d.summary || ""}
+                lane={laneForDossier(d)}
+                steward={d.collection_title || d.country_code || "Corpus"}
+                lastUpdated="seed"
+                artifactCount={d.artifact_count ?? 0}
+                threadCount={0}
+              />
+            ))}
           </div>
         </section>
 

@@ -1,4 +1,4 @@
-import type { ChangeEvent, MouseEvent } from "react";
+import type { ChangeEvent, KeyboardEvent, MouseEvent } from "react";
 import { useEffect, useRef } from "react";
 import type { PlateElementProps } from "platejs/react";
 import { PlateElement, useSelected } from "platejs/react";
@@ -11,6 +11,12 @@ import { useEvidenceModals } from "@/editor/evidenceModals";
 import { DataBlockComponent } from "@/editor/void-blocks";
 import { MathBlockComponent } from "@/editor/math-nodes";
 import type { Locator } from "@/doc/evidence";
+import {
+  REMOVE_BUTTON_BASE,
+  removeButtonKeyDown,
+  truncateForAria,
+  voidPreviewKeyDown,
+} from "@/editor/voidA11y";
 
 const LOCATOR_KINDS = [
   "page",
@@ -226,9 +232,9 @@ function EvidenceBlockComponent(props: PlateElementProps) {
     Transforms.setNodes(props.editor, patch, { at: props.path as any });
   };
 
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleRemove = (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     Transforms.removeNodes(props.editor, { at: props.path });
     Transforms.insertNodes(
       props.editor,
@@ -290,6 +296,7 @@ function EvidenceBlockComponent(props: PlateElementProps) {
     <PlateElement
       as="section"
       {...props}
+      aria-label="Evidence block"
       className="group relative my-4 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3"
     >
       <div className="flex justify-end">
@@ -420,8 +427,9 @@ function EvidenceBlockComponent(props: PlateElementProps) {
         type="button"
         contentEditable={false}
         onMouseDown={handleRemove}
+        onKeyDown={(e) => removeButtonKeyDown(e, handleRemove)}
         aria-label="Remove evidence block"
-        className="absolute -right-2 -top-2 hidden h-6 w-6 items-center justify-center rounded border border-neutral-200 bg-white text-xs text-neutral-600 shadow-sm hover:bg-neutral-100 group-hover:flex"
+        className={`${REMOVE_BUTTON_BASE} -right-2 -top-2`}
       >
         x
       </button>
@@ -546,9 +554,9 @@ function CitationInlineComponent(props: PlateElementProps) {
     Transforms.setNodes(props.editor, patch, { at: props.path as any });
   };
 
-  const handleSelectSelf = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleSelectSelf = (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     try {
       Transforms.select(
         props.editor,
@@ -560,23 +568,37 @@ function CitationInlineComponent(props: PlateElementProps) {
     document.querySelector<HTMLElement>("[data-slate-editor=\"true\"]")?.focus();
   };
 
-  const handleRemove = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleRemove = (event?: MouseEvent | KeyboardEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     Transforms.removeNodes(props.editor, { at: props.path });
   };
+
+  const citationLabel = attributionRef
+    ? `Citation: ${truncateForAria(attributionLabel)}`
+    : "Citation: missing source";
 
   return (
     <PlateElement
       as="span"
       {...props}
-      className="relative inline-flex items-center"
+      className="group relative inline-flex items-center"
     >
       <span
+        role="button"
+        tabIndex={0}
+        aria-label={citationLabel}
         contentEditable={false}
         onMouseDown={handleSelectSelf}
+        onKeyDown={(event) => {
+          voidPreviewKeyDown({
+            event,
+            onSelect: () => handleSelectSelf(event),
+            onRemove: () => handleRemove(),
+          });
+        }}
         className={
-          "inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide " +
+          "inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 " +
           (attributionRef ? "border-neutral-200 bg-neutral-100 text-neutral-700" : "border-red-200 bg-red-50 text-red-700")
         }
         title={
@@ -657,6 +679,8 @@ function CitationInlineComponent(props: PlateElementProps) {
           <button
             type="button"
             onMouseDown={handleRemove}
+            onKeyDown={(e) => removeButtonKeyDown(e, handleRemove)}
+            aria-label="Remove citation"
             className="mt-2 text-[11px] font-medium text-neutral-500 hover:text-neutral-800"
           >
             Remove citation

@@ -1,0 +1,247 @@
+// Civic Lab M6 — Claims + Manual lanes (CONCEPT §§4–5).
+// M5 Threads + posts + flexible targets retained.
+// CONCEPT: Artifact / ArtifactRevision. Physical tables/columns still use
+// legacy `pages` / `page_revisions` / `page_id` via @@map / @map during cutover.
+// Wire JSON dual-emits `artifact_id` (preferred) + `page_id` (same value).
+// Prototype sync: `prisma db push` (no migration history yet).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// CONCEPT §2.0 — `canon` | `manuals`
+model Area {
+  areaId      String       @id @map("area_id")
+  kind        String
+  title       String
+  collections Collection[]
+
+  @@map("areas")
+}
+
+/// CONCEPT §2.0 — Canon singleton; Manuals one per country (`country_code`).
+model Collection {
+  collectionId String    @id @map("collection_id")
+  areaId       String    @map("area_id")
+  title        String
+  countryCode  String?   @map("country_code")
+  summary      String?
+  area         Area      @relation(fields: [areaId], references: [areaId], onDelete: Cascade)
+  dossiers     Dossier[]
+
+  @@index([areaId])
+  @@map("collections")
+}
+
+/// CONCEPT §2.1 — subforum-owning semantic unit within a Collection.
+model Dossier {
+  dossierId    String     @id @map("dossier_id")
+  collectionId String     @map("collection_id")
+  title        String
+  summary      String?
+  tags         Json       @default("[]")
+  collection   Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
+  artifacts    Artifact[]
+  threads      Thread[]
+
+  @@index([collectionId])
+  @@map("dossiers")
+}
+
+/// CONCEPT §3 — thread-first social object. Home dossier ≠ only targets.
+/// state: open | rfc | review | decided | archived
+/// decision_outcome (when decided): merged | rejected | parked
+model Thread {
+  threadId        String         @id @map("thread_id")
+  homeDossierId   String         @map("home_dossier_id")
+  title           String
+  state           String
+  decisionOutcome String?        @map("decision_outcome")
+  isRedteam       Boolean        @default(false) @map("is_redteam")
+  parentThreadId  String?        @map("parent_thread_id")
+  mergeArtifactId String?        @map("merge_artifact_id")
+  createdAt       DateTime       @map("created_at")
+  homeDossier     Dossier        @relation(fields: [homeDossierId], references: [dossierId], onDelete: Cascade)
+  parentThread    Thread?        @relation("ThreadTree", fields: [parentThreadId], references: [threadId], onDelete: SetNull)
+  childThreads    Thread[]       @relation("ThreadTree")
+  posts           ThreadPost[]
+  targets         ThreadTarget[]
+  revSets         RevSet[]
+
+  @@index([homeDossierId])
+  @@index([state])
+  @@index([parentThreadId])
+  @@map("threads")
+}
+
+/// CONCEPT §3.3 / Appendix A — proposed ArtifactRevision on a merging (leaf) RFC.
+/// Does not update Artifact.current_revision_id until merge (authority later).
+model RevSet {
+  revsetId            String   @id @map("revset_id")
+  threadId            String   @map("thread_id")
+  version             Int
+  artifactRevisionId  String   @map("artifact_revision_id")
+  authorId            String   @map("author_id")
+  createdAt           DateTime @map("created_at")
+  summary             String?
+  thread              Thread   @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+
+  @@unique([threadId, version])
+  @@index([threadId])
+  @@index([artifactRevisionId])
+  @@map("revsets")
+}
+
+/// CONCEPT §3 — timeline posts (typed later: comment / finding / mitigation).
+model ThreadPost {
+  postId    String   @id @map("post_id")
+  threadId  String   @map("thread_id")
+  authorId  String   @map("author_id")
+  type      String
+  body      String
+  createdAt DateTime @map("created_at")
+  thread    Thread   @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+
+  @@index([threadId])
+  @@map("thread_posts")
+}
+
+/// CONCEPT §3.2 — join across anchorable targets (dossier | artifact | section).
+model ThreadTarget {
+  id         Int    @id @default(autoincrement())
+  threadId   String @map("thread_id")
+  targetKind String @map("target_kind")
+  targetId   String @map("target_id")
+  thread     Thread @relation(fields: [threadId], references: [threadId], onDelete: Cascade)
+
+  @@unique([threadId, targetKind, targetId])
+  @@index([targetKind, targetId])
+  @@map("thread_targets")
+}
+
+model Artifact {
+  artifactId        String             @id @map("page_id")
+  title             String
+  slug              String
+  currentRevisionId String?            @map("current_revision_id")
+  createdAt         DateTime           @map("created_at")
+  dossierId         String?            @map("dossier_id")
+  /// CONCEPT §3.4 — Canon restricted (Charter / governance); Owner-only merge.
+  ownerMergeOnly    Boolean            @default(false) @map("owner_merge_only")
+  /// CONCEPT §4 — Manual immutable lane: descriptive | prescriptive | alignment.
+  /// Null on Canon artifacts (no Manual lane).
+  lane              String?
+  dossier           Dossier?           @relation(fields: [dossierId], references: [dossierId], onDelete: SetNull)
+  revisions         ArtifactRevision[]
+  sections          Section[]
+  claims            Claim[]
+
+  @@index([dossierId])
+  @@map("pages")
+}
+
+/// CONCEPT §5 — scorable claim owned by an artifact (optional section).
+/// profile: empirical | requirement (must be legal for Area/lane).
+/// empirical_type: fact | forecast | model (empirical only).
+/// scope: global | regional (Canon empirical only).
+model Claim {
+  claimId             String    @id @map("claim_id")
+  artifactId          String    @map("artifact_id")
+  sectionId           String?   @map("section_id")
+  profile             String
+  text                String
+  status              String    @default("open")
+  /// Empirical: fact | forecast | model
+  empiricalType       String?   @map("empirical_type")
+  /// Canon empirical: global | regional
+  scope               String?
+  regionCode          String?   @map("region_code")
+  regionLabel         String?   @map("region_label")
+  /// Forecast probability ∈ [0.01, 0.99]
+  probability         Float?
+  asOf                DateTime? @map("as_of")
+  deadline            DateTime?
+  resolutionCriteria  String?   @map("resolution_criteria")
+  preferredSources    Json      @default("[]") @map("preferred_sources")
+  adjudicationRule    String?   @map("adjudication_rule")
+  /// Requirement: Canon artifact ids / citation refs (JSON string[])
+  canonCitations      Json      @default("[]") @map("canon_citations")
+  links               Json      @default("[]")
+  createdAt           DateTime  @map("created_at")
+  authorId            String?   @map("author_id")
+  /// CONCEPT §8.3 — request-adjudication queue (pending when requested > last adjudicated).
+  adjudicationRequestedAt DateTime? @map("adjudication_requested_at")
+  adjudicationRequestedBy String?   @map("adjudication_requested_by")
+  adjudicationRequestNote String?   @map("adjudication_request_note")
+  adjudicationRationale   String?   @map("adjudication_rationale")
+  adjudicatedBy           String?   @map("adjudicated_by")
+  adjudicatedAt           DateTime? @map("adjudicated_at")
+  artifact            Artifact  @relation(fields: [artifactId], references: [artifactId], onDelete: Cascade)
+
+  @@index([artifactId])
+  @@index([profile])
+  @@index([status])
+  @@map("claims")
+}
+
+/// CONCEPT §2.3 — stable Section identities synced from heading block ids.
+/// `stable_key` = heading block `id` (survives title edits; not text offsets).
+/// ThreadTarget uses `target_kind=section` + this row's `section_id`.
+model Section {
+  sectionId  String   @id @map("section_id")
+  artifactId String   @map("artifact_id")
+  stableKey  String   @map("stable_key")
+  title      String
+  level      Int
+  order      Int      @map("sort_order")
+  artifact   Artifact @relation(fields: [artifactId], references: [artifactId], onDelete: Cascade)
+
+  @@unique([artifactId, stableKey])
+  @@index([artifactId])
+  @@map("sections")
+}
+
+model ArtifactRevision {
+  revisionId       String   @id @map("revision_id")
+  artifactId       String   @map("page_id")
+  parentRevisionId String?  @map("parent_revision_id")
+  createdAt        DateTime @map("created_at")
+  author           String
+  contentJson      Json     @map("content_json")
+  artifact         Artifact @relation(fields: [artifactId], references: [artifactId], onDelete: Cascade)
+
+  @@index([artifactId])
+  @@map("page_revisions")
+}
+
+/// Singleton registry row (version + items JSON) matching former terms.json.
+model TermsRegistry {
+  id      Int  @id @default(1)
+  version Int
+  items   Json
+
+  @@map("terms_registry")
+}
+
+/// Singleton registry row matching former attributions.json.
+model AttributionsRegistry {
+  id      Int  @id @default(1)
+  version Int
+  items   Json
+
+  @@map("attributions_registry")
+}
+
+/// Records that seed data was applied. Absence ⇒ empty DB ⇒ re-seed on startup.
+model SeedMeta {
+  id        String   @id
+  appliedAt DateTime @map("applied_at")
+  source    String
+
+  @@map("seed_meta")
+}

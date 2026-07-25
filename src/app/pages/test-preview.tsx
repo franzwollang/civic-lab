@@ -6,52 +6,36 @@ import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 
 import { getPage, getRevisions } from "@/api/client";
+import {
+  DocumentReader,
+  type ReaderNode,
+} from "@/doc/DocumentReader";
 import type { PageRevisionRow, PageRow } from "@/doc/types";
+import {
+  EvidenceRegistryProvider,
+  useEvidenceRegistry,
+} from "@/editor/evidenceRegistry";
 
-type SlateNode = {
-  type?: string;
-  text?: string;
-  id?: string;
-  children?: SlateNode[];
-};
+function PreviewBody({ content }: { content: ReaderNode[] }) {
+  const { attributions, terms, loading, error } = useEvidenceRegistry();
 
-function renderNodes(nodes: SlateNode[]): React.ReactNode {
-  return nodes.map((node, index) => {
-    if (node.text) {
-      return node.text;
-    }
-
-    const children = node.children ? renderNodes(node.children) : null;
-    const key = node.id ?? `node-${index}`;
-
-    switch (node.type) {
-      case "h1":
-        return (
-          <h1 key={key} className="mb-4 text-3xl font-semibold text-neutral-900">
-            {children}
-          </h1>
-        );
-      case "h2":
-        return (
-          <h2 key={key} className="mb-3 text-2xl font-semibold text-neutral-900">
-            {children}
-          </h2>
-        );
-      case "h3":
-        return (
-          <h3 key={key} className="mb-2 text-lg font-semibold text-neutral-900">
-            {children}
-          </h3>
-        );
-      case "p":
-      default:
-        return (
-          <p key={key} className="mb-4 text-sm leading-7 text-neutral-700">
-            {children}
-          </p>
-        );
-    }
-  });
+  return (
+    <>
+      {loading && (
+        <p className="mb-4 text-xs text-neutral-500">Loading registries…</p>
+      )}
+      {error && (
+        <p className="mb-4 text-xs text-amber-700">
+          Registries unavailable ({error}); citations/terms show ids only.
+        </p>
+      )}
+      <DocumentReader
+        value={content}
+        attributions={attributions}
+        terms={terms}
+      />
+    </>
+  );
 }
 
 export function TestPreview() {
@@ -66,7 +50,7 @@ export function TestPreview() {
   const content = useMemo(() => {
     if (!latestRevision) return [];
     const value = latestRevision.content_json;
-    return Array.isArray(value) ? (value as SlateNode[]) : [];
+    return Array.isArray(value) ? (value as ReaderNode[]) : [];
   }, [latestRevision]);
 
   useEffect(() => {
@@ -102,7 +86,7 @@ export function TestPreview() {
               {page?.title || "Preview"}
             </h1>
             <p className="text-sm text-neutral-500">
-              Read-only preview of the latest revision.
+              Read-only preview of the latest revision (full document model).
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -132,7 +116,9 @@ export function TestPreview() {
 
         {status === "idle" && latestRevision && (
           <Card className="border border-neutral-200 bg-white p-8">
-            {renderNodes(content)}
+            <EvidenceRegistryProvider>
+              <PreviewBody content={content} />
+            </EvidenceRegistryProvider>
           </Card>
         )}
 

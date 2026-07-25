@@ -1,6 +1,7 @@
 import { stableStringify } from "../crypto/stableStringify";
 import { sha256Hex } from "../crypto/hash";
 import type { BlockRow } from "./types";
+import { getCanonicalPreview } from "./plainTextExport";
 
 function getNodeText(node: unknown): string {
   if (!node || typeof node !== "object") return "";
@@ -15,45 +16,6 @@ function getNodeText(node: unknown): string {
   return children.map(getNodeText).join("");
 }
 
-function getEvidenceText(node: unknown): string {
-  if (!node || typeof node !== "object") return "";
-  const children = (node as { children?: unknown }).children;
-  if (!Array.isArray(children)) return getNodeText(node);
-  const quoteChild = children.find(
-    (child) =>
-      child &&
-      typeof child === "object" &&
-      (child as { type?: unknown }).type === "evidence_block_text",
-  );
-  return quoteChild ? getNodeText(quoteChild) : getNodeText(node);
-}
-
-function getEvidenceData(node: unknown): string {
-  if (!node || typeof node !== "object") return "";
-  const children = (node as { children?: unknown }).children;
-  if (!Array.isArray(children)) return "";
-  const dataChild = children.find(
-    (child) =>
-      child &&
-      typeof child === "object" &&
-      (child as { type?: unknown }).type === "evidence_block_data",
-  ) as { code?: unknown } | undefined;
-  return typeof dataChild?.code === "string" ? dataChild.code : "";
-}
-
-function getEvidenceMath(node: unknown): string {
-  if (!node || typeof node !== "object") return "";
-  const children = (node as { children?: unknown }).children;
-  if (!Array.isArray(children)) return "";
-  const mathChild = children.find(
-    (child) =>
-      child &&
-      typeof child === "object" &&
-      (child as { type?: unknown }).type === "evidence_block_math",
-  ) as { latex?: unknown } | undefined;
-  return typeof mathChild?.latex === "string" ? mathChild.latex : "";
-}
-
 function getMathTex(node: unknown): string {
   if (!node || typeof node !== "object") return "";
 
@@ -65,71 +27,19 @@ function getTextPreview(node: unknown): string {
   if (!node || typeof node !== "object") return "";
 
   const elementType = (node as { type?: unknown }).type;
-  if (elementType === "math_inline" || elementType === "math_block") {
-    const tex = getMathTex(node);
-    return elementType === "math_block" ? `$$${tex}$$` : `$${tex}$`;
-  }
+  const voidish =
+    elementType === "math_inline" ||
+    elementType === "math_block" ||
+    elementType === "mermaid_block" ||
+    elementType === "procedure_block" ||
+    elementType === "data_block" ||
+    elementType === "image_block" ||
+    elementType === "evidence_block" ||
+    elementType === "citation_inline" ||
+    elementType === "term_inline";
 
-  if (elementType === "mermaid_block") {
-    const code = (node as { code?: unknown }).code;
-    const text =
-      typeof code === "string" ? code : getNodeText(node);
-    const first = text.trim().split("\n")[0] ?? "";
-    return `mermaid: ${first}`;
-  }
-
-  if (elementType === "procedure_block") {
-    const code = (node as { code?: unknown }).code;
-    const text =
-      typeof code === "string" ? code : getNodeText(node);
-    const first = text.trim().split("\n")[0] ?? "";
-    return `procedure: ${first}`;
-  }
-
-  if (elementType === "data_block") {
-    const language =
-      typeof (node as { language?: unknown }).language === "string"
-        ? String((node as any).language)
-        : "code";
-    const code = (node as { code?: unknown }).code;
-    const text =
-      typeof code === "string" ? code : getNodeText(node);
-    const first = text.trim().split("\n")[0] ?? "";
-    return `${language}: ${first}`;
-  }
-
-  if (elementType === "image_block") {
-    const caption =
-      typeof (node as { caption?: unknown }).caption === "string"
-        ? String((node as any).caption)
-        : "";
-    const src =
-      typeof (node as { src?: unknown }).src === "string"
-        ? String((node as any).src)
-        : "";
-    const label = caption.trim() ? caption.trim() : src;
-    const first = label.trim().split("\n")[0] ?? "";
-    return `image: ${first}`;
-  }
-
-  if (elementType === "evidence_block") {
-    const kind =
-      typeof (node as { kind?: unknown }).kind === "string"
-        ? String((node as any).kind)
-        : "text";
-    if (kind === "data") {
-      const text = getEvidenceData(node);
-      const first = text.trim().split("\n")[0] ?? "";
-      return `evidence(data): ${first}`;
-    }
-    if (kind === "math") {
-      const text = getEvidenceMath(node);
-      const first = text.trim().split("\n")[0] ?? "";
-      return `evidence(math): ${first}`;
-    }
-    const text = getEvidenceText(node);
-    const first = text.trim().split("\n")[0] ?? "";
-    return `evidence(text): ${first}`;
+  if (voidish) {
+    return getCanonicalPreview(node);
   }
 
   return getNodeText(node);

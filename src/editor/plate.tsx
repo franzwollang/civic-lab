@@ -24,6 +24,7 @@ import {
   EvidenceBlockTranslationPlugin,
   TermInlinePlugin,
 } from "./evidence-nodes";
+import { VoidClipboardPlugin } from "./voidClipboard";
 
 export { CollapseProvider } from "./collapse";
 
@@ -140,6 +141,7 @@ export const editorPlugins = [
   ProcedureBlockPlugin,
   DataBlockPlugin,
   ImageBlockPlugin,
+  VoidClipboardPlugin,
 ];
 
 export const initialValue: Array<Record<string, unknown>> = [

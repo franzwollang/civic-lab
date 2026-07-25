@@ -7931,5 +7931,1753 @@
     ],
     "doc_root_hash": "b2b4c49e882e1dc760d9aa3f312a4cbeff659492b1dc8d60455dbba1b0be172c",
     "schema_version": 2
+  },
+  {
+    "revision_id": "rev-us-overview-1",
+    "page_id": "us-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals, scope, and intended audience for the US voting implementation guide."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p2",
+        "children": [
+          {
+            "text": "Give election administrators a shared, actionable Manual for conducting elections that aligns with Canon voting-system ideals where feasible."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p3",
+        "children": [
+          {
+            "text": "Covers federal elections and common state practices. State-specific statutes are noted where they diverge from the baseline workflow."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-ov-p4",
+        "children": [
+          {
+            "text": "County clerks, poll-worker trainers, and Civic Lab contributors drafting Manual Alignment claims."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "us-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-ov-p1",
+        "text_preview": "High-level goals, scope, and intended audience for the US voting implementation guide."
+      },
+      {
+        "block_id": "us-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "us-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-ov-p2",
+        "text_preview": "Give election administrators a shared, actionable Manual for conducting elections that aligns with Canon voting-system i"
+      },
+      {
+        "block_id": "us-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "us-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-ov-p3",
+        "text_preview": "Covers federal elections and common state practices. State-specific statutes are noted where they diverge from the basel"
+      },
+      {
+        "block_id": "us-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "us-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-ov-p4",
+        "text_preview": "County clerks, poll-worker trainers, and Civic Lab contributors drafting Manual Alignment claims."
+      }
+    ],
+    "doc_root_hash": "seed-root-us-overview",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-us-voter-reg-1",
+    "page_id": "us-voter-reg",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-vr-h1",
+        "children": [
+          {
+            "text": "Voter Registration Procedures"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p1",
+        "children": [
+          {
+            "text": "Step-by-step workflows for registering voters across all 50 states including ID requirements and deadlines."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h2",
+        "children": [
+          {
+            "text": "Baseline intake"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p2",
+        "children": [
+          {
+            "text": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdiction checklist before creating a registration record."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h3",
+        "children": [
+          {
+            "text": "Deadlines"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p3",
+        "children": [
+          {
+            "text": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day lane documented under Polling Place Operations."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h4",
+        "children": [
+          {
+            "text": "ID requirements"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p4",
+        "children": [
+          {
+            "text": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a ballot."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-vr-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-vr-h1",
+        "text_preview": "Voter Registration Procedures"
+      },
+      {
+        "block_id": "us-vr-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-vr-p1",
+        "text_preview": "Step-by-step workflows for registering voters across all 50 states including ID requirements and deadlines."
+      },
+      {
+        "block_id": "us-vr-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-vr-h2",
+        "text_preview": "Baseline intake"
+      },
+      {
+        "block_id": "us-vr-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-vr-p2",
+        "text_preview": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdict"
+      },
+      {
+        "block_id": "us-vr-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-vr-h3",
+        "text_preview": "Deadlines"
+      },
+      {
+        "block_id": "us-vr-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-vr-p3",
+        "text_preview": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day l"
+      },
+      {
+        "block_id": "us-vr-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-vr-h4",
+        "text_preview": "ID requirements"
+      },
+      {
+        "block_id": "us-vr-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-vr-p4",
+        "text_preview": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-voter-reg",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-us-voter-reg-rfc-1",
+    "page_id": "us-voter-reg",
+    "parent_revision_id": "rev-us-voter-reg-1",
+    "created_at": "2026-07-12T11:00:00.000Z",
+    "author": "user-alice",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-vr-h1",
+        "children": [
+          {
+            "text": "Voter Registration Procedures"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p1",
+        "children": [
+          {
+            "text": "Step-by-step workflows for registering voters across all 50 states, including ID requirements, deadlines, and explicit routing to provisional handling when ID is missing."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h2",
+        "children": [
+          {
+            "text": "Baseline intake"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p2",
+        "children": [
+          {
+            "text": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdiction checklist before creating a registration record."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h3",
+        "children": [
+          {
+            "text": "Deadlines"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p3",
+        "children": [
+          {
+            "text": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day lane documented under Polling Place Operations."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-vr-h4",
+        "children": [
+          {
+            "text": "ID requirements"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-vr-p4",
+        "children": [
+          {
+            "text": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a ballot."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-vr-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-vr-h1",
+        "text_preview": "Voter Registration Procedures"
+      },
+      {
+        "block_id": "us-vr-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-vr-p1-rfc1",
+        "text_preview": "Step-by-step workflows for registering voters across all 50 states, including ID requirements, deadl"
+      },
+      {
+        "block_id": "us-vr-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-vr-h2",
+        "text_preview": "Baseline intake"
+      },
+      {
+        "block_id": "us-vr-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-vr-p2",
+        "text_preview": "Accept applications in person, by mail, and via approved online portals. Verify identity documents against the jurisdict"
+      },
+      {
+        "block_id": "us-vr-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-vr-h3",
+        "text_preview": "Deadlines"
+      },
+      {
+        "block_id": "us-vr-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-vr-p3",
+        "text_preview": "Apply the state statutory cutoff relative to election day. Same-day registration jurisdictions follow the election-day l"
+      },
+      {
+        "block_id": "us-vr-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-vr-h4",
+        "text_preview": "ID requirements"
+      },
+      {
+        "block_id": "us-vr-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-vr-p4",
+        "text_preview": "Record which ID was presented. When ID is missing, route the voter to provisional ballot handling rather than refusing a"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-voter-reg-rfc-1",
+    "schema_version": 1,
+    "note": "Leaf RFC RevSet v1 proposal (not current until merge)"
+  },
+  {
+    "revision_id": "rev-us-polling-1",
+    "page_id": "us-polling",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:20:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-po-h1",
+        "children": [
+          {
+            "text": "Polling Place Operations"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p1",
+        "children": [
+          {
+            "text": "Opening procedures, voter check-in, ballot distribution, and closing protocols for election day."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-po-h2",
+        "children": [
+          {
+            "text": "Opening"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p2",
+        "children": [
+          {
+            "text": "Verify seals on ballot containers, zero-count tabulators or ballot scanners, and post required notices before admitting voters."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-po-h3",
+        "children": [
+          {
+            "text": "Check-in and ballot issue"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p3",
+        "children": [
+          {
+            "text": "Locate the voter in the poll book or e-pollbook. Issue the correct ballot style. If eligibility cannot be confirmed, follow Provisional Ballot Handling."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-po-h4",
+        "children": [
+          {
+            "text": "Closing"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-po-p4",
+        "children": [
+          {
+            "text": "Reconcile issued, spoiled, and unused ballots. Seal containers with two-person custody and complete the precinct reconciliation sheet."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-po-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-po-h1",
+        "text_preview": "Polling Place Operations"
+      },
+      {
+        "block_id": "us-po-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-po-p1",
+        "text_preview": "Opening procedures, voter check-in, ballot distribution, and closing protocols for election day."
+      },
+      {
+        "block_id": "us-po-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-po-h2",
+        "text_preview": "Opening"
+      },
+      {
+        "block_id": "us-po-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-po-p2",
+        "text_preview": "Verify seals on ballot containers, zero-count tabulators or ballot scanners, and post required notices before admitting "
+      },
+      {
+        "block_id": "us-po-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-po-h3",
+        "text_preview": "Check-in and ballot issue"
+      },
+      {
+        "block_id": "us-po-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-po-p3",
+        "text_preview": "Locate the voter in the poll book or e-pollbook. Issue the correct ballot style. If eligibility cannot be confirmed, fol"
+      },
+      {
+        "block_id": "us-po-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-po-h4",
+        "text_preview": "Closing"
+      },
+      {
+        "block_id": "us-po-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-po-p4",
+        "text_preview": "Reconcile issued, spoiled, and unused ballots. Seal containers with two-person custody and complete the precinct reconci"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-polling",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-us-provisional-1",
+    "page_id": "us-provisional",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:30:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-pb-h1",
+        "children": [
+          {
+            "text": "Overview"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p1",
+        "children": [
+          {
+            "text": "Provisional ballots are a critical safeguard mechanism that ensures eligible voters can cast a ballot even when questions arise about their registration or eligibility at the polling place. This artifact defines when provisional ballots must be issued, how they should be handled, and the verification process for counting."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h2",
+        "children": [
+          {
+            "text": "Key principle"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p2",
+        "children": [
+          {
+            "text": "No eligible voter should be turned away from the polls. When in doubt, issue a provisional ballot and resolve eligibility during the canvassing period."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h3",
+        "children": [
+          {
+            "text": "When to issue provisional ballots"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p3",
+        "children": [
+          {
+            "text": "Poll workers must offer a provisional ballot when: the voter name does not appear in the poll book; registration cannot be verified; required ID is missing; eligibility is challenged; the voter moved within the jurisdiction to a different precinct; or absentee records show a mail ballot was issued but the voter claims not to have voted it."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h4",
+        "children": [
+          {
+            "text": "Issuance procedure"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p4",
+        "children": [
+          {
+            "text": "Explain the process; complete the provisional envelope with contact information and affirmation; mark the poll book with a unique identifier; allow the voter to mark the ballot privately; seal the ballot in the envelope; provide a tear-off receipt with a tracking number."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h5",
+        "children": [
+          {
+            "text": "Critical alert — chain of custody"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p5",
+        "children": [
+          {
+            "text": "Red Team Finding #RT-042: Current procedure lacks explicit chain of custody requirements for transporting provisional ballots from polling place to central counting facility. Flagged as Critical severity."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h6",
+        "children": [
+          {
+            "text": "Storage and transport"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p6",
+        "children": [
+          {
+            "text": "Keep provisional ballots separate from regular ballots. Store in a designated sealed container at the polling place. Transport to the central facility with two-person escort (requirement under review per RFC #RT-042). Log chain of custody at each transfer with timestamps and signatures."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-pb-h7",
+        "children": [
+          {
+            "text": "Verification process"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-pb-p7",
+        "children": [
+          {
+            "text": "The canvassing board must verify eligibility of each provisional ballot within 7 days of the election: check the registration database; verify signature; confirm the voter did not cast another ballot; determine correct jurisdiction; accept or reject with a documented reason code."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "us-pb-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-us-pb-h1",
+        "text_preview": "Overview"
+      },
+      {
+        "block_id": "us-pb-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-us-pb-p1",
+        "text_preview": "Provisional ballots are a critical safeguard mechanism that ensures eligible voters can cast a ballot even when question"
+      },
+      {
+        "block_id": "us-pb-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-us-pb-h2",
+        "text_preview": "Key principle"
+      },
+      {
+        "block_id": "us-pb-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-us-pb-p2",
+        "text_preview": "No eligible voter should be turned away from the polls. When in doubt, issue a provisional ballot and resolve eligibilit"
+      },
+      {
+        "block_id": "us-pb-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-us-pb-h3",
+        "text_preview": "When to issue provisional ballots"
+      },
+      {
+        "block_id": "us-pb-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-us-pb-p3",
+        "text_preview": "Poll workers must offer a provisional ballot when: the voter name does not appear in the poll book; registration cannot "
+      },
+      {
+        "block_id": "us-pb-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-us-pb-h4",
+        "text_preview": "Issuance procedure"
+      },
+      {
+        "block_id": "us-pb-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-us-pb-p4",
+        "text_preview": "Explain the process; complete the provisional envelope with contact information and affirmation; mark the poll book with"
+      },
+      {
+        "block_id": "us-pb-h5",
+        "type": "h2",
+        "order": 8,
+        "hash": "seed-us-pb-h5",
+        "text_preview": "Critical alert — chain of custody"
+      },
+      {
+        "block_id": "us-pb-p5",
+        "type": "p",
+        "order": 9,
+        "hash": "seed-us-pb-p5",
+        "text_preview": "Red Team Finding #RT-042: Current procedure lacks explicit chain of custody requirements for transporting provisional ba"
+      },
+      {
+        "block_id": "us-pb-h6",
+        "type": "h2",
+        "order": 10,
+        "hash": "seed-us-pb-h6",
+        "text_preview": "Storage and transport"
+      },
+      {
+        "block_id": "us-pb-p6",
+        "type": "p",
+        "order": 11,
+        "hash": "seed-us-pb-p6",
+        "text_preview": "Keep provisional ballots separate from regular ballots. Store in a designated sealed container at the polling place. Tra"
+      },
+      {
+        "block_id": "us-pb-h7",
+        "type": "h2",
+        "order": 12,
+        "hash": "seed-us-pb-h7",
+        "text_preview": "Verification process"
+      },
+      {
+        "block_id": "us-pb-p7",
+        "type": "p",
+        "order": 13,
+        "hash": "seed-us-pb-p7",
+        "text_preview": "The canvassing board must verify eligibility of each provisional ballot within 7 days of the election: check the registr"
+      }
+    ],
+    "doc_root_hash": "seed-root-us-provisional",
+    "schema_version": 1,
+    "note": "Seeded from former us-voting FIXTURE_ARTIFACTS"
+  },
+  {
+    "revision_id": "rev-ca-overview-1",
+    "page_id": "ca-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-02T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "ca-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals and scope for the Canadian Federal Elections Manual, covering Elections Canada procedures and federal riding workflows."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p2",
+        "children": [
+          {
+            "text": "Give returning officers, Elections Canada staff, and Civic Lab contributors a shared Manual for federal elections that can support Manual Alignment claims against Canon voting ideals."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p3",
+        "children": [
+          {
+            "text": "Covers federal general elections and by-elections. Provincial and territorial practice is noted only where it intersects federal electors-list coordination."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-ov-p4",
+        "children": [
+          {
+            "text": "Returning officers, poll supervisors, and contributors documenting Canadian electoral procedures in Civic Lab."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "ca-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-ca-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "ca-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-ca-ov-p1",
+        "text_preview": "High-level goals and scope for the Canadian Federal Elections Manual, covering E"
+      },
+      {
+        "block_id": "ca-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-ca-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "ca-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-ca-ov-p2",
+        "text_preview": "Give returning officers, Elections Canada staff, and Civic Lab contributors a sh"
+      },
+      {
+        "block_id": "ca-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-ca-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "ca-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-ca-ov-p3",
+        "text_preview": "Covers federal general elections and by-elections. Provincial and territorial pr"
+      },
+      {
+        "block_id": "ca-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-ca-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "ca-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-ca-ov-p4",
+        "text_preview": "Returning officers, poll supervisors, and contributors documenting Canadian elec"
+      }
+    ],
+    "doc_root_hash": "seed-root-ca-overview",
+    "schema_version": 1,
+    "note": "CA Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-ca-list-mgmt-1",
+    "page_id": "ca-list-mgmt",
+    "parent_revision_id": null,
+    "created_at": "2026-07-02T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "ca-lm-h1",
+        "children": [
+          {
+            "text": "Electors List Management"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p1",
+        "children": [
+          {
+            "text": "Workflows for building, revising, and polling-day use of the list of electors under Elections Canada guidance."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-lm-h2",
+        "children": [
+          {
+            "text": "Preliminary list"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p2",
+        "children": [
+          {
+            "text": "Produce the preliminary list from the National Register of Electors. Distribute revision materials to returning officers before the revision period opens."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-lm-h3",
+        "children": [
+          {
+            "text": "Revision period"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p3",
+        "children": [
+          {
+            "text": "Accept additions, corrections, and removals during the statutory revision window. Record proof of identity and address when an elector is added at the returning office."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ca-lm-h4",
+        "children": [
+          {
+            "text": "Polling-day list"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ca-lm-p4",
+        "children": [
+          {
+            "text": "Issue the official list to each polling station. Route electors missing from the list through the appropriate registration or special ballot path rather than refusing a ballot."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "ca-lm-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-ca-lm-h1",
+        "text_preview": "Electors List Management"
+      },
+      {
+        "block_id": "ca-lm-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-ca-lm-p1",
+        "text_preview": "Workflows for building, revising, and polling-day use of the list of electors un"
+      },
+      {
+        "block_id": "ca-lm-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-ca-lm-h2",
+        "text_preview": "Preliminary list"
+      },
+      {
+        "block_id": "ca-lm-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-ca-lm-p2",
+        "text_preview": "Produce the preliminary list from the National Register of Electors. Distribute "
+      },
+      {
+        "block_id": "ca-lm-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-ca-lm-h3",
+        "text_preview": "Revision period"
+      },
+      {
+        "block_id": "ca-lm-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-ca-lm-p3",
+        "text_preview": "Accept additions, corrections, and removals during the statutory revision window"
+      },
+      {
+        "block_id": "ca-lm-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-ca-lm-h4",
+        "text_preview": "Polling-day list"
+      },
+      {
+        "block_id": "ca-lm-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-ca-lm-p4",
+        "text_preview": "Issue the official list to each polling station. Route electors missing from the"
+      }
+    ],
+    "doc_root_hash": "seed-root-ca-list-mgmt",
+    "schema_version": 1,
+    "note": "CA Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-gb-overview-1",
+    "page_id": "gb-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-03T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "gb-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals and scope for UK Electoral Administration, covering parliamentary elections and returning-officer practice."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p2",
+        "children": [
+          {
+            "text": "Document actionable Manual procedures for UK parliamentary polls so administrators and Civic Lab contributors can align practice with Canon electoral criteria."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p3",
+        "children": [
+          {
+            "text": "Covers UK parliamentary general elections and by-elections. Devolved elections are out of scope except where returning-officer duties overlap."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ov-p4",
+        "children": [
+          {
+            "text": "Returning officers, electoral services teams, and Civic Lab Manual contributors."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "gb-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-gb-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "gb-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-gb-ov-p1",
+        "text_preview": "High-level goals and scope for UK Electoral Administration, covering parliamenta"
+      },
+      {
+        "block_id": "gb-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-gb-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "gb-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-gb-ov-p2",
+        "text_preview": "Document actionable Manual procedures for UK parliamentary polls so administrato"
+      },
+      {
+        "block_id": "gb-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-gb-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "gb-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-gb-ov-p3",
+        "text_preview": "Covers UK parliamentary general elections and by-elections. Devolved elections a"
+      },
+      {
+        "block_id": "gb-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-gb-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "gb-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-gb-ov-p4",
+        "text_preview": "Returning officers, electoral services teams, and Civic Lab Manual contributors."
+      }
+    ],
+    "doc_root_hash": "seed-root-gb-overview",
+    "schema_version": 1,
+    "note": "GB Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-gb-returning-officer-1",
+    "page_id": "gb-returning-officer",
+    "parent_revision_id": null,
+    "created_at": "2026-07-03T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "gb-ro-h1",
+        "children": [
+          {
+            "text": "Returning Officer Practice"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p1",
+        "children": [
+          {
+            "text": "Core duties of the Returning Officer from notice of election through declaration of result."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ro-h2",
+        "children": [
+          {
+            "text": "Notice and nominations"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p2",
+        "children": [
+          {
+            "text": "Publish the notice of election, receive nomination papers, and publish the statement of persons nominated within statutory deadlines."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ro-h3",
+        "children": [
+          {
+            "text": "Polling arrangements"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p3",
+        "children": [
+          {
+            "text": "Appoint presiding officers and poll clerks, designate polling places, and ensure ballot papers and corresponding number lists are issued securely."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "gb-ro-h4",
+        "children": [
+          {
+            "text": "Count and declaration"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gb-ro-p4",
+        "children": [
+          {
+            "text": "Conduct the verification and count, allow agents to observe, and declare the result. Preserve ballot papers and documentation for the statutory retention period."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "gb-ro-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-gb-ro-h1",
+        "text_preview": "Returning Officer Practice"
+      },
+      {
+        "block_id": "gb-ro-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-gb-ro-p1",
+        "text_preview": "Core duties of the Returning Officer from notice of election through declaration"
+      },
+      {
+        "block_id": "gb-ro-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-gb-ro-h2",
+        "text_preview": "Notice and nominations"
+      },
+      {
+        "block_id": "gb-ro-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-gb-ro-p2",
+        "text_preview": "Publish the notice of election, receive nomination papers, and publish the state"
+      },
+      {
+        "block_id": "gb-ro-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-gb-ro-h3",
+        "text_preview": "Polling arrangements"
+      },
+      {
+        "block_id": "gb-ro-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-gb-ro-p3",
+        "text_preview": "Appoint presiding officers and poll clerks, designate polling places, and ensure"
+      },
+      {
+        "block_id": "gb-ro-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-gb-ro-h4",
+        "text_preview": "Count and declaration"
+      },
+      {
+        "block_id": "gb-ro-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-gb-ro-p4",
+        "text_preview": "Conduct the verification and count, allow agents to observe, and declare the res"
+      }
+    ],
+    "doc_root_hash": "seed-root-gb-returning-officer",
+    "schema_version": 1,
+    "note": "GB Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-de-overview-1",
+    "page_id": "de-overview",
+    "parent_revision_id": null,
+    "created_at": "2026-07-04T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "de-ov-h1",
+        "children": [
+          {
+            "text": "Overview and Purpose"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p1",
+        "children": [
+          {
+            "text": "High-level goals and scope for German Federal Elections, covering Bundestag elections and Bundeswahlleiter coordination."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-ov-h2",
+        "children": [
+          {
+            "text": "Goals"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p2",
+        "children": [
+          {
+            "text": "Provide a Manual baseline for federal election administration so Länder practice and Civic Lab Alignment claims share a common procedural reference."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-ov-h3",
+        "children": [
+          {
+            "text": "Scope"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p3",
+        "children": [
+          {
+            "text": "Covers Bundestag elections under the federal election act. Landtag and municipal elections are referenced only where federal coordination interfaces apply."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-ov-h4",
+        "children": [
+          {
+            "text": "Audience"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-ov-p4",
+        "children": [
+          {
+            "text": "Kreiswahlleiter, municipal election offices, and Civic Lab contributors documenting German federal procedures."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "de-ov-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-de-ov-h1",
+        "text_preview": "Overview and Purpose"
+      },
+      {
+        "block_id": "de-ov-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-de-ov-p1",
+        "text_preview": "High-level goals and scope for German Federal Elections, covering Bundestag elec"
+      },
+      {
+        "block_id": "de-ov-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-de-ov-h2",
+        "text_preview": "Goals"
+      },
+      {
+        "block_id": "de-ov-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-de-ov-p2",
+        "text_preview": "Provide a Manual baseline for federal election administration so Länder practice"
+      },
+      {
+        "block_id": "de-ov-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-de-ov-h3",
+        "text_preview": "Scope"
+      },
+      {
+        "block_id": "de-ov-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-de-ov-p3",
+        "text_preview": "Covers Bundestag elections under the federal election act. Landtag and municipal"
+      },
+      {
+        "block_id": "de-ov-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-de-ov-h4",
+        "text_preview": "Audience"
+      },
+      {
+        "block_id": "de-ov-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-de-ov-p4",
+        "text_preview": "Kreiswahlleiter, municipal election offices, and Civic Lab contributors document"
+      }
+    ],
+    "doc_root_hash": "seed-root-de-overview",
+    "schema_version": 1,
+    "note": "DE Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-de-bundeswahl-1",
+    "page_id": "de-bundeswahl",
+    "parent_revision_id": null,
+    "created_at": "2026-07-04T00:10:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "de-bw-h1",
+        "children": [
+          {
+            "text": "Federal Election Coordination"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p1",
+        "children": [
+          {
+            "text": "How the Bundeswahlleiter coordinates with Land and Kreis election authorities across the federal election calendar."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-bw-h2",
+        "children": [
+          {
+            "text": "Calendar and instructions"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p2",
+        "children": [
+          {
+            "text": "Issue the federal election calendar and binding instructions to Landeswahlleiter. Confirm constituency boundaries and seat allocations before nominations open."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-bw-h3",
+        "children": [
+          {
+            "text": "Reporting chain"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p3",
+        "children": [
+          {
+            "text": "Aggregate preliminary and final results from Kreis through Land to the federal level. Publish national totals only after statutory verification steps complete."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "de-bw-h4",
+        "children": [
+          {
+            "text": "Complaint routing"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "de-bw-p4",
+        "children": [
+          {
+            "text": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document open Critical findings before any Manual merge that depends on disputed procedure."
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "block_id": "de-bw-h1",
+        "type": "h2",
+        "order": 0,
+        "hash": "seed-de-bw-h1",
+        "text_preview": "Federal Election Coordination"
+      },
+      {
+        "block_id": "de-bw-p1",
+        "type": "p",
+        "order": 1,
+        "hash": "seed-de-bw-p1",
+        "text_preview": "How the Bundeswahlleiter coordinates with Land and Kreis election authorities ac"
+      },
+      {
+        "block_id": "de-bw-h2",
+        "type": "h2",
+        "order": 2,
+        "hash": "seed-de-bw-h2",
+        "text_preview": "Calendar and instructions"
+      },
+      {
+        "block_id": "de-bw-p2",
+        "type": "p",
+        "order": 3,
+        "hash": "seed-de-bw-p2",
+        "text_preview": "Issue the federal election calendar and binding instructions to Landeswahlleiter"
+      },
+      {
+        "block_id": "de-bw-h3",
+        "type": "h2",
+        "order": 4,
+        "hash": "seed-de-bw-h3",
+        "text_preview": "Reporting chain"
+      },
+      {
+        "block_id": "de-bw-p3",
+        "type": "p",
+        "order": 5,
+        "hash": "seed-de-bw-p3",
+        "text_preview": "Aggregate preliminary and final results from Kreis through Land to the federal l"
+      },
+      {
+        "block_id": "de-bw-h4",
+        "type": "h2",
+        "order": 6,
+        "hash": "seed-de-bw-h4",
+        "text_preview": "Complaint routing"
+      },
+      {
+        "block_id": "de-bw-p4",
+        "type": "p",
+        "order": 7,
+        "hash": "seed-de-bw-p4",
+        "text_preview": "Route electoral complaints to the competent Wahlprüfungsverfahren path. Document"
+      }
+    ],
+    "doc_root_hash": "seed-root-de-bundeswahl",
+    "schema_version": 1,
+    "note": "DE Manual dossier stub seed"
+  },
+  {
+    "revision_id": "rev-canon-charter-1",
+    "page_id": "canon-charter",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "charter-h1",
+        "children": [
+          {
+            "text": "Civic Lab Charter"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p1",
+        "children": [
+          {
+            "text": "Living Canon governance premises (owner_merge_only). Full prose migrates from the static Constitution page over time."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "charter-h2",
+        "children": [
+          {
+            "text": "Minimum premises"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p2",
+        "children": [
+          {
+            "text": "Separation of powers: stewards merge Manuals; editors merge routine Canon; Owner merges restricted Canon and may revert."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "revision_id": "rev-us-alignment-1",
+    "page_id": "us-alignment",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:40:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "us-align-h1",
+        "children": [
+          {
+            "text": "Alignment Steps — US Voting"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-align-p1",
+        "children": [
+          {
+            "text": "Requirement claims that cite Canon voting-system criteria and track Manual alignment steps for US elections."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "us-align-h2",
+        "children": [
+          {
+            "text": "Canon citations"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "us-align-p2",
+        "children": [
+          {
+            "text": "Every alignment RFC should cite page-001 (Voting Systems) criteria when claiming progress toward Canon ideals."
+          }
+        ]
+      }
+    ]
   }
 ]
