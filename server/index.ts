@@ -1,7 +1,19 @@
 import express from "express";
 import cors from "cors";
-import { appendRow, readJson, updateRow, writeJson } from "./db";
 import { z } from "zod";
+import { bootstrapDatabase } from "./bootstrap";
+import {
+  createRevision,
+  getAttributions,
+  getPage,
+  getTerms,
+  listPages,
+  listRevisions,
+  putAttributions,
+  putTerms,
+  setPrisma,
+  updatePage,
+} from "./db";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8787;
@@ -10,13 +22,12 @@ app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 
 app.get("/api/pages", async (_req, res) => {
-  const pages = await readJson<Array<Record<string, unknown>>>("pages.json");
+  const pages = await listPages();
   res.json(pages);
 });
 
 app.get("/api/pages/:pageId", async (req, res) => {
-  const pages = await readJson<Array<Record<string, unknown>>>("pages.json");
-  const page = pages.find((row) => row.page_id === req.params.pageId);
+  const page = await getPage(req.params.pageId);
   if (!page) {
     res.status(404).json({ error: "Page not found" });
     return;
@@ -25,23 +36,12 @@ app.get("/api/pages/:pageId", async (req, res) => {
 });
 
 app.get("/api/pages/:pageId/revisions", async (req, res) => {
-  const revisions = await readJson<Array<Record<string, unknown>>>(
-    "page_revisions.json",
-  );
-  const filtered = revisions
-    .filter((row) => row.page_id === req.params.pageId)
-    .sort((a, b) => {
-      const aTime = new Date(String(a.created_at)).getTime();
-      const bTime = new Date(String(b.created_at)).getTime();
-      return bTime - aTime;
-    });
+  const filtered = await listRevisions(req.params.pageId);
   res.json(filtered);
 });
 
 app.get("/api/attributions", async (_req, res) => {
-  const attributions = await readJson<Record<string, unknown>>(
-    "attributions.json",
-  );
+  const attributions = await getAttributions();
   res.json(attributions);
 });
 
@@ -70,7 +70,7 @@ app.put("/api/attributions", async (req, res) => {
     return;
   }
 
-  const current = await readJson<Record<string, unknown>>("attributions.json");
+  const current = await getAttributions();
   const currentVersion =
     typeof current.version === "number" ? current.version : 1;
 
@@ -83,8 +83,8 @@ app.put("/api/attributions", async (req, res) => {
     version: currentVersion + 1,
     items: parsed.data.items,
   };
-  await writeJson("attributions.json", next);
-  res.json(next);
+  const saved = await putAttributions(next);
+  res.json(saved);
 });
 
 const termAliasSchema = z.object({
@@ -118,10 +118,10 @@ const termsRegistrySchema = z.object({
 });
 
 app.get("/api/terms", async (_req, res) => {
-  const raw = await readJson<Record<string, unknown>>("terms.json");
+  const raw = await getTerms();
   const parsed = termsRegistrySchema.safeParse(raw);
   if (!parsed.success) {
-    res.status(500).send("Invalid terms registry on disk");
+    res.status(500).send("Invalid terms registry in database");
     return;
   }
   res.json(parsed.data);
@@ -134,7 +134,7 @@ app.put("/api/terms", async (req, res) => {
     return;
   }
 
-  const current = await readJson<Record<string, unknown>>("terms.json");
+  const current = await getTerms();
   const currentVersion =
     typeof current.version === "number" ? current.version : 1;
 
@@ -147,8 +147,8 @@ app.put("/api/terms", async (req, res) => {
     version: currentVersion + 1,
     items: parsed.data.items,
   };
-  await writeJson("terms.json", next);
-  res.json(next);
+  const saved = await putTerms(next);
+  res.json(saved);
 });
 
 app.post("/api/pages/:pageId/revisions", async (req, res) => {
@@ -157,18 +157,32 @@ app.post("/api/pages/:pageId/revisions", async (req, res) => {
     res.status(400).json({ error: "Invalid revision payload" });
     return;
   }
+  if (typeof payload.revision_id !== "string" || !payload.revision_id) {
+    res.status(400).json({ error: "revision_id required" });
+    return;
+  }
+  if (typeof payload.author !== "string") {
+    res.status(400).json({ error: "author required" });
+    return;
+  }
 
-  const created = await appendRow("page_revisions.json", payload);
+  const page = await getPage(req.params.pageId);
+  if (!page) {
+    res.status(404).json({ error: "Page not found" });
+    return;
+  }
+
+  const created = await createRevision(payload);
   res.status(201).json(created);
 });
 
 app.patch("/api/pages/:pageId", async (req, res) => {
-  const patch = req.body;
-  const updated = await updateRow(
-    "pages.json",
-    (row) => row.page_id === req.params.pageId,
-    patch,
-  );
+  const patch = req.body as Partial<{
+    title: string;
+    slug: string;
+    current_revision_id: string | null;
+  }>;
+  const updated = await updatePage(req.params.pageId, patch);
 
   if (!updated) {
     res.status(404).json({ error: "Page not found" });
@@ -178,6 +192,15 @@ app.patch("/api/pages/:pageId", async (req, res) => {
   res.json(updated);
 });
 
-app.listen(PORT, () => {
-  console.log(`JSON DB server listening on http://localhost:${PORT}`);
+async function main() {
+  const client = await bootstrapDatabase();
+  setPrisma(client);
+  app.listen(PORT, () => {
+    console.log(`Prisma DB server listening on http://localhost:${PORT}`);
+  });
+}
+
+main().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
 });

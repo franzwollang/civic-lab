@@ -65,10 +65,10 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 |---|---|
 | Product UI | Static high-fidelity mock |
 | Editor + doc pipeline | Real (Plate, evidence, revisions) |
-| Persistence | JSON files → **M1: Prisma/SQLite** |
+| Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
 | Auth | None (impersonation planned) |
 
-**Next build:** M1 Persistence foundation.
+**Next build:** M2 Editor solidity (void nav, clipboard, a11y, full preview, server validate).
 
 ---
 
@@ -77,7 +77,7 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Milestone | Status | Exit criteria |
 |---|---|---|
 | **M0 — Orientation** | `done` | CONCEPT/PLANNING coherent; residual gaps defaulted |
-| **M1 — Persistence** | `not started` | Prisma/SQLite; seeds; db push; seed-if-empty; Express via Prisma |
+| **M1 — Persistence** | `done` | Prisma/SQLite; seeds; db push; seed-if-empty; Express via Prisma |
 | **M2 — Editor solidity** | `not started` | Void nav, clipboard, a11y, full preview, server validate |
 | **M3 — Content bridge** | `not started` | Shared reader; Artifact naming path; Section plan |
 | **M4 — Corpus IA** | `not started` | Area/Collection/Dossier; shared splash; map picker; data-driven routes |
@@ -110,4 +110,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: **M1** unless further CONCEPT edits requested.
+- Next: **M2 — Editor solidity** (void nav, clipboard, a11y, preview, server validate).

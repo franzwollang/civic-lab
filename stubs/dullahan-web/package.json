@@ -1,0 +1,9 @@
+{
+  "name": "dullahan-web",
+  "version": "0.0.0-stub",
+  "type": "module",
+  "exports": {
+    "./client": "./client.js",
+    "./remote": "./remote.js"
+  }
+}

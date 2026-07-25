@@ -7,7 +7,11 @@
     "build": "vite build",
     "dev": "concurrently \"vite\" \"pnpm:dev:server\"",
     "dev:server": "tsx watch server/index.ts",
-    "dev:client": "vite"
+    "dev:client": "vite",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:generate": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -64,6 +68,7 @@
     "mermaid": "11.11.0",
     "motion": "12.23.24",
     "next-themes": "0.4.6",
+    "@prisma/client": "^6.19.0",
     "platejs": "52.0.11",
     "prismjs": "1.30.0",
     "pseudocode": "2.4.1",
@@ -89,7 +94,7 @@
     "yaml": "2.8.1",
     "zod": "4.3.6",
     "zustand": "^5.0.8",
-    "dullahan-web": "file:../dullahanUI/packages/dullahan-web"
+    "dullahan-web": "file:stubs/dullahan-web"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
@@ -98,6 +103,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "4.7.0",
     "concurrently": "9.2.0",
+    "prisma": "^6.19.0",
     "tailwindcss": "4.1.12",
     "tsx": "4.19.2",
     "typescript": "^5.9.2",
