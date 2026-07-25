@@ -96,6 +96,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
   - Thread/RFC reply composer: done (impersonated author).
   - Breadcrumbs + up-nav: done (Area→Collection→Dossier→leaf on corpus surfaces).
   - Global header impersonation switcher + role affordances: done (M8).
+  - Home Recent RFCs + Red Team Findings: done (store-backed).
 
 ---
 
