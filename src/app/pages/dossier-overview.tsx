@@ -389,7 +389,14 @@ export function DossierOverview() {
                     <TabsContent value="red-team">
                       <Card className="border border-neutral-200 p-6">
                         <p className="text-center text-sm text-neutral-500">
-                          Red Team overview arrives with M7.
+                          Red Team Critical / recent Findings live on the{" "}
+                          <Link
+                            className="underline"
+                            to={`/collection/${state.dossier.collection_id}`}
+                          >
+                            Collection dashboard
+                          </Link>
+                          ; thread timelines cover Candidate→Finding.
                         </p>
                       </Card>
                     </TabsContent>
@@ -397,8 +404,16 @@ export function DossierOverview() {
                     <TabsContent value="dashboard">
                       <Card className="border border-neutral-200 p-6">
                         <div className="text-center">
-                          <Link to={`/dossier/${id}/dashboard`}>
-                            <Button variant="default">View Full Dashboard</Button>
+                          <p className="mb-4 text-sm text-neutral-600">
+                            Live CONCEPT §11 panels live on the Collection splash
+                            (claims, Red Team, reputation, audit).
+                          </p>
+                          <Link
+                            to={`/collection/${state.dossier.collection_id}`}
+                          >
+                            <Button variant="default">
+                              Open Collection dashboard
+                            </Button>
                           </Link>
                         </div>
                       </Card>

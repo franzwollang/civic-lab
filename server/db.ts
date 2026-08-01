@@ -697,6 +697,7 @@ export async function getCollectionDashboard(
             canonCitations: true,
             createdAt: true,
             adjudicatedAt: true,
+            authorId: true,
           },
         });
 
@@ -709,6 +710,7 @@ export async function getCollectionDashboard(
     canon_citations: c.canonCitations,
     created_at: c.createdAt.toISOString(),
     adjudicated_at: c.adjudicatedAt?.toISOString() ?? null,
+    author_id: c.authorId,
   }));
 
   if (isManual) {
@@ -757,6 +759,11 @@ export async function getCollectionDashboard(
 
   const activeHides = await listActiveBoardHides();
   const hiddenUserIds = activeHides.map((h) => h.subject_user_id);
+  const hiddenSet = new Set(hiddenUserIds);
+  /** CONCEPT §5.9 — board-hide applies to claim quality/forecast boards. */
+  const boardClaimInputs = metricInputs.filter(
+    (c) => !c.author_id || !hiddenSet.has(c.author_id),
+  );
   const reputationEvents = await collectReputationSignals(dossierIds);
   const reputationBoard = computeReputationBoard(reputationEvents, {
     hiddenUserIds,
@@ -783,8 +790,8 @@ export async function getCollectionDashboard(
       critical_findings,
     },
     claims: {
-      empirical_quality: computeEmpiricalQuality(metricInputs),
-      forecast_accuracy: computeForecastAccuracy(metricInputs),
+      empirical_quality: computeEmpiricalQuality(boardClaimInputs),
+      forecast_accuracy: computeForecastAccuracy(boardClaimInputs),
     },
     lane_coverage,
     requirement_satisfaction,
@@ -816,6 +823,7 @@ async function collectReputationSignals(
       state: true,
       decisionOutcome: true,
       posts: {
+        where: { deletedAt: null },
         select: {
           authorId: true,
           createdAt: true,
@@ -2208,16 +2216,22 @@ export type SoftDeletePostError =
   | { code: "forbidden"; message: string }
   | { code: "canon_owner_only"; message: string }
   | { code: "steward_country_mismatch"; message: string }
+  | { code: "identity_unverified"; message: string }
+  | { code: "identity_pending"; message: string }
+  | { code: "identity_rejected"; message: string }
   | { code: "context_missing"; message: string };
 
 /**
  * CONCEPT §9.4 — soft-delete an ordinary ThreadPost (never hard-delete).
- * Steward local to Manual Collection country; Owner global (incl. Canon).
+ * Steward local to Manual Collection via §8.6 eligibility; Owner global (incl. Canon).
+ * When `thread_id` is provided, mismatch returns not_found with no write.
  */
 export async function softDeleteThreadPost(input: {
   post_id: string;
   actor_id: string;
   reason?: string | null;
+  /** When set, post must belong to this thread before any mutation. */
+  thread_id?: string;
 }): Promise<
   | { ok: true; post: ThreadPostRow; audit: AuditLogRow }
   | { ok: false; error: SoftDeletePostError }
@@ -2243,6 +2257,12 @@ export async function softDeleteThreadPost(input: {
     return {
       ok: false,
       error: { code: "not_found", message: "Post not found" },
+    };
+  }
+  if (input.thread_id != null && post.threadId !== input.thread_id) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Post not on this thread" },
     };
   }
   if (post.deletedAt) {
@@ -2272,7 +2292,7 @@ export async function softDeleteThreadPost(input: {
   const gate = validateSoftDeletePost({
     actor_id: input.actor_id,
     context,
-    actor_country_codes: identity?.country_codes ?? [],
+    identity,
   });
   if (!gate.ok) {
     return {

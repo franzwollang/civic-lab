@@ -433,7 +433,7 @@ function AuditLogPanel() {
     }
     let cancelled = false;
     setLoading(true);
-    getAuditLogs({ limit: 12 })
+    getAuditLogs({ limit: 12, actor_id: acting.userId })
       .then((rows) => {
         if (!cancelled) {
           setLogs(rows);

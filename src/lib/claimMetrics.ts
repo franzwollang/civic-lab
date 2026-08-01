@@ -24,6 +24,8 @@ export type ClaimMetricsInput = {
   canon_citations?: unknown;
   created_at?: string | null;
   adjudicated_at?: string | null;
+  /** Optional; used by Collection dashboard board-hide filtering. */
+  author_id?: string | null;
 };
 
 export type EmpiricalQualityMetrics = {

@@ -627,8 +627,11 @@ export async function liftBoardHide(body: {
 export async function getAuditLogs(opts?: {
   action?: string;
   limit?: number;
+  /** Required — steward/Owner gate on GET /api/audit-logs. */
+  actor_id?: string;
 }): Promise<AuditLogRow[]> {
   const params = new URLSearchParams();
+  if (opts?.actor_id) params.set("actor_id", opts.actor_id);
   if (opts?.action) params.set("action", opts.action);
   if (opts?.limit != null) params.set("limit", String(opts.limit));
   const q = params.toString();

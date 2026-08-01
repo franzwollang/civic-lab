@@ -25,6 +25,7 @@ import {
   actorMayViewAuditLog,
   validateSoftDeletePost,
 } from "../src/lib/moderation";
+import { defaultIdentityRecord } from "../src/lib/identityPolicy";
 import { userHasCapability } from "../src/app/lib/role-affordances";
 import { getPrototypeUser } from "../src/app/lib/prototype-users";
 
@@ -32,8 +33,22 @@ const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
 const DB_PATH = path.join(ROOT, "prisma", "smoke-moderation.db");
 
+function verifiedIdentity(
+  userId: string,
+  countryCodes: string[],
+  tiesNote?: string | null,
+) {
+  return {
+    ...defaultIdentityRecord(userId),
+    verification_status: "verified" as const,
+    country_codes: countryCodes,
+    long_term_ties_note: tiesNote ?? null,
+    attestation_kind: "owner_attested" as const,
+  };
+}
+
 async function main() {
-  // Unit: soft-delete gates
+  // Unit: soft-delete gates (Manual path via §8.6 evaluateStewardEligibility)
   const ownerOk = validateSoftDeletePost({
     actor_id: "user-eve",
     context: { area_kind: "canon", country_code: null },
@@ -43,7 +58,7 @@ async function main() {
   const stewardCanon = validateSoftDeletePost({
     actor_id: "user-alice",
     context: { area_kind: "canon", country_code: null },
-    actor_country_codes: ["US"],
+    identity: verifiedIdentity("user-alice", ["US"]),
   });
   if (stewardCanon.ok || stewardCanon.code !== "canon_owner_only") {
     throw new Error("Steward must not moderate Canon");
@@ -52,28 +67,48 @@ async function main() {
   const stewardUs = validateSoftDeletePost({
     actor_id: "user-alice",
     context: { area_kind: "manuals", country_code: "US" },
-    actor_country_codes: ["US"],
+    identity: verifiedIdentity("user-alice", ["US"]),
   });
   if (!stewardUs.ok) throw new Error("US steward should moderate US Manual");
 
   const stewardCa = validateSoftDeletePost({
     actor_id: "user-alice",
     context: { area_kind: "manuals", country_code: "CA" },
-    actor_country_codes: ["US"],
+    identity: verifiedIdentity("user-alice", ["US"]),
   });
   if (stewardCa.ok || stewardCa.code !== "steward_country_mismatch") {
     throw new Error("US steward must not moderate CA Manual");
   }
 
+  const tiesCa = validateSoftDeletePost({
+    actor_id: "user-alice",
+    context: { area_kind: "manuals", country_code: "CA" },
+    identity: verifiedIdentity("user-alice", [], "Lived in Canada 12 years"),
+  });
+  if (!tiesCa.ok) {
+    throw new Error("Owner-attested long-term ties should allow CA soft-delete");
+  }
+
+  const unverified = validateSoftDeletePost({
+    actor_id: "user-alice",
+    context: { area_kind: "manuals", country_code: "US" },
+    identity: defaultIdentityRecord("user-alice"),
+  });
+  if (unverified.ok || unverified.code !== "identity_unverified") {
+    throw new Error("unverified steward must be blocked on Manual soft-delete");
+  }
+
   const contributor = validateSoftDeletePost({
     actor_id: "user-bob",
     context: { area_kind: "manuals", country_code: "US" },
-    actor_country_codes: [],
+    identity: verifiedIdentity("user-bob", ["US"]),
   });
   if (contributor.ok || contributor.code !== "forbidden") {
     throw new Error("Contributor must not soft-delete");
   }
 
+  // HTTP route gates (actorMayViewAuditLog) — same helper used by
+  // GET /api/audit-logs?actor_id=… and include_deleted on GET /api/threads/:id
   if (!actorMayViewAuditLog("user-eve")) {
     throw new Error("Owner should view audit");
   }
@@ -128,6 +163,23 @@ async function main() {
     });
     if (!post) throw new Error("createThreadPost failed");
 
+    // Wrong thread_id must 404 with no write (URL pre-check)
+    const mismatch = await softDeleteThreadPost({
+      post_id: post.post_id,
+      thread_id: "thread-canon-goals-section",
+      actor_id: "user-alice",
+      reason: "should not mutate",
+    });
+    if (mismatch.ok || mismatch.error.code !== "not_found") {
+      throw new Error("wrong thread_id soft-delete should be not_found");
+    }
+    const stillLive = await prisma.threadPost.findUnique({
+      where: { postId: post.post_id },
+    });
+    if (!stillLive || stillLive.deletedAt) {
+      throw new Error("mismatch soft-delete must not mutate the post");
+    }
+
     const denyBob = await softDeleteThreadPost({
       post_id: post.post_id,
       actor_id: "user-bob",
@@ -138,6 +190,7 @@ async function main() {
 
     const deleted = await softDeleteThreadPost({
       post_id: post.post_id,
+      thread_id: "thread-us-provisional-open",
       actor_id: "user-alice",
       reason: "Spam / off-topic",
     });

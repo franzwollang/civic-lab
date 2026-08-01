@@ -1,78 +1,64 @@
-# Seed vs runtime (M1 + M4 corpus + M5 threads + M6 claims)
+# Seed vs runtime
 
 ## What lives where
 
 | Path | Role |
 |---|---|
-| `prisma/seed/*.json` | **Seed-only** fixtures (former `db/*.json` + M4 Area/Collection/Dossier + M5 Threads + M6 Claims). Edit these to change the default corpus. |
-| `prisma/dev.db` | **Runtime** SQLite file (gitignored). Created on first startup. |
-| `prisma/schema.prisma` | Schema; prototype uses `prisma db push` (no migration history yet). |
-| `SeedMeta` table | Marker that seed was applied. If missing ⇒ DB treated as empty ⇒ re-seed. |
+| `prisma/seed/*.json` | **Seed-only** fixtures. Edit these to change the default corpus. |
+| `prisma/dev.db` | **Runtime** SQLite (gitignored). Created on first startup. |
+| `prisma/schema.prisma` | Schema; prototype uses `prisma db push` (no migration history). |
+| `SeedMeta` table | Marker that seed was applied. Missing ⇒ DB treated empty ⇒ re-seed. |
 
-## M4 hierarchy seeds
+## Seed files (by milestone)
 
 | File | Entities |
 |---|---|
 | `areas.json` | `area-canon`, `area-manuals` |
-| `collections.json` | `collection-canon` (singleton); Manuals `collection-us/ca/gb/de` |
-| `dossiers.json` | Canon `electoral-1`, `alignment-1`; Manuals `us-voting-1`, `ca-elections-1`, `gb-elections-1`, `de-elections-1` |
-| `pages.json` | Artifacts with optional `dossier_id` + Manual `lane` (`descriptive` \| `prescriptive` \| `alignment`; null on Canon) |
+| `collections.json` | Canon singleton; Manuals `collection-us/ca/gb/de` |
+| `dossiers.json` | Canon + Manual dossiers (incl. governance/Charter home) |
+| `pages.json` | Artifacts (`dossier_id`, Manual `lane`, `owner_merge_only`) |
+| `page_revisions.json` | ArtifactRevision bodies (`content_json`, hashes) |
+| `threads.json` | Threads + nested `posts` / `targets` |
+| `revsets.json` | Leaf RFC proposal RevSets |
+| `claims.json` | Empirical + requirement claims (incl. resolved forecasts for metrics) |
+| `findings.json` | Red Team Findings + targets (M7) |
+| `candidates.json` | CandidateFindings for promote flow (M7) |
+| `identities.json` | UserIdentity attestation stubs (M9 §8.6) |
+| `terms.json` / `attributions.json` | Evidence registries (`{ version, items }`) |
 
-## M5 thread seeds
+Sections are not a separate seed file: on seed and revision save, heading blocks
+with ids become Prisma `Section` rows (`section_id` = `sec_{artifactId}__{stableKey}`).
 
-| File | Entities |
-|---|---|
-| `threads.json` | Sample `Thread` + nested `posts` / `targets` (dossier + artifact + **section** anchors). States include `open` and `rfc`. |
-| `revsets.json` | Leaf RFC `RevSet` rows pointing at proposed `ArtifactRevision`s (not `current_revision_id` until merge). |
-
-Sections are not a separate seed file: on seed (and on each revision save) heading blocks with ids become Prisma `Section` rows (`stable_key` = block id; `section_id` = `sec_{artifactId}__{stableKey}`). ThreadTargets use `target_kind=section` + that `section_id`.
-
-Leaf RFC seed: `thread-us-voter-reg-rfc` + `revset-us-voter-reg-1` → `rev-us-voter-reg-rfc-1` (proposal; current stays `rev-us-voter-reg-1`).
-
-## M6 claim seeds
-
-| File | Entities |
-|---|---|
-| `claims.json` | Sample `Claim` rows: Canon empirical (+ `scope`), Manual Descriptive empirical, Manual Alignment requirement (+ `canon_citations`). |
-
-Profile legality (CONCEPT §5) is enforced on create: Manual Descriptive → `empirical`; Manual Alignment → `requirement`; Manual Prescriptive → none; Canon → `empirical` + `scope` (+ anti-smuggle).
-
-## Startup sequence (`pnpm run dev` → API)
+## Startup (`pnpm run dev` → API)
 
 1. Create `prisma/dev.db` if missing.
-2. `prisma db push` (sync schema).
-3. If no `SeedMeta` row ⇒ load JSON from `prisma/seed/` and write `SeedMeta`.
-4. Hono serves `/api/*` via Prisma (`server/index.ts`, port 8787).
+2. `prisma db push`.
+3. If no `SeedMeta` ⇒ load `prisma/seed/` JSON and write `SeedMeta`.
+4. Hono serves `/api/*` (`server/index.ts`, port **8787**).
 
 ## Common ops
 
 ```bash
-# Normal: push + seed-if-empty happens when the API starts
 pnpm run dev
-
-# Manual schema sync
 pnpm db:push
-
-# Seed only if empty
 pnpm db:seed
-
-# Wipe runtime data and re-apply seed JSON
-pnpm db:seed -- --force
-# or delete the DB file:
+pnpm db:seed -- --force          # wipe + reseed
 rm -f prisma/dev.db prisma/dev.db-journal && pnpm run dev
 ```
 
 ## Adding a seed file
 
-1. Add or edit JSON under `prisma/seed/` (shapes: areas/collections/dossiers arrays; pages array with optional `dossier_id`; revisions array; threads array with nested posts/targets; terms/attributions `{ version, items }`).
-2. Reset runtime (`pnpm db:seed -- --force` or delete `prisma/dev.db`) so `SeedMeta` is cleared and startup re-seeds.
-3. Empty re-seed is **intentional** for this local prototype — disposable data, not production migration.
+1. Add/edit JSON under `prisma/seed/` and wire it in `prisma/seed.ts`.
+2. Reset runtime (`pnpm db:seed -- --force` or delete `dev.db`) so SeedMeta clears.
+3. Empty re-seed is intentional for this local prototype.
 
-## API contract
+## API surface (high level)
 
-- Corpus: `/api/areas`, `/api/collections`, `/api/dossiers` (+ nested dossier artifacts).
-- Threads: `/api/threads`, `/api/threads/:id`, `/api/dossiers/:id/threads`.
-- RFC: `POST /api/threads/:id/promote` (leaf 1:1); `GET|POST /api/threads/:id/revsets`.
-- Documents: Prisma `Artifact` / `ArtifactRevision` mapped onto legacy tables
-  `pages` / `page_revisions` (`page_id` column ≡ artifact id). Wire JSON dual-emits
-  `artifact_id` + `page_id`; `/api/artifacts` preferred (legacy `/api/pages` works).
+- Corpus: `/api/areas`, `/api/collections`, `/api/dossiers`, `/api/artifacts`
+- Threads/RFC: `/api/threads`, promote / revsets / decide, soft-delete posts
+- Claims / adjudication / metrics via Collection dashboard
+- Findings / candidates / Accepted Risk
+- Search, identities, board-hide, audit-logs (`actor_id` required for audit)
+- Health: `GET /api/health`
+
+Documents dual-emit `artifact_id` + legacy `page_id`. Prefer `/api/artifacts`.

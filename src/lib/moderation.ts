@@ -10,12 +10,19 @@ import {
   type PrototypeRole,
   type PrototypeUser,
 } from "../app/lib/prototype-users";
+import {
+  evaluateStewardEligibility,
+  type IdentityRecord,
+} from "./identityPolicy";
 
 export type SoftDeleteErrorCode =
   | "unknown_actor"
   | "forbidden"
   | "canon_owner_only"
-  | "steward_country_mismatch";
+  | "steward_country_mismatch"
+  | "identity_unverified"
+  | "identity_pending"
+  | "identity_rejected";
 
 export type SoftDeleteValidation =
   | { ok: true }
@@ -41,15 +48,16 @@ function rolesOf(
 /**
  * Who may soft-delete an ordinary post on a thread in this Collection.
  * - Owner: anywhere (Canon + all Manuals)
- * - Steward: Manual Collections whose country is in their attested codes
+ * - Steward: Manual Collections via CONCEPT §8.6 evaluateStewardEligibility
+ *   (verified identity + country match or Owner-attested long-term ties)
  * - Others: never
  */
 export function validateSoftDeletePost(
   input: {
     actor_id: string;
     context: SoftDeleteContext;
-    /** Attested country codes for the actor (Manual steward gate). */
-    actor_country_codes?: readonly string[];
+    /** Identity attestation for Manual steward §8.6 gate (same as decide/AR). */
+    identity?: IdentityRecord | null;
   },
   users: readonly PrototypeUser[] = [],
 ): SoftDeleteValidation {
@@ -72,7 +80,19 @@ export function validateSoftDeletePost(
         "Only the global Owner may moderate posts in Canon (CONCEPT §9.4)",
     };
   }
-  if (!roles.includes("steward")) {
+
+  const eligibility = evaluateStewardEligibility({
+    actor_id: input.actor_id,
+    country_code: input.context.country_code,
+    identity: input.identity,
+    require_manual_country: true,
+    users,
+  });
+  if (eligibility.ok) {
+    return { ok: true };
+  }
+
+  if (eligibility.code === "not_steward_role") {
     return {
       ok: false,
       code: "forbidden",
@@ -80,25 +100,18 @@ export function validateSoftDeletePost(
         "Only Collection stewards (or Owner) may soft-delete Manual posts",
     };
   }
-  const country = input.context.country_code?.trim().toUpperCase() ?? null;
-  if (!country) {
+  if (eligibility.code === "unknown_user") {
     return {
       ok: false,
-      code: "steward_country_mismatch",
-      message: "Manual Collection is missing country_code for steward gate",
+      code: "unknown_actor",
+      message: eligibility.message,
     };
   }
-  const codes = (input.actor_country_codes ?? []).map((c) =>
-    c.trim().toUpperCase(),
-  );
-  if (!codes.includes(country)) {
-    return {
-      ok: false,
-      code: "steward_country_mismatch",
-      message: `Steward country ties do not cover Manual ${country}`,
-    };
-  }
-  return { ok: true };
+  return {
+    ok: false,
+    code: eligibility.code,
+    message: eligibility.message,
+  };
 }
 
 export function actorMayViewAuditLog(

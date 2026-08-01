@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-07-25T20:40Z",
-  "turn": 57,
+  "updated_at": "2026-08-01T16:30Z",
+  "turn": 59,
   "focus": {
-    "milestone": null,
-    "issue": "Moderator tools + audit logs",
-    "goal": "Soft-delete posts + broader §9.4 audit coverage"
+    "milestone": "R0",
+    "issue": "Migrate About into Canon artifact",
+    "goal": "Seed About artifact + /about redirect; smoke"
   },
   "recent": [
-    "Merged PR #44 tip onto cron branch 6cfb",
-    "Soft-delete ThreadPost + steward/Owner gates",
-    "Audits: merge/adjudication/AR/post_soft_delete; splash panel",
-    "smoke-moderation; suite 38/38 + vite build"
+    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
+    "smoke-http-gates + /api/health; export app for HTTP tests",
+    "Retired fixture dossier dashboard → Collection splash",
+    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
   ],
   "discoveries": [
-    "Fresh cron branches start at main; merge latest progression PR first"
+    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
+    "Cron tips must merge latest progression PR when starting from main"
   ],
   "open_threads": [
-    "Tables + image upload deferred",
-    "About/FAQ artifact migration; Fumadocs unpin",
-    "Optional: Canon revert audit + mod queue UI"
+    "FAQ after About; typed finding/mitigation posts",
+    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
   ],
-  "next_step": "About/FAQ artifact migration (or tables/images / Fumadocs unpin)",
+  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
   "blockers": []
 }

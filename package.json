@@ -13,7 +13,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:generate": "prisma generate",
     "postinstall": "prisma generate",
-    "test:smoke": "tsx scripts/run-smokes.ts"
+    "test:smoke": "tsx scripts/run-smokes.ts",
+    "db:reset": "rm -f prisma/dev.db prisma/dev.db-journal && pnpm db:push && pnpm db:seed -- --force"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

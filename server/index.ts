@@ -3,6 +3,8 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { bodyLimit } from "hono/body-limit";
 import { z } from "zod";
+import path from "path";
+import { fileURLToPath } from "url";
 import { bootstrapDatabase } from "./bootstrap";
 import {
   createArtifact,
@@ -62,11 +64,13 @@ import {
 } from "./db";
 import { validateRevisionPayload } from "./validateRevision";
 import { validateImmutableRef } from "../src/lib/immutableRef";
+import { actorMayViewAuditLog } from "../src/lib/moderation";
 
 const PORT = Number(process.env.PORT) || 8787;
 const BODY_LIMIT = 2 * 1024 * 1024;
 
-const app = new Hono();
+/** Exported for HTTP smokes via `app.request` (avoids only testing server/db). */
+export const app = new Hono();
 
 app.use("*", cors());
 app.use(
@@ -647,7 +651,24 @@ app.get("/api/threads", async (c) => {
 });
 
 app.get("/api/threads/:threadId", async (c) => {
-  const includeDeleted = c.req.query("include_deleted") === "1";
+  const wantDeleted = c.req.query("include_deleted") === "1";
+  let includeDeleted = false;
+  if (wantDeleted) {
+    const actorId = c.req.query("actor_id")?.trim();
+    if (!actorId || !actorMayViewAuditLog(actorId)) {
+      return c.json(
+        {
+          error: {
+            code: "forbidden",
+            message:
+              "include_deleted requires steward or Owner (actor_id query)",
+          },
+        },
+        403,
+      );
+    }
+    includeDeleted = true;
+  }
   const thread = await getThread(c.req.param("threadId"), {
     include_deleted_posts: includeDeleted,
   });
@@ -694,6 +715,7 @@ app.post("/api/threads/:threadId/posts/:postId/soft-delete", async (c) => {
   const postId = c.req.param("postId");
   const result = await softDeleteThreadPost({
     post_id: postId,
+    thread_id: threadId,
     actor_id: parsed.data.actor_id,
     reason: parsed.data.reason,
   });
@@ -701,7 +723,10 @@ app.post("/api/threads/:threadId/posts/:postId/soft-delete", async (c) => {
     const status =
       result.error.code === "forbidden" ||
       result.error.code === "canon_owner_only" ||
-      result.error.code === "steward_country_mismatch"
+      result.error.code === "steward_country_mismatch" ||
+      result.error.code === "identity_unverified" ||
+      result.error.code === "identity_pending" ||
+      result.error.code === "identity_rejected"
         ? 403
         : result.error.code === "not_found"
           ? 404
@@ -709,12 +734,6 @@ app.post("/api/threads/:threadId/posts/:postId/soft-delete", async (c) => {
             ? 409
             : 400;
     return c.json({ error: result.error }, status);
-  }
-  if (result.post.thread_id !== threadId) {
-    return c.json(
-      { error: { code: "not_found", message: "Post not on this thread" } },
-      404,
-    );
   }
   return c.json({ post: result.post, audit: result.audit });
 });
@@ -1126,6 +1145,18 @@ app.post("/api/board-hides/lift", async (c) => {
 });
 
 app.get("/api/audit-logs", async (c) => {
+  const actorId = c.req.query("actor_id")?.trim();
+  if (!actorId || !actorMayViewAuditLog(actorId)) {
+    return c.json(
+      {
+        error: {
+          code: "forbidden",
+          message: "Audit log requires steward or Owner (actor_id query)",
+        },
+      },
+      403,
+    );
+  }
   const action = c.req.query("action") ?? undefined;
   const limitRaw = c.req.query("limit");
   const limit = limitRaw ? Number(limitRaw) : undefined;
@@ -1208,6 +1239,10 @@ app.post("/api/identities/:userId/attest", async (c) => {
   return c.json({ identity: result.identity, audit: result.audit });
 });
 
+app.get("/api/health", (c) =>
+  c.json({ ok: true, service: "civic-lab-api", port: PORT }),
+);
+
 async function main() {
   const client = await bootstrapDatabase();
   setPrisma(client);
@@ -1222,7 +1257,12 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error("Failed to start server:", err);
-  process.exit(1);
-});
+// Only listen when this file is the process entrypoint (not when imported by smokes).
+const entry = process.argv[1] ? path.resolve(process.argv[1]) : "";
+const thisFile = path.resolve(fileURLToPath(import.meta.url));
+if (entry === thisFile) {
+  main().catch((err) => {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  });
+}
