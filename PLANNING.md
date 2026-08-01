@@ -71,7 +71,7 @@ lives in `SCRATCHPAD.json`.
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
 **Phase:** **Residual / polish** after M0–M9. Policy hardening (§K) landed.
-About living artifact landed; FAQ next.
+About + FAQ living artifacts landed; fixture retirement next.
 
 ---
 
@@ -89,7 +89,7 @@ About living artifact landed; FAQ next.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | FAQ artifact; fixture retirement; typed posts; tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `in progress` | Fixture retirement; typed posts; tables; CONCEPT/home copy |
 
 ---
 
@@ -98,7 +98,7 @@ About living artifact landed; FAQ next.
 Optimize for **observable slices** with smokes. Prefer this order:
 
 1. ~~**About → artifact**~~ (**done** — `canon-about`, `/about` redirect, `smoke-about`)
-2. **FAQ → artifact** (same Charter/About pattern)
+2. ~~**FAQ → artifact**~~ (**done** — `canon-faq`, `/faq` redirect, `smoke-faq`)
 3. **Fixture retirement** on dossier/thread surfaces  
 4. **Typed finding/mitigation posts** (small schema/UI)  
 5. **Plate tables** (editor depth)  
@@ -128,4 +128,4 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **FAQ artifact migration** (OPEN_ISSUES §1).
+- Next: **Fixture retirement** (OPEN_ISSUES §2).
