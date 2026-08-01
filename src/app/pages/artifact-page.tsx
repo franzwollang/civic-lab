@@ -30,6 +30,7 @@ import {
 import { useActingUser } from "../lib/acting-user";
 import { userHasCapability } from "../lib/role-affordances";
 import { ABOUT_ARTIFACT_ID } from "@/lib/about";
+import { FAQ_ARTIFACT_ID } from "@/lib/faq";
 import { CHARTER_ARTIFACT_ID } from "@/lib/charter";
 
 export function ArtifactPage() {
@@ -104,7 +105,9 @@ export function ArtifactPage() {
         ? " · living Charter"
         : artifactIdOf(doc.artifact) === ABOUT_ARTIFACT_ID
           ? " · living About"
-          : ""
+          : artifactIdOf(doc.artifact) === FAQ_ARTIFACT_ID
+            ? " · living FAQ"
+            : ""
       : "";
 
   const relatedFiltered = useMemo(() => {
