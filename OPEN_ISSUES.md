@@ -80,7 +80,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~42 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~43 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
