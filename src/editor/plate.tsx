@@ -2,6 +2,7 @@ import type { MouseEvent, ReactNode } from "react";
 import type { PlateElementProps } from "platejs/react";
 import { ParagraphPlugin, PlateElement } from "platejs/react";
 import {
+  BlockquotePlugin,
   H2Plugin,
   H3Plugin,
   H4Plugin,
@@ -15,6 +16,7 @@ import {
   MermaidBlockPlugin,
   ProcedureBlockPlugin,
 } from "./void-blocks";
+import { ExternalArtifactPlugin } from "./external-artifact-nodes";
 import {
   CitationInlinePlugin,
   EvidenceBlockPlugin,
@@ -25,6 +27,12 @@ import {
   TermInlinePlugin,
 } from "./evidence-nodes";
 import { VoidClipboardPlugin } from "./voidClipboard";
+import {
+  IndentListPluginConfigured,
+  LinkPluginConfigured,
+  ListPluginConfigured,
+  listItemStyle,
+} from "./listLinkPlugins";
 
 export { CollapseProvider } from "./collapse";
 
@@ -80,6 +88,16 @@ function CollapsibleBlock({
 }
 
 function ParagraphElement(props: PlateElementProps) {
+  const list = listItemStyle(
+    props.element as { listStyleType?: unknown; indent?: unknown },
+  );
+  if (list) {
+    return (
+      <PlateElement as="div" className={list.className} style={list.style} {...props}>
+        {props.children}
+      </PlateElement>
+    );
+  }
   return (
     <CollapsibleBlock
       as="p"
@@ -123,11 +141,27 @@ function SubsubheadingElement(props: PlateElementProps) {
   );
 }
 
+function BlockquoteElement(props: PlateElementProps) {
+  return (
+    <PlateElement
+      as="blockquote"
+      className="mb-3 border-l-2 border-neutral-300 pl-4 text-sm italic leading-7 text-neutral-600"
+      {...props}
+    >
+      {props.children}
+    </PlateElement>
+  );
+}
+
 export const editorPlugins = [
   ParagraphPlugin.withComponent(ParagraphElement),
   H2Plugin.configure({ node: { component: HeadingElement } }),
   H3Plugin.configure({ node: { component: SubheadingElement } }),
   H4Plugin.configure({ node: { component: SubsubheadingElement } }),
+  BlockquotePlugin.withComponent(BlockquoteElement),
+  IndentListPluginConfigured,
+  ListPluginConfigured,
+  LinkPluginConfigured,
   MathInlinePlugin,
   MathBlockPlugin,
   CitationInlinePlugin,
@@ -141,6 +175,7 @@ export const editorPlugins = [
   ProcedureBlockPlugin,
   DataBlockPlugin,
   ImageBlockPlugin,
+  ExternalArtifactPlugin,
   VoidClipboardPlugin,
 ];
 

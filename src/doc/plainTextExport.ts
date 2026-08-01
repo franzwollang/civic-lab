@@ -9,9 +9,12 @@
  * - data         → ```json|yaml|toml|csv … ```
  * - procedure    → ```pseudocode.js … ```
  * - image        → `![alt](src)` (+ optional caption line)
+ * - external_artifact → ```external_artifact … ```
  * - citation     → `[cite:attribution_ref]`
  * - term         → `[term:term_ref|label]`
  */
+
+import { serializeExternalArtifactFence } from "../lib/externalArtifact";
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   Boolean(v) && typeof v === "object" && !Array.isArray(v);
@@ -105,6 +108,17 @@ export function serializeNode(node: unknown): string {
       const image = `![${alt}](${src})`;
       return caption ? `${image}\n${caption}` : image;
     }
+    case "external_artifact": {
+      return serializeExternalArtifactFence({
+        provider: typeof node.provider === "string" ? node.provider : "",
+        general_id: typeof node.general_id === "string" ? node.general_id : "",
+        specific_id: typeof node.specific_id === "string" ? node.specific_id : "",
+        display_title:
+          typeof node.display_title === "string" ? node.display_title : "",
+        summary: typeof node.summary === "string" ? node.summary : "",
+        license: typeof node.license === "string" ? node.license : "",
+      });
+    }
     case "citation_inline": {
       const ref =
         typeof node.attribution_ref === "string" ? node.attribution_ref : "";
@@ -115,6 +129,11 @@ export function serializeNode(node: unknown): string {
       const label = getChildText(node) || "term";
       return `[term:${ref}|${label}]`;
     }
+    case "a": {
+      const url = typeof node.url === "string" ? node.url : "";
+      const text = getChildText(node) || url;
+      return url ? `[${text}](${url})` : text;
+    }
     case "evidence_block":
       return serializeEvidence(node);
     case "h2":
@@ -124,11 +143,47 @@ export function serializeNode(node: unknown): string {
       const prefix = "#".repeat(level);
       return `${prefix} ${getChildText(node)}`;
     }
-    case "p":
+    case "blockquote": {
+      const body = getChildText(node);
+      if (!body) return ">";
+      return body
+        .split("\n")
+        .map((line) => `> ${line}`)
+        .join("\n");
+    }
+    case "p": {
+      const listStyleType =
+        typeof node.listStyleType === "string" ? node.listStyleType : null;
+      if (listStyleType) {
+        const indent =
+          typeof node.indent === "number" && node.indent > 0 ? node.indent : 1;
+        const pad = "  ".repeat(Math.max(0, indent - 1));
+        const ordered = isOrderedListStyle(listStyleType);
+        const start =
+          typeof node.listStart === "number" && node.listStart > 0
+            ? node.listStart
+            : 1;
+        const marker = ordered ? `${start}. ` : "- ";
+        return `${pad}${marker}${getChildText(node)}`;
+      }
       return getChildText(node);
+    }
     default:
       return getChildText(node);
   }
+}
+
+function isOrderedListStyle(listStyleType: string): boolean {
+  return (
+    listStyleType === "decimal" ||
+    listStyleType === "decimal-leading-zero" ||
+    listStyleType === "lower-alpha" ||
+    listStyleType === "upper-alpha" ||
+    listStyleType === "lower-roman" ||
+    listStyleType === "upper-roman" ||
+    listStyleType === "lower-latin" ||
+    listStyleType === "upper-latin"
+  );
 }
 
 /** Serialize a fragment or document (top-level nodes) to plain text. */

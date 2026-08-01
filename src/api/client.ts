@@ -1,19 +1,27 @@
 import type {
+  AcceptedRiskRow,
   AreaRow,
   ArtifactRevisionRow,
   ArtifactRow,
+  AuditLogRow,
+  BoardHideRow,
+  CandidateFindingRow,
   ClaimRow,
   CollectionDashboard,
   CollectionRow,
   DossierRow,
+  FindingRow,
   PageRevisionRow,
   PageRow,
   RevSetRow,
+  SearchResponse,
   SectionRow,
   ThreadPostRow,
   ThreadRow,
+  UserIdentityRow,
 } from "../doc/types";
 import type { AttributionRegistry, TermRegistry } from "../doc/evidence";
+import type { VerificationStatus } from "../lib/identityPolicy";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
 
@@ -273,6 +281,23 @@ export async function createThreadPost(
   return handleResponse<ThreadPostRow>(response);
 }
 
+/** CONCEPT §9.4 — soft-delete ordinary post (steward/Owner). */
+export async function softDeleteThreadPost(
+  threadId: string,
+  postId: string,
+  body: { actor_id: string; reason?: string | null },
+): Promise<{ post: ThreadPostRow; audit: AuditLogRow }> {
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/posts/${postId}/soft-delete`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+  return handleResponse(response);
+}
+
 /** Promote open thread → leaf RFC (1:1) or wrapper + sub-RFCs (multi-artifact). */
 export async function promoteThread(
   threadId: string,
@@ -381,6 +406,148 @@ export async function createClaim(body: {
   return handleResponse<ClaimRow>(response);
 }
 
+export async function getFindings(opts?: {
+  threadId?: string;
+  collectionId?: string;
+  severity?: string;
+  status?: string;
+}): Promise<FindingRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.threadId) params.set("thread_id", opts.threadId);
+  if (opts?.collectionId) params.set("collection_id", opts.collectionId);
+  if (opts?.severity) params.set("severity", opts.severity);
+  if (opts?.status) params.set("status", opts.status);
+  const qs = params.toString();
+  const response = await fetch(`${API_BASE}/findings${qs ? `?${qs}` : ""}`);
+  return handleResponse<FindingRow[]>(response);
+}
+
+export async function getFinding(findingId: string): Promise<FindingRow> {
+  const response = await fetch(`${API_BASE}/findings/${findingId}`);
+  return handleResponse<FindingRow>(response);
+}
+
+export async function getThreadFindings(
+  threadId: string,
+): Promise<FindingRow[]> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/findings`);
+  return handleResponse<FindingRow[]>(response);
+}
+
+export async function createFinding(body: {
+  finding_id?: string;
+  thread_id: string;
+  title: string;
+  severity: "low" | "med" | "high" | "critical";
+  likelihood?: string | null;
+  status?: "open" | "mitigated" | "accepted_risk" | "disputed";
+  evidence?: string | null;
+  attack_path?: string | null;
+  author_id: string;
+  targets?: { target_kind: string; target_id: string }[];
+}): Promise<FindingRow> {
+  const response = await fetch(`${API_BASE}/findings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<FindingRow>(response);
+}
+
+export async function getThreadCandidates(
+  threadId: string,
+  opts?: { status?: string },
+): Promise<CandidateFindingRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.status) params.set("status", opts.status);
+  const qs = params.toString();
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/candidates${qs ? `?${qs}` : ""}`,
+  );
+  return handleResponse<CandidateFindingRow[]>(response);
+}
+
+export async function flagCandidateFinding(
+  threadId: string,
+  body: {
+    candidate_id?: string;
+    post_id: string;
+    flagger_id: string;
+    note?: string | null;
+  },
+): Promise<CandidateFindingRow> {
+  const response = await fetch(`${API_BASE}/threads/${threadId}/candidates`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<CandidateFindingRow>(response);
+}
+
+export async function promoteCandidateFinding(
+  candidateId: string,
+  body: {
+    author_id: string;
+    title?: string;
+    severity: "low" | "med" | "high" | "critical";
+    likelihood?: string | null;
+    evidence?: string | null;
+    attack_path?: string | null;
+    targets?: { target_kind: string; target_id: string }[];
+  },
+): Promise<{ finding: FindingRow; candidate: CandidateFindingRow }> {
+  const response = await fetch(
+    `${API_BASE}/candidates/${candidateId}/promote`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+  return handleResponse<{
+    finding: FindingRow;
+    candidate: CandidateFindingRow;
+  }>(response);
+}
+
+export async function getAcceptedRisk(
+  threadId: string,
+): Promise<AcceptedRiskRow | null> {
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/accepted-risk`,
+  );
+  return handleResponse<AcceptedRiskRow | null>(response);
+}
+
+export async function createAcceptedRisk(
+  threadId: string,
+  body: {
+    accepted_risk_id?: string;
+    description: string;
+    rationale: string;
+    evidence_considered?: string | null;
+    reopen_triggers?: string | null;
+    signer_id: string;
+    signed_at?: string;
+  },
+): Promise<{
+  accepted_risk: AcceptedRiskRow;
+  findings_updated: string[];
+}> {
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}/accepted-risk`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
+  return handleResponse<{
+    accepted_risk: AcceptedRiskRow;
+    findings_updated: string[];
+  }>(response);
+}
+
 export async function getAdjudicationQueue(): Promise<ClaimRow[]> {
   const response = await fetch(`${API_BASE}/adjudication-queue`);
   return handleResponse<ClaimRow[]>(response);
@@ -418,9 +585,142 @@ export async function adjudicateClaim(
   return handleResponse<ClaimRow>(response);
 }
 
+/** CONCEPT §5.9 — list Owner board-hides (active by default). */
+export async function getBoardHides(opts?: {
+  include_lifted?: boolean;
+}): Promise<BoardHideRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.include_lifted) params.set("include_lifted", "1");
+  const q = params.toString();
+  const response = await fetch(
+    `${API_BASE}/board-hides${q ? `?${q}` : ""}`,
+  );
+  return handleResponse<BoardHideRow[]>(response);
+}
+
+export async function hideUserFromBoards(body: {
+  actor_id: string;
+  subject_user_id: string;
+  reason: string;
+}): Promise<{ hide: BoardHideRow; audit: AuditLogRow }> {
+  const response = await fetch(`${API_BASE}/board-hides`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse(response);
+}
+
+export async function liftBoardHide(body: {
+  actor_id: string;
+  subject_user_id: string;
+  note?: string | null;
+}): Promise<{ hide: BoardHideRow; audit: AuditLogRow }> {
+  const response = await fetch(`${API_BASE}/board-hides/lift`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse(response);
+}
+
+export async function getAuditLogs(opts?: {
+  action?: string;
+  limit?: number;
+}): Promise<AuditLogRow[]> {
+  const params = new URLSearchParams();
+  if (opts?.action) params.set("action", opts.action);
+  if (opts?.limit != null) params.set("limit", String(opts.limit));
+  const q = params.toString();
+  const response = await fetch(
+    `${API_BASE}/audit-logs${q ? `?${q}` : ""}`,
+  );
+  return handleResponse<AuditLogRow[]>(response);
+}
+
+/** CONCEPT §8.6 — list real-identity attestation records. */
+export async function getIdentities(): Promise<UserIdentityRow[]> {
+  const response = await fetch(`${API_BASE}/identities`);
+  return handleResponse<UserIdentityRow[]>(response);
+}
+
+export async function getIdentity(userId: string): Promise<UserIdentityRow> {
+  const response = await fetch(`${API_BASE}/identities/${userId}`);
+  return handleResponse<UserIdentityRow>(response);
+}
+
+export async function getStewardEligibility(
+  userId: string,
+  country?: string | null,
+): Promise<{
+  auth_mode: string;
+  identity: UserIdentityRow;
+  eligibility: { ok: boolean; reason?: string; code?: string; message?: string };
+}> {
+  const params = new URLSearchParams();
+  if (country) params.set("country", country);
+  const q = params.toString();
+  const response = await fetch(
+    `${API_BASE}/identities/${userId}/steward-eligibility${q ? `?${q}` : ""}`,
+  );
+  return handleResponse(response);
+}
+
+export async function requestIdentityVerification(body: {
+  actor_id: string;
+  subject_user_id: string;
+}): Promise<{ identity: UserIdentityRow; audit: AuditLogRow }> {
+  const response = await fetch(
+    `${API_BASE}/identities/${body.subject_user_id}/request`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ actor_id: body.actor_id }),
+    },
+  );
+  return handleResponse(response);
+}
+
+export async function attestIdentity(body: {
+  actor_id: string;
+  subject_user_id: string;
+  verification_status: VerificationStatus;
+  country_codes?: string[];
+  long_term_ties_note?: string | null;
+  provider_stub?: string | null;
+}): Promise<{ identity: UserIdentityRow; audit: AuditLogRow }> {
+  const response = await fetch(
+    `${API_BASE}/identities/${body.subject_user_id}/attest`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        actor_id: body.actor_id,
+        verification_status: body.verification_status,
+        country_codes: body.country_codes,
+        long_term_ties_note: body.long_term_ties_note,
+        provider_stub: body.provider_stub,
+      }),
+    },
+  );
+  return handleResponse(response);
+}
+
 export async function getAttributions(): Promise<AttributionRegistry> {
   const response = await fetch(`${API_BASE}/attributions`);
   return handleResponse<AttributionRegistry>(response);
+}
+
+/** M8 first-cut corpus search (dossiers / artifacts / threads / claims). */
+export async function searchCorpus(opts: {
+  q: string;
+  limit?: number;
+}): Promise<SearchResponse> {
+  const params = new URLSearchParams();
+  params.set("q", opts.q);
+  if (opts.limit != null) params.set("limit", String(opts.limit));
+  const response = await fetch(`${API_BASE}/search?${params.toString()}`);
+  return handleResponse<SearchResponse>(response);
 }
 
 export async function getTerms(): Promise<TermRegistry> {

@@ -17,13 +17,101 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Link } from "react-router";
-import { getDossiers } from "../../api/client";
-import type { DossierRow } from "../../doc/types";
+import { formatDistanceToNow } from "date-fns";
+import { getDossiers, getFindings, getThreads } from "../../api/client";
+import type { DossierRow, FindingRow, ThreadRow as ThreadApiRow } from "../../doc/types";
 import { laneForDossier } from "../lib/dossier-display";
+import { getPrototypeUser } from "../lib/prototype-users";
+
+const HOME_PANEL_LIMIT = 5;
+
+const RFC_HOME_STATES = new Set(["rfc", "review", "decided"]);
+
+function threadStatusLabel(
+  state: string,
+): "Open" | "RFC" | "Review" | "Decided" | "Merged" | "Parked" {
+  switch (state) {
+    case "rfc":
+      return "RFC";
+    case "review":
+      return "Review";
+    case "decided":
+      return "Decided";
+    case "archived":
+      return "Parked";
+    default:
+      return "Open";
+  }
+}
+
+function severityBorderClass(severity: string): string {
+  switch (severity) {
+    case "critical":
+      return "border-l-red-500";
+    case "high":
+      return "border-l-orange-500";
+    case "med":
+      return "border-l-amber-500";
+    default:
+      return "border-l-neutral-400";
+  }
+}
+
+function severityBadgeClass(severity: string): string {
+  switch (severity) {
+    case "critical":
+      return "bg-red-50 text-red-700";
+    case "high":
+      return "bg-orange-50 text-orange-700";
+    case "med":
+      return "bg-amber-50 text-amber-700";
+    default:
+      return "bg-neutral-100 text-neutral-700";
+  }
+}
+
+function findingStatusLabel(status: string): string {
+  switch (status) {
+    case "mitigated":
+      return "Mitigated";
+    case "accepted_risk":
+      return "Accepted Risk";
+    case "disputed":
+      return "Disputed";
+    default:
+      return "Open";
+  }
+}
+
+function findingHref(finding: FindingRow, threadsById: Map<string, ThreadApiRow>): string {
+  const thread = threadsById.get(finding.thread_id);
+  const base =
+    thread && RFC_HOME_STATES.has(thread.state)
+      ? `/thread/${finding.thread_id}/rfc`
+      : `/thread/${finding.thread_id}`;
+  return `${base}#finding-${finding.finding_id}`;
+}
+
+function formatActivity(iso: string): string {
+  try {
+    return formatDistanceToNow(new Date(iso), { addSuffix: true });
+  } catch {
+    return iso;
+  }
+}
 
 export function Home() {
   const [dossiers, setDossiers] = useState<DossierRow[] | null>(null);
   const [dossiersError, setDossiersError] = useState<string | null>(null);
+  const [recentRfcs, setRecentRfcs] = useState<ThreadApiRow[] | null>(null);
+  const [rfcsError, setRfcsError] = useState<string | null>(null);
+  const [recentFindings, setRecentFindings] = useState<FindingRow[] | null>(
+    null,
+  );
+  const [findingsError, setFindingsError] = useState<string | null>(null);
+  const [threadsById, setThreadsById] = useState<Map<string, ThreadApiRow>>(
+    () => new Map(),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -38,6 +126,31 @@ export function Home() {
           );
         }
       });
+
+    Promise.all([getThreads(), getFindings()])
+      .then(([threads, findings]) => {
+        if (cancelled) return;
+        const byId = new Map(threads.map((t) => [t.thread_id, t]));
+        setThreadsById(byId);
+        setRecentRfcs(
+          threads
+            .filter((t) => RFC_HOME_STATES.has(t.state))
+            .slice(0, HOME_PANEL_LIMIT),
+        );
+        setRecentFindings(findings.slice(0, HOME_PANEL_LIMIT));
+        setRfcsError(null);
+        setFindingsError(null);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        const message =
+          err instanceof Error ? err.message : "Failed to load home panels";
+        setRfcsError(message);
+        setFindingsError(message);
+        setRecentRfcs([]);
+        setRecentFindings([]);
+      });
+
     return () => {
       cancelled = true;
     };
@@ -98,9 +211,9 @@ export function Home() {
                     Not Neutral by Design
                   </div>
                   <p className="text-sm text-neutral-600">
-                    Civic Lab has an explicit constitution and a clear
-                    editor-in-chief model. The trade: higher signal, stronger
-                    standards, and an auditable trail of reasoning.
+                    Civic Lab has an explicit living Charter (Owner-gated Canon
+                    artifact) and a clear editor-in-chief model. The trade: higher
+                    signal, stronger standards, and an auditable trail of reasoning.
                   </p>
                 </Card>
                 <Card className="border border-neutral-200 bg-white/90 p-6">
@@ -136,7 +249,7 @@ export function Home() {
                       to="/constitution"
                       className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 hover:text-neutral-700"
                     >
-                      Read the Constitution
+                      Read the Charter
                       <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </div>
@@ -350,101 +463,137 @@ export function Home() {
 
         <section className="mb-12">
           <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-neutral-900">
-              Recent RFCs
-            </h3>
-            <Link
-              to="/"
-              className="text-sm font-medium text-neutral-600 hover:text-neutral-900"
-            >
-              View all →
-            </Link>
+            <div>
+              <h3 className="text-xl font-semibold text-neutral-900">
+                Recent RFCs
+              </h3>
+              <p className="mt-1 text-sm text-neutral-600">
+                Live from store threads in RFC / review / decided.
+              </p>
+            </div>
+            {recentRfcs && recentRfcs[0] && (
+              <Link
+                to={`/dossier/${recentRfcs[0].home_dossier_id}`}
+                className="text-sm font-medium text-neutral-600 hover:text-neutral-900"
+              >
+                Open exemplar dossier →
+              </Link>
+            )}
           </div>
           <Card className="border border-neutral-200 bg-white p-6">
-            <div className="divide-y divide-neutral-200">
-              <ThreadRow
-                id="rfc-1"
-                title="Proposal: Add ranked-choice voting framework to Canon"
-                status="RFC"
-                author="Alex Rivera"
-                messageCount={23}
-                lastActivity="4 hours ago"
-              />
-              <ThreadRow
-                id="rfc-2"
-                title="RFC: Update voter registration procedures for digital ID"
-                status="Review"
-                author="Jamie Lee"
-                messageCount={17}
-                lastActivity="1 day ago"
-              />
-              <ThreadRow
-                id="rfc-3"
-                title="Merge mail-in ballot security protocols"
-                status="Decided"
-                author="Taylor Kim"
-                messageCount={31}
-                lastActivity="2 days ago"
-              />
-            </div>
+            {rfcsError && (
+              <p className="text-sm text-neutral-600">{rfcsError}</p>
+            )}
+            {!rfcsError && recentRfcs === null && (
+              <p className="text-sm text-neutral-500">Loading RFCs…</p>
+            )}
+            {!rfcsError && recentRfcs && recentRfcs.length === 0 && (
+              <p className="text-sm text-neutral-500">
+                No RFC or decided threads seeded yet.
+              </p>
+            )}
+            {!rfcsError && recentRfcs && recentRfcs.length > 0 && (
+              <div className="divide-y divide-neutral-200">
+                {recentRfcs.map((t) => {
+                  const dossierTitle =
+                    dossiers?.find((d) => d.dossier_id === t.home_dossier_id)
+                      ?.title ?? t.home_dossier_id;
+                  return (
+                    <ThreadRow
+                      key={t.thread_id}
+                      id={t.thread_id}
+                      title={t.title}
+                      status={threadStatusLabel(t.state)}
+                      author={dossierTitle}
+                      messageCount={t.post_count ?? t.posts?.length ?? 0}
+                      lastActivity={formatActivity(t.created_at)}
+                      to={
+                        t.state === "open"
+                          ? `/thread/${t.thread_id}`
+                          : `/thread/${t.thread_id}/rfc`
+                      }
+                    />
+                  );
+                })}
+              </div>
+            )}
           </Card>
         </section>
 
         <section>
           <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-neutral-900">
-              Recent Red Team Findings
-            </h3>
-            <Link
-              to="/dossier/us-voting-1/red-team/1"
-              className="text-sm font-medium text-neutral-600 hover:text-neutral-900"
-            >
-              View all →
-            </Link>
+            <div>
+              <h3 className="text-xl font-semibold text-neutral-900">
+                Recent Red Team Findings
+              </h3>
+              <p className="mt-1 text-sm text-neutral-600">
+                Live from store Findings (thread-required context).
+              </p>
+            </div>
+            {recentFindings && recentFindings[0] && (
+              <Link
+                to={findingHref(recentFindings[0], threadsById)}
+                className="text-sm font-medium text-neutral-600 hover:text-neutral-900"
+              >
+                Open latest finding →
+              </Link>
+            )}
           </div>
-          <div className="grid gap-3">
-            <Link to="/dossier/us-voting-1/red-team/1">
-              <div className="cursor-pointer rounded-lg border-l-4 border-l-red-500 border-t border-r border-b border-neutral-200 bg-white p-4 transition-all hover:shadow-sm">
-                <div className="mb-2 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-red-50 text-red-700">Critical</Badge>
-                    <Badge className="bg-orange-50 text-orange-700">Open</Badge>
-                  </div>
-                  <span className="text-xs text-neutral-500">
-                    US Voting Implementation
-                  </span>
-                </div>
-                <h4 className="mb-1 font-semibold text-neutral-900">
-                  Chain of custody gap in provisional ballot handling
-                </h4>
-                <p className="text-sm text-neutral-600">
-                  Section 4.2 lacks explicit procedure for transferring
-                  provisional ballots between polling site and central counting
-                  facility.
-                </p>
-              </div>
-            </Link>
-            <Link to="/dossier/us-voting-1/red-team/1">
-              <div className="cursor-pointer rounded-lg border-l-4 border-l-orange-500 border-t border-r border-b border-neutral-200 bg-white p-4 transition-all hover:shadow-sm">
-                <div className="mb-2 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-orange-50 text-orange-700">High</Badge>
-                    <Badge className="bg-orange-50 text-orange-700">Open</Badge>
-                  </div>
-                  <span className="text-xs text-neutral-500">
-                    US Voting Implementation
-                  </span>
-                </div>
-                <h4 className="mb-1 font-semibold text-neutral-900">
-                  Ambiguous voter ID requirements for absentee voters
-                </h4>
-                <p className="text-sm text-neutral-600">
-                  Inconsistent specification across Section 3.1 and Appendix B
-                  regarding acceptable forms of ID verification.
-                </p>
-              </div>
-            </Link>
-          </div>
+          {findingsError && (
+            <Card className="border border-neutral-200 p-6 text-sm text-neutral-600">
+              {findingsError}
+            </Card>
+          )}
+          {!findingsError && recentFindings === null && (
+            <p className="text-sm text-neutral-500">Loading findings…</p>
+          )}
+          {!findingsError && recentFindings && recentFindings.length === 0 && (
+            <p className="text-sm text-neutral-500">
+              No Red Team findings seeded yet.
+            </p>
+          )}
+          {!findingsError && recentFindings && recentFindings.length > 0 && (
+            <div className="grid gap-3">
+              {recentFindings.map((f) => {
+                const severityLabel =
+                  f.severity.charAt(0).toUpperCase() + f.severity.slice(1);
+                const dossierLabel =
+                  f.home_dossier_title ??
+                  f.home_dossier_id ??
+                  getPrototypeUser(f.author_id)?.display_name ??
+                  f.author_id;
+                return (
+                  <Link key={f.finding_id} to={findingHref(f, threadsById)}>
+                    <div
+                      className={`cursor-pointer rounded-lg border-l-4 ${severityBorderClass(f.severity)} border-t border-r border-b border-neutral-200 bg-white p-4 transition-all hover:shadow-sm`}
+                    >
+                      <div className="mb-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Badge className={severityBadgeClass(f.severity)}>
+                            {severityLabel}
+                          </Badge>
+                          <Badge className="bg-orange-50 text-orange-700">
+                            {findingStatusLabel(f.status)}
+                          </Badge>
+                        </div>
+                        <span className="text-xs text-neutral-500">
+                          {dossierLabel}
+                        </span>
+                      </div>
+                      <h4 className="mb-1 font-semibold text-neutral-900">
+                        {f.title}
+                      </h4>
+                      <p className="text-sm text-neutral-600">
+                        {f.evidence ||
+                          f.attack_path ||
+                          "No evidence summary seeded."}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </section>
       </main>
     </div>

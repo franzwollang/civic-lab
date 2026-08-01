@@ -25,7 +25,7 @@
         "post_id": "post-us-prov-2",
         "author_id": "user-bob",
         "type": "comment",
-        "body": "Agree — keep this open until the Overview artifact cites the same definitions.",
+        "body": "Agree — keep this open until the Overview artifact cites the same definitions. Also: state rejection-rate definitions look inconsistent — flagging as candidate for Red Team.",
         "created_at": "2026-07-10T15:30:00.000Z"
       }
     ]
@@ -36,7 +36,7 @@
     "title": "RFC: clarify voter registration procedure steps",
     "state": "rfc",
     "decision_outcome": null,
-    "is_redteam": false,
+    "is_redteam": true,
     "parent_thread_id": null,
     "merge_artifact_id": "us-voter-reg",
     "created_at": "2026-07-12T10:00:00.000Z",
@@ -50,6 +50,13 @@
         "type": "comment",
         "body": "Promoting to RFC so we can attach a RevSet against us-voter-reg (leaf merge).",
         "created_at": "2026-07-12T10:00:00.000Z"
+      },
+      {
+        "post_id": "post-us-reg-mitigation-1",
+        "author_id": "user-alice",
+        "type": "mitigation",
+        "body": "Proposed mitigation: add an explicit provisional→registration cure-window subsection citing the Descriptive brief before merge.",
+        "created_at": "2026-07-13T14:00:00.000Z"
       }
     ]
   },
@@ -126,6 +133,36 @@
         "type": "comment",
         "body": "Anchoring discussion to the Goals heading (stable_key block-003) so we can cite the section without text offsets.",
         "created_at": "2026-07-09T11:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "thread_id": "thread-us-overview-merged",
+    "home_dossier_id": "us-voting-1",
+    "title": "RFC: US overview baseline citations (merged seed)",
+    "state": "decided",
+    "decision_outcome": "merged",
+    "is_redteam": false,
+    "parent_thread_id": null,
+    "merge_artifact_id": "us-overview",
+    "created_at": "2026-06-01T10:00:00.000Z",
+    "targets": [
+      { "target_kind": "artifact", "target_id": "us-overview" }
+    ],
+    "posts": [
+      {
+        "post_id": "post-us-overview-merged-1",
+        "author_id": "user-alice",
+        "type": "comment",
+        "body": "Leaf RFC for overview citation hygiene — merged seed for reputation scaffolding.",
+        "created_at": "2026-06-01T10:00:00.000Z"
+      },
+      {
+        "post_id": "post-us-overview-merged-2",
+        "author_id": "user-bob",
+        "type": "comment",
+        "body": "Reviewed RevSet; citations look consistent with Descriptive lane.",
+        "created_at": "2026-06-02T11:00:00.000Z"
       }
     ]
   }

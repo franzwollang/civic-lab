@@ -36,3 +36,22 @@
 {"ts":"2026-07-25T13:20Z","focus":"toolchain + M6 green","summary":"Fixed pnpm/fumadocs/dullahan; build+21 smokes green; PLANNING/OPEN_ISSUES updated","next":"M6 metrics panels or M7 Findings"}
 {"ts":"2026-07-25T13:25Z","focus":"MVP unblocked from Dullahan","summary":"Deleted stubs/dullahan-web + editorPageModel; saveRevision local; planning updated","next":"M6 metrics or M7"}
 {"ts":"2026-07-25T13:30Z","focus":"Hono API","summary":"Express→Hono migration complete; PLANNING/SEED updated","next":"M6 metrics or M7"}
+{"ts":"2026-07-25T13:50Z","focus":"M6 metrics","summary":"Collection claim quality/forecast panels live; M6 exit; next M7 Findings","next":"Finding model + Critical merge gate"}
+{"ts":"2026-07-25T14:10Z","focus":"M7 Findings","summary":"Finding model/API/dashboard counts landed; handoff to Accepted Risk merge gate","next":"AcceptedRisk + decideThread Critical gate"}
+{"ts":"2026-07-25T14:30Z","focus":"M7 Accepted Risk gate","summary":"AcceptedRisk + Critical merge gate landed; handoff to Findings timeline or M8","next":"Findings timeline UX or Candidate→Finding; else M8 Search"}
+{"ts":"2026-07-25T14:55Z","focus":"M7 Candidate→Finding timeline","summary":"Candidate promotion + thread timeline UX landed; M7 done; handoff to M8 Search","next":"M8 first-cut search API + header wiring"}
+{"ts":"2026-07-25T15:35Z","focus":"M8 Search","summary":"Corpus search API + header results landed; handoff to breadcrumbs","next":"M8 breadcrumbs + up-links; then impersonation chrome"}
+{"ts":"2026-07-25T15:55Z","focus":"M8 Breadcrumbs","summary":"Hierarchy breadcrumbs + up-nav context landed; handoff to impersonation chrome","next":"M8 global header acting-user switcher + role affordances"}
+{"ts":"2026-07-25T16:10Z","focus":"M8 impersonation chrome","summary":"Global acting-user switcher + role affordances; M8 done","next":"M9 Policy start or editor/evidence residuals"}
+{"ts":"2026-07-25T16:40Z","focus":"M9 Charter artifact","summary":"Living owner_merge_only Charter + redirect + Owner gate; M9 in progress","next":"Reputation scaffolding or anti-gaming board policy"}
+{"ts":"2026-07-25T16:42Z","focus":"M9 reputation","summary":"advisory reputation board from RevSets/RT/adjudication/AR; seed merged thread","next":"anti-gaming board-hide or real auth"}
+{"ts":"2026-07-25T17:20Z","focus":"M9 board-hide","summary":"Owner board-hide + AuditLog; 31/31 smokes; hand off real-auth","next":"M9 real-identity auth hooks or editor/evidence"}
+{"ts":"2026-07-25T17:40Z","focus":"M9 identity hooks","summary":"§8.6 UserIdentity + steward gate; M9 done; 32/32 smokes","next":"Editor MVP gaps or evidence registries"}
+{"ts":"2026-07-25T17:55Z","focus":"Editor MVP gaps","summary":"term scope + merge-strict content_invalid + deleted math-plugin; smoke-editor-mvp","next":"Plate lists/links or evidence registries"}
+{"ts":"2026-07-25T18:05Z","focus":"Editor MVP gaps","summary":"33/33 smokes + build green; termScope extracted for Node smokes","next":"Plate lists/links or evidence registries"}
+{"ts":"2026-07-25T18:20Z","focus":"editor lists+links","summary":"Plate Indent/List/Link + toolbar + reader/export + smoke-editor-lists-links; 34/34 smokes","next":"evidence registries or immutable_ref / App D"}
+{"ts":"2026-07-25T19:20Z","focus":"evidence registries","summary":"richer seeds + immutable_ref validate/UI; 35/35 smokes","next":"external_artifact node / App D or home fixture retirement"}
+{"ts":"2026-07-25T19:26Z","focus":"external_artifact App D","summary":"Plate node + whitelist + smoke; merged #41 tip first","next":"home RFC/RT fixtures or blockquotes / mod tools"}
+{"ts":"2026-07-25T19:42Z","focus":"home RFC/RT fixtures","summary":"Merged #42 tip; live home RFC+Findings; findings home_dossier enrich; smoke-home-store","next":"blockquotes or moderator tools residual"}
+{"ts":"2026-07-25T20:15Z","focus":"editor blockquotes","summary":"Merged #43 tip; BlockquotePlugin + Quote toggle + reader/export; 37/37 smokes","next":"moderator tools residual or About/FAQ artifact migration"}
+{"ts":"2026-07-25T20:40Z","focus":"moderator tools residual","summary":"soft-delete + audit wiring; 38/38 smokes","next":"About/FAQ artifact migration"}

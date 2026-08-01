@@ -7,17 +7,23 @@ import { bootstrapDatabase } from "./bootstrap";
 import {
   createArtifact,
   createArtifactRevision,
+  createAcceptedRisk,
   createClaim,
+  createFinding,
   createRevSet,
   createThreadPost,
   decideThread,
+  flagCandidateFinding,
+  getAcceptedRiskForThread,
   getArtifact,
   getAttributions,
   getAreaByKind,
+  getCandidateFinding,
   getClaim,
   getCollection,
   getCollectionDashboard,
   getDossier,
+  getFinding,
   getSection,
   getTerms,
   getThread,
@@ -26,21 +32,36 @@ import {
   listArtifactRevisions,
   listArtifacts,
   listArtifactsByDossier,
+  listAuditLogs,
+  listBoardHides,
+  listCandidateFindings,
   listClaims,
   listCollections,
   listDossiers,
+  listFindings,
   listRevSets,
   listSections,
   listThreads,
+  listUserIdentities,
+  hideUserFromBoards,
+  liftBoardHide,
+  promoteCandidateFinding,
   promoteThreadToRfc,
   putAttributions,
   putTerms,
   requestClaimAdjudication,
+  requestIdentityVerification,
   adjudicateClaim,
+  attestUserIdentity,
+  getStewardEligibilityForUser,
+  getUserIdentity,
+  searchCorpus,
   setPrisma,
+  softDeleteThreadPost,
   updateArtifact,
 } from "./db";
 import { validateRevisionPayload } from "./validateRevision";
+import { validateImmutableRef } from "../src/lib/immutableRef";
 
 const PORT = Number(process.env.PORT) || 8787;
 const BODY_LIMIT = 2 * 1024 * 1024;
@@ -215,9 +236,49 @@ const termsRegistrySchema = z.object({
 const threadPostBodySchema = z.object({
   post_id: z.string().min(1).optional(),
   author_id: z.string().min(1),
-  type: z.string().min(1).optional(),
+  type: z.enum(["comment", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
+});
+
+const softDeletePostBodySchema = z.object({
+  actor_id: z.string().min(1),
+  reason: z.string().optional().nullable(),
+});
+
+const flagCandidateBodySchema = z.object({
+  candidate_id: z.string().min(1).optional(),
+  post_id: z.string().min(1),
+  flagger_id: z.string().min(1),
+  note: z.string().nullable().optional(),
+  created_at: z.string().optional(),
+});
+
+const promoteCandidateBodySchema = z.object({
+  author_id: z.string().min(1),
+  title: z.string().min(1).optional(),
+  severity: z.enum(["low", "med", "high", "critical"]),
+  likelihood: z.string().nullable().optional(),
+  evidence: z.string().nullable().optional(),
+  attack_path: z.string().nullable().optional(),
+  status: z
+    .enum(["open", "mitigated", "accepted_risk", "disputed"])
+    .optional(),
+  finding_id: z.string().min(1).optional(),
+  targets: z
+    .array(
+      z.object({
+        target_kind: z.enum([
+          "artifact",
+          "claim",
+          "section",
+          "thread",
+          "dossier",
+        ]),
+        target_id: z.string().min(1),
+      }),
+    )
+    .optional(),
 });
 
 const promoteBodySchema = z.object({
@@ -279,6 +340,76 @@ const adjudicateSchema = z.object({
   require_queued: z.boolean().optional(),
 });
 
+const findingBodySchema = z.object({
+  finding_id: z.string().min(1).optional(),
+  thread_id: z.string().min(1),
+  title: z.string().min(1),
+  severity: z.enum(["low", "med", "high", "critical"]),
+  likelihood: z.string().nullable().optional(),
+  status: z
+    .enum(["open", "mitigated", "accepted_risk", "disputed"])
+    .optional(),
+  evidence: z.string().nullable().optional(),
+  attack_path: z.string().nullable().optional(),
+  author_id: z.string().min(1),
+  created_at: z.string().optional(),
+  targets: z
+    .array(
+      z.object({
+        target_kind: z.enum([
+          "artifact",
+          "claim",
+          "section",
+          "thread",
+          "dossier",
+        ]),
+        target_id: z.string().min(1),
+      }),
+    )
+    .optional(),
+});
+
+const acceptedRiskBodySchema = z.object({
+  accepted_risk_id: z.string().min(1).optional(),
+  description: z.string().min(1),
+  rationale: z.string().min(1),
+  evidence_considered: z.string().nullable().optional(),
+  reopen_triggers: z.string().nullable().optional(),
+  signer_id: z.string().min(1),
+  signed_at: z.string().optional(),
+});
+
+/** CONCEPT §5.9 — Owner board-hide for abuse. */
+const boardHideBodySchema = z.object({
+  actor_id: z.string().min(1),
+  subject_user_id: z.string().min(1),
+  reason: z.string().min(1),
+});
+
+const boardHideLiftBodySchema = z.object({
+  actor_id: z.string().min(1),
+  subject_user_id: z.string().min(1),
+  note: z.string().nullable().optional(),
+});
+
+/** CONCEPT §8.6 — Owner identity attestation. */
+const identityAttestBodySchema = z.object({
+  actor_id: z.string().min(1),
+  verification_status: z.enum([
+    "unverified",
+    "pending",
+    "verified",
+    "rejected",
+  ]),
+  country_codes: z.array(z.string()).optional(),
+  long_term_ties_note: z.string().nullable().optional(),
+  provider_stub: z.string().nullable().optional(),
+});
+
+const identityRequestBodySchema = z.object({
+  actor_id: z.string().min(1),
+});
+
 // CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
 app.get("/api/artifacts", async (c) => c.json(await handleListArtifacts()));
 app.get("/api/pages", async (c) => c.json(await handleListArtifacts()));
@@ -338,6 +469,26 @@ app.put("/api/attributions", async (c) => {
     return c.text("Invalid attributions payload", 400);
   }
 
+  const { validateImmutableRef } = await import("../src/lib/immutableRef");
+  const normalizedItems = [];
+  for (const item of parsed.data.items) {
+    const check = validateImmutableRef(item.immutable_ref);
+    if (!check.ok) {
+      return c.json(
+        {
+          error: "invalid_immutable_ref",
+          message: check.message,
+          attribution_id: item.id,
+        },
+        400,
+      );
+    }
+    normalizedItems.push({
+      ...item,
+      immutable_ref: check.parsed?.normalized ?? null,
+    });
+  }
+
   const current = await getAttributions();
   const currentVersion =
     typeof current.version === "number" ? current.version : 1;
@@ -348,7 +499,7 @@ app.put("/api/attributions", async (c) => {
 
   const next = {
     version: currentVersion + 1,
-    items: parsed.data.items,
+    items: normalizedItems,
   };
   const saved = await putAttributions(next);
   return c.json(saved);
@@ -462,6 +613,15 @@ app.get("/api/dossiers", async (c) => {
   return c.json(await listDossiers(collectionId));
 });
 
+/** M8 first-cut discovery search over dossiers / artifacts / threads / claims. */
+app.get("/api/search", async (c) => {
+  const q = c.req.query("q") ?? "";
+  const limitRaw = c.req.query("limit");
+  const limit =
+    limitRaw != null && limitRaw !== "" ? Number(limitRaw) : undefined;
+  return c.json(await searchCorpus(q, limit));
+});
+
 app.get("/api/dossiers/:dossierId", async (c) => {
   const dossier = await getDossier(c.req.param("dossierId"));
   if (!dossier) {
@@ -487,7 +647,10 @@ app.get("/api/threads", async (c) => {
 });
 
 app.get("/api/threads/:threadId", async (c) => {
-  const thread = await getThread(c.req.param("threadId"));
+  const includeDeleted = c.req.query("include_deleted") === "1";
+  const thread = await getThread(c.req.param("threadId"), {
+    include_deleted_posts: includeDeleted,
+  });
   if (!thread) {
     return c.json({ error: "Thread not found" }, 404);
   }
@@ -517,6 +680,43 @@ app.post("/api/threads/:threadId/posts", async (c) => {
     return c.json({ error: "Thread not found" }, 404);
   }
   return c.json(created, 201);
+});
+
+/** CONCEPT §9.4 — soft-delete ordinary post (steward Manual / Owner global). */
+app.post("/api/threads/:threadId/posts/:postId/soft-delete", async (c) => {
+  const parsed = softDeletePostBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid soft-delete payload" }, 400);
+  }
+  const threadId = c.req.param("threadId");
+  const postId = c.req.param("postId");
+  const result = await softDeleteThreadPost({
+    post_id: postId,
+    actor_id: parsed.data.actor_id,
+    reason: parsed.data.reason,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "forbidden" ||
+      result.error.code === "canon_owner_only" ||
+      result.error.code === "steward_country_mismatch"
+        ? 403
+        : result.error.code === "not_found"
+          ? 404
+          : result.error.code === "already_deleted"
+            ? 409
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  if (result.post.thread_id !== threadId) {
+    return c.json(
+      { error: { code: "not_found", message: "Post not on this thread" } },
+      404,
+    );
+  }
+  return c.json({ post: result.post, audit: result.audit });
 });
 
 app.post("/api/threads/:threadId/promote", async (c) => {
@@ -581,9 +781,14 @@ app.post("/api/threads/:threadId/decide", async (c) => {
     const status =
       result.error.code === "not_found"
         ? 404
-        : result.error.code === "already_decided"
+        : result.error.code === "already_decided" ||
+            result.error.code === "critical_unaccepted"
           ? 409
-          : result.error.code === "forbidden"
+          : result.error.code === "forbidden" ||
+              result.error.code === "identity_unverified" ||
+              result.error.code === "identity_pending" ||
+              result.error.code === "identity_rejected" ||
+              result.error.code === "steward_country_mismatch"
             ? 403
             : 400;
     return c.json({ error: result.error }, status);
@@ -637,6 +842,177 @@ app.post("/api/claims", async (c) => {
     return c.json({ error: result.error }, status);
   }
   return c.json(result.claim, 201);
+});
+
+// M7 Findings (CONCEPT §7.3) — thread-required; Red Team create
+app.get("/api/findings", async (c) => {
+  const threadId = c.req.query("thread_id");
+  const collectionId = c.req.query("collection_id");
+  const severity = c.req.query("severity");
+  const status = c.req.query("status");
+  return c.json(
+    await listFindings({ threadId, collectionId, severity, status }),
+  );
+});
+
+app.get("/api/findings/:findingId", async (c) => {
+  const finding = await getFinding(c.req.param("findingId"));
+  if (!finding) {
+    return c.json({ error: "Finding not found" }, 404);
+  }
+  return c.json(finding);
+});
+
+app.get("/api/threads/:threadId/findings", async (c) => {
+  const threadId = c.req.param("threadId");
+  const thread = await getThread(threadId);
+  if (!thread) {
+    return c.json({ error: "Thread not found" }, 404);
+  }
+  return c.json(await listFindings({ threadId }));
+});
+
+app.post("/api/findings", async (c) => {
+  const parsed = findingBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid finding payload" }, 400);
+  }
+  const result = await createFinding(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden"
+          ? 403
+          : 422;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(result.finding, 201);
+});
+
+// M7 Candidate Findings (CONCEPT §7.4) — flag post → RT promote
+app.get("/api/candidates", async (c) => {
+  const threadId = c.req.query("thread_id");
+  const status = c.req.query("status");
+  return c.json(await listCandidateFindings({ threadId, status }));
+});
+
+app.get("/api/threads/:threadId/candidates", async (c) => {
+  const threadId = c.req.param("threadId");
+  const thread = await getThread(threadId);
+  if (!thread) {
+    return c.json({ error: "Thread not found" }, 404);
+  }
+  const status = c.req.query("status");
+  return c.json(await listCandidateFindings({ threadId, status }));
+});
+
+app.get("/api/candidates/:candidateId", async (c) => {
+  const candidate = await getCandidateFinding(c.req.param("candidateId"));
+  if (!candidate) {
+    return c.json({ error: "Candidate Finding not found" }, 404);
+  }
+  return c.json(candidate);
+});
+
+app.post("/api/threads/:threadId/candidates", async (c) => {
+  const parsed = flagCandidateBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid candidate flag payload" }, 400);
+  }
+  const result = await flagCandidateFinding({
+    thread_id: c.req.param("threadId"),
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden"
+          ? 403
+          : result.error.code === "already_flagged"
+            ? 409
+            : 422;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(result.candidate, 201);
+});
+
+app.post("/api/candidates/:candidateId/promote", async (c) => {
+  const parsed = promoteCandidateBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid promote payload" }, 400);
+  }
+  const result = await promoteCandidateFinding({
+    candidate_id: c.req.param("candidateId"),
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden"
+          ? 403
+          : result.error.code === "not_open"
+            ? 409
+            : 422;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(
+    { finding: result.finding, candidate: result.candidate },
+    201,
+  );
+});
+
+// M7 Accepted Risk (CONCEPT §7.6) — leaf RFC Critical merge gate
+app.get("/api/threads/:threadId/accepted-risk", async (c) => {
+  const thread = await getThread(c.req.param("threadId"));
+  if (!thread) {
+    return c.json({ error: "Thread not found" }, 404);
+  }
+  const ar = await getAcceptedRiskForThread(c.req.param("threadId"));
+  return c.json(ar);
+});
+
+app.post("/api/threads/:threadId/accepted-risk", async (c) => {
+  const parsed = acceptedRiskBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid Accepted Risk payload" }, 400);
+  }
+  const result = await createAcceptedRisk({
+    thread_id: c.req.param("threadId"),
+    ...parsed.data,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found"
+        ? 404
+        : result.error.code === "forbidden" ||
+            result.error.code === "identity_unverified" ||
+            result.error.code === "identity_pending" ||
+            result.error.code === "identity_rejected" ||
+            result.error.code === "steward_country_mismatch"
+          ? 403
+          : result.error.code === "already_exists"
+            ? 409
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json(
+    {
+      accepted_risk: result.accepted_risk,
+      findings_updated: result.findings_updated,
+    },
+    201,
+  );
 });
 
 // M6 adjudication scaffolding (CONCEPT §8.3) — global queue + resolve
@@ -697,6 +1073,139 @@ app.post("/api/claims/:claimId/adjudicate", async (c) => {
     return c.json({ error: result.error }, status);
   }
   return c.json(result.claim);
+});
+
+// M9 anti-gaming — Owner board-hide + append-only audit (CONCEPT §5.9 / §9.4)
+app.get("/api/board-hides", async (c) => {
+  const includeLifted = c.req.query("include_lifted") === "1";
+  return c.json(await listBoardHides({ include_lifted: includeLifted }));
+});
+
+app.post("/api/board-hides", async (c) => {
+  const parsed = boardHideBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid board-hide payload" }, 400);
+  }
+  const result = await hideUserFromBoards(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner" ||
+      result.error.code === "cannot_hide_self"
+        ? 403
+        : result.error.code === "already_hidden"
+          ? 409
+          : result.error.code === "unknown_user"
+            ? 404
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ hide: result.hide, audit: result.audit }, 201);
+});
+
+app.post("/api/board-hides/lift", async (c) => {
+  const parsed = boardHideLiftBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid board-hide lift payload" }, 400);
+  }
+  const result = await liftBoardHide(parsed.data);
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "not_hidden" ||
+            result.error.code === "unknown_user"
+          ? 404
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ hide: result.hide, audit: result.audit });
+});
+
+app.get("/api/audit-logs", async (c) => {
+  const action = c.req.query("action") ?? undefined;
+  const limitRaw = c.req.query("limit");
+  const limit = limitRaw ? Number(limitRaw) : undefined;
+  return c.json(
+    await listAuditLogs({
+      action,
+      limit: Number.isFinite(limit) ? limit : undefined,
+    }),
+  );
+});
+
+/** CONCEPT §8.6 — real-identity policy hooks (impersonation session + attestation). */
+app.get("/api/identities", async (c) => c.json(await listUserIdentities()));
+
+app.get("/api/identities/:userId", async (c) => {
+  const identity = await getUserIdentity(c.req.param("userId"));
+  if (!identity) {
+    return c.json({ error: "Identity record not found" }, 404);
+  }
+  return c.json(identity);
+});
+
+app.get("/api/identities/:userId/steward-eligibility", async (c) => {
+  const country = c.req.query("country") ?? null;
+  return c.json(
+    await getStewardEligibilityForUser({
+      user_id: c.req.param("userId"),
+      country_code: country,
+    }),
+  );
+});
+
+app.post("/api/identities/:userId/request", async (c) => {
+  const parsed = identityRequestBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid identity request payload" }, 400);
+  }
+  const result = await requestIdentityVerification({
+    actor_id: parsed.data.actor_id,
+    subject_user_id: c.req.param("userId"),
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "unknown_user"
+          ? 404
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ identity: result.identity, audit: result.audit });
+});
+
+app.post("/api/identities/:userId/attest", async (c) => {
+  const parsed = identityAttestBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid identity attest payload" }, 400);
+  }
+  const result = await attestUserIdentity({
+    actor_id: parsed.data.actor_id,
+    subject_user_id: c.req.param("userId"),
+    verification_status: parsed.data.verification_status,
+    country_codes: parsed.data.country_codes,
+    long_term_ties_note: parsed.data.long_term_ties_note,
+    provider_stub: parsed.data.provider_stub,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "unknown_user"
+          ? 404
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ identity: result.identity, audit: result.audit });
 });
 
 async function main() {

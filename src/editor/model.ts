@@ -5,12 +5,14 @@ export const ELEMENT_TYPES = {
   H2: "h2",
   H3: "h3",
   H4: "h4",
+  BLOCKQUOTE: "blockquote",
 
   DATA_BLOCK: "data_block",
   MATH_BLOCK: "math_block",
   MERMAID_BLOCK: "mermaid_block",
   PROCEDURE_BLOCK: "procedure_block",
   IMAGE_BLOCK: "image_block",
+  EXTERNAL_ARTIFACT: "external_artifact",
 
   MATH_INLINE: "math_inline",
   EVIDENCE_BLOCK: "evidence_block",
@@ -20,6 +22,7 @@ export const ELEMENT_TYPES = {
   EVIDENCE_BLOCK_MATH: "evidence_block_math",
   CITATION_INLINE: "citation_inline",
   TERM_INLINE: "term_inline",
+  LINK: "a",
 } as const;
 
 export type ElementType = (typeof ELEMENT_TYPES)[keyof typeof ELEMENT_TYPES];
@@ -81,6 +84,18 @@ export type ImageBlockElement = {
   src: string;
   alt?: string;
   caption?: string;
+  children: [SlateText];
+};
+
+export type ExternalArtifactElement = {
+  type: typeof ELEMENT_TYPES.EXTERNAL_ARTIFACT;
+  id: string;
+  provider: string;
+  general_id: string;
+  specific_id: string;
+  display_title: string;
+  summary?: string;
+  license?: string;
   children: [SlateText];
 };
 
@@ -272,6 +287,19 @@ export function normalizeDocumentValue(value: unknown): {
       localChanged = ensureStringProp(next, "src", "") || localChanged;
       localChanged = ensureStringProp(next, "alt", "") || localChanged;
       localChanged = ensureStringProp(next, "caption", "") || localChanged;
+      localChanged = ensureVoidChildren(next) || localChanged;
+      return { node: next, changed: localChanged };
+    }
+
+    if (type === ELEMENT_TYPES.EXTERNAL_ARTIFACT) {
+      const next = { ...node };
+      if (isTopLevel) localChanged = ensureId(next, seenTopLevel) || localChanged;
+      localChanged = ensureStringProp(next, "provider", "") || localChanged;
+      localChanged = ensureStringProp(next, "general_id", "") || localChanged;
+      localChanged = ensureStringProp(next, "specific_id", "") || localChanged;
+      localChanged = ensureStringProp(next, "display_title", "") || localChanged;
+      localChanged = ensureStringProp(next, "summary", "") || localChanged;
+      localChanged = ensureStringProp(next, "license", "") || localChanged;
       localChanged = ensureVoidChildren(next) || localChanged;
       return { node: next, changed: localChanged };
     }

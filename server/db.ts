@@ -38,6 +38,69 @@ import {
   type LaneRuleError,
   type SoftLaneLabel,
 } from "../src/lib/artifactLanes";
+import {
+  computeEmpiricalQuality,
+  computeForecastAccuracy,
+  computeRequirementSatisfactionSnapshot,
+} from "../src/lib/claimMetrics";
+import {
+  computeReputationBoard,
+  type ReputationSignalEvent,
+} from "../src/lib/reputation";
+import {
+  validateBoardHide,
+  validateBoardHideLift,
+  type AuditAction,
+} from "../src/lib/boardHide";
+import {
+  validateSoftDeletePost,
+  type SoftDeleteContext,
+} from "../src/lib/moderation";
+import {
+  AUTH_MODE,
+  defaultIdentityRecord,
+  evaluateStewardEligibility,
+  isVerificationStatus,
+  normalizeCountryCode,
+  validateIdentityAttestation,
+  validateIdentityRequest,
+  type AttestationKind,
+  type IdentityRecord,
+  type VerificationStatus,
+} from "../src/lib/identityPolicy";
+import { getPrototypeUser } from "../src/app/lib/prototype-users";
+import { randomUUID } from "crypto";
+import {
+  artifactHref,
+  claimHref,
+  clampSearchLimit,
+  dossierHref,
+  normalizeSearchQuery,
+  scoreMatch,
+  sortHits,
+  threadHref,
+  type SearchHit,
+  type SearchResponse,
+} from "../src/lib/search";
+import {
+  actorMayCreateFinding,
+  isFindingSeverity,
+  isFindingStatus,
+  isFindingTargetKind,
+  isOpenCriticalFinding,
+} from "../src/lib/findings";
+import {
+  actorMayFlagCandidate,
+  actorMayPromoteCandidate,
+  isCandidateStatus,
+  isTimelinePostType,
+} from "../src/lib/candidateFindings";
+import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
+import {
+  validateDocumentStructureForMerge,
+  type StructuralIssue,
+  type StructuralValidationRegistry,
+} from "../src/doc/structuralValidation";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
 
 let prisma: PrismaClient | null = null;
@@ -127,6 +190,89 @@ export type CollectionDashboardDossier = DossierRow & {
   lane_hint: "Descriptive" | "Prescriptive" | "Alignment";
 };
 
+export type CollectionEmpiricalQuality = {
+  total: number;
+  open: number;
+  resolved: number;
+  invalidated: number;
+  ambiguous_or_conflict: number;
+  invalidated_rate: number | null;
+  ambiguity_rate: number | null;
+  mean_citation_density: number | null;
+  mean_days_to_resolution: number | null;
+};
+
+export type CollectionForecastAccuracy = {
+  n: number;
+  mean_brier: number | null;
+  mean_log_score: number | null;
+  mean_skill_vs_baseline: number | null;
+  baseline_p: number;
+  baseline_label: string;
+  public_board_eligible: boolean;
+};
+
+export type RequirementSatisfactionSnapshot = {
+  open: number;
+  accepted: number;
+  satisfied: number;
+  failed: number;
+  superseded: number;
+  invalidated: number;
+  disputed: number;
+  other: number;
+};
+
+export type ReputationSignalCounts = {
+  merged_revsets: number;
+  review_labor: number;
+  red_team_findings: number;
+  adjudications: number;
+  accepted_risk_signs: number;
+  endorsements: number;
+};
+
+export type ReputationContributorRow = {
+  user_id: string;
+  display_name: string | null;
+  signals: ReputationSignalCounts;
+  signal_event_count: number;
+  advisory_score: number;
+};
+
+export type CollectionReputationBoard = {
+  advisory: true;
+  grants_permissions: false;
+  n: number;
+  public_board_eligible: boolean;
+  contributors: ReputationContributorRow[];
+  note: string;
+  /** Active Owner board-hides applied to this board (CONCEPT §5.9). */
+  hidden_user_ids: string[];
+};
+
+/** CONCEPT §5.9 / §9.4 — active board-hide row. */
+export type BoardHideRow = {
+  hide_id: string;
+  subject_user_id: string;
+  subject_display_name: string | null;
+  hidden_by: string;
+  reason: string;
+  created_at: string;
+  lifted_at: string | null;
+  lifted_by: string | null;
+};
+
+/** CONCEPT §9.4 — append-only audit entry. */
+export type AuditLogRow = {
+  audit_id: string;
+  action: string;
+  actor_id: string;
+  subject_id: string | null;
+  payload: unknown;
+  created_at: string;
+};
+
 export type CollectionDashboard = {
   collection: CollectionRow;
   stats: {
@@ -135,18 +281,15 @@ export type CollectionDashboard = {
     empty_dossier_count: number;
   };
   dossiers: CollectionDashboardDossier[];
-  /** Open/rfc/review thread count is live (M5); Critical findings still M7. */
+  /** Open/rfc/review thread count + open Critical Findings (CONCEPT §7 / §11). */
   open_threads: {
     count: number;
     critical_findings: number;
-    /** RFC promotion / RevSets still incomplete within M5. */
-    deferred: "M5";
   };
-  /** Stub until Claim scoring (M6). */
+  /** CONCEPT §5.5–5.9 claim quality + forecast accuracy (Collection-scoped). */
   claims: {
-    empirical_quality: null;
-    forecast_accuracy: null;
-    deferred: "M6";
+    empirical_quality: CollectionEmpiricalQuality;
+    forecast_accuracy: CollectionForecastAccuracy;
   };
   /** Manuals — tallies of artifact lanes (CONCEPT §4). */
   lane_coverage: null | {
@@ -154,18 +297,20 @@ export type CollectionDashboard = {
     Prescriptive: number;
     Alignment: number;
   };
-  /** Manuals — requirement claim counts until adjudication (M6). */
+  /** Manuals — requirement claim satisfaction snapshot (M6). */
   requirement_satisfaction: null | {
     open: number;
     total: number;
-    deferred: "M6";
-    snapshot: null;
+    snapshot: RequirementSatisfactionSnapshot;
   };
-  /** Stub until Findings (M7). */
+  /** Recent Findings in this Collection (CONCEPT §7 / §11). */
   red_team: {
     recent_count: number;
-    deferred: "M7";
   };
+  /** CONCEPT §9.2 / §5.9 — advisory non-scorable contribution board. */
+  reputation: CollectionReputationBoard;
+  /** CONCEPT §5.9 — active Owner board-hides (global; apply to all boards). */
+  board_hides: BoardHideRow[];
 };
 
 /** CONCEPT §2.3 Section wire shape. */
@@ -191,6 +336,9 @@ export type ThreadPostRow = {
   type: string;
   body: string;
   created_at: string;
+  /** CONCEPT §9.4 soft-delete — null when live. */
+  deleted_at: string | null;
+  deleted_by: string | null;
 };
 
 /** Compact child summary for wrapper RFC responses. */
@@ -230,7 +378,25 @@ export type ThreadRow = {
     required_roles: PrototypeRole[];
     description: string;
     allowed_user_ids: string[];
+    /** True when open Critical and/or AcceptedRisk upgrades Canon to Owner-only. */
+    critical_or_accepted_risk_path?: boolean;
   } | null;
+  /** CONCEPT §7.6 — Accepted Risk on this leaf RFC (if any). */
+  accepted_risk?: AcceptedRiskRow | null;
+  /** Open Critical Findings that would block merge without Accepted Risk. */
+  open_critical_findings?: { finding_id: string; title: string }[];
+};
+
+/** CONCEPT §7.6 Accepted Risk wire shape. */
+export type AcceptedRiskRow = {
+  accepted_risk_id: string;
+  thread_id: string;
+  description: string;
+  rationale: string;
+  evidence_considered: string | null;
+  reopen_triggers: string | null;
+  signer_id: string;
+  signed_at: string;
 };
 
 /** CONCEPT §3.3 RevSet — proposed ArtifactRevision on a leaf RFC. */
@@ -277,6 +443,41 @@ export type ClaimRow = {
   adjudication_pending?: boolean;
 };
 
+/** CONCEPT §7.3 Finding target join. */
+export type FindingTargetRow = {
+  target_kind: string;
+  target_id: string;
+};
+
+/** CONCEPT §7.3 Finding wire shape. */
+export type FindingRow = {
+  finding_id: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood: string | null;
+  status: string;
+  evidence: string | null;
+  attack_path: string | null;
+  author_id: string;
+  created_at: string;
+  targets: FindingTargetRow[];
+  source_post_id: string | null;
+  source_candidate_id: string | null;
+};
+
+/** CONCEPT §7.4 Candidate Finding wire shape. */
+export type CandidateFindingRow = {
+  candidate_id: string;
+  thread_id: string;
+  post_id: string;
+  flagger_id: string;
+  note: string | null;
+  status: string;
+  promoted_finding_id: string | null;
+  created_at: string;
+};
+
 function mapArea(row: {
   areaId: string;
   kind: string;
@@ -315,11 +516,21 @@ function mapDossier(row: {
   collection?: {
     title: string;
     countryCode: string | null;
+    areaId?: string;
+    area?: { areaId: string; kind: string; title: string } | null;
   } | null;
 }): DossierRow {
   const tags = Array.isArray(row.tags)
     ? row.tags.filter((t): t is string => typeof t === "string")
     : [];
+  const area = row.collection?.area ?? null;
+  const areaKindRaw = area?.kind;
+  const area_kind =
+    areaKindRaw === "manuals"
+      ? ("manuals" as const)
+      : areaKindRaw === "canon"
+        ? ("canon" as const)
+        : null;
   return {
     dossier_id: row.dossierId,
     collection_id: row.collectionId,
@@ -329,6 +540,9 @@ function mapDossier(row: {
     artifact_count: row._count?.artifacts,
     collection_title: row.collection?.title ?? null,
     country_code: row.collection?.countryCode ?? null,
+    area_id: area?.areaId ?? row.collection?.areaId ?? null,
+    area_kind,
+    area_title: area?.title ?? null,
   };
 }
 
@@ -441,7 +655,7 @@ function laneHintForDossier(d: DossierRow): "Descriptive" | "Prescriptive" | "Al
 
 /**
  * CONCEPT §11 Collection dashboard payload.
- * Real dossier health + open thread counts; claim/RT panels stubbed until M6–M7.
+ * Real dossier health, open threads, claim metrics, Findings counts.
  */
 export async function getCollectionDashboard(
   collectionId: string,
@@ -466,9 +680,39 @@ export async function getCollectionDashboard(
   let lane_coverage: CollectionDashboard["lane_coverage"] = null;
   let requirement_satisfaction: CollectionDashboard["requirement_satisfaction"] =
     null;
+
+  const dossierIds = withHealth.map((d) => d.dossier_id);
+
+  const claimRows =
+    dossierIds.length === 0
+      ? []
+      : await getPrisma().claim.findMany({
+          where: { artifact: { dossierId: { in: dossierIds } } },
+          select: {
+            profile: true,
+            status: true,
+            empiricalType: true,
+            probability: true,
+            preferredSources: true,
+            canonCitations: true,
+            createdAt: true,
+            adjudicatedAt: true,
+          },
+        });
+
+  const metricInputs = claimRows.map((c) => ({
+    profile: c.profile,
+    status: c.status,
+    empirical_type: c.empiricalType,
+    probability: c.probability,
+    preferred_sources: c.preferredSources,
+    canon_citations: c.canonCitations,
+    created_at: c.createdAt.toISOString(),
+    adjudicated_at: c.adjudicatedAt?.toISOString() ?? null,
+  }));
+
   if (isManual) {
     lane_coverage = { Descriptive: 0, Prescriptive: 0, Alignment: 0 };
-    const dossierIds = dossiers.map((d) => d.dossier_id);
     if (dossierIds.length > 0) {
       const artRows = await getPrisma().artifact.findMany({
         where: { dossierId: { in: dossierIds } },
@@ -479,26 +723,16 @@ export async function getCollectionDashboard(
         else if (a.lane === "prescriptive") lane_coverage.Prescriptive += 1;
         else if (a.lane === "alignment") lane_coverage.Alignment += 1;
       }
-      const reqWhere = {
-        profile: "requirement",
-        artifact: { dossierId: { in: dossierIds } },
-      };
-      const [reqTotal, reqOpen] = await Promise.all([
-        getPrisma().claim.count({ where: reqWhere }),
-        getPrisma().claim.count({
-          where: { ...reqWhere, status: "open" },
-        }),
-      ]);
-      requirement_satisfaction = {
-        open: reqOpen,
-        total: reqTotal,
-        deferred: "M6",
-        snapshot: null,
-      };
     }
+    const reqClaims = metricInputs.filter((c) => c.profile === "requirement");
+    const snapshot = computeRequirementSatisfactionSnapshot(reqClaims);
+    requirement_satisfaction = {
+      open: snapshot.open,
+      total: reqClaims.length,
+      snapshot,
+    };
   }
 
-  const dossierIds = withHealth.map((d) => d.dossier_id);
   const openThreadCount =
     dossierIds.length === 0
       ? 0
@@ -508,6 +742,33 @@ export async function getCollectionDashboard(
             state: { in: ["open", "rfc", "review"] },
           },
         });
+
+  // CONCEPT §7 / §11 — Findings scoped via originating thread home dossier.
+  const collectionFindings =
+    dossierIds.length === 0
+      ? []
+      : await getPrisma().finding.findMany({
+          where: { thread: { homeDossierId: { in: dossierIds } } },
+          select: { severity: true, status: true },
+        });
+  const critical_findings = collectionFindings.filter(isOpenCriticalFinding)
+    .length;
+  const recent_count = collectionFindings.length;
+
+  const activeHides = await listActiveBoardHides();
+  const hiddenUserIds = activeHides.map((h) => h.subject_user_id);
+  const reputationEvents = await collectReputationSignals(dossierIds);
+  const reputationBoard = computeReputationBoard(reputationEvents, {
+    hiddenUserIds,
+  });
+  const reputation: CollectionReputationBoard = {
+    ...reputationBoard,
+    hidden_user_ids: hiddenUserIds,
+    contributors: reputationBoard.contributors.map((c) => ({
+      ...c,
+      display_name: getPrototypeUser(c.user_id)?.display_name ?? null,
+    })),
+  };
 
   return {
     collection,
@@ -519,22 +780,271 @@ export async function getCollectionDashboard(
     dossiers: withHealth,
     open_threads: {
       count: openThreadCount,
-      critical_findings: 0,
-      deferred: "M5",
+      critical_findings,
     },
     claims: {
-      empirical_quality: null,
-      forecast_accuracy: null,
-      deferred: "M6",
+      empirical_quality: computeEmpiricalQuality(metricInputs),
+      forecast_accuracy: computeForecastAccuracy(metricInputs),
     },
     lane_coverage,
     requirement_satisfaction,
     red_team: {
-      recent_count: 0,
-      deferred: "M7",
+      recent_count,
     },
+    reputation,
+    board_hides: activeHides,
   };
 }
+
+/**
+ * Gather CONCEPT §9.2 reputation signal events for dossiers in a Collection.
+ * Scope = thread home dossier (or claim artifact dossier for adjudications).
+ */
+async function collectReputationSignals(
+  dossierIds: string[],
+): Promise<ReputationSignalEvent[]> {
+  if (dossierIds.length === 0) return [];
+
+  const events: ReputationSignalEvent[] = [];
+  const prisma = getPrisma();
+
+  const threads = await prisma.thread.findMany({
+    where: { homeDossierId: { in: dossierIds } },
+    select: {
+      threadId: true,
+      homeDossierId: true,
+      state: true,
+      decisionOutcome: true,
+      posts: {
+        select: {
+          authorId: true,
+          createdAt: true,
+        },
+      },
+      revSets: {
+        select: {
+          authorId: true,
+          createdAt: true,
+        },
+      },
+      findings: {
+        select: {
+          authorId: true,
+          createdAt: true,
+        },
+      },
+      acceptedRisk: {
+        select: {
+          signerId: true,
+          signedAt: true,
+        },
+      },
+    },
+  });
+
+  for (const th of threads) {
+    const dossier_id = th.homeDossierId;
+    for (const post of th.posts) {
+      events.push({
+        user_id: post.authorId,
+        kind: "review_labor",
+        dossier_id,
+        created_at: post.createdAt.toISOString(),
+      });
+    }
+    if (th.state === "decided" && th.decisionOutcome === "merged") {
+      for (const rs of th.revSets) {
+        events.push({
+          user_id: rs.authorId,
+          kind: "merged_revset",
+          dossier_id,
+          created_at: rs.createdAt.toISOString(),
+        });
+      }
+    }
+    for (const f of th.findings) {
+      events.push({
+        user_id: f.authorId,
+        kind: "red_team_finding",
+        dossier_id,
+        created_at: f.createdAt.toISOString(),
+      });
+    }
+    if (th.acceptedRisk) {
+      events.push({
+        user_id: th.acceptedRisk.signerId,
+        kind: "accepted_risk_sign",
+        dossier_id,
+        created_at: th.acceptedRisk.signedAt.toISOString(),
+      });
+    }
+  }
+
+  const adjudicated = await prisma.claim.findMany({
+    where: {
+      adjudicatedBy: { not: null },
+      artifact: { dossierId: { in: dossierIds } },
+    },
+    select: {
+      adjudicatedBy: true,
+      adjudicatedAt: true,
+      artifact: { select: { dossierId: true } },
+    },
+  });
+
+  for (const c of adjudicated) {
+    if (!c.adjudicatedBy) continue;
+    events.push({
+      user_id: c.adjudicatedBy,
+      kind: "adjudication",
+      dossier_id: c.artifact.dossierId,
+      created_at: c.adjudicatedAt?.toISOString() ?? null,
+    });
+  }
+
+  return events;
+}
+
+/**
+ * M8 first-cut corpus search over dossiers / artifacts / threads / claims.
+ * Case-insensitive substring match; ranked by scoreMatch helpers.
+ */
+export async function searchCorpus(
+  rawQuery: string,
+  rawLimit?: number,
+): Promise<SearchResponse> {
+  const query = normalizeSearchQuery(rawQuery);
+  const limit = clampSearchLimit(rawLimit);
+  if (!query) {
+    return { query: "", hits: [] };
+  }
+
+  const prisma = getPrisma();
+  const [dossiers, artifacts, threads, claims] = await Promise.all([
+    prisma.dossier.findMany({
+      include: {
+        collection: { select: { title: true, countryCode: true } },
+      },
+    }),
+    prisma.artifact.findMany({
+      select: {
+        artifactId: true,
+        title: true,
+        slug: true,
+        dossierId: true,
+        lane: true,
+      },
+    }),
+    prisma.thread.findMany({
+      select: {
+        threadId: true,
+        title: true,
+        state: true,
+        homeDossierId: true,
+      },
+    }),
+    prisma.claim.findMany({
+      select: {
+        claimId: true,
+        text: true,
+        profile: true,
+        status: true,
+        artifactId: true,
+        artifact: { select: { dossierId: true, title: true } },
+      },
+    }),
+  ]);
+
+  const hits: SearchHit[] = [];
+
+  for (const d of dossiers) {
+    const tags = Array.isArray(d.tags)
+      ? d.tags.filter((t): t is string => typeof t === "string")
+      : [];
+    const score = scoreMatch(query, {
+      title: d.title,
+      body: d.summary,
+      tags,
+    });
+    if (score <= 0) continue;
+    const collectionLabel = d.collection.countryCode
+      ? `${d.collection.title} (${d.collection.countryCode})`
+      : d.collection.title;
+    hits.push({
+      kind: "dossier",
+      id: d.dossierId,
+      title: d.title,
+      subtitle: collectionLabel,
+      href: dossierHref(d.dossierId),
+      score,
+    });
+  }
+
+  for (const a of artifacts) {
+    const score = scoreMatch(query, {
+      title: a.title,
+      body: a.slug,
+      tags: a.lane ? [a.lane] : [],
+    });
+    if (score <= 0) continue;
+    const href = artifactHref(a.dossierId, a.artifactId);
+    if (!href) continue;
+    hits.push({
+      kind: "artifact",
+      id: a.artifactId,
+      title: a.title,
+      subtitle: a.lane ? `Lane: ${a.lane}` : null,
+      href,
+      score,
+    });
+  }
+
+  for (const t of threads) {
+    const score = scoreMatch(query, { title: t.title, body: t.state });
+    if (score <= 0) continue;
+    hits.push({
+      kind: "thread",
+      id: t.threadId,
+      title: t.title,
+      subtitle: `State: ${t.state}`,
+      href: threadHref(t.threadId, t.state),
+      score,
+    });
+  }
+
+  for (const c of claims) {
+    const score = scoreMatch(query, {
+      title: c.text,
+      body: `${c.profile} ${c.status}`,
+      tags: [c.profile, c.status],
+    });
+    if (score <= 0) continue;
+    const href = claimHref(c.artifact.dossierId, c.artifactId, c.claimId);
+    if (!href) continue;
+    const snippet =
+      c.text.length > 96 ? `${c.text.slice(0, 93)}…` : c.text;
+    hits.push({
+      kind: "claim",
+      id: c.claimId,
+      title: snippet,
+      subtitle: `${c.profile} · ${c.status} · ${c.artifact.title}`,
+      href,
+      score,
+    });
+  }
+
+  return {
+    query,
+    hits: sortHits(hits).slice(0, limit),
+  };
+}
+
+const dossierCollectionNavInclude = {
+  title: true,
+  countryCode: true,
+  areaId: true,
+  area: { select: { areaId: true, kind: true, title: true } },
+} as const;
 
 export async function listDossiers(
   collectionId?: string,
@@ -544,7 +1054,7 @@ export async function listDossiers(
     orderBy: { title: "asc" },
     include: {
       _count: { select: { artifacts: true } },
-      collection: { select: { title: true, countryCode: true } },
+      collection: { select: dossierCollectionNavInclude },
     },
   });
   return rows.map(mapDossier);
@@ -555,7 +1065,7 @@ export async function getDossier(dossierId: string): Promise<DossierRow | null> 
     where: { dossierId },
     include: {
       _count: { select: { artifacts: true } },
-      collection: { select: { title: true, countryCode: true } },
+      collection: { select: dossierCollectionNavInclude },
     },
   });
   return row ? mapDossier(row) : null;
@@ -957,6 +1467,8 @@ function mapThreadPost(row: {
   type: string;
   body: string;
   createdAt: Date;
+  deletedAt?: Date | null;
+  deletedBy?: string | null;
 }): ThreadPostRow {
   return {
     post_id: row.postId,
@@ -965,6 +1477,8 @@ function mapThreadPost(row: {
     type: row.type,
     body: row.body,
     created_at: row.createdAt.toISOString(),
+    deleted_at: row.deletedAt ? row.deletedAt.toISOString() : null,
+    deleted_by: row.deletedBy ?? null,
   };
 }
 
@@ -986,6 +1500,8 @@ function mapThread(row: {
     type: string;
     body: string;
     createdAt: Date;
+    deletedAt?: Date | null;
+    deletedBy?: string | null;
   }[];
   _count?: { posts: number };
 }): ThreadRow {
@@ -1017,18 +1533,29 @@ export async function listThreads(opts?: {
     orderBy: { createdAt: "desc" },
     include: {
       targets: true,
-      _count: { select: { posts: true } },
+      _count: {
+        select: {
+          posts: { where: { deletedAt: null } },
+        },
+      },
     },
   });
   return rows.map(mapThread);
 }
 
-export async function getThread(threadId: string): Promise<ThreadRow | null> {
+export async function getThread(
+  threadId: string,
+  opts?: { include_deleted_posts?: boolean },
+): Promise<ThreadRow | null> {
+  const includeDeleted = opts?.include_deleted_posts === true;
   const row = await getPrisma().thread.findUnique({
     where: { threadId },
     include: {
       targets: true,
-      posts: { orderBy: { createdAt: "asc" } },
+      posts: {
+        where: includeDeleted ? undefined : { deletedAt: null },
+        orderBy: { createdAt: "asc" },
+      },
       revSets: { orderBy: { version: "asc" } },
       childThreads: {
         orderBy: { createdAt: "asc" },
@@ -1040,11 +1567,22 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
           decisionOutcome: true,
         },
       },
-      _count: { select: { posts: true } },
+      _count: {
+        select: {
+          posts: { where: { deletedAt: null } },
+        },
+      },
     },
   });
   if (!row) return null;
   const mapped = mapThread(row);
+  const home = await getDossier(row.homeDossierId);
+  if (home) {
+    mapped.home_dossier_title = home.title;
+    mapped.collection_id = home.collection_id;
+    mapped.collection_title = home.collection_title ?? null;
+    mapped.area_kind = home.area_kind ?? null;
+  }
   const revArtifactIds = await resolveRevSetArtifactIds(
     row.revSets.map((r) => r.artifactRevisionId),
   );
@@ -1060,10 +1598,26 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
   }));
   mapped.rfc_kind = deriveRfcKind(mapped);
   if (mapped.merge_artifact_id) {
-    const auth = await resolveMergeAuthorityForArtifact(mapped.merge_artifact_id);
+    const auth = await resolveMergeAuthorityForArtifact(
+      mapped.merge_artifact_id,
+      { threadId: mapped.thread_id },
+    );
     mapped.merge_authority = auth
-      ? buildMergeAuthoritySummary(auth)
+      ? {
+          ...buildMergeAuthoritySummary(auth),
+          critical_or_accepted_risk_path:
+            auth.critical_or_accepted_risk_path ?? false,
+        }
       : null;
+    const blockers = await listOpenCriticalFindingsForMerge({
+      threadId: mapped.thread_id,
+      mergeArtifactId: mapped.merge_artifact_id,
+    });
+    mapped.open_critical_findings = blockers.map((f) => ({
+      finding_id: f.finding_id,
+      title: f.title,
+    }));
+    mapped.accepted_risk = await getAcceptedRiskForThread(mapped.thread_id);
   }
   return mapped;
 }
@@ -1071,6 +1625,7 @@ export async function getThread(threadId: string): Promise<ThreadRow | null> {
 /** Resolve CONCEPT §3.4 context from merge artifact → dossier → collection → area. */
 export async function resolveMergeAuthorityForArtifact(
   artifactId: string,
+  opts?: { threadId?: string },
 ): Promise<MergeAuthorityContext | null> {
   const row = await getPrisma().artifact.findUnique({
     where: { artifactId },
@@ -1096,9 +1651,23 @@ export async function resolveMergeAuthorityForArtifact(
   const areaKindRaw = row.dossier.collection.area.kind;
   const area_kind: AreaKind =
     areaKindRaw === "manuals" ? "manuals" : "canon";
+
+  let critical_or_accepted_risk_path = false;
+  if (opts?.threadId) {
+    const [blockers, ar] = await Promise.all([
+      listOpenCriticalFindingsForMerge({
+        threadId: opts.threadId,
+        mergeArtifactId: artifactId,
+      }),
+      getAcceptedRiskForThread(opts.threadId),
+    ]);
+    critical_or_accepted_risk_path = blockers.length > 0 || ar != null;
+  }
+
   const authority_class = classifyMergeAuthority({
     area_kind,
     owner_merge_only: row.ownerMergeOnly,
+    critical_or_accepted_risk_path,
   });
   return {
     artifact_id: row.artifactId,
@@ -1107,6 +1676,7 @@ export async function resolveMergeAuthorityForArtifact(
     area_kind,
     country_code: row.dossier.collection.countryCode,
     owner_merge_only: row.ownerMergeOnly,
+    critical_or_accepted_risk_path,
     authority_class,
     required_roles: requiredRolesForClass(authority_class),
   };
@@ -1446,7 +2016,65 @@ export type CreateRevSetError =
   | { code: "not_found" }
   | { code: "not_leaf_rfc"; state: string; merge_artifact_id: string | null }
   | { code: "artifact_missing"; artifact_id: string }
-  | { code: "content_required" };
+  | { code: "content_required" }
+  | {
+      code: "content_invalid";
+      message: string;
+      issues: StructuralIssue[];
+    };
+
+async function loadStructuralRegistry(): Promise<StructuralValidationRegistry> {
+  const [attributions, terms] = await Promise.all([
+    getAttributions(),
+    getTerms(),
+  ]);
+
+  const attributionIds = new Set(
+    (attributions.items ?? [])
+      .map((item) =>
+        item && typeof item === "object" && "id" in item
+          ? String((item as { id: unknown }).id)
+          : "",
+      )
+      .filter(Boolean),
+  );
+
+  const termMap = new Map<string, { status?: string }>();
+  for (const item of terms.items ?? []) {
+    if (!item || typeof item !== "object" || !("id" in item)) continue;
+    const id = String((item as { id: unknown }).id);
+    if (!id) continue;
+    const status =
+      "status" in item && typeof (item as { status?: unknown }).status === "string"
+        ? (item as { status: string }).status
+        : undefined;
+    termMap.set(id, { status });
+  }
+
+  return { attributions: attributionIds, terms: termMap };
+}
+
+async function assertMergeStrictContent(
+  contentJson: unknown,
+): Promise<
+  | { ok: true }
+  | { ok: false; error: { code: "content_invalid"; message: string; issues: StructuralIssue[] } }
+> {
+  const registry = await loadStructuralRegistry();
+  const structural = validateDocumentStructureForMerge(contentJson, {
+    registry,
+  });
+  if (structural.success) return { ok: true };
+  return {
+    ok: false,
+    error: {
+      code: "content_invalid",
+      message:
+        "Document failed merge-strict structural validation (warnings treated as errors)",
+      issues: structural.issues,
+    },
+  };
+}
 
 /**
  * Attach a RevSet to a leaf RFC. Creates a proposed ArtifactRevision
@@ -1499,10 +2127,14 @@ export async function createRevSet(input: {
         error: { code: "artifact_missing", artifact_id: mergeArtifactId },
       };
     }
+    const contentCheck = await assertMergeStrictContent(existing.contentJson);
+    if (!contentCheck.ok) return contentCheck;
   } else {
     if (input.content_json === undefined) {
       return { ok: false, error: { code: "content_required" } };
     }
+    const contentCheck = await assertMergeStrictContent(input.content_json);
+    if (!contentCheck.ok) return contentCheck;
     revisionId = crypto.randomUUID();
     await prisma.artifactRevision.create({
       data: {
@@ -1551,17 +2183,127 @@ export async function createThreadPost(input: {
   });
   if (!thread) return null;
 
+  const type = input.type ?? "comment";
+  if (!isTimelinePostType(type)) {
+    return null;
+  }
+
   const row = await getPrisma().threadPost.create({
     data: {
       postId: input.post_id ?? crypto.randomUUID(),
       threadId: input.thread_id,
       authorId: input.author_id,
-      type: input.type ?? "comment",
+      type,
       body: input.body,
       createdAt: input.created_at ? new Date(input.created_at) : new Date(),
     },
   });
   return mapThreadPost(row);
+}
+
+export type SoftDeletePostError =
+  | { code: "not_found"; message: string }
+  | { code: "already_deleted"; message: string }
+  | { code: "unknown_actor"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "canon_owner_only"; message: string }
+  | { code: "steward_country_mismatch"; message: string }
+  | { code: "context_missing"; message: string };
+
+/**
+ * CONCEPT §9.4 — soft-delete an ordinary ThreadPost (never hard-delete).
+ * Steward local to Manual Collection country; Owner global (incl. Canon).
+ */
+export async function softDeleteThreadPost(input: {
+  post_id: string;
+  actor_id: string;
+  reason?: string | null;
+}): Promise<
+  | { ok: true; post: ThreadPostRow; audit: AuditLogRow }
+  | { ok: false; error: SoftDeletePostError }
+> {
+  const prisma = getPrisma();
+  const post = await prisma.threadPost.findUnique({
+    where: { postId: input.post_id },
+    include: {
+      thread: {
+        include: {
+          homeDossier: {
+            include: {
+              collection: {
+                include: { area: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!post) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Post not found" },
+    };
+  }
+  if (post.deletedAt) {
+    return {
+      ok: false,
+      error: { code: "already_deleted", message: "Post already soft-deleted" },
+    };
+  }
+
+  const collection = post.thread.homeDossier.collection;
+  const areaKind = collection.area.kind;
+  if (areaKind !== "canon" && areaKind !== "manuals") {
+    return {
+      ok: false,
+      error: {
+        code: "context_missing",
+        message: `Unknown area kind: ${areaKind}`,
+      },
+    };
+  }
+  const context: SoftDeleteContext = {
+    area_kind: areaKind,
+    country_code: collection.countryCode,
+  };
+
+  const identity = await getUserIdentity(input.actor_id);
+  const gate = validateSoftDeletePost({
+    actor_id: input.actor_id,
+    context,
+    actor_country_codes: identity?.country_codes ?? [],
+  });
+  if (!gate.ok) {
+    return {
+      ok: false,
+      error: { code: gate.code, message: gate.message },
+    };
+  }
+
+  const now = new Date();
+  const updated = await prisma.threadPost.update({
+    where: { postId: input.post_id },
+    data: {
+      deletedAt: now,
+      deletedBy: input.actor_id,
+    },
+  });
+  const mapped = mapThreadPost(updated);
+  const audit = await appendAuditLog({
+    action: "post_soft_delete",
+    actor_id: input.actor_id,
+    subject_id: input.post_id,
+    payload: {
+      thread_id: post.threadId,
+      author_id: post.authorId,
+      collection_id: collection.collectionId,
+      area_kind: areaKind,
+      country_code: collection.countryCode,
+      reason: input.reason?.trim() || null,
+    },
+  });
+  return { ok: true, post: mapped, audit };
 }
 
 export type DecisionOutcome = "merged" | "rejected" | "parked";
@@ -1576,12 +2318,34 @@ export type DecideThreadError =
   | { code: "revision_missing"; artifact_revision_id: string }
   | { code: "authority_context_missing"; artifact_id: string }
   | {
+      code: "content_invalid";
+      message: string;
+      issues: StructuralIssue[];
+    }
+  | {
       code: "forbidden";
       author_id: string;
       authority_class: MergeAuthorityClass;
       required_roles: PrototypeRole[];
       collection_id: string;
       area_kind: AreaKind;
+    }
+  | {
+      /** CONCEPT §7.6 — open Critical Finding(s) and no AcceptedRisk on this leaf. */
+      code: "critical_unaccepted";
+      finding_ids: string[];
+      message: string;
+    }
+  | {
+      /** CONCEPT §8.6 — Manual steward real-identity / country gate. */
+      code:
+        | "identity_unverified"
+        | "identity_pending"
+        | "identity_rejected"
+        | "steward_country_mismatch";
+      message: string;
+      author_id: string;
+      country_code: string | null;
     };
 
 const DECISION_OUTCOMES: DecisionOutcome[] = ["merged", "rejected", "parked"];
@@ -1607,7 +2371,7 @@ function aggregateChildOutcomes(
  * Wrapper parents are never decided directly; when all children are decided,
  * the parent cascades to decided with an aggregated outcome (CONCEPT §3.3).
  * Collection merge authority (CONCEPT §3.4) is enforced for all decide outcomes.
- * Accepted Risk / Critical Finding gates remain deferred to M7.
+ * Open Critical Findings block merge unless AcceptedRisk exists (CONCEPT §7.6).
  */
 export async function decideThread(input: {
   thread_id: string;
@@ -1665,7 +2429,9 @@ export async function decideThread(input: {
   }
 
   const authorId = input.author_id ?? "system";
-  const authority = await resolveMergeAuthorityForArtifact(row.mergeArtifactId);
+  const authority = await resolveMergeAuthorityForArtifact(row.mergeArtifactId, {
+    threadId: input.thread_id,
+  });
   if (!authority) {
     return {
       ok: false,
@@ -1689,9 +2455,54 @@ export async function decideThread(input: {
     };
   }
 
+  if (authority.authority_class === "manual_steward") {
+    const identity = await getUserIdentity(authorId);
+    const eligibility = evaluateStewardEligibility({
+      actor_id: authorId,
+      country_code: authority.country_code,
+      identity,
+      require_manual_country: true,
+    });
+    if (!eligibility.ok) {
+      const code =
+        eligibility.code === "not_steward_role" ||
+        eligibility.code === "unknown_user"
+          ? "identity_unverified"
+          : eligibility.code;
+      return {
+        ok: false,
+        error: {
+          code,
+          message: eligibility.message,
+          author_id: authorId,
+          country_code: authority.country_code,
+        },
+      };
+    }
+  }
+
   const now = new Date();
 
   if (input.outcome === "merged") {
+    const blockers = await listOpenCriticalFindingsForMerge({
+      threadId: input.thread_id,
+      mergeArtifactId: row.mergeArtifactId,
+    });
+    if (blockers.length > 0) {
+      const ar = await getAcceptedRiskForThread(input.thread_id);
+      if (!ar) {
+        return {
+          ok: false,
+          error: {
+            code: "critical_unaccepted",
+            finding_ids: blockers.map((f) => f.finding_id),
+            message:
+              "Open Critical Finding(s) block merge until Accepted Risk is signed on this leaf RFC",
+          },
+        };
+      }
+    }
+
     if (row.revSets.length === 0) {
       return { ok: false, error: { code: "merge_requires_revset" } };
     }
@@ -1721,6 +2532,14 @@ export async function decideThread(input: {
       };
     }
 
+    const contentCheck = await assertMergeStrictContent(revision.contentJson);
+    if (!contentCheck.ok) return contentCheck;
+
+    const arNote =
+      blockers.length > 0
+        ? " Accepted Risk present; Critical gate cleared."
+        : "";
+
     await prisma.$transaction(async (tx) => {
       await tx.artifact.update({
         where: { artifactId: row.mergeArtifactId! },
@@ -1739,7 +2558,7 @@ export async function decideThread(input: {
           threadId: input.thread_id,
           authorId,
           type: "comment",
-          body: `Decision: merged (applied RevSet v${chosen.version} → ${revision.revisionId}) by ${authorId} under ${authority.authority_class}. Accepted Risk gate deferred to M7.`,
+          body: `Decision: merged (applied RevSet v${chosen.version} → ${revision.revisionId}) by ${authorId} under ${authority.authority_class}.${arNote}`,
           createdAt: now,
         },
       });
@@ -1777,6 +2596,23 @@ export async function decideThread(input: {
 
   const thread = await getThread(input.thread_id);
   if (!thread) return { ok: false, error: { code: "not_found" } };
+
+  // CONCEPT §9.4 — append-only audit for merges (reject/park are not merge events).
+  if (input.outcome === "merged") {
+    await appendAuditLog({
+      action: "merge",
+      actor_id: authorId,
+      subject_id: input.thread_id,
+      payload: {
+        outcome: "merged",
+        merge_artifact_id: row.mergeArtifactId,
+        collection_id: authority.collection_id,
+        authority_class: authority.authority_class,
+        parent_cascaded: parentCascaded,
+      },
+    });
+  }
+
   return { ok: true, thread, parent_cascaded: parentCascaded };
 }
 
@@ -2110,7 +2946,31 @@ export async function adjudicateClaim(input: {
       adjudicatedAt: new Date(),
     },
   });
-  return { ok: true, claim: mapClaim(row) };
+  const claim = mapClaim(row);
+  await appendAuditLog({
+    action: "adjudication",
+    actor_id: input.author_id,
+    subject_id: input.claim_id,
+    payload: {
+      prior_status: existing.status,
+      status: input.status,
+      profile: existing.profile,
+      rationale: input.rationale.trim(),
+    },
+  });
+  if (existing.status !== input.status) {
+    await appendAuditLog({
+      action: "claim_status_change",
+      actor_id: input.author_id,
+      subject_id: input.claim_id,
+      payload: {
+        prior_status: existing.status,
+        status: input.status,
+        via: "adjudication",
+      },
+    });
+  }
+  return { ok: true, claim };
 }
 
 /** Global adjudication queue (CONCEPT §8.3) — pending requests across Collections. */
@@ -2122,4 +2982,1219 @@ export async function listAdjudicationQueue(): Promise<ClaimRow[]> {
     orderBy: { adjudicationRequestedAt: "asc" },
   });
   return rows.map(mapClaim).filter((c) => c.adjudication_pending);
+}
+
+function mapFindingTarget(row: {
+  targetKind: string;
+  targetId: string;
+}): FindingTargetRow {
+  return {
+    target_kind: row.targetKind,
+    target_id: row.targetId,
+  };
+}
+
+function mapFinding(row: {
+  findingId: string;
+  threadId: string;
+  title: string;
+  severity: string;
+  likelihood: string | null;
+  status: string;
+  evidence: string | null;
+  attackPath: string | null;
+  authorId: string;
+  createdAt: Date;
+  sourcePostId?: string | null;
+  sourceCandidateId?: string | null;
+  targets?: { targetKind: string; targetId: string }[];
+  thread?: {
+    homeDossierId: string;
+    homeDossier?: { title: string } | null;
+  } | null;
+}): FindingRow {
+  return {
+    finding_id: row.findingId,
+    thread_id: row.threadId,
+    title: row.title,
+    severity: row.severity,
+    likelihood: row.likelihood,
+    status: row.status,
+    evidence: row.evidence,
+    attack_path: row.attackPath,
+    author_id: row.authorId,
+    created_at: row.createdAt.toISOString(),
+    targets: (row.targets ?? []).map(mapFindingTarget),
+    source_post_id: row.sourcePostId ?? null,
+    source_candidate_id: row.sourceCandidateId ?? null,
+    home_dossier_id: row.thread?.homeDossierId ?? null,
+    home_dossier_title: row.thread?.homeDossier?.title ?? null,
+  };
+}
+
+function mapCandidateFinding(row: {
+  candidateId: string;
+  threadId: string;
+  postId: string;
+  flaggerId: string;
+  note: string | null;
+  status: string;
+  promotedFindingId: string | null;
+  createdAt: Date;
+}): CandidateFindingRow {
+  return {
+    candidate_id: row.candidateId,
+    thread_id: row.threadId,
+    post_id: row.postId,
+    flagger_id: row.flaggerId,
+    note: row.note,
+    status: row.status,
+    promoted_finding_id: row.promotedFindingId,
+    created_at: row.createdAt.toISOString(),
+  };
+}
+
+const findingHomeInclude = {
+  targets: true,
+  thread: {
+    select: {
+      homeDossierId: true,
+      homeDossier: { select: { title: true } },
+    },
+  },
+} as const;
+
+export async function listFindings(opts?: {
+  threadId?: string;
+  collectionId?: string;
+  severity?: string;
+  status?: string;
+}): Promise<FindingRow[]> {
+  const rows = await getPrisma().finding.findMany({
+    where: {
+      ...(opts?.threadId ? { threadId: opts.threadId } : {}),
+      ...(opts?.severity ? { severity: opts.severity } : {}),
+      ...(opts?.status ? { status: opts.status } : {}),
+      ...(opts?.collectionId
+        ? { thread: { homeDossier: { collectionId: opts.collectionId } } }
+        : {}),
+    },
+    include: findingHomeInclude,
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapFinding);
+}
+
+export async function getFinding(
+  findingId: string,
+): Promise<FindingRow | null> {
+  const row = await getPrisma().finding.findUnique({
+    where: { findingId },
+    include: findingHomeInclude,
+  });
+  return row ? mapFinding(row) : null;
+}
+
+export type CreateFindingInput = {
+  finding_id?: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood?: string | null;
+  status?: string;
+  evidence?: string | null;
+  attack_path?: string | null;
+  author_id: string;
+  created_at?: string;
+  targets?: { target_kind: string; target_id: string }[];
+  source_post_id?: string | null;
+  source_candidate_id?: string | null;
+};
+
+export type CreateFindingError =
+  | { code: "not_found"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "invalid_severity"; message: string }
+  | { code: "invalid_status"; message: string }
+  | { code: "invalid_target"; message: string };
+
+/**
+ * CONCEPT §7.3 — create a Finding (Red Team only). Always linked to a thread.
+ */
+export async function createFinding(
+  input: CreateFindingInput,
+): Promise<
+  { ok: true; finding: FindingRow } | { ok: false; error: CreateFindingError }
+> {
+  if (!actorMayCreateFinding(input.author_id)) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Only Red Team members may create Findings",
+      },
+    };
+  }
+  if (!isFindingSeverity(input.severity)) {
+    return {
+      ok: false,
+      error: {
+        code: "invalid_severity",
+        message: `severity must be one of low|med|high|critical`,
+      },
+    };
+  }
+  const status = input.status ?? "open";
+  if (!isFindingStatus(status)) {
+    return {
+      ok: false,
+      error: {
+        code: "invalid_status",
+        message: `status must be one of open|mitigated|accepted_risk|disputed`,
+      },
+    };
+  }
+
+  const thread = await getPrisma().thread.findUnique({
+    where: { threadId: input.thread_id },
+    select: { threadId: true },
+  });
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
+
+  const targets = input.targets ?? [];
+  for (const t of targets) {
+    if (!isFindingTargetKind(t.target_kind) || !t.target_id.trim()) {
+      return {
+        ok: false,
+        error: {
+          code: "invalid_target",
+          message: `Invalid target ${t.target_kind}:${t.target_id}`,
+        },
+      };
+    }
+  }
+
+  const findingId = input.finding_id?.trim() || `finding-${randomUUID()}`;
+  const createdAt = input.created_at
+    ? new Date(input.created_at)
+    : new Date();
+
+  const row = await getPrisma().finding.create({
+    data: {
+      findingId,
+      threadId: input.thread_id,
+      title: input.title.trim(),
+      severity: input.severity,
+      likelihood: input.likelihood ?? null,
+      status,
+      evidence: input.evidence ?? null,
+      attackPath: input.attack_path ?? null,
+      authorId: input.author_id,
+      createdAt,
+      sourcePostId: input.source_post_id ?? null,
+      sourceCandidateId: input.source_candidate_id ?? null,
+      targets: {
+        create: targets.map((t) => ({
+          targetKind: t.target_kind,
+          targetId: t.target_id,
+        })),
+      },
+    },
+    include: { targets: true },
+  });
+
+  return { ok: true, finding: mapFinding(row) };
+}
+
+/**
+ * Open Critical Findings that block leaf RFC merge (CONCEPT §7.6).
+ * Matches findings targeting the RFC thread id or merge artifact id.
+ * Merge is allowed when an AcceptedRisk exists on the leaf (see decideThread).
+ */
+export async function listOpenCriticalFindingsForMerge(opts: {
+  threadId: string;
+  mergeArtifactId: string | null;
+}): Promise<FindingRow[]> {
+  const or: Array<Record<string, unknown>> = [
+    { threadId: opts.threadId },
+    {
+      targets: {
+        some: { targetKind: "thread", targetId: opts.threadId },
+      },
+    },
+  ];
+  if (opts.mergeArtifactId) {
+    or.push({
+      targets: {
+        some: {
+          targetKind: "artifact",
+          targetId: opts.mergeArtifactId,
+        },
+      },
+    });
+  }
+  const rows = await getPrisma().finding.findMany({
+    where: {
+      severity: "critical",
+      status: "open",
+      OR: or,
+    },
+    include: { targets: true },
+    orderBy: { createdAt: "asc" },
+  });
+  return rows.map(mapFinding);
+}
+
+function mapAcceptedRisk(row: {
+  acceptedRiskId: string;
+  threadId: string;
+  description: string;
+  rationale: string;
+  evidenceConsidered: string | null;
+  reopenTriggers: string | null;
+  signerId: string;
+  signedAt: Date;
+}): AcceptedRiskRow {
+  return {
+    accepted_risk_id: row.acceptedRiskId,
+    thread_id: row.threadId,
+    description: row.description,
+    rationale: row.rationale,
+    evidence_considered: row.evidenceConsidered,
+    reopen_triggers: row.reopenTriggers,
+    signer_id: row.signerId,
+    signed_at: row.signedAt.toISOString(),
+  };
+}
+
+export async function getAcceptedRiskForThread(
+  threadId: string,
+): Promise<AcceptedRiskRow | null> {
+  const row = await getPrisma().acceptedRisk.findUnique({
+    where: { threadId },
+  });
+  return row ? mapAcceptedRisk(row) : null;
+}
+
+export type CreateAcceptedRiskInput = {
+  accepted_risk_id?: string;
+  thread_id: string;
+  description: string;
+  rationale: string;
+  evidence_considered?: string | null;
+  reopen_triggers?: string | null;
+  signer_id: string;
+  signed_at?: string;
+};
+
+export type CreateAcceptedRiskError =
+  | { code: "not_found"; message: string }
+  | { code: "not_leaf"; message: string }
+  | { code: "not_decidable"; message: string; state: string }
+  | { code: "already_exists"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "authority_context_missing"; message: string }
+  | {
+      code:
+        | "identity_unverified"
+        | "identity_pending"
+        | "identity_rejected"
+        | "steward_country_mismatch";
+      message: string;
+    };
+
+/**
+ * CONCEPT §7.6 — sign Accepted Risk on a leaf RFC.
+ * Marks open Critical Findings that would block this merge as `accepted_risk`.
+ */
+export async function createAcceptedRisk(
+  input: CreateAcceptedRiskInput,
+): Promise<
+  | { ok: true; accepted_risk: AcceptedRiskRow; findings_updated: string[] }
+  | { ok: false; error: CreateAcceptedRiskError }
+> {
+  const prisma = getPrisma();
+  const thread = await prisma.thread.findUnique({
+    where: { threadId: input.thread_id },
+  });
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
+  if (!thread.mergeArtifactId) {
+    return {
+      ok: false,
+      error: {
+        code: "not_leaf",
+        message: "Accepted Risk attaches only to merging (leaf) RFCs",
+      },
+    };
+  }
+  if (thread.state !== "rfc" && thread.state !== "review") {
+    return {
+      ok: false,
+      error: {
+        code: "not_decidable",
+        message: "Accepted Risk only on open leaf RFCs",
+        state: thread.state,
+      },
+    };
+  }
+
+  const existing = await prisma.acceptedRisk.findUnique({
+    where: { threadId: input.thread_id },
+  });
+  if (existing) {
+    return {
+      ok: false,
+      error: {
+        code: "already_exists",
+        message: "Accepted Risk already signed for this leaf RFC",
+      },
+    };
+  }
+
+  const authority = await resolveMergeAuthorityForArtifact(
+    thread.mergeArtifactId,
+    { threadId: input.thread_id },
+  );
+  if (!authority) {
+    return {
+      ok: false,
+      error: {
+        code: "authority_context_missing",
+        message: "Could not resolve Collection for merge artifact",
+      },
+    };
+  }
+  if (!actorMaySignAcceptedRisk(input.signer_id, authority.area_kind)) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message:
+          authority.area_kind === "manuals"
+            ? "Only Collection stewards (or Owner) may sign Accepted Risk on Manual RFCs"
+            : "Only Owner may sign Accepted Risk on Canon RFCs",
+      },
+    };
+  }
+
+  if (authority.area_kind === "manuals") {
+    const identity = await getUserIdentity(input.signer_id);
+    const eligibility = evaluateStewardEligibility({
+      actor_id: input.signer_id,
+      country_code: authority.country_code,
+      identity,
+      require_manual_country: true,
+    });
+    if (!eligibility.ok) {
+      const code =
+        eligibility.code === "not_steward_role" ||
+        eligibility.code === "unknown_user"
+          ? "identity_unverified"
+          : eligibility.code;
+      return {
+        ok: false,
+        error: { code, message: eligibility.message },
+      };
+    }
+  }
+
+  const blockers = await listOpenCriticalFindingsForMerge({
+    threadId: input.thread_id,
+    mergeArtifactId: thread.mergeArtifactId,
+  });
+
+  // Only flip Findings whose context is this leaf RFC (originating thread or
+  // explicit thread target). Artifact-targeted Criticals stay open so other
+  // leaves merging the same artifact still need their own Accepted Risk.
+  const findingsToAccept = blockers.filter(
+    (f) =>
+      f.thread_id === input.thread_id ||
+      f.targets.some(
+        (t) => t.target_kind === "thread" && t.target_id === input.thread_id,
+      ),
+  );
+
+  const acceptedRiskId =
+    input.accepted_risk_id?.trim() || `ar-${randomUUID()}`;
+  const signedAt = input.signed_at ? new Date(input.signed_at) : new Date();
+
+  const findingIds = findingsToAccept.map((f) => f.finding_id);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.acceptedRisk.create({
+      data: {
+        acceptedRiskId,
+        threadId: input.thread_id,
+        description: input.description.trim(),
+        rationale: input.rationale.trim(),
+        evidenceConsidered: input.evidence_considered?.trim() || null,
+        reopenTriggers: input.reopen_triggers?.trim() || null,
+        signerId: input.signer_id,
+        signedAt,
+      },
+    });
+    if (findingIds.length > 0) {
+      await tx.finding.updateMany({
+        where: { findingId: { in: findingIds } },
+        data: { status: "accepted_risk" },
+      });
+    }
+    await tx.threadPost.create({
+      data: {
+        postId: randomUUID(),
+        threadId: input.thread_id,
+        authorId: input.signer_id,
+        type: "comment",
+        body: `Accepted Risk signed by ${input.signer_id}.${
+          findingIds.length > 0
+            ? ` Critical Finding(s) marked accepted_risk: ${findingIds.join(", ")}.`
+            : ""
+        } ${input.description.trim()}`,
+        createdAt: signedAt,
+      },
+    });
+  });
+
+  const row = await prisma.acceptedRisk.findUniqueOrThrow({
+    where: { acceptedRiskId },
+  });
+  const accepted_risk = mapAcceptedRisk(row);
+  await appendAuditLog({
+    action: "accepted_risk",
+    actor_id: input.signer_id,
+    subject_id: input.thread_id,
+    payload: {
+      accepted_risk_id: acceptedRiskId,
+      merge_artifact_id: thread.mergeArtifactId,
+      findings_updated: findingIds,
+      description: input.description.trim(),
+    },
+  });
+  return {
+    ok: true,
+    accepted_risk,
+    findings_updated: findingIds,
+  };
+}
+
+export async function listCandidateFindings(opts?: {
+  threadId?: string;
+  status?: string;
+}): Promise<CandidateFindingRow[]> {
+  const rows = await getPrisma().candidateFinding.findMany({
+    where: {
+      ...(opts?.threadId ? { threadId: opts.threadId } : {}),
+      ...(opts?.status ? { status: opts.status } : {}),
+    },
+    orderBy: { createdAt: "asc" },
+  });
+  return rows.map(mapCandidateFinding);
+}
+
+export async function getCandidateFinding(
+  candidateId: string,
+): Promise<CandidateFindingRow | null> {
+  const row = await getPrisma().candidateFinding.findUnique({
+    where: { candidateId },
+  });
+  return row ? mapCandidateFinding(row) : null;
+}
+
+export type FlagCandidateInput = {
+  candidate_id?: string;
+  thread_id: string;
+  post_id: string;
+  flagger_id: string;
+  note?: string | null;
+  created_at?: string;
+};
+
+export type FlagCandidateError =
+  | { code: "not_found"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "already_flagged"; message: string }
+  | { code: "post_thread_mismatch"; message: string };
+
+/**
+ * CONCEPT §7.4 — any prototype user may flag a post as a Candidate Finding.
+ */
+export async function flagCandidateFinding(
+  input: FlagCandidateInput,
+): Promise<
+  | { ok: true; candidate: CandidateFindingRow }
+  | { ok: false; error: FlagCandidateError }
+> {
+  if (!actorMayFlagCandidate(input.flagger_id)) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Unknown acting user cannot flag candidates",
+      },
+    };
+  }
+
+  const thread = await getPrisma().thread.findUnique({
+    where: { threadId: input.thread_id },
+    select: { threadId: true },
+  });
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
+
+  const post = await getPrisma().threadPost.findUnique({
+    where: { postId: input.post_id },
+  });
+  if (!post) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Post not found" },
+    };
+  }
+  if (post.threadId !== input.thread_id) {
+    return {
+      ok: false,
+      error: {
+        code: "post_thread_mismatch",
+        message: "Post does not belong to this thread",
+      },
+    };
+  }
+
+  const existing = await getPrisma().candidateFinding.findUnique({
+    where: { postId: input.post_id },
+  });
+  if (existing) {
+    return {
+      ok: false,
+      error: {
+        code: "already_flagged",
+        message: "Post is already flagged as a Candidate Finding",
+      },
+    };
+  }
+
+  const candidateId =
+    input.candidate_id?.trim() || `candidate-${randomUUID()}`;
+  const createdAt = input.created_at
+    ? new Date(input.created_at)
+    : new Date();
+
+  const row = await getPrisma().candidateFinding.create({
+    data: {
+      candidateId,
+      threadId: input.thread_id,
+      postId: input.post_id,
+      flaggerId: input.flagger_id,
+      note: input.note?.trim() || null,
+      status: "open",
+      createdAt,
+    },
+  });
+
+  return { ok: true, candidate: mapCandidateFinding(row) };
+}
+
+export type PromoteCandidateInput = {
+  candidate_id: string;
+  author_id: string;
+  title?: string;
+  severity: string;
+  likelihood?: string | null;
+  evidence?: string | null;
+  attack_path?: string | null;
+  status?: string;
+  finding_id?: string;
+  targets?: { target_kind: string; target_id: string }[];
+};
+
+export type PromoteCandidateError =
+  | { code: "not_found"; message: string }
+  | { code: "forbidden"; message: string }
+  | { code: "not_open"; message: string; status: string }
+  | { code: "invalid_severity"; message: string }
+  | { code: "invalid_status"; message: string }
+  | { code: "invalid_target"; message: string };
+
+/**
+ * CONCEPT §7.4 — Red Team promotes an open Candidate into a Finding.
+ * Provenance: Finding.source_post_id + source_candidate_id; candidate.promoted_finding_id.
+ */
+export async function promoteCandidateFinding(
+  input: PromoteCandidateInput,
+): Promise<
+  | {
+      ok: true;
+      finding: FindingRow;
+      candidate: CandidateFindingRow;
+    }
+  | { ok: false; error: PromoteCandidateError }
+> {
+  if (!actorMayPromoteCandidate(input.author_id)) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Only Red Team members may promote Candidate Findings",
+      },
+    };
+  }
+  if (!isFindingSeverity(input.severity)) {
+    return {
+      ok: false,
+      error: {
+        code: "invalid_severity",
+        message: `severity must be one of low|med|high|critical`,
+      },
+    };
+  }
+  const status = input.status ?? "open";
+  if (!isFindingStatus(status)) {
+    return {
+      ok: false,
+      error: {
+        code: "invalid_status",
+        message: `status must be one of open|mitigated|accepted_risk|disputed`,
+      },
+    };
+  }
+
+  const candidate = await getPrisma().candidateFinding.findUnique({
+    where: { candidateId: input.candidate_id },
+    include: { post: true },
+  });
+  if (!candidate) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Candidate Finding not found" },
+    };
+  }
+  if (candidate.status !== "open") {
+    return {
+      ok: false,
+      error: {
+        code: "not_open",
+        message: `Candidate is ${candidate.status}, not open`,
+        status: candidate.status,
+      },
+    };
+  }
+  if (!isCandidateStatus(candidate.status)) {
+    // defensive; open path already handled
+  }
+
+  const targets = input.targets ?? [
+    { target_kind: "thread", target_id: candidate.threadId },
+  ];
+  for (const t of targets) {
+    if (!isFindingTargetKind(t.target_kind) || !t.target_id.trim()) {
+      return {
+        ok: false,
+        error: {
+          code: "invalid_target",
+          message: `Invalid target ${t.target_kind}:${t.target_id}`,
+        },
+      };
+    }
+  }
+
+  const findingId = input.finding_id?.trim() || `finding-${randomUUID()}`;
+  const title =
+    input.title?.trim() ||
+    `Promoted candidate: ${candidate.post.body.slice(0, 80)}`;
+  const evidence =
+    input.evidence?.trim() ||
+    `Promoted from post ${candidate.postId} (flagged by ${candidate.flaggerId}).${
+      candidate.note ? ` Flag note: ${candidate.note}` : ""
+    }\n\nSource post:\n${candidate.post.body}`;
+
+  const created = await getPrisma().$transaction(async (tx) => {
+    const finding = await tx.finding.create({
+      data: {
+        findingId,
+        threadId: candidate.threadId,
+        title,
+        severity: input.severity,
+        likelihood: input.likelihood ?? null,
+        status,
+        evidence,
+        attackPath: input.attack_path ?? null,
+        authorId: input.author_id,
+        createdAt: new Date(),
+        sourcePostId: candidate.postId,
+        sourceCandidateId: candidate.candidateId,
+        targets: {
+          create: targets.map((t) => ({
+            targetKind: t.target_kind,
+            targetId: t.target_id,
+          })),
+        },
+      },
+      include: { targets: true },
+    });
+
+    const updatedCandidate = await tx.candidateFinding.update({
+      where: { candidateId: candidate.candidateId },
+      data: {
+        status: "promoted",
+        promotedFindingId: findingId,
+      },
+    });
+
+    return { finding, updatedCandidate };
+  });
+
+  return {
+    ok: true,
+    finding: mapFinding(created.finding),
+    candidate: mapCandidateFinding(created.updatedCandidate),
+  };
+}
+
+// —— CONCEPT §5.9 / §9.4 board-hide + append-only audit ——————————————
+
+function mapBoardHide(row: {
+  hideId: string;
+  subjectUserId: string;
+  hiddenBy: string;
+  reason: string;
+  createdAt: Date;
+  liftedAt: Date | null;
+  liftedBy: string | null;
+}): BoardHideRow {
+  return {
+    hide_id: row.hideId,
+    subject_user_id: row.subjectUserId,
+    subject_display_name:
+      getPrototypeUser(row.subjectUserId)?.display_name ?? null,
+    hidden_by: row.hiddenBy,
+    reason: row.reason,
+    created_at: row.createdAt.toISOString(),
+    lifted_at: row.liftedAt?.toISOString() ?? null,
+    lifted_by: row.liftedBy,
+  };
+}
+
+function mapAuditLog(row: {
+  auditId: string;
+  action: string;
+  actorId: string;
+  subjectId: string | null;
+  payload: unknown;
+  createdAt: Date;
+}): AuditLogRow {
+  return {
+    audit_id: row.auditId,
+    action: row.action,
+    actor_id: row.actorId,
+    subject_id: row.subjectId,
+    payload: row.payload,
+    created_at: row.createdAt.toISOString(),
+  };
+}
+
+/** Append-only audit insert (never update/delete). */
+export async function appendAuditLog(input: {
+  action: AuditAction | string;
+  actor_id: string;
+  subject_id?: string | null;
+  payload?: unknown;
+}): Promise<AuditLogRow> {
+  const row = await getPrisma().auditLog.create({
+    data: {
+      auditId: `audit-${randomUUID()}`,
+      action: input.action,
+      actorId: input.actor_id,
+      subjectId: input.subject_id ?? null,
+      payload: (input.payload ?? {}) as object,
+      createdAt: new Date(),
+    },
+  });
+  return mapAuditLog(row);
+}
+
+export async function listAuditLogs(opts?: {
+  action?: string;
+  limit?: number;
+}): Promise<AuditLogRow[]> {
+  const limit = Math.min(Math.max(opts?.limit ?? 50, 1), 200);
+  const rows = await getPrisma().auditLog.findMany({
+    where: opts?.action ? { action: opts.action } : undefined,
+    orderBy: { createdAt: "desc" },
+    take: limit,
+  });
+  return rows.map(mapAuditLog);
+}
+
+export async function listActiveBoardHides(): Promise<BoardHideRow[]> {
+  const rows = await getPrisma().boardHide.findMany({
+    where: { liftedAt: null },
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapBoardHide);
+}
+
+export async function listBoardHides(opts?: {
+  include_lifted?: boolean;
+}): Promise<BoardHideRow[]> {
+  const rows = await getPrisma().boardHide.findMany({
+    where: opts?.include_lifted ? undefined : { liftedAt: null },
+    orderBy: { createdAt: "desc" },
+  });
+  return rows.map(mapBoardHide);
+}
+
+export type BoardHideMutationError =
+  | { code: "not_owner"; message: string }
+  | { code: "unknown_user"; message: string }
+  | { code: "cannot_hide_self"; message: string }
+  | { code: "already_hidden"; message: string }
+  | { code: "not_hidden"; message: string }
+  | { code: "invalid_input"; message: string };
+
+export async function hideUserFromBoards(input: {
+  actor_id: string;
+  subject_user_id: string;
+  reason: string;
+}): Promise<
+  | { ok: true; hide: BoardHideRow; audit: AuditLogRow }
+  | { ok: false; error: BoardHideMutationError }
+> {
+  const check = validateBoardHide({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const reason = input.reason.trim();
+  if (!reason) {
+    return {
+      ok: false,
+      error: { code: "invalid_input", message: "Reason is required" },
+    };
+  }
+
+  const existing = await getPrisma().boardHide.findFirst({
+    where: { subjectUserId: input.subject_user_id, liftedAt: null },
+  });
+  if (existing) {
+    return {
+      ok: false,
+      error: {
+        code: "already_hidden",
+        message: `User ${input.subject_user_id} is already hidden from boards`,
+      },
+    };
+  }
+
+  const hideId = `board-hide-${randomUUID()}`;
+  const createdAt = new Date();
+  const hide = await getPrisma().boardHide.create({
+    data: {
+      hideId,
+      subjectUserId: input.subject_user_id,
+      hiddenBy: input.actor_id,
+      reason,
+      createdAt,
+    },
+  });
+
+  const audit = await appendAuditLog({
+    action: "board_hide",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: {
+      hide_id: hideId,
+      reason,
+    },
+  });
+
+  return { ok: true, hide: mapBoardHide(hide), audit };
+}
+
+export async function liftBoardHide(input: {
+  actor_id: string;
+  subject_user_id: string;
+  note?: string | null;
+}): Promise<
+  | { ok: true; hide: BoardHideRow; audit: AuditLogRow }
+  | { ok: false; error: BoardHideMutationError }
+> {
+  const check = validateBoardHideLift({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const existing = await getPrisma().boardHide.findFirst({
+    where: { subjectUserId: input.subject_user_id, liftedAt: null },
+  });
+  if (!existing) {
+    return {
+      ok: false,
+      error: {
+        code: "not_hidden",
+        message: `User ${input.subject_user_id} is not currently hidden from boards`,
+      },
+    };
+  }
+
+  const liftedAt = new Date();
+  const hide = await getPrisma().boardHide.update({
+    where: { hideId: existing.hideId },
+    data: {
+      liftedAt,
+      liftedBy: input.actor_id,
+    },
+  });
+
+  const audit = await appendAuditLog({
+    action: "board_hide_lift",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: {
+      hide_id: existing.hideId,
+      note: input.note ?? null,
+      original_reason: existing.reason,
+    },
+  });
+
+  return { ok: true, hide: mapBoardHide(hide), audit };
+}
+
+
+// ---------------------------------------------------------------------------
+// CONCEPT §8.6 — real-identity policy hooks
+// ---------------------------------------------------------------------------
+
+function parseCountryCodes(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((c): c is string => typeof c === "string")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean);
+}
+
+function mapUserIdentity(row: {
+  userId: string;
+  verificationStatus: string;
+  countryCodes: unknown;
+  longTermTiesNote: string | null;
+  attestationKind: string;
+  verifiedBy: string | null;
+  verifiedAt: Date | null;
+  providerStub: string | null;
+  updatedAt: Date;
+}): IdentityRecord {
+  return {
+    user_id: row.userId,
+    verification_status: isVerificationStatus(row.verificationStatus)
+      ? row.verificationStatus
+      : "unverified",
+    country_codes: parseCountryCodes(row.countryCodes),
+    long_term_ties_note: row.longTermTiesNote,
+    attestation_kind: (row.attestationKind as AttestationKind) || "none",
+    verified_by: row.verifiedBy,
+    verified_at: row.verifiedAt ? row.verifiedAt.toISOString() : null,
+    provider_stub: row.providerStub,
+    updated_at: row.updatedAt.toISOString(),
+  };
+}
+
+export async function listUserIdentities(): Promise<IdentityRecord[]> {
+  const rows = await getPrisma().userIdentity.findMany({
+    orderBy: { userId: "asc" },
+  });
+  return rows.map(mapUserIdentity);
+}
+
+export async function getUserIdentity(
+  userId: string,
+): Promise<IdentityRecord | null> {
+  const row = await getPrisma().userIdentity.findUnique({
+    where: { userId },
+  });
+  return row ? mapUserIdentity(row) : null;
+}
+
+/** Resolve identity or a default unverified stub for policy checks. */
+export async function resolveUserIdentity(
+  userId: string,
+): Promise<IdentityRecord> {
+  return (await getUserIdentity(userId)) ?? defaultIdentityRecord(userId);
+}
+
+export type IdentityMutationError =
+  | { code: "not_owner"; message: string }
+  | { code: "unknown_user"; message: string }
+  | { code: "invalid_status"; message: string }
+  | { code: "invalid_input"; message: string }
+  | { code: "cannot_self_verify"; message: string };
+
+export async function requestIdentityVerification(input: {
+  actor_id: string;
+  subject_user_id: string;
+}): Promise<
+  | { ok: true; identity: IdentityRecord; audit: AuditLogRow }
+  | { ok: false; error: IdentityMutationError }
+> {
+  const check = validateIdentityRequest({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const now = new Date();
+  const existing = await getPrisma().userIdentity.findUnique({
+    where: { userId: input.subject_user_id },
+  });
+
+  const row = existing
+    ? await getPrisma().userIdentity.update({
+        where: { userId: input.subject_user_id },
+        data: {
+          verificationStatus: "pending",
+          attestationKind: "self_asserted",
+          providerStub: existing.providerStub ?? "prototype",
+          updatedAt: now,
+        },
+      })
+    : await getPrisma().userIdentity.create({
+        data: {
+          userId: input.subject_user_id,
+          verificationStatus: "pending",
+          countryCodes: [],
+          longTermTiesNote: null,
+          attestationKind: "self_asserted",
+          verifiedBy: null,
+          verifiedAt: null,
+          providerStub: "prototype",
+          updatedAt: now,
+        },
+      });
+
+  const identity = mapUserIdentity(row);
+  const audit = await appendAuditLog({
+    action: "identity_request",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: { verification_status: "pending", auth_mode: AUTH_MODE },
+  });
+  return { ok: true, identity, audit };
+}
+
+export async function attestUserIdentity(input: {
+  actor_id: string;
+  subject_user_id: string;
+  verification_status: VerificationStatus;
+  country_codes?: string[];
+  long_term_ties_note?: string | null;
+  provider_stub?: string | null;
+}): Promise<
+  | { ok: true; identity: IdentityRecord; audit: AuditLogRow }
+  | { ok: false; error: IdentityMutationError }
+> {
+  const check = validateIdentityAttestation({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+    verification_status: input.verification_status,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const countries = (input.country_codes ?? [])
+    .map((c) => normalizeCountryCode(c))
+    .filter((c): c is string => Boolean(c));
+  const ties = input.long_term_ties_note?.trim() || null;
+
+  const now = new Date();
+  const verified =
+    input.verification_status === "verified"
+      ? { verifiedBy: input.actor_id, verifiedAt: now }
+      : { verifiedBy: null as string | null, verifiedAt: null as Date | null };
+
+  const existing = await getPrisma().userIdentity.findUnique({
+    where: { userId: input.subject_user_id },
+  });
+
+  const row = existing
+    ? await getPrisma().userIdentity.update({
+        where: { userId: input.subject_user_id },
+        data: {
+          verificationStatus: input.verification_status,
+          countryCodes: countries,
+          longTermTiesNote: ties,
+          attestationKind: "owner_attested",
+          verifiedBy: verified.verifiedBy,
+          verifiedAt: verified.verifiedAt,
+          providerStub:
+            input.provider_stub ?? existing.providerStub ?? "prototype",
+          updatedAt: now,
+        },
+      })
+    : await getPrisma().userIdentity.create({
+        data: {
+          userId: input.subject_user_id,
+          verificationStatus: input.verification_status,
+          countryCodes: countries,
+          longTermTiesNote: ties,
+          attestationKind: "owner_attested",
+          verifiedBy: verified.verifiedBy,
+          verifiedAt: verified.verifiedAt,
+          providerStub: input.provider_stub ?? "prototype",
+          updatedAt: now,
+        },
+      });
+
+  const identity = mapUserIdentity(row);
+  const audit = await appendAuditLog({
+    action: "identity_attest",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: {
+      verification_status: identity.verification_status,
+      country_codes: identity.country_codes,
+      long_term_ties_note: identity.long_term_ties_note,
+      auth_mode: AUTH_MODE,
+    },
+  });
+  return { ok: true, identity, audit };
+}
+
+export async function getStewardEligibilityForUser(input: {
+  user_id: string;
+  country_code: string | null;
+}): Promise<{
+  auth_mode: typeof AUTH_MODE;
+  identity: IdentityRecord;
+  eligibility: ReturnType<typeof evaluateStewardEligibility>;
+}> {
+  const identity = await resolveUserIdentity(input.user_id);
+  const eligibility = evaluateStewardEligibility({
+    actor_id: input.user_id,
+    country_code: input.country_code,
+    identity,
+    require_manual_country: true,
+  });
+  return { auth_mode: AUTH_MODE, identity, eligibility };
 }

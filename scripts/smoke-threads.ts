@@ -46,12 +46,20 @@ async function main() {
     }
 
     const us = await listThreads({ homeDossierId: "us-voting-1" });
-    if (us.length !== 3) {
+    if (us.length < 4) {
       throw new Error(`us-voting-1 threads: ${us.length}`);
     }
     const rfc = us.find((t) => t.state === "rfc");
     if (!rfc || rfc.merge_artifact_id !== "us-voter-reg") {
       throw new Error("RFC stub missing merge_artifact_id");
+    }
+    const mergedSeed = us.find((t) => t.thread_id === "thread-us-overview-merged");
+    if (
+      !mergedSeed ||
+      mergedSeed.state !== "decided" ||
+      mergedSeed.decision_outcome !== "merged"
+    ) {
+      throw new Error("seeded merged overview RFC missing for reputation signals");
     }
 
     const detail = await getThread("thread-us-provisional-open");
@@ -93,13 +101,16 @@ async function main() {
     if (!canonDash || canonDash.open_threads.count < 1) {
       throw new Error("canon dashboard should count seeded open threads");
     }
-    if (canonDash.open_threads.deferred !== "M5") {
-      throw new Error("RFC promotion still deferred within M5");
+    if ("deferred" in canonDash.open_threads) {
+      throw new Error("Critical findings should no longer defer to M7");
     }
 
     const usDash = await getCollectionDashboard("collection-us");
     if (!usDash || usDash.open_threads.count < 2) {
       throw new Error("US dashboard should count open+rfc threads");
+    }
+    if (usDash.open_threads.critical_findings < 1) {
+      throw new Error("US dashboard should count seeded Critical Finding");
     }
 
     const missing = await getThread("thread-nope");

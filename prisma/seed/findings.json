@@ -1,0 +1,50 @@
+[
+  {
+    "finding_id": "finding-us-voter-reg-critical",
+    "thread_id": "thread-us-voter-reg-rfc",
+    "title": "Missing provisional→registration handoff failure mode",
+    "severity": "critical",
+    "likelihood": "med",
+    "status": "open",
+    "evidence": "Seeded Manual provisional brief omits rejection→cure timeline; RFC RevSet does not cite it.",
+    "attack_path": "Adversary can merge incomplete Prescriptive steps while Descriptive brief stays silent on cure windows.",
+    "author_id": "user-dave",
+    "created_at": "2026-07-13T12:00:00.000Z",
+    "targets": [
+      { "target_kind": "artifact", "target_id": "us-voter-reg" },
+      { "target_kind": "thread", "target_id": "thread-us-voter-reg-rfc" }
+    ]
+  },
+  {
+    "finding_id": "finding-us-provisional-high",
+    "thread_id": "thread-us-provisional-open",
+    "title": "Provisional rate definition ambiguity across states",
+    "severity": "high",
+    "likelihood": "high",
+    "status": "open",
+    "evidence": "Open thread cites mixed state definitions without a shared Descriptive baseline.",
+    "attack_path": "Readers may treat one state's rejection rate as national.",
+    "author_id": "user-dave",
+    "created_at": "2026-07-14T09:30:00.000Z",
+    "targets": [
+      { "target_kind": "artifact", "target_id": "us-provisional" },
+      { "target_kind": "dossier", "target_id": "us-voting-1" }
+    ]
+  },
+  {
+    "finding_id": "finding-canon-scoring-med",
+    "thread_id": "thread-canon-voting-open",
+    "title": "Parameterized scoring may smuggle Manual baselines into Canon",
+    "severity": "med",
+    "likelihood": "med",
+    "status": "open",
+    "evidence": "Open Canon thread discusses country-specific parameters without regional scope discipline.",
+    "attack_path": "Contributor embeds single-state institutional facts into global scoring models.",
+    "author_id": "user-dave",
+    "created_at": "2026-07-15T08:00:00.000Z",
+    "targets": [
+      { "target_kind": "artifact", "target_id": "page-001" },
+      { "target_kind": "dossier", "target_id": "electoral-1" }
+    ]
+  }
+]

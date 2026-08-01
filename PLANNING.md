@@ -48,7 +48,7 @@ lives in `SCRATCHPAD.json`.
 | Audit | Append-only for merges, adjudications, AR, roles; soft-delete posts |
 | Dossier taxonomy | No templates; organic + tags |
 | Site copy | Prefer artifacts when feasible; legal boilerplate may stay static |
-| External artifacts | Defer App D enforcement until evidence bridge solid |
+| External artifacts | App D `external_artifact` node + provider whitelist landed; attribution `immutable_ref` for registry snapshots |
 | Collection dashboard | Shared chrome; scoped panels (CONCEPT §11) |
 | Model claim graph | Deferred |
 
@@ -70,10 +70,10 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | Product UI | Hybrid — Area/Collection/Dossier routes data-driven; many dossier panels still fixture |
 | Editor + doc pipeline | Real (Plate, evidence, revisions); plain `src/api/actions` save |
 | Persistence | **SQLite via Prisma** (`prisma/dev.db`; seeds in `prisma/seed/`) |
-| Auth | None (impersonation planned) |
-| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (21/21) |
+| Auth | Seed users + **header impersonation** (M8) + **identity attestation hooks** (M9 §8.6); full OAuth/IdP deferred |
+| Toolchain | **pnpm 9.15.9** (`packageManager`); `pnpm build` + `pnpm test:smoke` green (38/38) |
 
-**Next build:** **M6 Claims + lanes** (`in progress` — Claim table + immutable lanes + adjudication + authoring UX landed). Next: Collection claim metrics (quality/forecast panels). Accepted Risk on leaf stays M7.
+**Next build:** Milestone roadmap **M0–M9 complete** for prototype scope. Remaining open work is residual (editor tables/images, About/FAQ artifact migration, Fumadocs unpin, optional mod-queue polish). Moderator soft-delete + broader §9.4 audit coverage landed. Full OAuth/IdP is explicitly deferred past impersonation + identity hooks.
 
 ---
 
@@ -87,10 +87,10 @@ Canon anti-smuggle: prefer global; regional multi-country/domain OK; single-stat
 | **M3 — Content bridge** | `done` | Shared reader ✓; Artifact naming + `@@map` ✓; Section extractor ✓; dual-emit `artifact_id` ✓; product `/edit` Plate chrome ✓ (Section DB sync → M5) |
 | **M4 — Corpus IA** | `done` | Area/Collection/Dossier ✓; routes ✓; home trending ✓; Manuals map+list ✓; §11 dashboard chrome ✓; US+CA/GB/DE Manual seeds ✓ (3D globe deferred) |
 | **M5 — Threads + RFC** | `done` | Thread/Post/Target ✓; Section DB sync ✓; leaf + wrapper RFC promote + RevSet→proposal revision ✓; leaf Merge/Reject/Park + parent decided cascade ✓; reply composer ✓; Collection merge authority (§3.4) ✓ |
-| **M6 — Claims + lanes** | `in progress` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; metrics panels remaining |
-| **M7 — Red Team** | `not started` | Findings; Accepted Risk on leaf; Critical merge gate |
-| **M8 — Discovery** | `not started` | Search; breadcrumbs; impersonation role UX |
-| **M9 — Policy** | `not started` | Real auth; reputation; Charter artifact; anti-gaming |
+| **M6 — Claims + lanes** | `done` | Claim table + profile legality ✓; immutable Manual lanes ✓; adjudication scaffolding ✓; claim authoring UX ✓; Collection quality/forecast metrics ✓ |
+| **M7 — Red Team** | `done` | Finding + FindingTarget ✓; dashboard Critical/recent counts ✓; Accepted Risk on leaf + Critical merge gate ✓; Candidate→Finding + timeline filters/sidebar ✓ |
+| **M8 — Discovery** | `done` | First-cut search API + header ✓; breadcrumbs + up-nav ✓; impersonation role UX ✓ |
+| **M9 — Policy** | `done` | Charter living `owner_merge_only` artifact ✓; reputation advisory board ✓; Owner board-hide + audit ✓; real-identity policy hooks (§8.6) ✓ (full OAuth deferred) |
 
 ---
 
@@ -115,4 +115,4 @@ None blocking architecture. Remaining work is **implementation** (`OPEN_ISSUES.m
 
 - CONCEPT is the product/reference spec; this file is sequencing + engineering decisions.
 - When a milestone exits, mark `done` and clear related `OPEN_ISSUES.md` the same turn.
-- Next: **M6** Claims + lanes (Accepted Risk / Critical merge gate remains M7).
+- Next: residual open work — About/FAQ artifact migration, image upload / tables, or Fumadocs unpin (see `OPEN_ISSUES.md`).

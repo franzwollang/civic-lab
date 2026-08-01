@@ -1,12 +1,12 @@
 import { Link } from "react-router";
-import { Search } from "lucide-react";
-import { Input } from "./ui/input";
+import { ActingUserSwitcher } from "./acting-user-switcher";
+import { HeaderSearch } from "./header-search";
 
 export function Header() {
   return (
     <header className="border-b border-neutral-200 bg-white">
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-8">
-        <Link to="/" className="flex items-center gap-2">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-4 px-8">
+        <Link to="/" className="flex shrink-0 items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded bg-neutral-900">
             <span className="text-sm font-semibold text-white">CL</span>
           </div>
@@ -15,17 +15,10 @@ export function Header() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-            <Input
-              type="search"
-              placeholder="Search dossiers, threads, artifacts..."
-              className="h-9 w-96 border-neutral-200 pl-9 text-sm"
-            />
-          </div>
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-4 sm:gap-6">
+          <HeaderSearch />
 
-          <nav className="flex items-center gap-6 text-sm">
+          <nav className="hidden items-center gap-6 text-sm md:flex">
             <Link
               to="/about"
               className="text-neutral-600 transition-colors hover:text-neutral-900"
@@ -51,6 +44,8 @@ export function Header() {
               Docs
             </Link>
           </nav>
+
+          <ActingUserSwitcher />
         </div>
       </div>
     </header>

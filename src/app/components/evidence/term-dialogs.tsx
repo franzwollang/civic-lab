@@ -16,18 +16,24 @@ import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { Badge } from "@/app/components/ui/badge";
 import { Separator } from "@/app/components/ui/separator";
 
-import type { TermAlias, TermEntity } from "@/doc/evidence";
+import type { TermAlias, TermEntity, TermScope } from "@/doc/evidence";
 import { putTerms } from "@/api/client";
 import { useEvidenceRegistry } from "@/editor/evidenceRegistry";
+import {
+  formatTermScope,
+  resolveDefaultTermScope,
+} from "@/lib/termScope";
+
+export { resolveDefaultTermScope } from "@/lib/termScope";
 
 type TermDraft = Omit<TermEntity, "id"> & { id?: string };
 
 const normalize = (s: string) => s.trim().toLowerCase();
 
-function defaultNewTerm(seedLabel: string): TermDraft {
+function defaultNewTerm(seedLabel: string, scope: TermScope): TermDraft {
   const label = seedLabel.trim() || "";
   return {
-    scope: { kind: "global" },
+    scope,
     type: "platform_construct",
     status: "tentative",
     canonical_label_en: label,
@@ -185,17 +191,20 @@ export function TermEditorDialog({
   onOpenChange,
   seedLabel,
   editing,
+  defaultScope = { kind: "global" },
   onSaved,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   seedLabel: string;
   editing: TermEntity | null;
+  /** Applied when proposing a new term; edits keep the existing entity scope. */
+  defaultScope?: TermScope;
   onSaved: (termId: string) => void;
 }) {
   const registry = useEvidenceRegistry();
   const [draft, setDraft] = useState<TermDraft>(() =>
-    editing ? editing : defaultNewTerm(seedLabel),
+    editing ? editing : defaultNewTerm(seedLabel, defaultScope),
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -203,8 +212,8 @@ export function TermEditorDialog({
   useEffect(() => {
     if (!open) return;
     setError(null);
-    setDraft(editing ? editing : defaultNewTerm(seedLabel));
-  }, [editing, open, seedLabel]);
+    setDraft(editing ? editing : defaultNewTerm(seedLabel, defaultScope));
+  }, [defaultScope, editing, open, seedLabel]);
 
   const canonical = draft.canonical_label_en ?? "";
   const definition = draft.definition_en ?? "";
@@ -223,7 +232,7 @@ export function TermEditorDialog({
       const id = editing?.id ?? uuidv4();
       const entity: TermEntity = {
         id,
-        scope: { kind: "global" },
+        scope: draft.scope ?? defaultScope,
         type: draft.type ?? "platform_construct",
         status: editing?.status ?? draft.status ?? "tentative",
         canonical_label_en: canonical.trim(),
@@ -299,6 +308,19 @@ export function TermEditorDialog({
                 }
                 placeholder="e.g. Bundestag"
               />
+            </div>
+            <div className="space-y-1">
+              <Label>Scope</Label>
+              <div className="flex h-9 items-center gap-2 rounded-md border border-neutral-200 bg-neutral-50 px-2 text-sm text-neutral-700">
+                <Badge variant="outline" className="text-[11px]">
+                  {formatTermScope(draft.scope ?? defaultScope)}
+                </Badge>
+              </div>
+              <div className="text-[11px] text-neutral-500">
+                {editing
+                  ? "Scope is fixed when editing an existing term."
+                  : "New terms inherit the current editor context."}
+              </div>
             </div>
             {editing ? (
               <div className="space-y-1">

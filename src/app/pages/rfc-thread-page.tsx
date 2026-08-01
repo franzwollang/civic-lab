@@ -3,11 +3,7 @@ import { Header } from "../components/header";
 import { SidebarNav } from "../components/sidebar-nav";
 import { StatusBadge } from "../components/badges";
 import { RevSetRow } from "../components/revset-row";
-import {
-  ReplyComposer,
-  authorDisplayName,
-  authorInitials,
-} from "../components/reply-composer";
+import { ThreadTimeline } from "../components/thread-timeline";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Info } from "lucide-react";
@@ -18,17 +14,27 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../components/ui/tooltip";
-import { decideThread, getThread, getThreadRevSets } from "../../api/client";
+import {
+  decideThread,
+  getThread,
+  getThreadRevSets,
+  createAcceptedRisk,
+} from "../../api/client";
 import type {
   RevSetRow as RevSetWire,
   ThreadPostRow,
   ThreadRow,
 } from "../../doc/types";
-import {
-  getPrototypeUser,
-  readActingUserId,
-} from "../lib/prototype-users";
+import { useActingUser } from "../lib/acting-user";
 import { actorMayDecide } from "../../lib/mergeAuthority";
+import { actorMaySignAcceptedRisk } from "../../lib/acceptedRisk";
+import { ActingAsHint } from "../components/acting-as-hint";
+import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
+import {
+  buildHierarchyCrumbs,
+  collectionHref,
+  threadHref,
+} from "../lib/object-nav";
 
 function statusLabel(
   thread: ThreadRow,
@@ -52,10 +58,12 @@ function statusLabel(
 
 export function RfcThreadPage() {
   const { id } = useParams();
+  const { userId: actingId } = useActingUser();
   const [thread, setThread] = useState<ThreadRow | null>(null);
   const [revsets, setRevsets] = useState<RevSetWire[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [deciding, setDeciding] = useState(false);
+  const [signingAr, setSigningAr] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -85,7 +93,7 @@ export function RfcThreadPage() {
     try {
       const result = await decideThread(id, {
         outcome,
-        author_id: readActingUserId(),
+        author_id: actingId,
       });
       setThread(result.thread);
       setError(null);
@@ -99,6 +107,30 @@ export function RfcThreadPage() {
     }
   }
 
+  async function onSignAcceptedRisk() {
+    if (!id || !thread || thread.state === "decided") return;
+    if (thread.rfc_kind !== "leaf") return;
+    setSigningAr(true);
+    try {
+      await createAcceptedRisk(id, {
+        description:
+          "Prototype Accepted Risk for open Critical Finding(s) on this leaf RFC.",
+        rationale:
+          "Steward/Owner accepts residual risk so merge may proceed under CONCEPT §7.6.",
+        evidence_considered: "Seeded Finding evidence + RevSet proposal.",
+        reopen_triggers: "New Critical Finding or material RevSet change.",
+        signer_id: actingId,
+      });
+      const refreshed = await getThread(id);
+      setThread(refreshed);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Accepted Risk failed");
+    } finally {
+      setSigningAr(false);
+    }
+  }
+
   function onPosted(post: ThreadPostRow) {
     setThread((prev) =>
       prev
@@ -107,14 +139,35 @@ export function RfcThreadPage() {
     );
   }
 
+  function onPostDeleted(postId: string) {
+    setThread((prev) =>
+      prev
+        ? {
+            ...prev,
+            posts: (prev.posts ?? []).filter((p) => p.post_id !== postId),
+          }
+        : prev,
+    );
+  }
+
   const dossierId = thread?.home_dossier_id ?? "us-voting-1";
   const latestVersion =
     revsets.length > 0 ? Math.max(...revsets.map((r) => r.version)) : 0;
-  const actingId = readActingUserId();
-  const actingUser = getPrototypeUser(actingId);
   const authorityOk =
     !thread?.merge_authority ||
     actorMayDecide(actingId, thread.merge_authority.authority_class);
+  const criticalBlockers = thread?.open_critical_findings ?? [];
+  const hasAcceptedRisk = Boolean(thread?.accepted_risk);
+  const mergeBlockedByCritical =
+    criticalBlockers.length > 0 && !hasAcceptedRisk;
+  const canSignAr =
+    thread != null &&
+    thread.rfc_kind === "leaf" &&
+    (thread.state === "rfc" || thread.state === "review") &&
+    !hasAcceptedRisk &&
+    thread.merge_authority != null &&
+    actorMaySignAcceptedRisk(actingId, thread.merge_authority.area_kind) &&
+    !signingAr;
   const canDecide =
     thread != null &&
     thread.rfc_kind === "leaf" &&
@@ -141,6 +194,26 @@ export function RfcThreadPage() {
           {thread && (
             <>
               <div className="mb-8">
+                {thread.collection_id && thread.area_kind && (
+                  <ObjectBreadcrumbs
+                    crumbs={buildHierarchyCrumbs({
+                      area_kind: thread.area_kind,
+                      collection_id: thread.collection_id,
+                      collection_title:
+                        thread.collection_title ?? "Collection",
+                      dossier_id: thread.home_dossier_id,
+                      dossier_title:
+                        thread.home_dossier_title ?? thread.home_dossier_id,
+                      leaf: [
+                        {
+                          label: "Discussion",
+                          href: threadHref(thread.thread_id, "open"),
+                        },
+                        { label: `RFC: ${thread.title}` },
+                      ],
+                    })}
+                  />
+                )}
                 <div className="mb-4 flex items-center gap-3">
                   <StatusBadge status={statusLabel(thread)} />
                   <span className="text-sm text-neutral-500">
@@ -165,7 +238,7 @@ export function RfcThreadPage() {
                         <p className="text-xs">
                           {thread.rfc_kind === "wrapper"
                             ? "Wrapper RFC coordinates sub-RFCs; it does not merge content. Parent becomes decided when all children are decided."
-                            : "Leaf RFC: Merge applies the latest RevSet to the artifact. Decide authority follows the artifact Collection (CONCEPT §3.4). Accepted Risk deferred to M7."}
+                            : "Leaf RFC: Merge applies the latest RevSet to the artifact. Decide authority follows the artifact Collection (CONCEPT §3.4). Open Critical Findings block merge unless Accepted Risk is signed (§7.6)."}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -188,7 +261,7 @@ export function RfcThreadPage() {
                         to={`/dossier/${thread.home_dossier_id}`}
                         className="font-medium text-neutral-900 hover:text-neutral-700"
                       >
-                        {thread.home_dossier_id}
+                        {thread.home_dossier_title ?? thread.home_dossier_id}
                       </Link>
                     </div>
                     {thread.parent_thread_id && (
@@ -337,8 +410,14 @@ export function RfcThreadPage() {
                       </>
                     ) : (
                       "."
-                    )}{" "}
-                    Accepted Risk / Critical Finding gate deferred to M7.
+                    )}
+                    {thread.accepted_risk ? (
+                      <>
+                        {" "}
+                        Accepted Risk on file (
+                        {thread.accepted_risk.accepted_risk_id}).
+                      </>
+                    ) : null}
                   </p>
                 ) : thread.rfc_kind === "wrapper" ? (
                   <p className="mb-4 text-sm text-neutral-600">
@@ -350,8 +429,43 @@ export function RfcThreadPage() {
                     <p className="mb-4 text-sm text-neutral-600">
                       Merge applies the latest RevSet. Reject / park close without
                       writing content. Authority follows the merge artifact&apos;s
-                      Collection (CONCEPT §3.4).
+                      Collection (CONCEPT §3.4). Open Critical Findings block
+                      merge unless Accepted Risk is signed (§7.6).
                     </p>
+                    {criticalBlockers.length > 0 && (
+                      <div className="mb-4 rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">
+                        <div className="font-medium">
+                          Open Critical Finding
+                          {criticalBlockers.length > 1 ? "s" : ""} block merge
+                        </div>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-xs">
+                          {criticalBlockers.map((f) => (
+                            <li key={f.finding_id}>
+                              <code>{f.finding_id}</code> — {f.title}
+                            </li>
+                          ))}
+                        </ul>
+                        {!hasAcceptedRisk && (
+                          <p className="mt-2 text-xs">
+                            Sign Accepted Risk to clear the gate, then merge.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    {thread.accepted_risk && (
+                      <div className="mb-4 rounded border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-950">
+                        <div className="font-medium">Accepted Risk on file</div>
+                        <p className="mt-1 text-xs">
+                          Signed by {thread.accepted_risk.signer_id} ·{" "}
+                          {new Date(
+                            thread.accepted_risk.signed_at,
+                          ).toLocaleString()}
+                        </p>
+                        <p className="mt-1 text-xs">
+                          {thread.accepted_risk.description}
+                        </p>
+                      </div>
+                    )}
                     {thread.merge_authority && (
                       <div className="mb-4 rounded border border-neutral-200 bg-neutral-50 p-3 text-sm text-neutral-700">
                         <div className="font-medium text-neutral-900">
@@ -359,27 +473,57 @@ export function RfcThreadPage() {
                         </div>
                         <div className="mt-1 text-xs text-neutral-500">
                           Collection{" "}
-                          <code>{thread.merge_authority.collection_id}</code>
+                          <Link
+                            to={collectionHref(
+                              thread.merge_authority.collection_id,
+                            )}
+                            className="underline hover:text-neutral-800"
+                          >
+                            <code>{thread.merge_authority.collection_id}</code>
+                          </Link>
                           {" · "}
                           required roles:{" "}
                           {thread.merge_authority.required_roles.join(", ")}
+                          {thread.merge_authority.critical_or_accepted_risk_path
+                            ? " · Critical/AR path"
+                            : ""}
                         </div>
                         <div className="mt-1 text-xs text-neutral-500">
-                          Acting as{" "}
-                          {actingUser
-                            ? `${actingUser.display_name} (${actingUser.roles.join(", ")})`
-                            : actingId}
-                          {authorityOk
-                            ? " — authorized"
-                            : " — not authorized to decide"}
+                          <ActingAsHint
+                            className="text-xs text-neutral-500"
+                            requireCapability={
+                              thread.merge_authority.area_kind === "manuals"
+                                ? "merge_manual"
+                                : thread.merge_authority.authority_class ===
+                                    "canon_owner_only"
+                                  ? "merge_canon_restricted"
+                                  : "merge_canon_routine"
+                            }
+                            capabilityLabel="decide this RFC"
+                          />
                         </div>
                       </div>
                     )}
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3">
+                      {canSignAr && (
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          disabled={!canSignAr}
+                          onClick={() => void onSignAcceptedRisk()}
+                        >
+                          {signingAr ? "Signing…" : "Sign Accepted Risk"}
+                        </Button>
+                      )}
                       <Button
                         variant="default"
                         size="lg"
-                        disabled={!canDecide || revsets.length === 0}
+                        disabled={
+                          !canDecide ||
+                          !authorityOk ||
+                          revsets.length === 0 ||
+                          mergeBlockedByCritical
+                        }
                         onClick={() => onDecide("merged")}
                       >
                         {deciding ? "Working…" : "Merge RFC"}
@@ -387,7 +531,7 @@ export function RfcThreadPage() {
                       <Button
                         variant="outline"
                         size="lg"
-                        disabled={!canDecide}
+                        disabled={!canDecide || !authorityOk}
                         onClick={() => onDecide("rejected")}
                       >
                         Reject
@@ -395,7 +539,7 @@ export function RfcThreadPage() {
                       <Button
                         variant="outline"
                         size="lg"
-                        disabled={!canDecide}
+                        disabled={!canDecide || !authorityOk}
                         onClick={() => onDecide("parked")}
                       >
                         Park
@@ -405,44 +549,13 @@ export function RfcThreadPage() {
                 )}
               </Card>
 
-              <div className="mt-8">
-                <h2 className="mb-4 text-xl font-semibold text-neutral-900">
-                  Discussion
-                </h2>
-                <div className="space-y-4">
-                  {(thread.posts ?? []).map((post) => (
-                    <Card
-                      key={post.post_id}
-                      className="border border-neutral-200 bg-white p-6"
-                    >
-                      <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-700 text-white">
-                          <span className="text-xs font-semibold">
-                            {authorInitials(post.author_id)}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-medium text-neutral-900">
-                            {authorDisplayName(post.author_id)}
-                          </div>
-                          <div className="text-sm text-neutral-500">
-                            {post.author_id} ·{" "}
-                            {new Date(post.created_at).toLocaleString()}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="whitespace-pre-wrap text-sm text-neutral-800">
-                        {post.body}
-                      </p>
-                    </Card>
-                  ))}
-
-                  <ReplyComposer
-                    threadId={thread.thread_id}
-                    onPosted={onPosted}
-                  />
-                </div>
-              </div>
+              <ThreadTimeline
+                threadId={thread.thread_id}
+                posts={thread.posts ?? []}
+                onPosted={onPosted}
+                onPostDeleted={onPostDeleted}
+                heading="Discussion"
+              />
             </>
           )}
         </div>

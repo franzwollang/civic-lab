@@ -60,14 +60,44 @@ async function main() {
     if (canon.requirement_satisfaction !== null) {
       throw new Error("Canon must not expose requirement_satisfaction");
     }
-    if (canon.open_threads.deferred !== "M5") {
-      throw new Error("open_threads should defer RFC promotion to M5");
-    }
     if (canon.open_threads.count < 1) {
       throw new Error("canon open_threads.count should include seeded threads");
     }
-    if (canon.claims.deferred !== "M6" || canon.red_team.deferred !== "M7") {
-      throw new Error("claims/red_team deferrals wrong");
+    if ("deferred" in canon.open_threads) {
+      throw new Error("open_threads Critical findings should no longer defer");
+    }
+    if (canon.open_threads.critical_findings !== 0) {
+      throw new Error("Canon seed Finding is med, not Critical");
+    }
+    if ("deferred" in canon.claims) {
+      throw new Error("claims panel should no longer defer M6");
+    }
+    if (canon.claims.empirical_quality.total < 1) {
+      throw new Error("canon should expose empirical_quality totals");
+    }
+    if (canon.claims.forecast_accuracy.n < 1) {
+      throw new Error("canon should expose scored forecast_accuracy");
+    }
+    if ("deferred" in canon.red_team) {
+      throw new Error("red_team should no longer defer M7");
+    }
+    if (canon.red_team.recent_count < 1) {
+      throw new Error("canon red_team.recent_count should include seeded Finding");
+    }
+    if (!canon.reputation || canon.reputation.advisory !== true) {
+      throw new Error("canon reputation board must be present and advisory");
+    }
+    if (canon.reputation.grants_permissions) {
+      throw new Error("reputation must never grant permissions");
+    }
+    if (canon.reputation.n < 1) {
+      throw new Error("canon reputation should include seeded signals");
+    }
+    if (!Array.isArray(canon.board_hides)) {
+      throw new Error("dashboard must expose board_hides array");
+    }
+    if (!Array.isArray(canon.reputation.hidden_user_ids)) {
+      throw new Error("reputation.hidden_user_ids missing");
     }
 
     const electoral = canon.dossiers.find((d) => d.dossier_id === "electoral-1");
@@ -94,10 +124,29 @@ async function main() {
     }
     if (
       !us.requirement_satisfaction ||
-      us.requirement_satisfaction.deferred !== "M6" ||
-      us.requirement_satisfaction.total < 1
+      us.requirement_satisfaction.total < 1 ||
+      us.requirement_satisfaction.snapshot.satisfied < 1
     ) {
-      throw new Error("US requirement_satisfaction should count seeded claims");
+      throw new Error("US requirement_satisfaction should include seeded claims + snapshot");
+    }
+    if (us.claims.forecast_accuracy.n < 1) {
+      throw new Error("US forecast_accuracy should include scored seeds");
+    }
+    if (us.open_threads.critical_findings < 1) {
+      throw new Error("US should count seeded open Critical Finding");
+    }
+    if (us.red_team.recent_count < 2) {
+      throw new Error("US red_team.recent_count should include seeded Findings");
+    }
+    if (!us.reputation || us.reputation.n < 5) {
+      throw new Error("US reputation should aggregate posts/findings/adjudications/merged RevSets");
+    }
+    if (
+      !us.reputation.contributors.some(
+        (c) => c.user_id === "user-alice" && c.signals.merged_revsets >= 1,
+      )
+    ) {
+      throw new Error("US reputation should credit Alice merged RevSet");
     }
 
     const ca = await getCollectionDashboard("collection-ca");

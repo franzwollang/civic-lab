@@ -6,6 +6,10 @@ import { validateMermaidDiagram } from "@/editor/mermaid";
 import { parse as parseYaml } from "yaml";
 import { load as parseToml } from "js-toml";
 import { parse as parseCsv } from "csv-parse/browser/esm/sync";
+import {
+  isExternalArtifactEmpty,
+  validateExternalArtifact,
+} from "../lib/externalArtifact";
 
 type SlateBlock = Record<string, unknown> & { type?: string; id?: string };
 
@@ -355,6 +359,61 @@ const createDocumentSchema = (
             path: [index, "src"],
             params: { rule: "image-webp-only" },
           });
+        }
+        return;
+      }
+
+      if (node.type === "external_artifact") {
+        const fields = {
+          provider:
+            typeof (node as any).provider === "string" ? (node as any).provider : "",
+          general_id:
+            typeof (node as any).general_id === "string"
+              ? (node as any).general_id
+              : "",
+          specific_id:
+            typeof (node as any).specific_id === "string"
+              ? (node as any).specific_id
+              : "",
+          display_title:
+            typeof (node as any).display_title === "string"
+              ? (node as any).display_title
+              : "",
+          summary:
+            typeof (node as any).summary === "string" ? (node as any).summary : "",
+          license:
+            typeof (node as any).license === "string" ? (node as any).license : "",
+        };
+        if (isExternalArtifactEmpty(fields)) {
+          warn(
+            "External artifact is missing provider, general_id, specific_id, and display_title.",
+            [index, "provider"],
+            { rule: "external-artifact-empty" },
+          );
+          return;
+        }
+        const result = validateExternalArtifact(fields);
+        if (!result.ok) {
+          const field = result.field ?? "provider";
+          const incomplete =
+            field === "provider" ||
+            field === "general_id" ||
+            field === "specific_id" ||
+            field === "display_title"
+              ? !String(fields[field] ?? "").trim()
+              : false;
+          if (incomplete) {
+            warn(result.message, [index, field], {
+              rule: "external-artifact-incomplete",
+            });
+          } else {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: result.message,
+              path: [index, field],
+              params: { rule: "external-artifact-invalid", field },
+            });
+          }
         }
         return;
       }

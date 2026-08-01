@@ -1,24 +1,25 @@
 {
-  "updated_at": "2026-07-25T13:30Z",
-  "turn": 38,
+  "updated_at": "2026-07-25T20:40Z",
+  "turn": 57,
   "focus": {
-    "milestone": "M6",
-    "issue": "Metrics + Collection dashboard panels",
-    "goal": "Claim quality / forecast accuracy panels beyond counts"
+    "milestone": null,
+    "issue": "Moderator tools + audit logs",
+    "goal": "Soft-delete posts + broader §9.4 audit coverage"
   },
   "recent": [
-    "Migrated server/ Express → Hono + @hono/node-server",
-    "All /api routes preserved; bodyLimit 2mb; CORS via hono/cors",
-    "build + 21/21 smokes + GET /api/areas HTTP check green"
+    "Merged PR #44 tip onto cron branch 6cfb",
+    "Soft-delete ThreadPost + steward/Owner gates",
+    "Audits: merge/adjudication/AR/post_soft_delete; splash panel",
+    "smoke-moderation; suite 38/38 + vite build"
   ],
   "discoveries": [
-    "Prisma stays server-only; SPA unchanged at localhost:8787/api"
+    "Fresh cron branches start at main; merge latest progression PR first"
   ],
   "open_threads": [
-    "Accepted Risk on leaf deferred to M7",
-    "Global impersonation chrome → M8",
-    "M6 metrics panels remaining"
+    "Tables + image upload deferred",
+    "About/FAQ artifact migration; Fumadocs unpin",
+    "Optional: Canon revert audit + mod queue UI"
   ],
-  "next_step": "M6 metrics: Collection claim quality/forecast panels (or start M7 if deferring metrics)",
+  "next_step": "About/FAQ artifact migration (or tables/images / Fumadocs unpin)",
   "blockers": []
 }

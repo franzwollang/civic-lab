@@ -350,6 +350,59 @@ function ImageBlockRead({
   );
 }
 
+function ExternalArtifactRead({
+  provider,
+  generalId,
+  specificId,
+  displayTitle,
+  summary,
+  license,
+}: {
+  provider: string;
+  generalId: string;
+  specificId: string;
+  displayTitle: string;
+  summary?: string;
+  license?: string;
+}) {
+  const incomplete = !provider || !generalId || !specificId || !displayTitle;
+  return (
+    <aside
+      className={
+        "my-3 rounded border bg-neutral-50 px-3 py-2 " +
+        (incomplete ? "border-amber-200" : "border-neutral-200")
+      }
+      aria-label={displayTitle || "External artifact"}
+    >
+      <div className="flex items-center text-xs text-neutral-600">
+        <span className="inline-flex items-center gap-1 rounded bg-neutral-100 px-2 py-0.5">
+          <span className="text-[11px] font-semibold text-neutral-700">
+            External artifact
+          </span>
+        </span>
+      </div>
+      <div className="mt-2 space-y-1">
+        <div className="text-[13px] font-medium text-neutral-900">
+          {displayTitle || "Untitled external artifact"}
+        </div>
+        <div className="text-[11px] text-neutral-600">
+          {[provider || "provider?", generalId || "general_id?", specificId || "specific_id?"].join(
+            " · ",
+          )}
+        </div>
+        {summary ? (
+          <div className="text-[11px] text-neutral-500">{summary}</div>
+        ) : null}
+        {license ? (
+          <div className="text-[10px] uppercase tracking-wide text-neutral-400">
+            {license}
+          </div>
+        ) : null}
+      </div>
+    </aside>
+  );
+}
+
 function CitationRead({
   attributionRef,
   attributions,
@@ -370,6 +423,9 @@ function CitationRead({
       ? attributionRef
       : "Missing source";
   const titleParts = [label];
+  if (item?.immutable_ref) {
+    titleParts.push(`immutable: ${item.immutable_ref}`);
+  }
   if (locator?.kind && locator?.value) {
     titleParts.push(`${locator.kind}: ${locator.value}`);
   }
@@ -409,10 +465,13 @@ function TermRead({
     : termRef
       ? termRef
       : "Missing term";
+  const title = term?.definition_en
+    ? `${label} — ${term.definition_en}`
+    : label;
 
   return (
     <span
-      title={label}
+      title={title}
       className={
         "rounded px-1 py-0.5 text-[0.95em] underline decoration-dotted " +
         (termRef
@@ -527,6 +586,28 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
             }
           />
         );
+      case ELEMENT_TYPES.EXTERNAL_ARTIFACT:
+        return (
+          <ExternalArtifactRead
+            key={key}
+            provider={typeof node.provider === "string" ? node.provider : ""}
+            generalId={
+              typeof node.general_id === "string" ? node.general_id : ""
+            }
+            specificId={
+              typeof node.specific_id === "string" ? node.specific_id : ""
+            }
+            displayTitle={
+              typeof node.display_title === "string" ? node.display_title : ""
+            }
+            summary={
+              typeof node.summary === "string" ? node.summary : undefined
+            }
+            license={
+              typeof node.license === "string" ? node.license : undefined
+            }
+          />
+        );
       case ELEMENT_TYPES.CITATION_INLINE: {
         const locator =
           node.locator && typeof node.locator === "object"
@@ -556,6 +637,22 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
             {children}
           </TermRead>
         );
+      case ELEMENT_TYPES.LINK: {
+        const url = typeof node.url === "string" ? node.url : "";
+        const target =
+          typeof node.target === "string" ? node.target : undefined;
+        return (
+          <a
+            key={key}
+            href={url || undefined}
+            target={target}
+            rel={target === "_blank" ? "noopener noreferrer" : undefined}
+            className="font-medium text-sky-800 underline underline-offset-2"
+          >
+            {children}
+          </a>
+        );
+      }
       case ELEMENT_TYPES.EVIDENCE_BLOCK: {
         const kind =
           node.kind === "data" || node.kind === "math" ? node.kind : "text";
@@ -680,7 +777,42 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
           </div>
         );
       }
-      case ELEMENT_TYPES.PARAGRAPH:
+      case ELEMENT_TYPES.BLOCKQUOTE:
+        return (
+          <blockquote
+            key={key}
+            className="mb-4 border-l-2 border-neutral-300 pl-4 text-sm italic leading-7 text-neutral-600"
+          >
+            {children}
+          </blockquote>
+        );
+      case ELEMENT_TYPES.PARAGRAPH: {
+        const listStyleType =
+          typeof node.listStyleType === "string" ? node.listStyleType : null;
+        if (listStyleType) {
+          const indent =
+            typeof node.indent === "number" && node.indent > 0
+              ? node.indent
+              : 1;
+          return (
+            <div
+              key={key}
+              className="mb-1 list-item text-sm leading-7 text-neutral-700"
+              style={{
+                listStyleType,
+                marginLeft: `${indent * 1.25}rem`,
+              }}
+            >
+              {children}
+            </div>
+          );
+        }
+        return (
+          <p key={key} className="mb-4 text-sm leading-7 text-neutral-700">
+            {children}
+          </p>
+        );
+      }
       default:
         return (
           <p key={key} className="mb-4 text-sm leading-7 text-neutral-700">
@@ -735,12 +867,14 @@ export const DOCUMENT_READER_NODE_TYPES = [
   ELEMENT_TYPES.H2,
   ELEMENT_TYPES.H3,
   ELEMENT_TYPES.H4,
+  ELEMENT_TYPES.BLOCKQUOTE,
   ELEMENT_TYPES.MATH_INLINE,
   ELEMENT_TYPES.MATH_BLOCK,
   ELEMENT_TYPES.MERMAID_BLOCK,
   ELEMENT_TYPES.PROCEDURE_BLOCK,
   ELEMENT_TYPES.DATA_BLOCK,
   ELEMENT_TYPES.IMAGE_BLOCK,
+  ELEMENT_TYPES.EXTERNAL_ARTIFACT,
   ELEMENT_TYPES.EVIDENCE_BLOCK,
   ELEMENT_TYPES.EVIDENCE_BLOCK_TEXT,
   ELEMENT_TYPES.EVIDENCE_BLOCK_TRANSLATION,
@@ -748,4 +882,5 @@ export const DOCUMENT_READER_NODE_TYPES = [
   ELEMENT_TYPES.EVIDENCE_BLOCK_MATH,
   ELEMENT_TYPES.CITATION_INLINE,
   ELEMENT_TYPES.TERM_INLINE,
+  ELEMENT_TYPES.LINK,
 ] as const;

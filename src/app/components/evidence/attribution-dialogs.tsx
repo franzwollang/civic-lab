@@ -17,6 +17,10 @@ import { ScrollArea } from "@/app/components/ui/scroll-area";
 import type { AttributionEntity } from "@/doc/evidence";
 import { putAttributions } from "@/api/client";
 import { useEvidenceRegistry } from "@/editor/evidenceRegistry";
+import {
+  formatImmutableRefLabel,
+  validateImmutableRef,
+} from "@/lib/immutableRef";
 
 type AttributionDraft = Omit<AttributionEntity, "id" | "authors"> & {
   id?: string;
@@ -162,6 +166,12 @@ export function AttributionSearchDialog({
                             No authors listed
                           </div>
                         )}
+                        {att.immutable_ref ? (
+                          <div className="line-clamp-1 font-mono text-[10px] text-neutral-500">
+                            {formatImmutableRefLabel(att.immutable_ref) ??
+                              att.immutable_ref}
+                          </div>
+                        ) : null}
                       </button>
                       <Button
                         variant="ghost"
@@ -221,7 +231,8 @@ export function AttributionEditorDialog({
   }, [editing, open, seed]);
 
   const title = (draft.title ?? "").trim();
-  const isValid = title.length > 0;
+  const immutableCheck = validateImmutableRef(draft.immutable_ref);
+  const isValid = title.length > 0 && immutableCheck.ok;
 
   const save = async () => {
     setSaving(true);
@@ -233,6 +244,12 @@ export function AttributionEditorDialog({
         .map((s) => s.trim())
         .filter(Boolean);
 
+      if (!immutableCheck.ok) {
+        setSaving(false);
+        setError(immutableCheck.message);
+        return;
+      }
+
       const entity: AttributionEntity = {
         id,
         type: draft.type ?? "url",
@@ -242,7 +259,7 @@ export function AttributionEditorDialog({
         date_published: (draft.date_published ?? "").trim() || undefined,
         url: (draft.url ?? "").trim() || undefined,
         accessed_at: (draft.accessed_at ?? "").trim() || undefined,
-        immutable_ref: draft.immutable_ref ?? null,
+        immutable_ref: immutableCheck.parsed?.normalized ?? null,
         notes: (draft.notes ?? "").trim() || undefined,
       };
 
@@ -324,6 +341,33 @@ export function AttributionEditorDialog({
               onChange={(e) => setDraft((p) => ({ ...p, url: e.target.value }))}
               placeholder="https://example.com/..."
             />
+          </div>
+
+          <div className="space-y-1">
+            <Label>Immutable ref (Optional)</Label>
+            <Input
+              value={draft.immutable_ref ?? ""}
+              onChange={(e) =>
+                setDraft((p) => ({
+                  ...p,
+                  immutable_ref: e.target.value.trim() ? e.target.value : null,
+                }))
+              }
+              placeholder="doi:10.… / arxiv:….vN / github:org/repo@sha / osf:id/vN"
+              className="font-mono text-xs"
+            />
+            {!immutableCheck.ok ? (
+              <div className="text-xs text-red-700">{immutableCheck.message}</div>
+            ) : immutableCheck.parsed ? (
+              <div className="text-xs text-neutral-500">
+                Normalized:{" "}
+                <span className="font-mono">{immutableCheck.parsed.normalized}</span>
+              </div>
+            ) : (
+              <div className="text-xs text-neutral-500">
+                Snapshot identity per CONCEPT App D/E (omit if only a mutable URL).
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

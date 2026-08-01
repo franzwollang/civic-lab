@@ -17,6 +17,7 @@ const required = [
   ELEMENT_TYPES.PROCEDURE_BLOCK,
   ELEMENT_TYPES.DATA_BLOCK,
   ELEMENT_TYPES.IMAGE_BLOCK,
+  ELEMENT_TYPES.EXTERNAL_ARTIFACT,
   ELEMENT_TYPES.EVIDENCE_BLOCK,
   ELEMENT_TYPES.CITATION_INLINE,
   ELEMENT_TYPES.TERM_INLINE,
@@ -36,6 +37,7 @@ assert.match(readerSrc, /usePrismHighlight/);
 assert.match(readerSrc, /CitationRead/);
 assert.match(readerSrc, /TermRead/);
 assert.match(readerSrc, /ImageBlockRead/);
+assert.match(readerSrc, /ExternalArtifactRead/);
 assert.match(readerSrc, /Evidence block/);
 
 const preview = readFileSync("src/app/pages/test-preview.tsx", "utf8");

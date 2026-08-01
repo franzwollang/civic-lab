@@ -72,12 +72,115 @@ export type DossierRow = {
   artifact_count?: number;
   collection_title?: string | null;
   country_code?: string | null;
+  /** Present when API joins collection → area (M8 breadcrumbs). */
+  area_id?: string | null;
+  area_kind?: "canon" | "manuals" | null;
+  area_title?: string | null;
 };
 
 /** CONCEPT §11 Collection dashboard wire shape. */
 export type CollectionDashboardDossier = DossierRow & {
   health: "seeded" | "empty";
   lane_hint: "Descriptive" | "Prescriptive" | "Alignment";
+};
+
+/** CONCEPT §5.5 quality panel (Collection-scoped). */
+export type CollectionEmpiricalQuality = {
+  total: number;
+  open: number;
+  resolved: number;
+  invalidated: number;
+  ambiguous_or_conflict: number;
+  invalidated_rate: number | null;
+  ambiguity_rate: number | null;
+  mean_citation_density: number | null;
+  mean_days_to_resolution: number | null;
+};
+
+/** CONCEPT §5.4–5.9 forecast accuracy panel (advisory). */
+export type CollectionForecastAccuracy = {
+  n: number;
+  mean_brier: number | null;
+  mean_log_score: number | null;
+  mean_skill_vs_baseline: number | null;
+  baseline_p: number;
+  baseline_label: string;
+  public_board_eligible: boolean;
+};
+
+export type RequirementSatisfactionSnapshot = {
+  open: number;
+  accepted: number;
+  satisfied: number;
+  failed: number;
+  superseded: number;
+  invalidated: number;
+  disputed: number;
+  other: number;
+};
+
+/** CONCEPT §9.2 advisory reputation contributor (Collection-scoped). */
+export type ReputationSignalCounts = {
+  merged_revsets: number;
+  review_labor: number;
+  red_team_findings: number;
+  adjudications: number;
+  accepted_risk_signs: number;
+  endorsements: number;
+};
+
+export type ReputationContributorRow = {
+  user_id: string;
+  display_name: string | null;
+  signals: ReputationSignalCounts;
+  signal_event_count: number;
+  advisory_score: number;
+};
+
+export type CollectionReputationBoard = {
+  advisory: true;
+  grants_permissions: false;
+  n: number;
+  public_board_eligible: boolean;
+  contributors: ReputationContributorRow[];
+  note: string;
+  /** Active Owner board-hides applied to this board (CONCEPT §5.9). */
+  hidden_user_ids: string[];
+};
+
+/** CONCEPT §5.9 / §9.4 — active board-hide row. */
+export type BoardHideRow = {
+  hide_id: string;
+  subject_user_id: string;
+  subject_display_name: string | null;
+  hidden_by: string;
+  reason: string;
+  created_at: string;
+  lifted_at: string | null;
+  lifted_by: string | null;
+};
+
+/** CONCEPT §9.4 — append-only audit entry. */
+export type AuditLogRow = {
+  audit_id: string;
+  action: string;
+  actor_id: string;
+  subject_id: string | null;
+  payload: unknown;
+  created_at: string;
+};
+
+/** CONCEPT §8.6 — real-identity attestation record. */
+export type UserIdentityRow = {
+  user_id: string;
+  verification_status: "unverified" | "pending" | "verified" | "rejected";
+  country_codes: string[];
+  long_term_ties_note: string | null;
+  attestation_kind: "none" | "self_asserted" | "owner_attested" | "provider_stub";
+  verified_by: string | null;
+  verified_at: string | null;
+  provider_stub: string | null;
+  updated_at: string;
 };
 
 export type CollectionDashboard = {
@@ -91,13 +194,10 @@ export type CollectionDashboard = {
   open_threads: {
     count: number;
     critical_findings: number;
-    /** RFC promotion / RevSets still incomplete within M5. */
-    deferred: "M5";
   };
   claims: {
-    empirical_quality: null;
-    forecast_accuracy: null;
-    deferred: "M6";
+    empirical_quality: CollectionEmpiricalQuality;
+    forecast_accuracy: CollectionForecastAccuracy;
   };
   lane_coverage: null | {
     Descriptive: number;
@@ -107,13 +207,15 @@ export type CollectionDashboard = {
   requirement_satisfaction: null | {
     open: number;
     total: number;
-    deferred: "M6";
-    snapshot: null;
+    snapshot: RequirementSatisfactionSnapshot;
   };
   red_team: {
     recent_count: number;
-    deferred: "M7";
   };
+  /** CONCEPT §9.2 / §5.9 — advisory non-scorable contribution board. */
+  reputation: CollectionReputationBoard;
+  /** CONCEPT §5.9 — active Owner board-hides (global). */
+  board_hides: BoardHideRow[];
 };
 
 /** CONCEPT §2.3 Section wire shape (persisted; synced from headings). */
@@ -139,6 +241,47 @@ export type ThreadPostRow = {
   type: string;
   body: string;
   created_at: string;
+  /** CONCEPT §9.4 soft-delete — null when live. */
+  deleted_at: string | null;
+  deleted_by: string | null;
+};
+
+/** CONCEPT §7.4 Candidate Finding wire shape. */
+export type CandidateFindingRow = {
+  candidate_id: string;
+  thread_id: string;
+  post_id: string;
+  flagger_id: string;
+  note: string | null;
+  status: string;
+  promoted_finding_id: string | null;
+  created_at: string;
+};
+
+/** CONCEPT §7.3 Finding target join. */
+export type FindingTargetRow = {
+  target_kind: string;
+  target_id: string;
+};
+
+/** CONCEPT §7.3 Finding wire shape. */
+export type FindingRow = {
+  finding_id: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood: string | null;
+  status: string;
+  evidence: string | null;
+  attack_path: string | null;
+  author_id: string;
+  created_at: string;
+  targets: FindingTargetRow[];
+  source_post_id?: string | null;
+  source_candidate_id?: string | null;
+  /** Present on list/get when thread home dossier resolves (home panels). */
+  home_dossier_id?: string | null;
+  home_dossier_title?: string | null;
 };
 
 export type ThreadRow = {
@@ -151,6 +294,11 @@ export type ThreadRow = {
   parent_thread_id: string | null;
   merge_artifact_id: string | null;
   created_at: string;
+  /** Present on GET /api/threads/:id for up-nav (M8). */
+  home_dossier_title?: string | null;
+  collection_id?: string | null;
+  collection_title?: string | null;
+  area_kind?: "canon" | "manuals" | null;
   targets?: ThreadTargetRow[];
   posts?: ThreadPostRow[];
   post_count?: number;
@@ -175,7 +323,24 @@ export type ThreadRow = {
     required_roles: string[];
     description: string;
     allowed_user_ids: string[];
+    critical_or_accepted_risk_path?: boolean;
   } | null;
+  /** CONCEPT §7.6 — Accepted Risk on this leaf RFC (if any). */
+  accepted_risk?: AcceptedRiskRow | null;
+  /** Open Critical Findings that block merge without Accepted Risk. */
+  open_critical_findings?: { finding_id: string; title: string }[];
+};
+
+/** CONCEPT §7.6 Accepted Risk wire shape. */
+export type AcceptedRiskRow = {
+  accepted_risk_id: string;
+  thread_id: string;
+  description: string;
+  rationale: string;
+  evidence_considered: string | null;
+  reopen_triggers: string | null;
+  signer_id: string;
+  signed_at: string;
 };
 
 /** CONCEPT §3.3 RevSet wire shape. */
@@ -223,6 +388,23 @@ export type ClaimRow = {
 
 /** @deprecated Prefer ArtifactRow */
 export type PageRow = ArtifactRow;
+
+/** M8 first-cut corpus search hit. */
+export type SearchHitKind = "dossier" | "artifact" | "thread" | "claim";
+
+export type SearchHit = {
+  kind: SearchHitKind;
+  id: string;
+  title: string;
+  subtitle: string | null;
+  href: string;
+  score: number;
+};
+
+export type SearchResponse = {
+  query: string;
+  hits: SearchHit[];
+};
 
 /**
  * Resolve the artifact id from a wire row that may carry either field

@@ -132,6 +132,49 @@ type RevSetSeedRow = {
   summary?: string | null;
 };
 
+type FindingTargetSeed = {
+  target_kind: string;
+  target_id: string;
+};
+
+type FindingSeedRow = {
+  finding_id: string;
+  thread_id: string;
+  title: string;
+  severity: string;
+  likelihood?: string | null;
+  status?: string;
+  evidence?: string | null;
+  attack_path?: string | null;
+  author_id: string;
+  created_at: string;
+  targets?: FindingTargetSeed[];
+  source_post_id?: string | null;
+  source_candidate_id?: string | null;
+};
+
+type CandidateSeedRow = {
+  candidate_id: string;
+  thread_id: string;
+  post_id: string;
+  flagger_id: string;
+  note?: string | null;
+  status?: string;
+  promoted_finding_id?: string | null;
+  created_at: string;
+};
+
+type IdentitySeedRow = {
+  user_id: string;
+  verification_status: string;
+  country_codes: string[];
+  long_term_ties_note?: string | null;
+  attestation_kind: string;
+  verified_by?: string | null;
+  verified_at?: string | null;
+  provider_stub?: string | null;
+};
+
 async function readSeedJson<T>(name: string): Promise<T> {
   const raw = await fs.readFile(path.join(SEED_DIR, name), "utf-8");
   return JSON.parse(raw) as T;
@@ -147,6 +190,10 @@ export async function seedIfEmpty(
   }
 
   if (options.force) {
+    await prisma.candidateFinding.deleteMany();
+    await prisma.acceptedRisk.deleteMany();
+    await prisma.findingTarget.deleteMany();
+    await prisma.finding.deleteMany();
     await prisma.claim.deleteMany();
     await prisma.revSet.deleteMany();
     await prisma.threadTarget.deleteMany();
@@ -158,6 +205,9 @@ export async function seedIfEmpty(
     await prisma.dossier.deleteMany();
     await prisma.collection.deleteMany();
     await prisma.area.deleteMany();
+    await prisma.boardHide.deleteMany();
+    await prisma.auditLog.deleteMany();
+    await prisma.userIdentity.deleteMany();
     await prisma.termsRegistry.deleteMany();
     await prisma.attributionsRegistry.deleteMany();
     await prisma.seedMeta.deleteMany();
@@ -171,6 +221,9 @@ export async function seedIfEmpty(
   const threads = await readSeedJson<ThreadSeedRow[]>("threads.json");
   const revsets = await readSeedJson<RevSetSeedRow[]>("revsets.json");
   const claims = await readSeedJson<ClaimSeedRow[]>("claims.json");
+  const findings = await readSeedJson<FindingSeedRow[]>("findings.json");
+  const candidates = await readSeedJson<CandidateSeedRow[]>("candidates.json");
+  const identities = await readSeedJson<IdentitySeedRow[]>("identities.json");
   const terms = await readSeedJson<RegistryFile>("terms.json");
   const attributions = await readSeedJson<RegistryFile>("attributions.json");
 
@@ -350,6 +403,67 @@ export async function seedIfEmpty(
           adjudicatedAt: c.adjudicated_at
             ? new Date(c.adjudicated_at)
             : null,
+        },
+      });
+    }
+
+    // CONCEPT §7.3 Findings (after threads exist).
+    for (const f of findings) {
+      await tx.finding.create({
+        data: {
+          findingId: f.finding_id,
+          threadId: f.thread_id,
+          title: f.title,
+          severity: f.severity,
+          likelihood: f.likelihood ?? null,
+          status: f.status ?? "open",
+          evidence: f.evidence ?? null,
+          attackPath: f.attack_path ?? null,
+          authorId: f.author_id,
+          createdAt: new Date(f.created_at),
+          sourcePostId: f.source_post_id ?? null,
+          sourceCandidateId: f.source_candidate_id ?? null,
+        },
+      });
+      for (const target of f.targets ?? []) {
+        await tx.findingTarget.create({
+          data: {
+            findingId: f.finding_id,
+            targetKind: target.target_kind,
+            targetId: target.target_id,
+          },
+        });
+      }
+    }
+
+    // CONCEPT §7.4 Candidate Findings (after posts exist).
+    for (const c of candidates) {
+      await tx.candidateFinding.create({
+        data: {
+          candidateId: c.candidate_id,
+          threadId: c.thread_id,
+          postId: c.post_id,
+          flaggerId: c.flagger_id,
+          note: c.note ?? null,
+          status: c.status ?? "open",
+          promotedFindingId: c.promoted_finding_id ?? null,
+          createdAt: new Date(c.created_at),
+        },
+      });
+    }
+
+    for (const idn of identities) {
+      await tx.userIdentity.create({
+        data: {
+          userId: idn.user_id,
+          verificationStatus: idn.verification_status,
+          countryCodes: idn.country_codes,
+          longTermTiesNote: idn.long_term_ties_note ?? null,
+          attestationKind: idn.attestation_kind,
+          verifiedBy: idn.verified_by ?? null,
+          verifiedAt: idn.verified_at ? new Date(idn.verified_at) : null,
+          providerStub: idn.provider_stub ?? null,
+          updatedAt: new Date(idn.verified_at ?? "2026-07-20T12:00:00.000Z"),
         },
       });
     }

@@ -349,7 +349,22 @@ function EvidenceBlockComponent(props: PlateElementProps) {
                   "max-w-[260px] truncate text-[11px] font-medium " +
                   (missingAttribution ? "text-red-700" : "text-neutral-700")
                 }
-                title={missingAttribution ? "Missing source" : attributionLabel}
+                title={
+                  missingAttribution
+                    ? "Missing source"
+                    : attributionRef
+                      ? (() => {
+                          const item = attributions.items.find(
+                            (a) => a.id === attributionRef,
+                          );
+                          const parts = [attributionLabel];
+                          if (item?.immutable_ref) {
+                            parts.push(`immutable: ${item.immutable_ref}`);
+                          }
+                          return parts.join(" · ");
+                        })()
+                      : attributionLabel
+                }
               >
                 {missingAttribution ? "No source selected" : attributionLabel}
               </div>
@@ -542,13 +557,18 @@ function CitationInlineComponent(props: PlateElementProps) {
   const locatorKind = locator?.kind ?? "page";
   const locatorValue = locator?.value ?? "";
   const note = typeof el.note === "string" ? el.note : "";
+  const attributionItem = attributionRef
+    ? attributions.items.find((item) => item.id === attributionRef)
+    : undefined;
   const attributionLabel = attributionRef
-    ? getAttributionLabel(
-        attributions.items.find((item) => item.id === attributionRef) ?? {
-          id: attributionRef,
-        },
-      )
+    ? getAttributionLabel(attributionItem ?? { id: attributionRef })
     : "";
+  const citationTitleParts = attributionRef
+    ? [attributionLabel]
+    : ["Missing source"];
+  if (attributionItem?.immutable_ref) {
+    citationTitleParts.push(`immutable: ${attributionItem.immutable_ref}`);
+  }
 
   const updateNode = (patch: Partial<CitationInlineElement>) => {
     Transforms.setNodes(props.editor, patch, { at: props.path as any });
@@ -601,14 +621,7 @@ function CitationInlineComponent(props: PlateElementProps) {
           "inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 " +
           (attributionRef ? "border-neutral-200 bg-neutral-100 text-neutral-700" : "border-red-200 bg-red-50 text-red-700")
         }
-        title={
-          attributionRef
-            ? getAttributionLabel(
-                attributions.items.find((item) => item.id === attributionRef) ??
-                  { id: attributionRef },
-              )
-            : "Missing source"
-        }
+        title={citationTitleParts.join(" · ")}
       >
         [S]
       </span>

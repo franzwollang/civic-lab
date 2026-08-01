@@ -1,0 +1,22 @@
+[
+  {
+    "candidate_id": "candidate-us-prov-2",
+    "thread_id": "thread-us-provisional-open",
+    "post_id": "post-us-prov-2",
+    "flagger_id": "user-bob",
+    "note": "State rejection-rate definitions look inconsistent across cites.",
+    "status": "open",
+    "promoted_finding_id": null,
+    "created_at": "2026-07-10T16:00:00.000Z"
+  },
+  {
+    "candidate_id": "candidate-canon-1",
+    "thread_id": "thread-canon-voting-open",
+    "post_id": "post-canon-1",
+    "flagger_id": "user-alice",
+    "note": "May smuggle Manual baselines into Canon scoring parameters.",
+    "status": "open",
+    "promoted_finding_id": null,
+    "created_at": "2026-07-08T10:00:00.000Z"
+  }
+]

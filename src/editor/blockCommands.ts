@@ -81,6 +81,30 @@ export function insertImageBlock(
   });
 }
 
+export function insertExternalArtifact(
+  editor: Editor,
+  fields: {
+    provider?: string;
+    general_id?: string;
+    specific_id?: string;
+    display_title?: string;
+    summary?: string;
+    license?: string;
+  } = {},
+) {
+  replaceEmptyParagraphOrInsertAfter(editor, {
+    type: "external_artifact",
+    id: uuidv4(),
+    provider: fields.provider ?? "",
+    general_id: fields.general_id ?? "",
+    specific_id: fields.specific_id ?? "",
+    display_title: fields.display_title ?? "",
+    summary: fields.summary ?? "",
+    license: fields.license ?? "",
+    children: [{ text: "" }],
+  });
+}
+
 export function insertDataBlock(editor: Editor, language: string, code = "") {
   replaceEmptyParagraphOrInsertAfter(editor, {
     type: "data_block",

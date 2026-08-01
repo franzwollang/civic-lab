@@ -1,6 +1,7 @@
 /**
  * Seed prototype identities for impersonation (CONCEPT Appendix A User sketch).
- * Reply composer + merge authority use these; full role-gated chrome is M8.
+ * Global header switcher (ActingUserProvider) is the source of truth; composers
+ * and gated actions read the acting id.
  *
  * Roles (CONCEPT §8 / §3.4):
  * - owner — Eve (restricted Canon / meta-veto)
@@ -63,6 +64,9 @@ export const DEFAULT_PROTOTYPE_USER_ID = PROTOTYPE_USERS[0].id;
 
 const STORAGE_KEY = "civic-lab.acting-user-id";
 
+/** Same-tab signal when acting user changes (storage event is cross-tab only). */
+export const ACTING_USER_CHANGED_EVENT = "civic-lab:acting-user";
+
 export function getPrototypeUser(id: string): PrototypeUser | undefined {
   return PROTOTYPE_USERS.find((u) => u.id === id);
 }
@@ -83,6 +87,13 @@ export function writeActingUserId(id: string): void {
   if (!getPrototypeUser(id)) return;
   try {
     window.localStorage.setItem(STORAGE_KEY, id);
+  } catch {
+    // ignore
+  }
+  try {
+    window.dispatchEvent(
+      new CustomEvent(ACTING_USER_CHANGED_EVENT, { detail: id }),
+    );
   } catch {
     // ignore
   }

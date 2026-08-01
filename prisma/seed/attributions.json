@@ -1,13 +1,73 @@
 {
-  "version": 2,
+  "version": 3,
   "items": [
     {
       "id": "e64a1ad1-33f4-47b2-b020-1e70a3cdc68e",
       "type": "url",
-      "title": "Pee Pee Poo Poo",
+      "title": "Pee Pee Poo Poo (fixture source)",
       "authors": [],
       "url": "https://www.peepeepoopoo.com",
-      "immutable_ref": null
+      "immutable_ref": null,
+      "notes": "Legacy fixture id referenced by page-001 evidence/citation nodes."
+    },
+    {
+      "id": "attr-duverger-law",
+      "type": "paper",
+      "title": "Duverger's Law and the Study of Electoral Systems",
+      "authors": ["William H. Riker"],
+      "publisher": "American Political Science Review",
+      "date_published": "1982-01-01",
+      "url": "https://doi.org/10.2307/1961377",
+      "immutable_ref": "doi:10.2307/1961377",
+      "notes": "Classic statement of Duverger's Law — Canon electoral dossier exemplar."
+    },
+    {
+      "id": "attr-ace-project",
+      "type": "report",
+      "title": "ACE Encyclopaedia: Electoral Systems",
+      "authors": ["ACE Electoral Knowledge Network"],
+      "publisher": "ACE Project",
+      "url": "https://aceproject.org/ace-en/topics/es",
+      "immutable_ref": null,
+      "notes": "Living handbook; no durable snapshot — mutable URL only."
+    },
+    {
+      "id": "attr-arxiv-voting",
+      "type": "paper",
+      "title": "A Survey of Computational Social Choice (exemplar)",
+      "authors": ["Prototype Seed"],
+      "url": "https://arxiv.org/abs/2001.00001",
+      "immutable_ref": "arxiv:2001.00001v2",
+      "notes": "Seed exemplar for arXiv id+version immutable_ref validation."
+    },
+    {
+      "id": "attr-github-ballot",
+      "type": "other",
+      "title": "Open ballot definition snapshot (GitHub)",
+      "authors": ["Civic Lab Seed"],
+      "url": "https://github.com/example/ballot-defs/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "immutable_ref": "github:example/ballot-defs@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "notes": "Seed exemplar for GitHub commit SHA immutable_ref."
+    },
+    {
+      "id": "attr-osf-election",
+      "type": "report",
+      "title": "Election observation dataset snapshot (OSF)",
+      "authors": ["Prototype Seed"],
+      "url": "https://osf.io/abc12/?version=3",
+      "immutable_ref": "osf:abc12/v3",
+      "notes": "Seed exemplar for OSF versioned immutable_ref."
+    },
+    {
+      "id": "attr-ncsbe-provisional",
+      "type": "report",
+      "title": "Provisional ballots — state practice overview",
+      "authors": ["US Manual Seed"],
+      "publisher": "Prototype",
+      "date_published": "2024-06-01",
+      "url": "https://example.org/us/provisional-ballots",
+      "immutable_ref": null,
+      "notes": "Manual Descriptive lane exemplar for US voting dossier."
     }
   ]
 }

@@ -76,16 +76,22 @@ async function main() {
       where: { dossierId: "electoral-1" },
       orderBy: { artifactId: "asc" },
     });
-    // page-001 (seeded content) + canon-charter (owner_merge_only exemplar for M5)
+    // page-001 (seeded content); Charter lives in canon-governance-1
     const electoralIds = underElectoral.map((a) => a.artifactId).sort();
-    if (
-      underElectoral.length < 2 ||
-      !electoralIds.includes("page-001") ||
-      !electoralIds.includes("canon-charter")
-    ) {
+    if (underElectoral.length < 1 || !electoralIds.includes("page-001")) {
       throw new Error(
-        `electoral-1 artifacts: expected page-001 + canon-charter, got ${electoralIds.join(",")}`,
+        `electoral-1 artifacts: expected page-001, got ${electoralIds.join(",")}`,
       );
+    }
+
+    const charter = await prisma.artifact.findUnique({
+      where: { artifactId: "canon-charter" },
+    });
+    if (!charter || charter.dossierId !== "canon-governance-1") {
+      throw new Error("canon-charter should belong to canon-governance-1");
+    }
+    if (!charter.ownerMergeOnly) {
+      throw new Error("canon-charter must be owner_merge_only");
     }
 
     const underUsVoting = await prisma.artifact.findMany({

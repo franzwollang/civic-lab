@@ -4,12 +4,14 @@ import type { Editor } from "slate";
 import { serializeNodes } from "@/doc/plainTextExport";
 import {
   insertDataBlock,
+  insertExternalArtifact,
   insertImageBlock,
   insertMermaidBlock,
   insertProcedureBlock,
 } from "./blockCommands";
 import { insertCitationInline, insertTermInline } from "./evidenceCommands";
 import { insertMathBlock, insertMathInline } from "./mathCommands";
+import { parseExternalArtifactFenceBody } from "@/lib/externalArtifact";
 
 export type ParsedVoidPaste =
   | { kind: "math_inline"; latex: string }
@@ -18,6 +20,15 @@ export type ParsedVoidPaste =
   | { kind: "procedure"; code: string }
   | { kind: "data"; language: string; code: string }
   | { kind: "image"; src: string; alt: string; caption: string }
+  | {
+      kind: "external_artifact";
+      provider: string;
+      general_id: string;
+      specific_id: string;
+      display_title: string;
+      summary: string;
+      license: string;
+    }
   | { kind: "citation"; attributionRef: string }
   | { kind: "term"; termRef: string; label: string };
 
@@ -51,6 +62,22 @@ export function parseVoidPlainText(raw: string): ParsedVoidPaste | null {
       lang === "procedure"
     ) {
       return { kind: "procedure", code };
+    }
+
+    if (lang === "external_artifact") {
+      const parsed = parseExternalArtifactFenceBody(code);
+      if (parsed) {
+        return {
+          kind: "external_artifact",
+          provider: parsed.provider ?? "",
+          general_id: parsed.general_id ?? "",
+          specific_id: parsed.specific_id ?? "",
+          display_title: parsed.display_title ?? "",
+          summary: parsed.summary ?? "",
+          license: parsed.license ?? "",
+        };
+      }
+      return null;
     }
 
     const normalized = lang === "yml" ? "yaml" : lang;
@@ -118,6 +145,16 @@ export function applyVoidPaste(editor: Editor, parsed: ParsedVoidPaste): void {
       return;
     case "image":
       insertImageBlock(editor, parsed.src, parsed.alt, parsed.caption);
+      return;
+    case "external_artifact":
+      insertExternalArtifact(editor, {
+        provider: parsed.provider,
+        general_id: parsed.general_id,
+        specific_id: parsed.specific_id,
+        display_title: parsed.display_title,
+        summary: parsed.summary,
+        license: parsed.license,
+      });
       return;
     case "citation":
       insertCitationInline(editor, parsed.attributionRef);

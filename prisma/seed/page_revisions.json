@@ -9611,7 +9611,7 @@
         "id": "charter-p1",
         "children": [
           {
-            "text": "Living Canon governance premises (owner_merge_only). Full prose migrates from the static Constitution page over time."
+            "text": "Living Canon governance artifact (owner_merge_only). Site path /constitution resolves here. Full prose evolves via ordinary Canon RFC; minimum premises below are normative until then (CONCEPT §9.3)."
           }
         ]
       },
@@ -9629,12 +9629,58 @@
         "id": "charter-p2",
         "children": [
           {
-            "text": "Separation of powers: stewards merge Manuals; editors merge routine Canon; Owner merges restricted Canon and may revert."
+            "text": "Canon excludes divine authority as an epistemic premise for governance design."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p3",
+        "children": [
+          {
+            "text": "Manuals may treat religion as a political force/institution, not as epistemic authority."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p4",
+        "children": [
+          {
+            "text": "Separation of powers: stewards merge Manuals; editors merge routine Canon; Owner merges restricted Canon (`owner_merge_only` / Critical–Accepted Risk) and may revert."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p5",
+        "children": [
+          {
+            "text": "Scores and reputation are advisory; stewards and Owner retain discretionary permissions."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "charter-h3",
+        "children": [
+          {
+            "text": "Amendment"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p6",
+        "children": [
+          {
+            "text": "Charter changes require Owner merge on this restricted Canon artifact. Prefer leaf RFC + RevSet; do not edit silently outside the thread-first process."
           }
         ]
       }
     ]
   },
+
   {
     "revision_id": "rev-us-alignment-1",
     "page_id": "us-alignment",
