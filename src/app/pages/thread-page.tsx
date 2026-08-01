@@ -94,12 +94,16 @@ export function ThreadPage() {
     );
   }
 
-  const dossierId = thread?.home_dossier_id ?? "us-voting-1";
+  const dossierId = thread?.home_dossier_id;
 
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
-      <SidebarNav dossierId={dossierId} currentPage="thread" />
+      <SidebarNav
+        dossierId={dossierId}
+        collectionId={thread?.collection_id ?? undefined}
+        currentPage="thread"
+      />
 
       <main className="ml-64 pt-16">
         <div className="mx-auto max-w-[900px] px-8 py-8">
