@@ -29,6 +29,7 @@ import {
 } from "../lib/object-nav";
 import { useActingUser } from "../lib/acting-user";
 import { userHasCapability } from "../lib/role-affordances";
+import { ABOUT_ARTIFACT_ID } from "@/lib/about";
 import { CHARTER_ARTIFACT_ID } from "@/lib/charter";
 
 export function ArtifactPage() {
@@ -97,9 +98,14 @@ export function ArtifactPage() {
   const canEditRestricted = userHasCapability(user, "merge_canon_restricted");
   const showEdit =
     showLive && (!ownerMergeOnly || canEditRestricted);
-  const isCharter =
-    doc.status === "ready" &&
-    artifactIdOf(doc.artifact) === CHARTER_ARTIFACT_ID;
+  const livingSiteArtifactLabel =
+    doc.status === "ready"
+      ? artifactIdOf(doc.artifact) === CHARTER_ARTIFACT_ID
+        ? " · living Charter"
+        : artifactIdOf(doc.artifact) === ABOUT_ARTIFACT_ID
+          ? " · living About"
+          : ""
+      : "";
 
   const relatedFiltered = useMemo(() => {
     const currentSlug =
@@ -342,7 +348,7 @@ export function ArtifactPage() {
                         </div>
                         <div className="text-neutral-600">
                           Owner only (`owner_merge_only`)
-                          {isCharter ? " · living Charter" : ""}
+                          {livingSiteArtifactLabel}
                         </div>
                       </div>
                     )}
