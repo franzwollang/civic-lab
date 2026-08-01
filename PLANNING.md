@@ -71,6 +71,7 @@ lives in `SCRATCHPAD.json`.
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
 **Phase:** **Residual / polish** after M0–M9. Policy hardening (§K) landed.
+About + FAQ living artifacts landed; fixture retirement next.
 
 ---
 
@@ -88,7 +89,7 @@ lives in `SCRATCHPAD.json`.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | About/FAQ artifacts; fixture retirement; typed posts; tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `in progress` | Fixture retirement; typed posts; tables; CONCEPT/home copy |
 
 ---
 
@@ -96,12 +97,13 @@ lives in `SCRATCHPAD.json`.
 
 Optimize for **observable slices** with smokes. Prefer this order:
 
-1. **About → artifact** (pattern already proven by Charter)  
-2. **Fixture retirement** on dossier/thread surfaces  
-3. **Typed finding/mitigation posts** (small schema/UI)  
-4. **Plate tables** (editor depth)  
-5. **Home CONCEPT links** / FAQ artifact / CONCEPT rewrite (docs-heavy)  
-6. Only then: image upload, Fumadocs unpin, server split, OAuth
+1. ~~**About → artifact**~~ (**done** — `canon-about`, `/about` redirect, `smoke-about`)
+2. ~~**FAQ → artifact**~~ (**done** — `canon-faq`, `/faq` redirect, `smoke-faq`)
+3. **Fixture retirement** on dossier/thread surfaces  
+4. **Typed finding/mitigation posts** (small schema/UI)  
+5. **Plate tables** (editor depth)  
+6. **Home CONCEPT links** / CONCEPT rewrite (docs-heavy)  
+7. Only then: image upload, Fumadocs unpin, server split, OAuth
 
 **Agent rules of thumb**
 
@@ -126,4 +128,4 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **About artifact migration** (OPEN_ISSUES §1).
+- Next: **Fixture retirement** (OPEN_ISSUES §2).

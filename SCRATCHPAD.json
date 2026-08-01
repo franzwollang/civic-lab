@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-01T23:10Z",
+  "turn": 61,
   "focus": {
     "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "issue": "Retire remaining fixture panels",
+    "goal": "Replace hardcoded dossier/thread demo copy with API data"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "FAQ → canon-faq owner_merge_only; /faq redirect; smoke-faq; 41/41",
+    "Merged About tip 7f38 into this branch before FAQ",
+    "About → canon-about; smoke-about",
+    "§K hardening + R0 marathon queue"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron tips must merge latest progression PR when starting from main",
+    "DocumentReader heading ids enable /faq#section deep links after redirect"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Fixture retirement on dossier/thread surfaces",
+    "Typed finding/mitigation posts; Plate tables"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Retire remaining FIXTURE/hardcoded dossier-thread demo panels",
   "blockers": []
 }
