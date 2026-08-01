@@ -16,16 +16,16 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ### 1. About / FAQ → living artifacts
 
-- [ ] **Migrate About (then FAQ) into Canon artifacts**
-  - **Scope:** `src/app/pages/about.tsx`, optionally `faq` route; seeds under
-    `prisma/seed/pages.json` + `page_revisions.json`; dossier
-    `canon-governance-1` (or new) under `collection-canon`.
+- [x] **Migrate About into Canon artifact** — done (`canon-about`, `/about` redirect, `smoke-about`)
+- [ ] **Migrate FAQ into Canon artifact**
+  - **Scope:** `src/app/pages/faq.tsx`; seeds under `prisma/seed/pages.json` +
+    `page_revisions.json`; dossier `canon-governance-1` under `collection-canon`.
   - **Done when:**
-    - Seeded artifact(s) with Plate `content_json` mirroring current prose
-    - `/about` redirects (or renders via DocumentReader) to the artifact
-    - Owner/`owner_merge_only` edit gate if Charter-like; else editor-capable
-    - Smoke asserts artifact + redirect/route
-  - **Verify:** `pnpm test:smoke` + manual `/about`
+    - Seeded artifact with Plate `content_json` mirroring current FAQ prose
+    - `/faq` redirects (or renders via DocumentReader) to the artifact
+    - Owner/`owner_merge_only` edit gate (Charter/About pattern)
+    - Smoke asserts artifact + redirect/route; preserve useful `#` anchors
+  - **Verify:** `pnpm test:smoke` + manual `/faq`
   - **Out of scope:** home explainer (next); legal boilerplate
 
 ### 2. Fixture retirement
@@ -115,5 +115,5 @@ pnpm db:reset            # wipe + reseed local SQLite
 ## Notes
 
 - Lane hygiene and separation of powers remain load-bearing CONCEPT constraints.
-- Three content systems: Fumadocs `/docs`, static About/FAQ (until migrated),
-  artifact editor — unify deliberately.
+- Three content systems: Fumadocs `/docs`, static FAQ (until migrated),
+  artifact editor — unify deliberately. About is now a living Canon artifact.
