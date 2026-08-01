@@ -21,14 +21,9 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ### 2. Fixture retirement
 
-- [ ] **Retire remaining hardcoded dossier/artifact demo panels**
-  - **Scope:** grep `FIXTURE` / hardcoded US-voting copy under
-    `src/app/pages/{thread,rfc,artifact,dossier}*`; dossier tabs that still
-    show placeholder cards.
-  - **Done when:** listed fixtures replaced with API data or removed; no
-    “arrives with M7” copy; smoke or manual check on touched routes
-  - **Verify:** `pnpm test:smoke`; spot-check dossier + thread pages
-  - **Note:** `/dossier/:id/dashboard` already redirects to Collection splash
+- [x] **Retire remaining hardcoded dossier/artifact demo panels** — done
+  (`descriptive-artifact` + `red-team-review` deleted; legacy redirects;
+  sidebar → Collection; artifact actions from live threads; `smoke-fixture-retirement`)
 
 ### 3. Typed Finding / Mitigation posts
 
@@ -90,7 +85,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~41 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~42 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

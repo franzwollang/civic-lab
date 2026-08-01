@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T23:10Z",
-  "turn": 61,
+  "updated_at": "2026-08-01T23:40Z",
+  "turn": 62,
   "focus": {
     "milestone": "R0",
-    "issue": "Retire remaining fixture panels",
-    "goal": "Replace hardcoded dossier/thread demo copy with API data"
+    "issue": "Typed finding/mitigation posts",
+    "goal": "Composer + timeline affordances for finding|mitigation"
   },
   "recent": [
-    "FAQ → canon-faq owner_merge_only; /faq redirect; smoke-faq; 41/41",
-    "Merged About tip 7f38 into this branch before FAQ",
-    "About → canon-about; smoke-about",
+    "Fixture retirement: delete demo pages; redirects; live thread actions; 42/42",
+    "Merged FAQ tip 3160 onto e9da before fixture work",
+    "FAQ → canon-faq; About → canon-about",
     "§K hardening + R0 marathon queue"
   ],
   "discoveries": [
     "Cron tips must merge latest progression PR when starting from main",
-    "DocumentReader heading ids enable /faq#section deep links after redirect"
+    "Substring smoke checks can false-positive on RedirectDescriptiveArtifact"
   ],
   "open_threads": [
-    "Fixture retirement on dossier/thread surfaces",
-    "Typed finding/mitigation posts; Plate tables"
+    "Typed finding/mitigation posts next",
+    "Plate tables; home/CONCEPT copy"
   ],
-  "next_step": "Retire remaining FIXTURE/hardcoded dossier-thread demo panels",
+  "next_step": "Implement typed finding/mitigation posts (OPEN_ISSUES §3)",
   "blockers": []
 }

@@ -28,7 +28,12 @@ async function main() {
     path.join(ROOT, "src/app/routes.tsx"),
     "utf8",
   );
-  if (routes.includes("DescriptiveArtifact") || routes.includes("RedTeamReview")) {
+  if (
+    /\bfrom\s+["'].*descriptive-artifact["']/.test(routes) ||
+    /\bfrom\s+["'].*red-team-review["']/.test(routes) ||
+    /\bDescriptiveArtifact\b/.test(routes) ||
+    /\bRedTeamReview\b/.test(routes)
+  ) {
     throw new Error("routes.tsx still imports demo pages");
   }
   if (!routes.includes("RedirectDescriptiveArtifact")) {
