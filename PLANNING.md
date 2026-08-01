@@ -89,7 +89,7 @@ About + FAQ living artifacts landed; fixture retirement next.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | Typed posts; tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `in progress` | Tables; CONCEPT/home copy |
 
 ---
 
@@ -100,7 +100,7 @@ Optimize for **observable slices** with smokes. Prefer this order:
 1. ~~**About → artifact**~~ (**done** — `canon-about`, `/about` redirect, `smoke-about`)
 2. ~~**FAQ → artifact**~~ (**done** — `canon-faq`, `/faq` redirect, `smoke-faq`)
 3. ~~**Fixture retirement**~~ (**done** — demo pages deleted; legacy redirects; `smoke-fixture-retirement`)
-4. **Typed finding/mitigation posts** (small schema/UI)  
+4. ~~**Typed finding/mitigation posts**~~ (**done** — RT gate; composer; filters; `smoke-typed-posts`)
 5. **Plate tables** (editor depth)  
 6. **Home CONCEPT links** / CONCEPT rewrite (docs-heavy)  
 7. Only then: image upload, Fumadocs unpin, server split, OAuth
@@ -128,4 +128,4 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Typed finding/mitigation posts** (OPEN_ISSUES §3).
+- Next: **Plate tables MVP** (OPEN_ISSUES §4).

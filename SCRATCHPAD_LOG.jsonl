@@ -60,3 +60,4 @@
 {"ts":"2026-08-01T22:50Z","focus":"About living artifact","summary":"Seeded canon-about + redirect + smoke-about; DocumentReader heading ids; 40/40","next":"FAQ artifact migration"}
 {"ts":"2026-08-01T23:10Z","focus":"FAQ living artifact","summary":"Merged About tip; seeded canon-faq + redirect + smoke-faq; 41/41 + vite build","next":"Fixture retirement on dossier/thread surfaces"}
 {"ts":"2026-08-01T23:40Z","focus":"fixture retirement","summary":"Merged FAQ tip; deleted descriptive+red-team demos; live nav/actions; 42/42 + vite build","next":"Typed finding/mitigation posts"}
+{"ts":"2026-08-01T23:55Z","focus":"typed finding/mitigation posts","summary":"Merged e9da tip; RT-gated finding|mitigation; composer+filters+smoke-typed-posts; 43/43 + vite build","next":"Plate tables MVP"}

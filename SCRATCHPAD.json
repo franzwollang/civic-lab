@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T23:40Z",
-  "turn": 62,
+  "updated_at": "2026-08-01T23:55Z",
+  "turn": 63,
   "focus": {
     "milestone": "R0",
-    "issue": "Typed finding/mitigation posts",
-    "goal": "Composer + timeline affordances for finding|mitigation"
+    "issue": "Plate tables MVP",
+    "goal": "Plate table plugin + toolbar + reader/export"
   },
   "recent": [
-    "Fixture retirement: delete demo pages; redirects; live thread actions; 42/42",
-    "Merged FAQ tip 3160 onto e9da before fixture work",
-    "FAQ → canon-faq; About → canon-about",
+    "Typed posts: finding|mitigation RT gate; composer; filters; 43/43",
+    "Merged e9da tip (About/FAQ/fixtures) onto fa48 before typed posts",
+    "Fixture retirement + FAQ/About living artifacts",
     "§K hardening + R0 marathon queue"
   ],
   "discoveries": [
     "Cron tips must merge latest progression PR when starting from main",
-    "Substring smoke checks can false-positive on RedirectDescriptiveArtifact"
+    "createThreadPost now returns Result (not null) for typed-post gates"
   ],
   "open_threads": [
-    "Typed finding/mitigation posts next",
-    "Plate tables; home/CONCEPT copy"
+    "Plate tables next",
+    "Home CONCEPT links; CONCEPT rewrite"
   ],
-  "next_step": "Implement typed finding/mitigation posts (OPEN_ISSUES §3)",
+  "next_step": "Implement Plate tables MVP (OPEN_ISSUES §4)",
   "blockers": []
 }

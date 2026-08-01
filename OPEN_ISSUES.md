@@ -27,14 +27,9 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ### 3. Typed Finding / Mitigation posts
 
-- [ ] **First-class typed posts on thread timeline**
-  - **Scope:** `ThreadPost.type` values `finding` | `mitigation` (and existing);
-    `ReplyComposer` / `ThreadTimeline`; seed one of each; API already accepts
-    `type` string — tighten validation + UI affordances for Red Team.
-  - **Done when:** composer can post typed finding/mitigation; timeline filters
-    show them; smoke covers create + list filter
-  - **Verify:** extend `smoke-candidate-findings` or new smoke
-  - **Out of scope:** full Findings queue productization
+- [x] **First-class typed posts on thread timeline** — done
+  (`finding`|`mitigation` types; RT-only create gate; composer picker;
+  timeline filters + accents; seed finding+mitigation; `smoke-typed-posts`)
 
 ### 4. Editor tables (defer images if needed)
 
