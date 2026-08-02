@@ -1,12 +1,10 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter, Navigate, useParams } from "react-router";
 import { Home } from "./pages/home";
 import { DossierOverview } from "./pages/dossier-overview";
 import { ArtifactPage } from "./pages/artifact-page";
-import { DescriptiveArtifact } from "./pages/descriptive-artifact";
 import { Dashboard } from "./pages/dashboard";
 import { ThreadPage } from "./pages/thread-page";
 import { RfcThreadPage } from "./pages/rfc-thread-page";
-import { RedTeamReview } from "./pages/red-team-review";
 import { TestEditor, ArtifactEditorPage } from "./pages/test-editor";
 import { TestPreview } from "./pages/test-preview";
 import { About } from "./pages/about";
@@ -18,6 +16,23 @@ import {
   CollectionSplash,
 } from "./pages/collection-splash";
 import { ManualsIndex } from "./pages/manuals-index";
+
+/** Legacy descriptive demo → live Artifact reader. */
+function RedirectDescriptiveArtifact() {
+  const { dossierId, artifactId } = useParams();
+  return (
+    <Navigate
+      to={`/dossier/${dossierId}/artifact/${artifactId}`}
+      replace
+    />
+  );
+}
+
+/** Legacy fixture Red Team review → dossier overview. */
+function RedirectLegacyRedTeam() {
+  const { dossierId } = useParams();
+  return <Navigate to={`/dossier/${dossierId}`} replace />;
+}
 
 export const router = createBrowserRouter([
   {
@@ -95,7 +110,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dossier/:dossierId/artifact-descriptive/:artifactId",
-    Component: DescriptiveArtifact,
+    Component: RedirectDescriptiveArtifact,
   },
   {
     path: "/thread/:id",
@@ -107,6 +122,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dossier/:dossierId/red-team/:reviewId",
-    Component: RedTeamReview,
+    Component: RedirectLegacyRedTeam,
   },
 ]);
