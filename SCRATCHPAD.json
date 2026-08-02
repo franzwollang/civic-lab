@@ -9,7 +9,7 @@
   "recent": [
     "Cron 14f2 started at main; merged tip 43a6 (PR #81) FF",
     "Confirmed only globe (product-gated) + reputation rollup (CONCEPT) left",
-    "No actionable OPEN_ISSUES with AC; stop again"
+    "No actionable OPEN_ISSUES with AC; smoke 58/58; stop again"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
