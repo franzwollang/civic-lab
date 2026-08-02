@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T01:30Z",
+  "turn": 70,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": null,
+    "goal": "dist/ gitignore done; hand off next Optional"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "dist/ gitignore green: 48/48 smokes + vite build",
+    "Merged 02aa tip (image upload / R0+) onto 74f7",
+    "Chose dist/gitignore over Fumadocs (needs Tailwind≥4.3.2)"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron tips must merge latest progression PR when starting from main",
+    "Fumadocs inset-s unblock path: Tailwind 4.3.2+ (still on 4.1.12)"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Next Optional: Fumadocs unpin after Tailwind≥4.3.2, or server split",
+    "OAuth / moderator polish still deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: bump Tailwind≥4.3.2 then Fumadocs unpin, or split server/",
   "blockers": []
 }
