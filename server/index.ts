@@ -47,6 +47,9 @@ import {
   listUserIdentities,
   hideUserFromBoards,
   liftBoardHide,
+  changeUserRoles,
+  listEffectiveUsers,
+  reloadRoleOverrides,
   promoteCandidateFinding,
   promoteThreadToRfc,
   putAttributions,
@@ -57,6 +60,7 @@ import {
   attestUserIdentity,
   getStewardEligibilityForUser,
   getUserIdentity,
+  revertCanonArtifact,
   searchCorpus,
   setPrisma,
   softDeleteThreadPost,
@@ -65,6 +69,7 @@ import {
 import { validateRevisionPayload } from "./validateRevision";
 import { validateImmutableRef } from "../src/lib/immutableRef";
 import { actorMayViewAuditLog } from "../src/lib/moderation";
+import { readUploadedImage, saveUploadedImage } from "./uploads";
 
 const PORT = Number(process.env.PORT) || 8787;
 const BODY_LIMIT = 2 * 1024 * 1024;
@@ -240,7 +245,7 @@ const termsRegistrySchema = z.object({
 const threadPostBodySchema = z.object({
   post_id: z.string().min(1).optional(),
   author_id: z.string().min(1),
-  type: z.enum(["comment", "mitigation"]).optional(),
+  type: z.enum(["comment", "finding", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
 });
@@ -394,6 +399,13 @@ const boardHideLiftBodySchema = z.object({
   actor_id: z.string().min(1),
   subject_user_id: z.string().min(1),
   note: z.string().nullable().optional(),
+});
+
+/** CONCEPT §9.1 — Owner role appointment (full replacement set). */
+const roleChangeBodySchema = z.object({
+  actor_id: z.string().min(1),
+  roles: z.array(z.string()).min(1),
+  rationale: z.string().nullable().optional(),
 });
 
 /** CONCEPT §8.6 — Owner identity attestation. */
@@ -559,6 +571,49 @@ app.patch("/api/pages/:pageId", async (c) => {
   return c.json(result.body, result.status);
 });
 
+/** CONCEPT §9.3 / §9.4 — Owner reverts Canon artifact to a prior revision. */
+app.post("/api/artifacts/:artifactId/revert", async (c) => {
+  const artifactId = c.req.param("artifactId");
+  const body = await c.req.json().catch(() => ({}));
+  const actorId =
+    typeof (body as { actor_id?: unknown }).actor_id === "string"
+      ? (body as { actor_id: string }).actor_id.trim()
+      : "";
+  if (!actorId) {
+    return c.json({ error: "actor_id is required" }, 400);
+  }
+  const targetRaw = (body as { target_revision_id?: unknown })
+    .target_revision_id;
+  const target_revision_id =
+    typeof targetRaw === "string" && targetRaw.trim()
+      ? targetRaw.trim()
+      : undefined;
+
+  const result = await revertCanonArtifact({
+    artifact_id: artifactId,
+    actor_id: actorId,
+    target_revision_id,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found" ||
+      result.error.code === "target_missing"
+        ? 404
+        : result.error.code === "not_owner" ||
+            result.error.code === "not_canon" ||
+            result.error.code === "unknown_actor"
+          ? 403
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({
+    artifact: result.artifact,
+    from_revision_id: result.from_revision_id,
+    to_revision_id: result.to_revision_id,
+    audit: result.audit,
+  });
+});
+
 // M4 corpus IA — Area → Collection → Dossier
 app.get("/api/areas", async (c) => c.json(await listAreas()));
 
@@ -697,10 +752,16 @@ app.post("/api/threads/:threadId/posts", async (c) => {
     ...parsed.data,
     thread_id: c.req.param("threadId"),
   });
-  if (!created) {
-    return c.json({ error: "Thread not found" }, 404);
+  if (!created.ok) {
+    if (created.error.code === "not_found") {
+      return c.json({ error: created.error.message }, 404);
+    }
+    if (created.error.code === "forbidden") {
+      return c.json({ error: created.error.message, code: created.error.code }, 403);
+    }
+    return c.json({ error: created.error.message, code: created.error.code }, 400);
   }
-  return c.json(created, 201);
+  return c.json(created.post, 201);
 });
 
 /** CONCEPT §9.4 — soft-delete ordinary post (steward Manual / Owner global). */
@@ -1144,6 +1205,40 @@ app.post("/api/board-hides/lift", async (c) => {
   return c.json({ hide: result.hide, audit: result.audit });
 });
 
+// CONCEPT §9.1 / §9.4 — Owner role appointment + audit
+app.get("/api/users", async (c) => {
+  await reloadRoleOverrides();
+  return c.json(await listEffectiveUsers());
+});
+
+app.post("/api/users/:userId/roles", async (c) => {
+  const parsed = roleChangeBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid role-change payload" }, 400);
+  }
+  const result = await changeUserRoles({
+    actor_id: parsed.data.actor_id,
+    subject_user_id: c.req.param("userId"),
+    roles: parsed.data.roles,
+    rationale: parsed.data.rationale,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "unknown_user" ||
+            result.error.code === "unknown_actor"
+          ? 404
+          : result.error.code === "no_change"
+            ? 409
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ user: result.user, audit: result.audit });
+});
+
 app.get("/api/audit-logs", async (c) => {
   const actorId = c.req.query("actor_id")?.trim();
   if (!actorId || !actorMayViewAuditLog(actorId)) {
@@ -1242,6 +1337,60 @@ app.post("/api/identities/:userId/attest", async (c) => {
 app.get("/api/health", (c) =>
   c.json({ ok: true, service: "civic-lab-api", port: PORT }),
 );
+
+/** Prototype image upload — stores under uploads/images/; returns relative /uploads/… URL. */
+app.post("/api/uploads/images", async (c) => {
+  const contentType = c.req.header("content-type") || "";
+  if (!contentType.toLowerCase().includes("multipart/form-data")) {
+    return c.json(
+      { error: "Expected multipart/form-data with a `file` field." },
+      400,
+    );
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = (await c.req.parseBody({ all: true })) as Record<string, unknown>;
+  } catch {
+    return c.json({ error: "Could not parse multipart body." }, 400);
+  }
+
+  const file = body.file;
+  if (!file || typeof file === "string") {
+    return c.json({ error: "Missing `file` upload field." }, 400);
+  }
+
+  const blob = file as File;
+  const mime = blob.type || "application/octet-stream";
+  const data = await blob.arrayBuffer();
+  const saved = await saveUploadedImage({
+    data,
+    mime,
+    originalName: typeof blob.name === "string" ? blob.name : undefined,
+  });
+  if (!saved.ok) {
+    return c.json({ error: saved.error }, saved.status as 400 | 413 | 415);
+  }
+  return c.json({
+    url: saved.url,
+    filename: saved.filename,
+    mime: saved.mime,
+    bytes: saved.bytes,
+  });
+});
+
+app.get("/uploads/images/:filename", async (c) => {
+  const filename = c.req.param("filename");
+  const file = await readUploadedImage(filename);
+  if (!file) return c.text("Not found", 404);
+  return new Response(file.data, {
+    status: 200,
+    headers: {
+      "Content-Type": file.mime,
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
+  });
+});
 
 async function main() {
   const client = await bootstrapDatabase();

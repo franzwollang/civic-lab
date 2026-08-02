@@ -21,8 +21,17 @@ export const TIMELINE_FILTERS = [
 ] as const;
 export type TimelineFilter = (typeof TIMELINE_FILTERS)[number];
 
-export const TIMELINE_POST_TYPES = ["comment", "mitigation"] as const;
+/** Ordinary discussion + Red Team typed posts on the thread timeline. */
+export const TIMELINE_POST_TYPES = [
+  "comment",
+  "finding",
+  "mitigation",
+] as const;
 export type TimelinePostType = (typeof TIMELINE_POST_TYPES)[number];
+
+/** Typed posts reserved for Red Team (CONCEPT §7 / §8.2). */
+export const RED_TEAM_POST_TYPES = ["finding", "mitigation"] as const;
+export type RedTeamPostType = (typeof RED_TEAM_POST_TYPES)[number];
 
 export function isCandidateStatus(value: string): value is CandidateStatus {
   return (CANDIDATE_STATUSES as readonly string[]).includes(value);
@@ -34,6 +43,18 @@ export function isTimelineFilter(value: string): value is TimelineFilter {
 
 export function isTimelinePostType(value: string): value is TimelinePostType {
   return (TIMELINE_POST_TYPES as readonly string[]).includes(value);
+}
+
+export function isRedTeamPostType(value: string): value is RedTeamPostType {
+  return (RED_TEAM_POST_TYPES as readonly string[]).includes(value);
+}
+
+/** CONCEPT §8.2 — only Red Team may post typed finding/mitigation replies. */
+export function actorMayPostTypedFindingOrMitigation(
+  authorId: string,
+  users: readonly PrototypeUser[] = [],
+): boolean {
+  return actorMayCreateFinding(authorId, users);
 }
 
 /** Any known prototype user may flag a candidate (observers included later). */
@@ -64,15 +85,20 @@ export type TimelineItemBase = {
   id: string;
 };
 
-/** Whether a post type belongs in the Findings+responses filter. */
+/**
+ * Whether a post type belongs under a timeline filter.
+ * - findings: typed finding posts (formal Finding rows are separate)
+ * - findings_responses: finding + mitigation replies
+ * - all: every post
+ */
 export function postMatchesTimelineFilter(
   postType: string,
   filter: TimelineFilter,
 ): boolean {
   if (filter === "all") return true;
-  if (filter === "findings") return false;
-  // findings_responses: mitigation replies only (not ordinary comments).
-  return postType === "mitigation";
+  if (filter === "findings") return postType === "finding";
+  // findings_responses: typed finding notes + mitigation replies.
+  return postType === "finding" || postType === "mitigation";
 }
 
 export function findingMatchesTimelineFilter(

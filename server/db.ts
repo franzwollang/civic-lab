@@ -57,6 +57,10 @@ import {
   type SoftDeleteContext,
 } from "../src/lib/moderation";
 import {
+  validateCanonRevert,
+  type CanonRevertErrorCode,
+} from "../src/lib/canonRevert";
+import {
   AUTH_MODE,
   defaultIdentityRecord,
   evaluateStewardEligibility,
@@ -69,6 +73,16 @@ import {
   type VerificationStatus,
 } from "../src/lib/identityPolicy";
 import { getPrototypeUser } from "../src/app/lib/prototype-users";
+import {
+  clearRoleOverrides,
+  listEffectivePrototypeUsers,
+  setRoleOverrides,
+} from "../src/lib/effectiveUsers";
+import {
+  roleChangeAuditPayload,
+  validateRoleChange,
+  type RoleChangeErrorCode,
+} from "../src/lib/roleChange";
 import { randomUUID } from "crypto";
 import {
   artifactHref,
@@ -91,8 +105,10 @@ import {
 } from "../src/lib/findings";
 import {
   actorMayFlagCandidate,
+  actorMayPostTypedFindingOrMitigation,
   actorMayPromoteCandidate,
   isCandidateStatus,
+  isRedTeamPostType,
   isTimelinePostType,
 } from "../src/lib/candidateFindings";
 import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
@@ -107,6 +123,31 @@ let prisma: PrismaClient | null = null;
 
 export function setPrisma(client: PrismaClient) {
   prisma = client;
+  // Best-effort; smokes call reloadRoleOverrides after seed.
+  void reloadRoleOverrides().catch(() => {
+    clearRoleOverrides();
+  });
+}
+
+/** Load DB role appointments into the effective-user cache. */
+export async function reloadRoleOverrides(): Promise<void> {
+  const rows = await getPrisma().userRoleAssignment.findMany();
+  const entries: Array<[string, PrototypeRole[]]> = [];
+  for (const row of rows) {
+    const roles = parseRoleList(row.roles);
+    if (roles) entries.push([row.userId, roles]);
+  }
+  setRoleOverrides(entries);
+}
+
+function parseRoleList(raw: unknown): PrototypeRole[] | null {
+  if (!Array.isArray(raw)) return null;
+  const out: PrototypeRole[] = [];
+  for (const item of raw) {
+    if (typeof item !== "string") return null;
+    out.push(item as PrototypeRole);
+  }
+  return out;
 }
 
 export function getPrisma(): PrismaClient {
@@ -1260,6 +1301,165 @@ export async function updateArtifact(
 /** @deprecated Prefer updateArtifact */
 export const updatePage = updateArtifact;
 
+export type RevertCanonArtifactError = {
+  code: CanonRevertErrorCode;
+  message?: string;
+};
+
+/**
+ * CONCEPT §9.3 / §9.4 — Owner reverts a Canon artifact to a prior revision
+ * (default: parent of current). Append-only `revert` audit; never deletes
+ * revisions.
+ */
+export async function revertCanonArtifact(input: {
+  artifact_id: string;
+  actor_id: string;
+  /** Explicit prior revision; default = parent of current. */
+  target_revision_id?: string | null;
+}): Promise<
+  | {
+      ok: true;
+      artifact: ArtifactRow;
+      from_revision_id: string;
+      to_revision_id: string;
+      audit: AuditLogRow;
+    }
+  | { ok: false; error: RevertCanonArtifactError }
+> {
+  const prisma = getPrisma();
+  const row = await prisma.artifact.findUnique({
+    where: { artifactId: input.artifact_id },
+    include: {
+      dossier: {
+        select: {
+          collection: {
+            select: {
+              collectionId: true,
+              area: { select: { kind: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!row) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Artifact not found" },
+    };
+  }
+
+  const area_kind = row.dossier?.collection?.area?.kind ?? null;
+  const gate = validateCanonRevert({
+    actor_id: input.actor_id,
+    context: { area_kind },
+  });
+  if (!gate.ok) {
+    return { ok: false, error: { code: gate.code, message: gate.message } };
+  }
+
+  if (!row.currentRevisionId) {
+    return {
+      ok: false,
+      error: {
+        code: "no_current_revision",
+        message: "Artifact has no current revision to revert from",
+      },
+    };
+  }
+
+  const current = await prisma.artifactRevision.findUnique({
+    where: { revisionId: row.currentRevisionId },
+  });
+  if (!current || current.artifactId !== input.artifact_id) {
+    return {
+      ok: false,
+      error: {
+        code: "no_current_revision",
+        message: "Current revision row missing for artifact",
+      },
+    };
+  }
+
+  const targetId =
+    input.target_revision_id?.trim() || current.parentRevisionId || null;
+  if (!targetId) {
+    return {
+      ok: false,
+      error: {
+        code: "nothing_to_revert",
+        message:
+          "No parent revision and no target_revision_id — nothing to revert to",
+      },
+    };
+  }
+  if (targetId === current.revisionId) {
+    return {
+      ok: false,
+      error: {
+        code: "already_current",
+        message: "Target revision is already current",
+      },
+    };
+  }
+
+  const target = await prisma.artifactRevision.findUnique({
+    where: { revisionId: targetId },
+  });
+  if (!target) {
+    return {
+      ok: false,
+      error: {
+        code: "target_missing",
+        message: `Target revision not found: ${targetId}`,
+      },
+    };
+  }
+  if (target.artifactId !== input.artifact_id) {
+    return {
+      ok: false,
+      error: {
+        code: "target_wrong_artifact",
+        message: "Target revision belongs to a different artifact",
+      },
+    };
+  }
+
+  await prisma.artifact.update({
+    where: { artifactId: input.artifact_id },
+    data: { currentRevisionId: target.revisionId },
+  });
+  await syncSectionsForArtifact(input.artifact_id, target.contentJson);
+
+  const audit = await appendAuditLog({
+    action: "revert",
+    actor_id: input.actor_id,
+    subject_id: input.artifact_id,
+    payload: {
+      from_revision_id: current.revisionId,
+      to_revision_id: target.revisionId,
+      collection_id: row.dossier?.collection?.collectionId ?? null,
+      area_kind,
+    },
+  });
+
+  const artifact = await getArtifact(input.artifact_id);
+  if (!artifact) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Artifact missing after revert" },
+    };
+  }
+
+  return {
+    ok: true,
+    artifact,
+    from_revision_id: current.revisionId,
+    to_revision_id: target.revisionId,
+    audit,
+  };
+}
+
 export async function listArtifactRevisions(
   artifactId: string,
 ): Promise<ArtifactRevisionRow[]> {
@@ -2178,6 +2378,11 @@ export async function createRevSet(input: {
   return { ok: true, revset: mapRevSet(row, mergeArtifactId) };
 }
 
+export type CreateThreadPostError =
+  | { code: "not_found"; message: string }
+  | { code: "invalid_type"; message: string }
+  | { code: "forbidden"; message: string };
+
 export async function createThreadPost(input: {
   post_id?: string;
   thread_id: string;
@@ -2185,15 +2390,42 @@ export async function createThreadPost(input: {
   type?: string;
   body: string;
   created_at?: string;
-}): Promise<ThreadPostRow | null> {
+}): Promise<
+  | { ok: true; post: ThreadPostRow }
+  | { ok: false; error: CreateThreadPostError }
+> {
   const thread = await getPrisma().thread.findUnique({
     where: { threadId: input.thread_id },
   });
-  if (!thread) return null;
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
 
   const type = input.type ?? "comment";
   if (!isTimelinePostType(type)) {
-    return null;
+    return {
+      ok: false,
+      error: {
+        code: "invalid_type",
+        message: `Invalid post type "${type}" (allowed: comment, finding, mitigation)`,
+      },
+    };
+  }
+
+  if (
+    isRedTeamPostType(type) &&
+    !actorMayPostTypedFindingOrMitigation(input.author_id)
+  ) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Only Red Team may post finding or mitigation types",
+      },
+    };
   }
 
   const row = await getPrisma().threadPost.create({
@@ -2206,7 +2438,7 @@ export async function createThreadPost(input: {
       createdAt: input.created_at ? new Date(input.created_at) : new Date(),
     },
   });
-  return mapThreadPost(row);
+  return { ok: true, post: mapThreadPost(row) };
 }
 
 export type SoftDeletePostError =
@@ -3997,6 +4229,111 @@ export async function liftBoardHide(input: {
   });
 
   return { ok: true, hide: mapBoardHide(hide), audit };
+}
+
+
+// ---------------------------------------------------------------------------
+// CONCEPT §9.1 / §9.4 — Owner role appointment + audit
+// ---------------------------------------------------------------------------
+
+export type RoleChangeMutationError = {
+  code: RoleChangeErrorCode | "invalid_input";
+  message: string;
+};
+
+export type EffectiveUserRow = {
+  user_id: string;
+  display_name: string;
+  roles: PrototypeRole[];
+  roles_source: "seed" | "override";
+};
+
+export async function listEffectiveUsers(): Promise<EffectiveUserRow[]> {
+  await reloadRoleOverrides();
+  const overrides = await getPrisma().userRoleAssignment.findMany();
+  const overrideIds = new Set(overrides.map((r) => r.userId));
+  return listEffectivePrototypeUsers().map((u) => ({
+    user_id: u.id,
+    display_name: u.display_name,
+    roles: [...u.roles],
+    roles_source: overrideIds.has(u.id) ? "override" : "seed",
+  }));
+}
+
+export async function changeUserRoles(input: {
+  actor_id: string;
+  subject_user_id: string;
+  roles: readonly string[];
+  rationale?: string | null;
+}): Promise<
+  | {
+      ok: true;
+      user: EffectiveUserRow;
+      audit: AuditLogRow;
+    }
+  | { ok: false; error: RoleChangeMutationError }
+> {
+  await reloadRoleOverrides();
+
+  const check = validateRoleChange({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+    roles: input.roles,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const seed = getPrototypeUser(input.subject_user_id);
+  if (!seed) {
+    return {
+      ok: false,
+      error: {
+        code: "unknown_user",
+        message: `Unknown subject user: ${input.subject_user_id}`,
+      },
+    };
+  }
+
+  const updatedAt = new Date();
+  await getPrisma().userRoleAssignment.upsert({
+    where: { userId: input.subject_user_id },
+    create: {
+      userId: input.subject_user_id,
+      roles: check.new_roles,
+      updatedBy: input.actor_id,
+      updatedAt,
+    },
+    update: {
+      roles: check.new_roles,
+      updatedBy: input.actor_id,
+      updatedAt,
+    },
+  });
+
+  await reloadRoleOverrides();
+
+  const audit = await appendAuditLog({
+    action: "role_change",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: roleChangeAuditPayload({
+      prior_roles: check.prior_roles,
+      new_roles: check.new_roles,
+      rationale: input.rationale,
+    }),
+  });
+
+  return {
+    ok: true,
+    user: {
+      user_id: seed.id,
+      display_name: seed.display_name,
+      roles: check.new_roles,
+      roles_source: "override",
+    },
+    audit,
+  };
 }
 
 
