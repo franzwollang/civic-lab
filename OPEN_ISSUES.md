@@ -58,10 +58,9 @@ that is actionable, or stop if blocked on product decisions.
 
 ## Optional / deferred
 
-- [ ] **Image upload pipeline** — after tables; replace `.webp`-only constraint
-  - **Done when:** upload endpoint + editor insert; reader/export; smoke;
-    CONCEPT Appendix C residual note cleared
-  - **Verify:** `pnpm test:smoke` + `/test/editor`
+- [x] **Image upload pipeline** — done (`POST /api/uploads/images`;
+  `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
+  `smoke-image-upload`; CONCEPT Appendix C residual cleared)
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [ ] **Full OAuth / IdP** — bind session→server actor; body `actor_id` trust
   remains until then (explicit)
@@ -80,7 +79,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~46 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~47 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

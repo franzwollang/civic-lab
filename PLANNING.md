@@ -104,7 +104,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 5. ~~**Plate tables**~~ (**done** — `@platejs/table@52`; reader/export; `smoke-editor-tables`)
 6. ~~**Home CONCEPT links**~~ (**done** — `#what-is-this` + live exemplars; `smoke-home-preamble`)
 7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
-8. **Optional / deferred:** image upload, Fumadocs unpin, server split, OAuth
+8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
+9. **Optional / deferred next:** Fumadocs unpin, server split, OAuth, `dist/` gitignore
 
 **Agent rules of thumb**
 

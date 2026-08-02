@@ -475,6 +475,7 @@ Formerly open design questions — **defaults adopted** (revisit only with cause
 - `procedure_block` (pseudocode.js initially)
 - `evidence_block` (text/data/math + attribution)
 - `citation_inline`, `term_inline`
+- `image_block` (upload pipeline: webp/png/jpeg/gif via `/api/uploads/images`)
 
 ### Platform-lite
 - `data_block` for JSON/YAML/TOML/CSV (highlight/validate, no execution)
@@ -483,7 +484,7 @@ Formerly open design questions — **defaults adopted** (revisit only with cause
 - `external_artifact` (Appendix D)
 
 ### Residual editor gaps
-- Image upload pipeline (keep `.webp`-only until upload exists)
+- None for MVP block types; richer media (SVG, video) deferred
 
 ---
 
