@@ -77,11 +77,11 @@ async function main() {
         body: `Composer smoke from ${author_id}`,
         type: "comment",
       });
-      if (!post || post.author_id !== author_id) {
+      if (!post.ok || post.post.author_id !== author_id) {
         throw new Error(`createThreadPost failed for ${author_id}`);
       }
-      if (post.type !== "comment") {
-        throw new Error(`expected comment type, got ${post.type}`);
+      if (post.post.type !== "comment") {
+        throw new Error(`expected comment type, got ${post.post.type}`);
       }
     }
 
@@ -101,8 +101,8 @@ async function main() {
       author_id: "user-alice",
       body: "should fail",
     });
-    if (missing !== null) {
-      throw new Error("unknown thread should return null");
+    if (missing.ok || missing.error.code !== "not_found") {
+      throw new Error("unknown thread should return not_found");
     }
 
     console.log("smoke-reply-composer: OK");
