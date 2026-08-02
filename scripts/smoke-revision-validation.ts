@@ -109,9 +109,13 @@ const contentNotArray = pageRevisionSchema.safeParse({
 });
 assert.equal(contentNotArray.success, false, "content_json must be array");
 
-const indexSrc = readFileSync("server/index.ts", "utf8");
-assert.match(indexSrc, /validateRevisionPayload/);
-assert.match(indexSrc, /issues: validated\.issues/);
+const artifactRoutesSrc = readFileSync("server/routes/artifacts.ts", "utf8");
+assert.match(artifactRoutesSrc, /validateRevisionPayload/);
+assert.match(artifactRoutesSrc, /issues: validated\.issues/);
+assert.match(
+  readFileSync("server/index.ts", "utf8"),
+  /registerArtifactRoutes/,
+);
 
 const validateSrc = readFileSync("server/validateRevision.ts", "utf8");
 assert.match(validateSrc, /pageRevisionSchema/);
