@@ -15,6 +15,7 @@ import {
   searchCorpus,
   setPrisma,
 } from "../server/db";
+import { registerArtifactRoutes } from "../server/routes/artifacts";
 import { registerClaimRoutes } from "../server/routes/claims";
 import { registerCorpusRoutes } from "../server/routes/corpus";
 import { registerFindingRoutes } from "../server/routes/findings";
@@ -40,6 +41,7 @@ const REQUIRED_FILES = [
   "server/routes/threads.ts",
   "server/routes/claims.ts",
   "server/routes/findings.ts",
+  "server/routes/artifacts.ts",
 ];
 
 async function main() {
@@ -61,6 +63,7 @@ async function main() {
     throw new Error("moderation/identity barrel exports missing");
   }
   if (
+    typeof registerArtifactRoutes !== "function" ||
     typeof registerCorpusRoutes !== "function" ||
     typeof registerHealthRoutes !== "function" ||
     typeof registerModerationRoutes !== "function" ||
@@ -70,6 +73,19 @@ async function main() {
     typeof registerFindingRoutes !== "function"
   ) {
     throw new Error("route registrar exports missing");
+  }
+
+  const indexSrc = await fs.readFile(path.join(ROOT, "server/index.ts"), "utf8");
+  if (!indexSrc.includes("registerArtifactRoutes")) {
+    throw new Error("server/index.ts must register artifact routes");
+  }
+  if (
+    /app\.(get|post|patch)\(\s*["'`]\/api\/artifacts/.test(indexSrc) ||
+    /app\.(get|put)\(\s*["'`]\/api\/attributions/.test(indexSrc)
+  ) {
+    throw new Error(
+      "artifact/attribution HTTP handlers must live in server/routes/artifacts.ts",
+    );
   }
 
   const dbPath = path.join(ROOT, "prisma", "smoke-server-split.db");
