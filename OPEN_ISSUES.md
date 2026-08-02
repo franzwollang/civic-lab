@@ -3,12 +3,14 @@
 Current open work only (no history). Resolutions → `OPEN_ISSUES_LOG.jsonl`.
 Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
-M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**
-(soft-delete pre-check, §8.6 eligibility, audit/`include_deleted` gates,
-reputation `deletedAt` filter, board-hide on claim metrics, HTTP smoke).
+M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**.
+**R0 residual polish** marathon queue is **done** (About/FAQ artifacts, fixture
+retirement, typed posts, Plate tables, home exemplars, CONCEPT rewrite).
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
+When the marathon queue is empty, take the next **Optional / deferred** item
+that is actionable, or stop if blocked on product decisions.
 
 ---
 
@@ -46,16 +48,20 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ### 6. CONCEPT.md rewrite pass
 
-- [ ] **Editorial pass (human-facing)**
-  - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
-    claims abstraction; bridge soft-label; parent/sub-RFC; evidence section;
-    fix dupes/numbering. Not a code milestone — land as a docs PR slice.
+- [x] **Editorial pass (human-facing)** — done
+  (hierarchy tree; kill Requirements Matrix framing; claims = one abstraction /
+  two profiles; `lane_soft_label` composite/bridge; leaf vs wrapper RFC table;
+  §2.4 evidence pointer + Appendix E; living Charter/About/FAQ; §0–§12
+  numbering; `smoke-concept`)
 
 ---
 
 ## Optional / deferred
 
 - [ ] **Image upload pipeline** — after tables; replace `.webp`-only constraint
+  - **Done when:** upload endpoint + editor insert; reader/export; smoke;
+    CONCEPT Appendix C residual note cleared
+  - **Verify:** `pnpm test:smoke` + `/test/editor`
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [ ] **Full OAuth / IdP** — bind session→server actor; body `actor_id` trust
   remains until then (explicit)
@@ -74,7 +80,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~45 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~46 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

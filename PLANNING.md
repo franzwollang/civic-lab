@@ -70,8 +70,8 @@ lives in `SCRATCHPAD.json`.
 | Auth | Impersonation + identity hooks; body `actor_id` until IdP |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
-**Phase:** **Residual / polish** after M0–M9. Policy hardening (§K) landed.
-About + FAQ living artifacts landed; fixture retirement next.
+**Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
+R0 marathon (About/FAQ → CONCEPT rewrite) landed.
 
 ---
 
@@ -89,7 +89,7 @@ About + FAQ living artifacts landed; fixture retirement next.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | CONCEPT rewrite (home exemplars done) |
+| **R0 — Residual polish** | `done` | About/FAQ artifacts; fixtures; typed posts; tables; home exemplars; CONCEPT rewrite |
 
 ---
 
@@ -103,8 +103,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 4. ~~**Typed finding/mitigation posts**~~ (**done** — RT gate; composer; filters; `smoke-typed-posts`)
 5. ~~**Plate tables**~~ (**done** — `@platejs/table@52`; reader/export; `smoke-editor-tables`)
 6. ~~**Home CONCEPT links**~~ (**done** — `#what-is-this` + live exemplars; `smoke-home-preamble`)
-7. **CONCEPT.md rewrite** (docs-heavy editorial pass)
-8. Only then: image upload, Fumadocs unpin, server split, OAuth
+7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
+8. **Optional / deferred:** image upload, Fumadocs unpin, server split, OAuth
 
 **Agent rules of thumb**
 
@@ -118,9 +118,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-See `OPEN_ISSUES.md` marathon queue. No architecture blockers. Known debt:
-server monolith size, tracked `dist/`, client→server import of prototype-users,
-tsc not covering `server/` (Vite/smoke are the gates today).
+R0 marathon queue cleared — see `OPEN_ISSUES.md` **Optional / deferred**.
+No architecture blockers. Known debt: server monolith size, tracked `dist/`,
+client→server import of prototype-users, tsc not covering `server/`
+(Vite/smoke are the gates today).
 
 ---
 
@@ -129,4 +130,5 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **CONCEPT.md rewrite pass** (OPEN_ISSUES §6).
+- Next: **Image upload pipeline** (first actionable Optional item) unless product
+  redirects; else Fumadocs unpin / server split / OAuth.
