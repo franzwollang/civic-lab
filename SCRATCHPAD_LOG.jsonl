@@ -65,3 +65,4 @@
 {"ts":"2026-08-02T00:40Z","focus":"home preamble exemplars","summary":"Merged 1fb6 tip; #what-is-this + live Collection/dossier/RFC links; smoke-home-preamble; 45/45","next":"CONCEPT.md rewrite pass"}
 {"ts":"2026-08-02T00:45Z","focus":"CONCEPT rewrite","summary":"Merged a831 tip; CONCEPT editorial pass + smoke-concept; R0 done; next image upload","next":"Image upload pipeline (Optional)"}
 {"ts":"2026-08-02T01:15Z","focus":"image upload pipeline","summary":"Merged 3148 tip; upload API+editor+validation+smoke; CONCEPT Appendix C cleared","next":"Run smokes/build; hand off Fumadocs unpin or dist/ gitignore"}
+{"ts":"2026-08-02T01:20Z","focus":"image upload pipeline","summary":"47/47 smokes + vite build green; dist refreshed; hand off Fumadocs/dist","next":"Optional Fumadocs unpin or dist/ gitignore"}
