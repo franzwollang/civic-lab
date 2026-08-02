@@ -3,12 +3,14 @@
 Current open work only (no history). Resolutions → `OPEN_ISSUES_LOG.jsonl`.
 Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 
-M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**
-(soft-delete pre-check, §8.6 eligibility, audit/`include_deleted` gates,
-reputation `deletedAt` filter, board-hide on claim metrics, HTTP smoke).
+M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**.
+**R0 residual polish** marathon queue is **done** (About/FAQ artifacts, fixture
+retirement, typed posts, Plate tables, home exemplars, CONCEPT rewrite).
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
+When the marathon queue is empty, take the next **Optional / deferred** item
+that is actionable, or stop if blocked on product decisions.
 
 ---
 
@@ -16,81 +18,67 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ### 1. About / FAQ → living artifacts
 
-- [ ] **Migrate About (then FAQ) into Canon artifacts**
-  - **Scope:** `src/app/pages/about.tsx`, optionally `faq` route; seeds under
-    `prisma/seed/pages.json` + `page_revisions.json`; dossier
-    `canon-governance-1` (or new) under `collection-canon`.
-  - **Done when:**
-    - Seeded artifact(s) with Plate `content_json` mirroring current prose
-    - `/about` redirects (or renders via DocumentReader) to the artifact
-    - Owner/`owner_merge_only` edit gate if Charter-like; else editor-capable
-    - Smoke asserts artifact + redirect/route
-  - **Verify:** `pnpm test:smoke` + manual `/about`
-  - **Out of scope:** home explainer (next); legal boilerplate
+- [x] **Migrate About into Canon artifact** — done (`canon-about`, `/about` redirect, `smoke-about`)
+- [x] **Migrate FAQ into Canon artifact** — done (`canon-faq`, `/faq` redirect, `smoke-faq`)
 
 ### 2. Fixture retirement
 
-- [ ] **Retire remaining hardcoded dossier/artifact demo panels**
-  - **Scope:** grep `FIXTURE` / hardcoded US-voting copy under
-    `src/app/pages/{thread,rfc,artifact,dossier}*`; dossier tabs that still
-    show placeholder cards.
-  - **Done when:** listed fixtures replaced with API data or removed; no
-    “arrives with M7” copy; smoke or manual check on touched routes
-  - **Verify:** `pnpm test:smoke`; spot-check dossier + thread pages
-  - **Note:** `/dossier/:id/dashboard` already redirects to Collection splash
+- [x] **Retire remaining hardcoded dossier/artifact demo panels** — done
+  (`descriptive-artifact` + `red-team-review` deleted; legacy redirects;
+  sidebar → Collection; artifact actions from live threads; `smoke-fixture-retirement`)
 
 ### 3. Typed Finding / Mitigation posts
 
-- [ ] **First-class typed posts on thread timeline**
-  - **Scope:** `ThreadPost.type` values `finding` | `mitigation` (and existing);
-    `ReplyComposer` / `ThreadTimeline`; seed one of each; API already accepts
-    `type` string — tighten validation + UI affordances for Red Team.
-  - **Done when:** composer can post typed finding/mitigation; timeline filters
-    show them; smoke covers create + list filter
-  - **Verify:** extend `smoke-candidate-findings` or new smoke
-  - **Out of scope:** full Findings queue productization
+- [x] **First-class typed posts on thread timeline** — done
+  (`finding`|`mitigation` types; RT-only create gate; composer picker;
+  timeline filters + accents; seed finding+mitigation; `smoke-typed-posts`)
 
 ### 4. Editor tables (defer images if needed)
 
-- [ ] **Plate tables MVP**
-  - **Scope:** add table plugin compatible with Plate 52; toolbar insert;
-    DocumentReader + plainTextExport; structural validation allowlist
-  - **Done when:** insert/edit simple table in `/test/editor`; round-trip save;
-    smoke on content_json shape
-  - **Out of scope:** image upload pipeline (separate); keep `.webp`-only until
-    upload exists
+- [x] **Plate tables MVP** — done (`@platejs/table@52`; toolbar insert;
+  DocumentReader + markdown export; structural row/cell checks;
+  `smoke-editor-tables`)
 
 ### 5. Home / About CONCEPT alignment
 
-- [ ] **Home preamble links to live exemplars**
-  - **Scope:** `src/app/pages/home.tsx`
-  - **Done when:** explicit Canon vs Manuals + thread-first + claims + Red Team
-    copy with deep links to e.g. `/collection/collection-us`,
-    `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
-  - **Verify:** manual; no new smoke required if copy-only
+- [x] **Home preamble links to live exemplars** — done
+  (`#what-is-this` on `/`; Canon/Manuals + lanes + threads/RFC + claims +
+  Red Team/Adjudicators; `HOME_EXEMPLARS` → Collection/dossier/thread/RFC/
+  finding; `smoke-home-preamble`)
 
 ### 6. CONCEPT.md rewrite pass
 
-- [ ] **Editorial pass (human-facing)**
-  - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
-    claims abstraction; bridge soft-label; parent/sub-RFC; evidence section;
-    fix dupes/numbering. Not a code milestone — land as a docs PR slice.
+- [x] **Editorial pass (human-facing)** — done
+  (hierarchy tree; kill Requirements Matrix framing; claims = one abstraction /
+  two profiles; `lane_soft_label` composite/bridge; leaf vs wrapper RFC table;
+  §2.4 evidence pointer + Appendix E; living Charter/About/FAQ; §0–§12
+  numbering; `smoke-concept`)
 
 ---
 
 ## Optional / deferred
 
-- [ ] **Image upload pipeline** — after tables; replace `.webp`-only constraint
+- [x] **Image upload pipeline** — done (`POST /api/uploads/images`;
+  `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
+  `smoke-image-upload`; CONCEPT Appendix C residual cleared)
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [ ] **Full OAuth / IdP** — bind session→server actor; body `actor_id` trust
   remains until then (explicit)
-- [ ] **Moderator polish** — Canon revert audit; role-change audit; mod queue UI
+- [ ] **Moderator polish (remaining)**
+  - [x] **Canon revert audit** — done (`POST /api/artifacts/:id/revert`;
+    Owner-only; Canon-only; parent/target revision; `revert` audit;
+    artifact Revert chrome; `smoke-canon-revert`)
+  - [ ] **Role-change audit** — Owner appoint/change roles with append-only
+    `role_change` audit (prototype roles still client-seeded today)
+  - [ ] **Mod queue UI** — steward/Owner surface for soft-deleted posts +
+    open findings / adjudication queue (beyond Collection audit panel)
 - [ ] **Model→forecast implication graph** — deferred
-- [ ] **Fumadocs unpin** — stay on 16.5.4 until `inset-s-*` or prebuilt CSS
+- [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
+  `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** kept for
+  Vite 6; `-inset-s-4` in build CSS; `smoke-fumadocs`)
 - [ ] **Split `server/index.ts` / `server/db.ts`** — quality debt; do only if a
   feature turn is blocked by file size
-- [ ] **`dist/` gitignore** — repo currently tracks build output by convention;
-  optional cleanup (large noisy diffs)
+- [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
 
@@ -99,7 +87,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~39 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~50 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
@@ -115,5 +103,5 @@ pnpm db:reset            # wipe + reseed local SQLite
 ## Notes
 
 - Lane hygiene and separation of powers remain load-bearing CONCEPT constraints.
-- Three content systems: Fumadocs `/docs`, static About/FAQ (until migrated),
-  artifact editor — unify deliberately.
+- Three content systems: Fumadocs `/docs`, living site artifacts (Charter /
+  About / FAQ), artifact editor — unify deliberately.

@@ -9,6 +9,7 @@ import { useMathJaxTick } from "@/editor/useMathJaxTick";
 import { useMermaidTick } from "@/editor/useMermaidTick";
 import { usePrismHighlight } from "@/editor/usePrism";
 import { truncateForAria } from "@/editor/voidA11y";
+import { resolveImageSrc } from "@/lib/imageSrc";
 
 export type ReaderNode = {
   type?: string;
@@ -318,6 +319,7 @@ function ImageBlockRead({
   alt?: string;
   caption?: string;
 }) {
+  const resolved = resolveImageSrc(src);
   return (
     <figure
       className="my-3 rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
@@ -333,7 +335,7 @@ function ImageBlockRead({
       <div className="mt-2 rounded border border-neutral-200 bg-white p-2">
         {src ? (
           <img
-            src={src}
+            src={resolved}
             alt={alt || ""}
             className="max-h-[320px] w-auto max-w-full rounded"
           />
@@ -508,13 +510,21 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
       case ELEMENT_TYPES.H2:
       case "h1":
         return (
-          <h2 key={key} className="mb-3 text-2xl font-semibold text-neutral-900">
+          <h2
+            key={key}
+            id={typeof node.id === "string" ? node.id : undefined}
+            className="mb-3 text-2xl font-semibold text-neutral-900"
+          >
             {children}
           </h2>
         );
       case ELEMENT_TYPES.H3:
         return (
-          <h3 key={key} className="mb-2 text-lg font-semibold text-neutral-900">
+          <h3
+            key={key}
+            id={typeof node.id === "string" ? node.id : undefined}
+            className="mb-2 text-lg font-semibold text-neutral-900"
+          >
             {children}
           </h3>
         );
@@ -522,6 +532,7 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
         return (
           <h4
             key={key}
+            id={typeof node.id === "string" ? node.id : undefined}
             className="mb-2 text-base font-semibold text-neutral-900"
           >
             {children}
@@ -786,6 +797,40 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
             {children}
           </blockquote>
         );
+      case ELEMENT_TYPES.TABLE:
+        return (
+          <div key={key} className="mb-4 w-full overflow-x-auto">
+            <table className="w-full border-collapse border border-neutral-300 text-sm">
+              <tbody className="[&>tr]:border-b [&>tr]:border-neutral-200">
+                {children}
+              </tbody>
+            </table>
+          </div>
+        );
+      case ELEMENT_TYPES.TABLE_ROW:
+        return (
+          <tr key={key} className="border-b border-neutral-200">
+            {children}
+          </tr>
+        );
+      case ELEMENT_TYPES.TABLE_CELL_HEADER:
+        return (
+          <th
+            key={key}
+            className="border border-neutral-200 bg-neutral-50 px-2 py-1.5 text-left align-top text-sm font-semibold leading-6 text-neutral-900"
+          >
+            {children}
+          </th>
+        );
+      case ELEMENT_TYPES.TABLE_CELL:
+        return (
+          <td
+            key={key}
+            className="border border-neutral-200 px-2 py-1.5 align-top text-sm leading-6 text-neutral-700"
+          >
+            {children}
+          </td>
+        );
       case ELEMENT_TYPES.PARAGRAPH: {
         const listStyleType =
           typeof node.listStyleType === "string" ? node.listStyleType : null;
@@ -868,6 +913,10 @@ export const DOCUMENT_READER_NODE_TYPES = [
   ELEMENT_TYPES.H3,
   ELEMENT_TYPES.H4,
   ELEMENT_TYPES.BLOCKQUOTE,
+  ELEMENT_TYPES.TABLE,
+  ELEMENT_TYPES.TABLE_ROW,
+  ELEMENT_TYPES.TABLE_CELL,
+  ELEMENT_TYPES.TABLE_CELL_HEADER,
   ELEMENT_TYPES.MATH_INLINE,
   ELEMENT_TYPES.MATH_BLOCK,
   ELEMENT_TYPES.MERMAID_BLOCK,

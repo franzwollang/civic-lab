@@ -151,6 +151,27 @@ export async function updateArtifact(
   return handleResponse<ArtifactRow>(response);
 }
 
+/** CONCEPT §9.3 — Owner reverts a Canon artifact to a prior revision. */
+export async function revertCanonArtifact(
+  artifactId: string,
+  input: { actor_id: string; target_revision_id?: string },
+): Promise<{
+  artifact: ArtifactRow;
+  from_revision_id: string;
+  to_revision_id: string;
+  audit: AuditLogRow;
+}> {
+  const response = await fetch(
+    `${API_BASE}/artifacts/${artifactId}/revert`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    },
+  );
+  return handleResponse(response);
+}
+
 /**
  * Resolve a route param that may be an artifact id or a slug
  * (e.g. `page-001` or `voting-systems`).
@@ -749,4 +770,24 @@ export async function putTerms(registry: TermRegistry): Promise<TermRegistry> {
     body: JSON.stringify(registry),
   });
   return handleResponse<TermRegistry>(response);
+}
+
+export type UploadedImage = {
+  url: string;
+  filename: string;
+  mime: string;
+  bytes: number;
+};
+
+/** Upload a raster image (webp/png/jpeg/gif) to the prototype filesystem store. */
+export async function uploadImage(file: File | Blob): Promise<UploadedImage> {
+  const form = new FormData();
+  const name =
+    file instanceof File && file.name ? file.name : "upload.bin";
+  form.append("file", file, name);
+  const response = await fetch(`${API_BASE}/uploads/images`, {
+    method: "POST",
+    body: form,
+  });
+  return handleResponse<UploadedImage>(response);
 }

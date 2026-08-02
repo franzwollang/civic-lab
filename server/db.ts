@@ -57,6 +57,10 @@ import {
   type SoftDeleteContext,
 } from "../src/lib/moderation";
 import {
+  validateCanonRevert,
+  type CanonRevertErrorCode,
+} from "../src/lib/canonRevert";
+import {
   AUTH_MODE,
   defaultIdentityRecord,
   evaluateStewardEligibility,
@@ -91,8 +95,10 @@ import {
 } from "../src/lib/findings";
 import {
   actorMayFlagCandidate,
+  actorMayPostTypedFindingOrMitigation,
   actorMayPromoteCandidate,
   isCandidateStatus,
+  isRedTeamPostType,
   isTimelinePostType,
 } from "../src/lib/candidateFindings";
 import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
@@ -1260,6 +1266,165 @@ export async function updateArtifact(
 /** @deprecated Prefer updateArtifact */
 export const updatePage = updateArtifact;
 
+export type RevertCanonArtifactError = {
+  code: CanonRevertErrorCode;
+  message?: string;
+};
+
+/**
+ * CONCEPT §9.3 / §9.4 — Owner reverts a Canon artifact to a prior revision
+ * (default: parent of current). Append-only `revert` audit; never deletes
+ * revisions.
+ */
+export async function revertCanonArtifact(input: {
+  artifact_id: string;
+  actor_id: string;
+  /** Explicit prior revision; default = parent of current. */
+  target_revision_id?: string | null;
+}): Promise<
+  | {
+      ok: true;
+      artifact: ArtifactRow;
+      from_revision_id: string;
+      to_revision_id: string;
+      audit: AuditLogRow;
+    }
+  | { ok: false; error: RevertCanonArtifactError }
+> {
+  const prisma = getPrisma();
+  const row = await prisma.artifact.findUnique({
+    where: { artifactId: input.artifact_id },
+    include: {
+      dossier: {
+        select: {
+          collection: {
+            select: {
+              collectionId: true,
+              area: { select: { kind: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!row) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Artifact not found" },
+    };
+  }
+
+  const area_kind = row.dossier?.collection?.area?.kind ?? null;
+  const gate = validateCanonRevert({
+    actor_id: input.actor_id,
+    context: { area_kind },
+  });
+  if (!gate.ok) {
+    return { ok: false, error: { code: gate.code, message: gate.message } };
+  }
+
+  if (!row.currentRevisionId) {
+    return {
+      ok: false,
+      error: {
+        code: "no_current_revision",
+        message: "Artifact has no current revision to revert from",
+      },
+    };
+  }
+
+  const current = await prisma.artifactRevision.findUnique({
+    where: { revisionId: row.currentRevisionId },
+  });
+  if (!current || current.artifactId !== input.artifact_id) {
+    return {
+      ok: false,
+      error: {
+        code: "no_current_revision",
+        message: "Current revision row missing for artifact",
+      },
+    };
+  }
+
+  const targetId =
+    input.target_revision_id?.trim() || current.parentRevisionId || null;
+  if (!targetId) {
+    return {
+      ok: false,
+      error: {
+        code: "nothing_to_revert",
+        message:
+          "No parent revision and no target_revision_id — nothing to revert to",
+      },
+    };
+  }
+  if (targetId === current.revisionId) {
+    return {
+      ok: false,
+      error: {
+        code: "already_current",
+        message: "Target revision is already current",
+      },
+    };
+  }
+
+  const target = await prisma.artifactRevision.findUnique({
+    where: { revisionId: targetId },
+  });
+  if (!target) {
+    return {
+      ok: false,
+      error: {
+        code: "target_missing",
+        message: `Target revision not found: ${targetId}`,
+      },
+    };
+  }
+  if (target.artifactId !== input.artifact_id) {
+    return {
+      ok: false,
+      error: {
+        code: "target_wrong_artifact",
+        message: "Target revision belongs to a different artifact",
+      },
+    };
+  }
+
+  await prisma.artifact.update({
+    where: { artifactId: input.artifact_id },
+    data: { currentRevisionId: target.revisionId },
+  });
+  await syncSectionsForArtifact(input.artifact_id, target.contentJson);
+
+  const audit = await appendAuditLog({
+    action: "revert",
+    actor_id: input.actor_id,
+    subject_id: input.artifact_id,
+    payload: {
+      from_revision_id: current.revisionId,
+      to_revision_id: target.revisionId,
+      collection_id: row.dossier?.collection?.collectionId ?? null,
+      area_kind,
+    },
+  });
+
+  const artifact = await getArtifact(input.artifact_id);
+  if (!artifact) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Artifact missing after revert" },
+    };
+  }
+
+  return {
+    ok: true,
+    artifact,
+    from_revision_id: current.revisionId,
+    to_revision_id: target.revisionId,
+    audit,
+  };
+}
+
 export async function listArtifactRevisions(
   artifactId: string,
 ): Promise<ArtifactRevisionRow[]> {
@@ -2178,6 +2343,11 @@ export async function createRevSet(input: {
   return { ok: true, revset: mapRevSet(row, mergeArtifactId) };
 }
 
+export type CreateThreadPostError =
+  | { code: "not_found"; message: string }
+  | { code: "invalid_type"; message: string }
+  | { code: "forbidden"; message: string };
+
 export async function createThreadPost(input: {
   post_id?: string;
   thread_id: string;
@@ -2185,15 +2355,42 @@ export async function createThreadPost(input: {
   type?: string;
   body: string;
   created_at?: string;
-}): Promise<ThreadPostRow | null> {
+}): Promise<
+  | { ok: true; post: ThreadPostRow }
+  | { ok: false; error: CreateThreadPostError }
+> {
   const thread = await getPrisma().thread.findUnique({
     where: { threadId: input.thread_id },
   });
-  if (!thread) return null;
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
 
   const type = input.type ?? "comment";
   if (!isTimelinePostType(type)) {
-    return null;
+    return {
+      ok: false,
+      error: {
+        code: "invalid_type",
+        message: `Invalid post type "${type}" (allowed: comment, finding, mitigation)`,
+      },
+    };
+  }
+
+  if (
+    isRedTeamPostType(type) &&
+    !actorMayPostTypedFindingOrMitigation(input.author_id)
+  ) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Only Red Team may post finding or mitigation types",
+      },
+    };
   }
 
   const row = await getPrisma().threadPost.create({
@@ -2206,7 +2403,7 @@ export async function createThreadPost(input: {
       createdAt: input.created_at ? new Date(input.created_at) : new Date(),
     },
   });
-  return mapThreadPost(row);
+  return { ok: true, post: mapThreadPost(row) };
 }
 
 export type SoftDeletePostError =

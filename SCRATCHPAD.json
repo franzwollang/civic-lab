@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T02:20Z",
+  "turn": 73,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": "Moderator polish — Canon revert",
+    "goal": "Owner Canon revert + audit landed; hand off role-change/mod queue"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Canon revert green: 50/50 smokes + vite build",
+    "Merged 86b6 tip (Fumadocs unpin) onto fc83 before new work",
+    "Owner POST /api/artifacts/:id/revert + artifact Revert chrome"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron tips must merge furthest progression PR before picking next Optional",
+    "fumadocs-mdx 15+ needs Vite 7/8 — stay on 14.x with Vite 6"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Next Optional: role-change audit or mod queue UI",
+    "Then server split / OAuth; Manuals 3D globe still deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: role-change audit (Owner appoint) or mod queue UI",
   "blockers": []
 }
