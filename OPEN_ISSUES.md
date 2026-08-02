@@ -87,9 +87,12 @@ that is actionable, or stop if blocked on product decisions.
     attributions/terms + Canon revert); `server/index.ts` ~64 lines
   - Fourth slice: `server/db/findingsDb.ts` (Findings / Candidates /
     Accepted Risk reads; `createAcceptedRisk` stays in `db.ts` for merge-
-    authority deps); `smoke-server-split` asserts module ownership
-  - Remaining optional: extract threads/claims/artifacts **db** modules
-    from `server/db.ts` (prefer after clarifying circular deps)
+    authority deps)
+  - Fifth slice: `server/db/claimsDb.ts` (Claims CRUD + adjudication queue;
+    `smoke-server-split` asserts ownership)
+  - Remaining optional: extract threads/artifacts **db** modules from
+    `server/db.ts` (prefer after clarifying circular deps with merge
+    authority / `createAcceptedRisk`)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
