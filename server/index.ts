@@ -57,6 +57,7 @@ import {
   attestUserIdentity,
   getStewardEligibilityForUser,
   getUserIdentity,
+  revertCanonArtifact,
   searchCorpus,
   setPrisma,
   softDeleteThreadPost,
@@ -558,6 +559,49 @@ app.patch("/api/artifacts/:artifactId", async (c) => {
 app.patch("/api/pages/:pageId", async (c) => {
   const result = await handlePatchArtifact(c);
   return c.json(result.body, result.status);
+});
+
+/** CONCEPT §9.3 / §9.4 — Owner reverts Canon artifact to a prior revision. */
+app.post("/api/artifacts/:artifactId/revert", async (c) => {
+  const artifactId = c.req.param("artifactId");
+  const body = await c.req.json().catch(() => ({}));
+  const actorId =
+    typeof (body as { actor_id?: unknown }).actor_id === "string"
+      ? (body as { actor_id: string }).actor_id.trim()
+      : "";
+  if (!actorId) {
+    return c.json({ error: "actor_id is required" }, 400);
+  }
+  const targetRaw = (body as { target_revision_id?: unknown })
+    .target_revision_id;
+  const target_revision_id =
+    typeof targetRaw === "string" && targetRaw.trim()
+      ? targetRaw.trim()
+      : undefined;
+
+  const result = await revertCanonArtifact({
+    artifact_id: artifactId,
+    actor_id: actorId,
+    target_revision_id,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found" ||
+      result.error.code === "target_missing"
+        ? 404
+        : result.error.code === "not_owner" ||
+            result.error.code === "not_canon" ||
+            result.error.code === "unknown_actor"
+          ? 403
+          : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({
+    artifact: result.artifact,
+    from_revision_id: result.from_revision_id,
+    to_revision_id: result.to_revision_id,
+    audit: result.audit,
+  });
 });
 
 // M4 corpus IA — Area → Collection → Dossier

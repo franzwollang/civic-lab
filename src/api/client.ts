@@ -151,6 +151,27 @@ export async function updateArtifact(
   return handleResponse<ArtifactRow>(response);
 }
 
+/** CONCEPT §9.3 — Owner reverts a Canon artifact to a prior revision. */
+export async function revertCanonArtifact(
+  artifactId: string,
+  input: { actor_id: string; target_revision_id?: string },
+): Promise<{
+  artifact: ArtifactRow;
+  from_revision_id: string;
+  to_revision_id: string;
+  audit: AuditLogRow;
+}> {
+  const response = await fetch(
+    `${API_BASE}/artifacts/${artifactId}/revert`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    },
+  );
+  return handleResponse(response);
+}
+
 /**
  * Resolve a route param that may be an artifact id or a slug
  * (e.g. `page-001` or `voting-systems`).
