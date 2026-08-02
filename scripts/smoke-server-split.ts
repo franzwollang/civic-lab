@@ -14,8 +14,12 @@ import {
   createFinding,
   getArtifact,
   getAttributions,
+  getCollectionDashboard,
+  getDossier,
   getPrisma,
+  listAreas,
   listClaims,
+  listDossiers,
   listFindings,
   listThreads,
   getThread,
@@ -49,6 +53,7 @@ const REQUIRED_FILES = [
   "server/db/claimsDb.ts",
   "server/db/artifactsDb.ts",
   "server/db/threadsDb.ts",
+  "server/db/corpusDb.ts",
   "server/routes/health.ts",
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",
@@ -94,6 +99,14 @@ async function main() {
     typeof resolveMergeAuthorityForArtifact !== "function"
   ) {
     throw new Error("threadsDb barrel exports missing");
+  }
+  if (
+    typeof listAreas !== "function" ||
+    typeof getCollectionDashboard !== "function" ||
+    typeof listDossiers !== "function" ||
+    typeof getDossier !== "function"
+  ) {
+    throw new Error("corpusDb barrel exports missing");
   }
   const findingsSrc = await fs.readFile(
     path.join(ROOT, "server/db/findingsDb.ts"),
