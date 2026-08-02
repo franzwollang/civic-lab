@@ -13,6 +13,7 @@ import {
 } from "../../doc/sections";
 import { buildClaimOwnerContext } from "../lib/claim-owner-context";
 import { ClaimComposer } from "./claim-composer";
+import { ClaimImplicationGraph } from "./claim-implication-graph";
 import { ClaimListItem } from "./claim-list-item";
 import { Card } from "./ui/card";
 
@@ -100,11 +101,14 @@ export function ArtifactClaimsPanel({
         </p>
       )}
       {!loading && claims.length > 0 && (
-        <div className="mb-4 space-y-3">
-          {claims.map((c) => (
-            <ClaimListItem key={c.claim_id} claim={c} />
-          ))}
-        </div>
+        <>
+          <ClaimImplicationGraph claims={claims} />
+          <div className="mb-4 space-y-3">
+            {claims.map((c) => (
+              <ClaimListItem key={c.claim_id} claim={c} />
+            ))}
+          </div>
+        </>
       )}
 
       <div className="border-t border-neutral-100 pt-4">

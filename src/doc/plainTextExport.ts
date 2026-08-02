@@ -151,6 +151,27 @@ export function serializeNode(node: unknown): string {
         .map((line) => `> ${line}`)
         .join("\n");
     }
+    case "table": {
+      const rows = Array.isArray(node.children) ? node.children : [];
+      const lines: string[] = [];
+      rows.forEach((row, rowIndex) => {
+        if (!isRecord(row)) return;
+        const cells = Array.isArray(row.children) ? row.children : [];
+        const texts = cells.map((cell) => {
+          if (!isRecord(cell)) return "";
+          return getChildText(cell).replace(/\|/g, "\\|").replace(/\n+/g, " ").trim();
+        });
+        lines.push(`| ${texts.join(" | ")} |`);
+        if (rowIndex === 0) {
+          lines.push(`| ${texts.map(() => "---").join(" | ")} |`);
+        }
+      });
+      return lines.join("\n");
+    }
+    case "tr":
+    case "td":
+    case "th":
+      return getChildText(node);
     case "p": {
       const listStyleType =
         typeof node.listStyleType === "string" ? node.listStyleType : null;
