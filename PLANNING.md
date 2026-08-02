@@ -68,7 +68,7 @@ lives in `SCRATCHPAD.json`.
 | Product UI | Data-driven corpus; Collection splash = live dashboard; fixture dossier dashboard redirected |
 | Editor | Plate lists/links/blockquotes/evidence/external_artifact/tables/images (upload) |
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
-| Auth | Session cookie IdP-lite (`/api/auth/*`) + identity hooks; body `actor_id` not trusted |
+| Auth | Session cookie IdP-lite + optional OIDC (`/api/auth/oidc/*`); identity hooks; body `actor_id` not trusted |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 | Server layout | Route registrars under `server/routes/*`; `db/{corpusDb,findingsDb,claimsDb,artifactsDb,threadsDb}.ts` + leaf modules; `db.ts` ≈ createAcceptedRisk + barrels; `index.ts` ~64 lines |
 
@@ -137,9 +137,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
     session; mutations use session actor; `smoke-session-actor`)
 23. ~~**Model→forecast implication MVP**~~ (**done** — `implies_forecast`
     links; seed + composer/list; `smoke-claim-implications`)
-24. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
-    CONCEPT), external OIDC provider swap-in for `/api/auth/login`,
-    richer implication DAG / scoring propagation
+24. ~~**External OIDC swap-in**~~ (**done** — `/api/auth/oidc/*`; env-gated;
+    mock + subject map; `smoke-oidc`)
+25. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
+    CONCEPT), richer implication DAG / scoring propagation, JWKS verify for
+    production OIDC
 
 **Agent rules of thumb**
 
@@ -155,11 +157,12 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
 role-change audit + mod queue UI + server split + IdP-lite session→actor +
-model→forecast implication MVP done — see remaining `OPEN_ISSUES.md`
-**Optional / deferred**. No architecture blockers. Known debt: `db.ts` still
-hosts `createAcceptedRisk` (intentional bridge), client→server import of
-prototype-users (seed catalog still drives roles until IdP directory), tsc not covering
-`server/` (Vite/smoke are the gates today).
+model→forecast implication MVP + external OIDC swap-in done — see remaining
+`OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers. Known debt:
+`db.ts` still hosts `createAcceptedRisk` (intentional bridge) + barrels; OIDC
+JWT signature verify (JWKS) not wired (mock/decode-only until deploy);
+client→server import of prototype-users (seed catalog still drives roles until
+IdP directory); tsc not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -168,5 +171,5 @@ prototype-users (seed catalog still drives roles until IdP directory), tsc not c
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Manuals 3D globe** (optional; SVG already satisfies) or
-  **external OIDC** swap-in for `/api/auth/login`, or richer implication DAG.
+- Next: **Manuals 3D globe** (optional; SVG already satisfies CONCEPT) or
+  richer implication DAG / scoring propagation (deferred).

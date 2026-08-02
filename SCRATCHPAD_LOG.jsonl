@@ -83,3 +83,4 @@
 {"ts":"2026-08-02T05:30Z","focus":"server-split corpusDb","summary":"merged tip c707; extracted corpusDb; 53/53 smokes + vite build","next":"OAuth/IdP session→actor binding"}
 {"ts":"2026-08-02T05:55Z","focus":"OAuth/IdP session→actor","summary":"IdP-lite cookie session; mutations use session actor; 54/54 smokes","next":"Optional Manuals 3D globe or model→forecast / external OIDC"}
 {"ts":"2026-08-02T06:20Z","focus":"model→forecast implication MVP","summary":"merged tip e7a3; implies_forecast links + seed + UI + smoke","next":"Optional Manuals 3D globe or external OIDC"}
+{"ts":"2026-08-02T06:40Z","focus":"external OIDC swap-in","summary":"merged tip 0ffe; OIDC routes+mock smoke; same session cookie as IdP-lite","next":"Optional Manuals 3D globe or JWKS/production OIDC hardening"}

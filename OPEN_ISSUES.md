@@ -68,8 +68,13 @@ that is actionable, or stop if blocked on product decisions.
   httpOnly `civic_lab_session` cookie; mutations + gated reads use
   session actor — body/query `actor_id` no longer trusted;
   header switcher syncs session; `AUTH_MODE=session_with_identity_hooks`;
-  `smoke-session-actor` + HTTP smokes updated). External OIDC provider
-  wiring remains a future swap-in for login.
+  `smoke-session-actor` + HTTP smokes updated).
+- [x] **External OIDC provider swap-in** — done
+  (`GET /api/auth/oidc/status|start|callback`; env
+  `OIDC_ISSUER`/`CLIENT_ID`/`CLIENT_SECRET`/`REDIRECT_URI` +
+  `OIDC_SUBJECT_MAP`; `OIDC_MOCK=1` for local/smoke; session
+  `provider: "oidc"`; same cookie + `requireSessionActor`;
+  `smoke-oidc`). JWKS signature verify / real IdP deploy remain ops.
 - [x] **Moderator polish** — done
   - [x] **Canon revert audit** — done (`POST /api/artifacts/:id/revert`;
     Owner-only; Canon-only; parent/target revision; `revert` audit;
@@ -119,7 +124,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~55 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~56 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
