@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-02T05:30Z",
-  "turn": 83,
+  "updated_at": "2026-08-02T05:55Z",
+  "turn": 84,
   "focus": {
     "milestone": "R0+",
-    "issue": "Server split corpusDb",
-    "goal": "Extract corpusDb; hand off OAuth/IdP"
+    "issue": "OAuth/IdP session→actor",
+    "goal": "Cookie session binds actor; body actor_id untrusted"
   },
   "recent": [
-    "Merged furthest tip c707 (threadsDb) onto cron branch e827",
-    "Extracted server/db/corpusDb.ts; createAcceptedRisk stays in db.ts",
-    "smoke-server-split asserts corpusDb ownership + barrel re-exports",
-    "53/53 smokes + vite build green"
+    "Merged tip e827 (corpusDb) onto cron branch e7a3 before new work",
+    "IdP-lite: /api/auth/login|logout|me + civic_lab_session cookie",
+    "Mutations/gated reads use session actor; switcher syncs login",
+    "54/54 smokes + vite build green (smoke-session-actor)"
   ],
   "discoveries": [
-    "Cron tips must merge furthest progression PR before picking next Optional",
-    "corpusDb queries prisma.thread directly — avoid importing threadsDb"
+    "Prefer same-origin /api (Vite proxy) so session cookies stay first-party",
+    "Rename helpers out of smoke-* or run-smokes picks them up"
   ],
   "open_threads": [
-    "Next Optional: OAuth/IdP session→actor binding",
-    "Manuals 3D globe + model→forecast graph still deferred"
+    "Optional next: Manuals 3D globe or model→forecast graph",
+    "External OIDC can swap into /api/auth/login later"
   ],
-  "next_step": "Optional: OAuth/IdP — bind session→server actor (replace body actor_id trust)",
+  "next_step": "Optional: Manuals 3D globe, or defer and pick model→forecast / OIDC",
   "blockers": []
 }
