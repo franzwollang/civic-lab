@@ -78,3 +78,4 @@
 {"ts":"2026-08-02T03:50Z","focus":"server split artifacts routes","summary":"Merged 3de5 tip; artifacts registrar; 53/53 smokes + vite build","next":"Optional: OAuth/IdP or server/db.ts domain modules"}
 {"ts": "2026-08-02T04:15Z", "focus": "server-split findingsDb", "summary": "merged tip d28a; extracted findingsDb; createAcceptedRisk stays for merge-authority deps", "next": "OAuth/IdP or remaining db.ts domain modules"}
 {"ts":"2026-08-02T04:35Z","focus":"server-split claimsDb","summary":"merged tip 388c; extracted claimsDb; 53/53 smokes + vite build","next":"OAuth/IdP or remaining threads/artifacts db modules"}
+{"ts":"2026-08-02T04:50Z","focus":"server-split artifactsDb","summary":"merged tip 4f29; extracted artifactsDb; 53/53 smokes + vite build","next":"OAuth/IdP or threads db module from server/db.ts"}

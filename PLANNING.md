@@ -70,7 +70,7 @@ lives in `SCRATCHPAD.json`.
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
 | Auth | Impersonation + identity hooks; body `actor_id` until IdP |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
-| Server layout | Route registrars under `server/routes/*`; `db/{findingsDb,claimsDb}.ts` + leaf db modules; `index.ts` ~64 lines |
+| Server layout | Route registrars under `server/routes/*`; `db/{findingsDb,claimsDb,artifactsDb}.ts` + leaf db modules; `index.ts` ~64 lines |
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
 R0 marathon (About/FAQ → CONCEPT rewrite) landed.
@@ -124,9 +124,12 @@ Optimize for **observable slices** with smokes. Prefer this order:
     `server/db/findingsDb.ts`; `createAcceptedRisk` remains in `db.ts`)
 18. ~~**Server split (claimsDb module)**~~ (**done** —
     `server/db/claimsDb.ts`; Claims CRUD + adjudication queue)
-19. **Optional / deferred next:** OAuth/IdP, remaining `server/db.ts`
-    domain modules (threads/artifacts), Manuals 3D globe,
-    model→forecast graph
+19. ~~**Server split (artifactsDb module)**~~ (**done** —
+    `server/db/artifactsDb.ts`; Artifact CRUD / revert / revisions /
+    sections; `createAcceptedRisk` remains in `db.ts`)
+20. **Optional / deferred next:** OAuth/IdP, remaining `server/db.ts`
+    threads domain module (merge-authority / `createAcceptedRisk` cycle),
+    Manuals 3D globe, model→forecast graph
 
 **Agent rules of thumb**
 
@@ -141,11 +144,12 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
-role-change audit + mod queue UI + server split (routes + findingsDb + claimsDb)
-done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture
-blockers. Known debt: remaining `server/db.ts` domain modules (threads/artifacts),
-client→server import of prototype-users (header still seed roles until IdP),
-tsc not covering `server/` (Vite/smoke are the gates today).
+role-change audit + mod queue UI + server split (routes + findingsDb + claimsDb +
+artifactsDb) done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No
+architecture blockers. Known debt: remaining `server/db.ts` threads module
+(+ merge-authority / `createAcceptedRisk` cycle), client→server import of
+prototype-users (header still seed roles until IdP), tsc not covering `server/`
+(Vite/smoke are the gates today).
 
 ---
 
@@ -154,4 +158,5 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **OAuth/IdP** or remaining `db.ts` domain modules (threads/artifacts).
+- Next: **OAuth/IdP** or remaining `db.ts` **threads** domain module
+  (merge-authority / `createAcceptedRisk` cycle).

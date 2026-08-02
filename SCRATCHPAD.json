@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T04:35Z",
-  "turn": 80,
+  "updated_at": "2026-08-02T04:50Z",
+  "turn": 81,
   "focus": {
     "milestone": "R0+",
-    "issue": "Server split claimsDb",
-    "goal": "Extract claimsDb; hand off OAuth / threads-artifacts db"
+    "issue": "Server split artifactsDb",
+    "goal": "Extract artifactsDb; hand off OAuth / threads db"
   },
   "recent": [
-    "Merged furthest tip 388c (findingsDb) onto cron branch 4f29",
-    "Extracted server/db/claimsDb.ts; barrel + smoke-server-split ownership",
+    "Merged furthest tip 4f29 (claimsDb) onto cron branch ebd9",
+    "Extracted server/db/artifactsDb.ts; barrel + smoke-server-split ownership",
     "53/53 smokes + vite build green"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "Claims CRUD/adjudication cleanly extracts; createAcceptedRisk still needs threads"
+    "artifactsDb extracts cleanly; createAcceptedRisk stays with threads/authority"
   ],
   "open_threads": [
-    "Next Optional: OAuth/IdP session→actor, or threads/artifacts db modules",
+    "Next Optional: OAuth/IdP session→actor, or threads db module",
     "Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: OAuth/IdP session→actor, or extract threads/artifacts from server/db.ts",
+  "next_step": "Optional: OAuth/IdP session→actor, or extract threads from server/db.ts",
   "blockers": []
 }

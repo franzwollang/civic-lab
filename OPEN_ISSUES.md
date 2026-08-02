@@ -90,9 +90,11 @@ that is actionable, or stop if blocked on product decisions.
     authority deps)
   - Fifth slice: `server/db/claimsDb.ts` (Claims CRUD + adjudication queue;
     `smoke-server-split` asserts ownership)
-  - Remaining optional: extract threads/artifacts **db** modules from
-    `server/db.ts` (prefer after clarifying circular deps with merge
-    authority / `createAcceptedRisk`)
+  - Sixth slice: `server/db/artifactsDb.ts` (Artifact CRUD / soft-lane /
+    Canon revert / revisions / section sync; barrel + smoke ownership)
+  - Remaining optional: extract **threads** db module from `server/db.ts`
+    (prefer after clarifying circular deps with merge authority /
+    `createAcceptedRisk`)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
