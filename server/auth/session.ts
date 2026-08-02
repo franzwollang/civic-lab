@@ -1,6 +1,7 @@
 /**
- * In-memory session store + cookie helpers for prototype IdP-lite.
- * No external OAuth secrets — login validates seed prototype users.
+ * In-memory session store + cookie helpers for prototype IdP-lite / OIDC.
+ * External OAuth secrets live only in env (`server/auth/oidc.ts`); login still
+ * resolves to seed prototype users for this prototype.
  */
 import type { Context } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
@@ -11,9 +12,15 @@ import {
   SESSION_COOKIE_NAME,
   type SessionAuthMe,
 } from "../../src/lib/sessionAuth";
+import {
+  OIDC_AUTH_PROVIDER,
+  PROTOTYPE_AUTH_PROVIDER,
+  type AuthProvider,
+} from "../../src/lib/oidcAuth";
 
 type SessionRecord = {
   user_id: string;
+  provider: AuthProvider;
   created_at: number;
 };
 
@@ -25,13 +32,23 @@ export function clearAllSessionsForTests(): void {
   sessions.clear();
 }
 
-export function createSession(userId: string): string {
+export function createSession(
+  userId: string,
+  provider: AuthProvider = PROTOTYPE_AUTH_PROVIDER,
+): string {
   const user = getPrototypeUser(userId);
   if (!user) {
     throw new Error(`unknown prototype user: ${userId}`);
   }
+  if (provider !== PROTOTYPE_AUTH_PROVIDER && provider !== OIDC_AUTH_PROVIDER) {
+    throw new Error(`unknown auth provider: ${provider}`);
+  }
   const sessionId = randomBytes(24).toString("hex");
-  sessions.set(sessionId, { user_id: user.id, created_at: Date.now() });
+  sessions.set(sessionId, {
+    user_id: user.id,
+    provider,
+    created_at: Date.now(),
+  });
   return sessionId;
 }
 
@@ -44,6 +61,13 @@ export function getSessionUserId(
 ): string | null {
   if (!sessionId) return null;
   return sessions.get(sessionId)?.user_id ?? null;
+}
+
+export function getSessionProvider(
+  sessionId: string | undefined | null,
+): AuthProvider | null {
+  if (!sessionId) return null;
+  return sessions.get(sessionId)?.provider ?? null;
 }
 
 export function readSessionId(c: Context): string | undefined {
@@ -68,11 +92,14 @@ export function resolveSessionActor(c: Context): string | null {
   return getSessionUserId(readSessionId(c));
 }
 
-export function sessionMePayload(userId: string): SessionAuthMe {
+export function sessionMePayload(
+  userId: string,
+  provider: AuthProvider = PROTOTYPE_AUTH_PROVIDER,
+): SessionAuthMe {
   return {
     user_id: userId,
     auth_mode: SESSION_AUTH_MODE,
-    provider: "prototype",
+    provider,
   };
 }
 
@@ -88,7 +115,8 @@ export function requireSessionActor(
       {
         error: {
           code: "unauthorized",
-          message: "Session required — POST /api/auth/login (prototype IdP-lite)",
+          message:
+            "Session required — POST /api/auth/login or GET /api/auth/oidc/start",
         },
       },
       401,

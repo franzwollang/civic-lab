@@ -92,7 +92,8 @@ export function ActingUserSwitcher() {
           <p className="text-xs leading-snug text-neutral-600">
             {affordances.headline}. Switcher binds a server session cookie
             (IdP-lite); real-identity hooks (CONCEPT §8.6) still gate Manual
-            steward actions. External OIDC can replace login later.
+            steward actions. When configured, `/api/auth/oidc/start` binds the
+            same session via external OIDC.
           </p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

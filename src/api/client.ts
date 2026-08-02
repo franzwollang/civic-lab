@@ -26,6 +26,7 @@ import {
   SESSION_AUTH_MODE,
   type SessionAuthMe,
 } from "../lib/sessionAuth";
+import type { OidcPublicStatus } from "../lib/oidcAuth";
 
 /** Prefer same-origin `/api` (Vite proxy) so session cookies stay first-party. */
 const API_BASE = import.meta.env.VITE_API_URL || "/api";
@@ -71,9 +72,36 @@ export async function logoutSession(): Promise<void> {
 }
 
 export async function getSessionMe(): Promise<
-  SessionAuthMe | { user_id: null; auth_mode: typeof SESSION_AUTH_MODE }
+  | (SessionAuthMe & { oidc: OidcPublicStatus })
+  | {
+      user_id: null;
+      auth_mode: typeof SESSION_AUTH_MODE;
+      provider: null;
+      oidc: OidcPublicStatus;
+    }
 > {
   const response = await apiFetch(`${API_BASE}/auth/me`);
+  return handleResponse(response);
+}
+
+/** Public OIDC status (no secrets). */
+export async function getOidcStatus(): Promise<OidcPublicStatus> {
+  const response = await apiFetch(`${API_BASE}/auth/oidc/status`);
+  return handleResponse<OidcPublicStatus>(response);
+}
+
+/**
+ * Begin OIDC login (JSON). Browser chrome can navigate to `authorization_url`.
+ * Only succeeds when server env has OIDC_* configured.
+ */
+export async function startOidcLogin(
+  loginHint?: string,
+): Promise<{ authorization_url: string; state: string }> {
+  const qs = new URLSearchParams({ format: "json" });
+  if (loginHint) qs.set("login_hint", loginHint);
+  const response = await apiFetch(
+    `${API_BASE}/auth/oidc/start?${qs.toString()}`,
+  );
   return handleResponse(response);
 }
 

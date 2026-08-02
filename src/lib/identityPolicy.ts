@@ -1,11 +1,11 @@
 /**
  * CONCEPT §8.6 — Real-identity / stewardship legitimacy policy hooks.
  *
- * Session is prototype IdP-lite (`POST /api/auth/login` cookie → actor). These
- * hooks record verification + country / long-term-ties attestations so Manual
- * steward powers can be gated. A future provider (OIDC / government ID) plugs
- * in via `attestation_kind: provider_stub` → real provider ids without changing
- * eligibility rules.
+ * Session binds actor via prototype IdP-lite (`POST /api/auth/login`) or
+ * optional external OIDC (`/api/auth/oidc/*` when env-configured). These hooks
+ * record verification + country / long-term-ties attestations so Manual steward
+ * powers can be gated. Provider attestations use `attestation_kind:
+ * provider_stub` → real provider ids without changing eligibility rules.
  */
 
 import {
