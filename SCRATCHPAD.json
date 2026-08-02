@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T07:20Z",
+  "turn": 88,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": "Model→forecast implication DAG UI",
+    "goal": "Artifact-scoped read-only implication graph"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip 630f (OIDC JWKS) onto fresh cron bae4",
+    "buildImplicationGraph + ClaimImplicationGraph on ArtifactClaimsPanel",
+    "smoke-claim-implication-graph for page-001 seed triangle",
+    "Skipped Manuals 3D globe (SVG satisfies; product-gated)"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Fresh cron at main must merge furthest progression tip first",
+    "Implication DAG needs no new API when claims already loaded"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Optional: Manuals 3D globe (SVG satisfies CONCEPT)",
+    "Scoring propagation across implication edges still deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: Manuals 3D globe only if product asks; else scoring propagation (deferred)",
   "blockers": []
 }
