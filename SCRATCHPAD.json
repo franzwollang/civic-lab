@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-08-02T08:45Z",
-  "turn": 93,
+  "updated_at": "2026-08-02T09:05Z",
+  "turn": 94,
   "focus": {
     "milestone": "R0+",
     "issue": null,
     "goal": "Handoff: tip synced — queue empty, stop"
   },
   "recent": [
-    "Cron 0004 started at main; merged tip ecb9 (PR #75) FF",
+    "Cron e11e started at main; merged tip 0004 (PR #76) FF",
     "Confirmed only globe (product-gated) + reputation rollup (CONCEPT) left",
-    "pnpm test:smoke 58/58 after tip sync"
+    "No actionable OPEN_ISSUES with AC; stop again"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
