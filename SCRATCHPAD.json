@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-02T06:55Z",
-  "turn": 87,
+  "updated_at": "2026-08-02T07:20Z",
+  "turn": 88,
   "focus": {
     "milestone": "R0+",
-    "issue": "OIDC JWKS id_token verify",
-    "goal": "Wire jose JWKS verify + claim checks"
+    "issue": "Model→forecast implication DAG UI",
+    "goal": "Artifact-scoped read-only implication graph"
   },
   "recent": [
-    "Merged tip b1c5 (OIDC swap-in) onto fresh cron 630f",
-    "server/auth/oidcJwks.ts + src/lib/oidcJwks.ts claim checks",
-    "Non-mock token path verifies id_token; OIDC_JWKS_URI optional",
-    "smoke-oidc: RSA success + bad-sig + nonce mismatch"
+    "Merged tip 630f (OIDC JWKS) onto fresh cron bae4",
+    "buildImplicationGraph + ClaimImplicationGraph on ArtifactClaimsPanel",
+    "smoke-claim-implication-graph for page-001 seed triangle",
+    "Skipped Manuals 3D globe (SVG satisfies; product-gated)"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
-    "jose createLocalJWKSet + token-endpoint hook keeps JWKS smoke offline"
+    "Implication DAG needs no new API when claims already loaded"
   ],
   "open_threads": [
     "Optional: Manuals 3D globe (SVG satisfies CONCEPT)",
-    "Richer implication DAG / scoring still deferred"
+    "Scoring propagation across implication edges still deferred"
   ],
-  "next_step": "Optional: Manuals 3D globe, or implication DAG / scoring (deferred)",
+  "next_step": "Optional: Manuals 3D globe only if product asks; else scoring propagation (deferred)",
   "blockers": []
 }

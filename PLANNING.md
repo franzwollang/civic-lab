@@ -50,7 +50,7 @@ lives in `SCRATCHPAD.json`.
 | Audit | Append-only; soft-delete posts; audit list steward/Owner-gated |
 | External artifacts | App D node + provider whitelist; attribution `immutable_ref` |
 | Collection dashboard | Shared chrome; live §11 panels on Collection splash |
-| Model claim graph | MVP `implies_forecast` links; DAG UI deferred |
+| Model claim graph | Artifact-scoped read-only DAG UI; scoring propagation deferred |
 
 ### Claim profile summary
 
@@ -141,8 +141,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
     mock + subject map; `smoke-oidc`)
 25. ~~**OIDC JWKS id_token verify**~~ (**done** — jose JWKS verify +
     iss/aud/exp/nonce; `OIDC_JWKS_URI`/discovery; `smoke-oidc`)
-26. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
-    CONCEPT), richer implication DAG / scoring propagation
+26. ~~**Model→forecast implication DAG UI**~~ (**done** —
+    `buildImplicationGraph`; `ClaimImplicationGraph` on artifact claims;
+    `smoke-claim-implication-graph`)
+27. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
+    CONCEPT), scoring propagation across implication edges
 
 **Agent rules of thumb**
 
@@ -158,12 +161,12 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
 role-change audit + mod queue UI + server split + IdP-lite session→actor +
-model→forecast implication MVP + external OIDC swap-in + OIDC JWKS verify
-done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture
-blockers. Known debt: `db.ts` still hosts `createAcceptedRisk` (intentional
-bridge) + barrels; client→server import of prototype-users (seed catalog still
-drives roles until IdP directory); tsc not covering `server/` (Vite/smoke are
-the gates today).
+model→forecast implication MVP + DAG UI + external OIDC swap-in + OIDC JWKS
+verify done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No
+architecture blockers. Known debt: `db.ts` still hosts `createAcceptedRisk`
+(intentional bridge) + barrels; client→server import of prototype-users (seed
+catalog still drives roles until IdP directory); tsc not covering `server/`
+(Vite/smoke are the gates today).
 
 ---
 
@@ -173,4 +176,4 @@ the gates today).
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
 - Next: **Manuals 3D globe** (optional; SVG already satisfies CONCEPT) or
-  richer implication DAG / scoring propagation (deferred).
+  scoring propagation across implication edges (deferred).

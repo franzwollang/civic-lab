@@ -1,9 +1,10 @@
 /**
- * CONCEPT §5.2 — Model→forecast implication links (MVP).
+ * CONCEPT §5.2 — Model→forecast implication links.
  *
  * Model empirical claims may link to forecast claims they imply via
  * `{ kind: "implies_forecast", claim_id }` entries in `Claim.links`.
- * Full implication graphs (DAG UI, scoring propagation) remain deferred.
+ * Artifact-scoped read-only DAG UI is supported; scoring propagation
+ * across edges remains deferred.
  */
 
 export const IMPLIES_FORECAST_KIND = "implies_forecast" as const;
@@ -168,4 +169,116 @@ export function validateModelImplicationLinks(opts: {
   }
 
   return { ok: true, forecast_ids: forecastIds };
+}
+
+/** Minimal claim shape for building an artifact-scoped implication DAG. */
+export type ImplicationClaimRef = {
+  claim_id: string;
+  text: string;
+  status: string;
+  profile: string;
+  empirical_type: string | null;
+  links?: unknown[] | null;
+  probability?: number | null;
+};
+
+export type ImplicationEdge = {
+  from: string;
+  to: string;
+  kind: typeof IMPLIES_FORECAST_KIND;
+};
+
+export type ImplicationGraphNode = {
+  claim_id: string;
+  role: "model" | "forecast";
+  text: string;
+  status: string;
+  probability: number | null;
+  /** False when the forecast target is linked but not in the loaded claim set. */
+  present: boolean;
+};
+
+export type ImplicationGraph = {
+  nodes: ImplicationGraphNode[];
+  edges: ImplicationEdge[];
+};
+
+/**
+ * Build a read-only model→forecast DAG from loaded claims (artifact scope).
+ * Only model claims with valid implies_forecast links become sources.
+ * Forecast targets missing from `claims` appear as stub nodes (`present: false`).
+ */
+export function buildImplicationGraph(
+  claims: ImplicationClaimRef[],
+): ImplicationGraph {
+  const byId = new Map(claims.map((c) => [c.claim_id, c]));
+  const edges: ImplicationEdge[] = [];
+  const edgeKey = new Set<string>();
+  const nodeIds = new Set<string>();
+
+  for (const claim of claims) {
+    if (claim.empirical_type !== "model") continue;
+    const targets = forecastIdsFromImpliesLinks(claim.links);
+    if (targets.length === 0) continue;
+    nodeIds.add(claim.claim_id);
+    for (const to of targets) {
+      const key = `${claim.claim_id}->${to}`;
+      if (edgeKey.has(key)) continue;
+      edgeKey.add(key);
+      edges.push({
+        from: claim.claim_id,
+        to,
+        kind: IMPLIES_FORECAST_KIND,
+      });
+      nodeIds.add(to);
+    }
+  }
+
+  const nodes: ImplicationGraphNode[] = [];
+  for (const id of nodeIds) {
+    const claim = byId.get(id);
+    if (claim && claim.empirical_type === "model") {
+      nodes.push({
+        claim_id: id,
+        role: "model",
+        text: claim.text,
+        status: claim.status,
+        probability: claim.probability ?? null,
+        present: true,
+      });
+      continue;
+    }
+    if (claim) {
+      nodes.push({
+        claim_id: id,
+        role: "forecast",
+        text: claim.text,
+        status: claim.status,
+        probability: claim.probability ?? null,
+        present: true,
+      });
+      continue;
+    }
+    nodes.push({
+      claim_id: id,
+      role: "forecast",
+      text: "(forecast not loaded on this artifact)",
+      status: "unknown",
+      probability: null,
+      present: false,
+    });
+  }
+
+  // Stable order: models first (by id), then forecasts (by id).
+  nodes.sort((a, b) => {
+    if (a.role !== b.role) return a.role === "model" ? -1 : 1;
+    return a.claim_id.localeCompare(b.claim_id);
+  });
+
+  return { nodes, edges };
+}
+
+/** True when the claim set has at least one model→forecast implication edge. */
+export function hasImplicationEdges(claims: ImplicationClaimRef[]): boolean {
+  return buildImplicationGraph(claims).edges.length > 0;
 }

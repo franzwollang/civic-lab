@@ -85,3 +85,4 @@
 {"ts":"2026-08-02T06:20Z","focus":"model→forecast implication MVP","summary":"merged tip e7a3; implies_forecast links + seed + UI + smoke","next":"Optional Manuals 3D globe or external OIDC"}
 {"ts":"2026-08-02T06:40Z","focus":"external OIDC swap-in","summary":"merged tip 0ffe; OIDC routes+mock smoke; same session cookie as IdP-lite","next":"Optional Manuals 3D globe or JWKS/production OIDC hardening"}
 {"ts":"2026-08-02T06:55Z","focus":"OIDC JWKS verify","summary":"jose JWKS id_token verify + claim checks; smoke extended","next":"Optional Manuals 3D globe or implication DAG"}
+{"ts":"2026-08-02T07:20Z","focus":"implication DAG UI","summary":"merged tip 630f; buildImplicationGraph + ClaimImplicationGraph + smoke","next":"Optional Manuals 3D globe (product-gated) or scoring propagation"}
