@@ -150,7 +150,7 @@ export function RfcThreadPage() {
     );
   }
 
-  const dossierId = thread?.home_dossier_id ?? "us-voting-1";
+  const dossierId = thread?.home_dossier_id;
   const latestVersion =
     revsets.length > 0 ? Math.max(...revsets.map((r) => r.version)) : 0;
   const authorityOk =
@@ -177,7 +177,11 @@ export function RfcThreadPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
-      <SidebarNav dossierId={dossierId} currentPage="rfc" />
+      <SidebarNav
+        dossierId={dossierId}
+        collectionId={thread?.collection_id ?? undefined}
+        currentPage="rfc"
+      />
 
       <main className="ml-64 pt-16">
         <div className="mx-auto max-w-[900px] px-8 py-8">
