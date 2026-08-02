@@ -48,10 +48,12 @@ that is actionable, or stop if blocked on product decisions.
   on model claims; seed `claim-canon-enp-model`; composer + list UI;
   `smoke-claim-implications`). **DAG UI done** (`buildImplicationGraph`;
   `ClaimImplicationGraph` on `ArtifactClaimsPanel`; page-001 seed triangle;
-  `smoke-claim-implication-graph`; suite **56/56**). Scoring propagation
-  remains deferred.
+  `smoke-claim-implication-graph`). **Score propagation done**
+  (`scoreModelImplications` / `scoreModelImplicationsById`; advisory
+  Brier/log/skill from resolved implied forecasts; DAG summary + per-edge
+  contrib; n≥20 public-board gate; `smoke-claim-implication-scores`; suite
+  **57/57**). Reputation-board rollup of implication scores still deferred.
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
-- [ ] **Implication score propagation** — advisory edge scores deferred
 - [ ] **External OIDC provider swap-in** — IdP-lite done; real OIDC optional
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
@@ -69,6 +71,7 @@ that is actionable, or stop if blocked on product decisions.
   `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
   `smoke-image-upload`; CONCEPT Appendix C residual cleared)
 
+
 ---
 
 ## Toolchain notes for agents
@@ -76,7 +79,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~56 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~57 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
