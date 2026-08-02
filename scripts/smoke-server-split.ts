@@ -15,9 +15,12 @@ import {
   searchCorpus,
   setPrisma,
 } from "../server/db";
+import { registerClaimRoutes } from "../server/routes/claims";
 import { registerCorpusRoutes } from "../server/routes/corpus";
+import { registerFindingRoutes } from "../server/routes/findings";
 import { registerHealthRoutes } from "../server/routes/health";
 import { registerModerationRoutes } from "../server/routes/moderation";
+import { registerThreadRoutes } from "../server/routes/threads";
 import { registerUploadRoutes } from "../server/routes/uploads";
 import { seedIfEmpty } from "../prisma/seed";
 
@@ -34,6 +37,9 @@ const REQUIRED_FILES = [
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",
   "server/routes/moderation.ts",
+  "server/routes/threads.ts",
+  "server/routes/claims.ts",
+  "server/routes/findings.ts",
 ];
 
 async function main() {
@@ -58,7 +64,10 @@ async function main() {
     typeof registerCorpusRoutes !== "function" ||
     typeof registerHealthRoutes !== "function" ||
     typeof registerModerationRoutes !== "function" ||
-    typeof registerUploadRoutes !== "function"
+    typeof registerUploadRoutes !== "function" ||
+    typeof registerThreadRoutes !== "function" ||
+    typeof registerClaimRoutes !== "function" ||
+    typeof registerFindingRoutes !== "function"
   ) {
     throw new Error("route registrar exports missing");
   }
