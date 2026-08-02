@@ -70,7 +70,8 @@ lives in `SCRATCHPAD.json`.
 | Auth | Impersonation + identity hooks; body `actor_id` until IdP |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
-**Phase:** **Residual / polish** after M0–M9. Policy hardening (§K) landed.
+**Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
+R0 marathon (About/FAQ → CONCEPT rewrite) landed.
 
 ---
 
@@ -88,7 +89,7 @@ lives in `SCRATCHPAD.json`.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | About/FAQ artifacts; fixture retirement; typed posts; tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `done` | About/FAQ artifacts; fixtures; typed posts; tables; home exemplars; CONCEPT rewrite |
 
 ---
 
@@ -96,12 +97,14 @@ lives in `SCRATCHPAD.json`.
 
 Optimize for **observable slices** with smokes. Prefer this order:
 
-1. **About → artifact** (pattern already proven by Charter)  
-2. **Fixture retirement** on dossier/thread surfaces  
-3. **Typed finding/mitigation posts** (small schema/UI)  
-4. **Plate tables** (editor depth)  
-5. **Home CONCEPT links** / FAQ artifact / CONCEPT rewrite (docs-heavy)  
-6. Only then: image upload, Fumadocs unpin, server split, OAuth
+1. ~~**About → artifact**~~ (**done** — `canon-about`, `/about` redirect, `smoke-about`)
+2. ~~**FAQ → artifact**~~ (**done** — `canon-faq`, `/faq` redirect, `smoke-faq`)
+3. ~~**Fixture retirement**~~ (**done** — demo pages deleted; legacy redirects; `smoke-fixture-retirement`)
+4. ~~**Typed finding/mitigation posts**~~ (**done** — RT gate; composer; filters; `smoke-typed-posts`)
+5. ~~**Plate tables**~~ (**done** — `@platejs/table@52`; reader/export; `smoke-editor-tables`)
+6. ~~**Home CONCEPT links**~~ (**done** — `#what-is-this` + live exemplars; `smoke-home-preamble`)
+7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
+8. **Optional / deferred:** image upload, Fumadocs unpin, server split, OAuth
 
 **Agent rules of thumb**
 
@@ -115,9 +118,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-See `OPEN_ISSUES.md` marathon queue. No architecture blockers. Known debt:
-server monolith size, tracked `dist/`, client→server import of prototype-users,
-tsc not covering `server/` (Vite/smoke are the gates today).
+R0 marathon queue cleared — see `OPEN_ISSUES.md` **Optional / deferred**.
+No architecture blockers. Known debt: server monolith size, tracked `dist/`,
+client→server import of prototype-users, tsc not covering `server/`
+(Vite/smoke are the gates today).
 
 ---
 
@@ -126,4 +130,5 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **About artifact migration** (OPEN_ISSUES §1).
+- Next: **Image upload pipeline** (first actionable Optional item) unless product
+  redirects; else Fumadocs unpin / server split / OAuth.
