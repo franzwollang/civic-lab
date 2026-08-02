@@ -108,7 +108,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
 9. ~~**`dist/` gitignore**~~ (**done** — stop tracking Vite build output; `smoke-dist-gitignore`)
 10. ~~**Fumadocs unpin**~~ (**done** — Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; `smoke-fumadocs`)
-11. **Optional / deferred next:** server split, OAuth, moderator polish, Manuals 3D globe
+11. ~~**Canon revert audit**~~ (**done** — Owner `POST …/revert`; `smoke-canon-revert`)
+12. **Optional / deferred next:** role-change audit, mod queue UI, server split, OAuth, Manuals 3D globe
 
 **Agent rules of thumb**
 
@@ -122,10 +123,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin done — see
-remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers.
-Known debt: server monolith size, client→server import of prototype-users,
-tsc not covering `server/` (Vite/smoke are the gates today).
+R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert
+done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture
+blockers. Known debt: server monolith size, client→server import of
+prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -134,5 +135,5 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **server split** (`server/index.ts` / `server/db.ts`) or OAuth /
-  moderator polish — prefer actionable Optional items with clear AC.
+- Next: **role-change audit** or **mod queue UI** (remaining moderator polish),
+  else server split / OAuth — prefer actionable Optional items with clear AC.

@@ -64,7 +64,14 @@ that is actionable, or stop if blocked on product decisions.
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [ ] **Full OAuth / IdP** — bind session→server actor; body `actor_id` trust
   remains until then (explicit)
-- [ ] **Moderator polish** — Canon revert audit; role-change audit; mod queue UI
+- [ ] **Moderator polish (remaining)**
+  - [x] **Canon revert audit** — done (`POST /api/artifacts/:id/revert`;
+    Owner-only; Canon-only; parent/target revision; `revert` audit;
+    artifact Revert chrome; `smoke-canon-revert`)
+  - [ ] **Role-change audit** — Owner appoint/change roles with append-only
+    `role_change` audit (prototype roles still client-seeded today)
+  - [ ] **Mod queue UI** — steward/Owner surface for soft-deleted posts +
+    open findings / adjudication queue (beyond Collection audit panel)
 - [ ] **Model→forecast implication graph** — deferred
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** kept for
@@ -80,7 +87,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~49 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~50 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

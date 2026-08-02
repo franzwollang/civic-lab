@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T01:50Z",
-  "turn": 72,
+  "updated_at": "2026-08-02T02:20Z",
+  "turn": 73,
   "focus": {
     "milestone": "R0+",
-    "issue": null,
-    "goal": "Fumadocs unpin done; hand off next Optional"
+    "issue": "Moderator polish — Canon revert",
+    "goal": "Owner Canon revert + audit landed; hand off role-change/mod queue"
   },
   "recent": [
-    "Fumadocs unpin green: 49/49 smokes + vite build",
-    "Tailwind 4.3.3; fumadocs-ui/core 16.14.0; mdx 14.2.7",
-    "Merged 74f7 tip onto 86b6 before new work"
+    "Canon revert: POST /api/artifacts/:id/revert + smoke-canon-revert",
+    "Merged 86b6 tip (Fumadocs unpin) onto fc83 before new work",
+    "Fumadocs unpin green: 49/49 smokes + vite build"
   ],
   "discoveries": [
-    "fumadocs-mdx 15+ needs Vite 7/8 — stay on 14.x with Vite 6",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron tips must merge furthest progression PR before picking next Optional",
+    "fumadocs-mdx 15+ needs Vite 7/8 — stay on 14.x with Vite 6"
   ],
   "open_threads": [
-    "Next Optional: server/index+db split, or OAuth / moderator polish",
-    "Manuals 3D globe still deferred (SVG satisfies CONCEPT)"
+    "Next Optional: role-change audit or mod queue UI",
+    "Then server split / OAuth; Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: split server/index.ts + server/db.ts, or OAuth/mod polish",
+  "next_step": "Optional: role-change audit (Owner appoint) or mod queue UI",
   "blockers": []
 }

@@ -70,3 +70,4 @@
 {"ts":"2026-08-02T01:30Z","focus":"dist/ gitignore","summary":"48/48 smokes + vite build green; dist untracked; hand off Fumadocs/server split","next":"Optional: Tailwind≥4.3.2 + Fumadocs unpin, or server/index+db split"}
 {"ts":"2026-08-02T01:45Z","focus":"Fumadocs unpin","summary":"Merged 74f7 tip; Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; smoke-fumadocs; vite build green","next":"pnpm test:smoke; hand off server split or OAuth/mod polish"}
 {"ts":"2026-08-02T01:50Z","focus":"Fumadocs unpin","summary":"49/49 smokes + vite build green; Fumadocs Optional closed; hand off server split/OAuth","next":"Optional: server/index+db split, or OAuth / moderator polish"}
+{"ts":"2026-08-02T02:20Z","focus":"Canon revert audit","summary":"Owner Canon revert API+UI+smoke; merged 86b6 tip first","next":"role-change audit or mod queue UI"}
