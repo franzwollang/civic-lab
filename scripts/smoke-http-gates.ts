@@ -112,6 +112,25 @@ async function main() {
       throw new Error(`areas failed: ${areas.status}`);
     }
 
+    const about = await json(await app.request("/api/artifacts/canon-about"));
+    if (about.status !== 200) {
+      throw new Error(`canon-about GET failed: ${about.status}`);
+    }
+    const aboutBody = about.body as {
+      artifact_id?: string;
+      slug?: string;
+      owner_merge_only?: boolean;
+      dossier_id?: string;
+    };
+    if (
+      aboutBody.artifact_id !== "canon-about" ||
+      aboutBody.slug !== "about" ||
+      aboutBody.owner_merge_only !== true ||
+      aboutBody.dossier_id !== "canon-governance-1"
+    ) {
+      throw new Error(`canon-about payload: ${JSON.stringify(aboutBody)}`);
+    }
+
     console.log("smoke-http-gates: ok");
   } finally {
     await prisma.$disconnect();
