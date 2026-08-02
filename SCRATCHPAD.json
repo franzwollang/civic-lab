@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-09-10T03:20Z",
-  "turn": 65,
+  "updated_at": "2026-09-10T03:25Z",
+  "turn": 66,
   "focus": {
     "milestone": "R0",
-    "issue": "CONCEPT.md rewrite pass",
-    "goal": "Editorial CONCEPT pass for hierarchy/claims/lanes"
+    "issue": null,
+    "goal": "R0 done; hand off to optional image upload"
   },
   "recent": [
-    "Home preamble + HOME_EXEMPLARS; smoke-home-preamble; 45/45",
-    "Merged tip 9c79 (About→tables) onto cron branch b2f6",
-    "Plate tables MVP; typed posts; fixture retirement",
-    "Living About/FAQ artifacts"
+    "CONCEPT rewrite + smoke-concept; R0 done (cherry-pick 3148)",
+    "Merged tip b2f6 (About→home preamble) onto cron 3b21",
+    "Home preamble + HOME_EXEMPLARS; 45/45 before CONCEPT",
+    "Plate tables; typed posts; fixture retirement; About/FAQ"
   ],
   "discoveries": [
-    "Cron at main: merge furthest tip (9c79) before new R0 work",
-    "HOME_EXEMPLARS centralizes seeded tour hrefs for smoke"
+    "Cron at main: merge furthest tip (b2f6) before new work",
+    "R0 marathon cleared — Optional/deferred next"
   ],
   "open_threads": [
-    "CONCEPT rewrite next; PR #52 / 3148 may cherry-pick",
-    "Optional: image upload / Fumadocs unpin"
+    "Next: image upload pipeline (Optional)",
+    "Fumadocs unpin / server split / OAuth still deferred"
   ],
-  "next_step": "CONCEPT.md editorial rewrite (OPEN_ISSUES §1)",
+  "next_step": "Image upload pipeline (OPEN_ISSUES Optional) or product redirect",
   "blockers": []
 }
