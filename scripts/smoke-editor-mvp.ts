@@ -84,9 +84,10 @@ async function main() {
     "save path must not hardcode global scope",
   );
 
-  const dbSrc = readFileSync("server/db.ts", "utf8");
-  assert.match(dbSrc, /validateDocumentStructureForMerge/);
-  assert.match(dbSrc, /content_invalid/);
+  // Merge-strict structural gate lives with RevSet/decide in threadsDb.
+  const threadsDbSrc = readFileSync("server/db/threadsDb.ts", "utf8");
+  assert.match(threadsDbSrc, /validateDocumentStructureForMerge/);
+  assert.match(threadsDbSrc, /content_invalid/);
 
   process.env.DATABASE_URL = "file:./smoke-editor-mvp.db";
   await fs.rm(DB_PATH, { force: true });

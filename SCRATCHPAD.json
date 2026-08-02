@@ -1,24 +1,25 @@
 {
-  "updated_at": "2026-08-02T04:50Z",
-  "turn": 81,
+  "updated_at": "2026-08-02T05:15Z",
+  "turn": 82,
   "focus": {
     "milestone": "R0+",
-    "issue": "Server split artifactsDb",
-    "goal": "Extract artifactsDb; hand off OAuth / threads db"
+    "issue": "Server split threadsDb",
+    "goal": "Extract threadsDb; hand off OAuth / corpus db"
   },
   "recent": [
-    "Merged furthest tip 4f29 (claimsDb) onto cron branch ebd9",
-    "Extracted server/db/artifactsDb.ts; barrel + smoke-server-split ownership",
+    "Merged furthest tip ebd9 (artifactsDb) onto cron branch c707",
+    "Extracted server/db/threadsDb.ts; createAcceptedRisk stays in db.ts",
+    "Retargeted smoke-editor-mvp merge markers to threadsDb",
     "53/53 smokes + vite build green"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "artifactsDb extracts cleanly; createAcceptedRisk stays with threads/authority"
+    "threadsDb owns merge-authority; createAcceptedRisk imports it from db.ts"
   ],
   "open_threads": [
-    "Next Optional: OAuth/IdP session→actor, or threads db module",
+    "Next Optional: OAuth/IdP session→actor, or corpus/dashboard db module",
     "Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: OAuth/IdP session→actor, or extract threads from server/db.ts",
+  "next_step": "Optional: OAuth/IdP session→actor, or extract corpus from server/db.ts",
   "blockers": []
 }

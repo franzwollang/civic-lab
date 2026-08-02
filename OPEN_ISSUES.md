@@ -92,9 +92,12 @@ that is actionable, or stop if blocked on product decisions.
     `smoke-server-split` asserts ownership)
   - Sixth slice: `server/db/artifactsDb.ts` (Artifact CRUD / soft-lane /
     Canon revert / revisions / section sync; barrel + smoke ownership)
-  - Remaining optional: extract **threads** db module from `server/db.ts`
-    (prefer after clarifying circular deps with merge authority /
-    `createAcceptedRisk`)
+  - Seventh slice: `server/db/threadsDb.ts` (Thread/RFC/RevSet/decide/
+    merge-authority; `createAcceptedRisk` stays in `db.ts` and imports
+    `resolveMergeAuthorityForArtifact`; `smoke-server-split` + editor-mvp
+    source markers updated)
+  - Remaining optional: extract **corpus** dashboard/reputation from
+    `server/db.ts`, or **OAuth/IdP** session→actor binding
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---

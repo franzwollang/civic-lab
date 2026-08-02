@@ -127,9 +127,12 @@ Optimize for **observable slices** with smokes. Prefer this order:
 19. ~~**Server split (artifactsDb module)**~~ (**done** —
     `server/db/artifactsDb.ts`; Artifact CRUD / revert / revisions /
     sections; `createAcceptedRisk` remains in `db.ts`)
-20. **Optional / deferred next:** OAuth/IdP, remaining `server/db.ts`
-    threads domain module (merge-authority / `createAcceptedRisk` cycle),
-    Manuals 3D globe, model→forecast graph
+20. ~~**Server split (threadsDb module)**~~ (**done** —
+    `server/db/threadsDb.ts`; Thread/RFC/RevSet/decide/merge-authority;
+    `createAcceptedRisk` remains in `db.ts`)
+21. **Optional / deferred next:** OAuth/IdP session→actor, remaining
+    `server/db.ts` corpus/dashboard module, Manuals 3D globe,
+    model→forecast graph
 
 **Agent rules of thumb**
 
@@ -145,11 +148,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
 role-change audit + mod queue UI + server split (routes + findingsDb + claimsDb +
-artifactsDb) done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No
-architecture blockers. Known debt: remaining `server/db.ts` threads module
-(+ merge-authority / `createAcceptedRisk` cycle), client→server import of
-prototype-users (header still seed roles until IdP), tsc not covering `server/`
-(Vite/smoke are the gates today).
+artifactsDb + threadsDb) done — see remaining `OPEN_ISSUES.md` **Optional /
+deferred**. No architecture blockers. Known debt: remaining `server/db.ts`
+corpus/dashboard body, client→server import of prototype-users (header still
+seed roles until IdP), tsc not covering `server/` (Vite/smoke are the gates
+today).
 
 ---
 
@@ -158,5 +161,5 @@ prototype-users (header still seed roles until IdP), tsc not covering `server/`
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **OAuth/IdP** or remaining `db.ts` **threads** domain module
-  (merge-authority / `createAcceptedRisk` cycle).
+- Next: **OAuth/IdP** session→actor, or extract remaining **corpus/dashboard**
+  from `server/db.ts`.
