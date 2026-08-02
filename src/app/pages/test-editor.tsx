@@ -51,6 +51,7 @@ import {
   isBlockquoteActive,
   toggleBlockquote,
 } from "@/editor/blockquoteCommands";
+import { insertSimpleTable } from "@/editor/tableCommands";
 import type { AttributionEntity, TermEntity } from "@/doc/evidence";
 import {
   AttributionEditorDialog,
@@ -475,7 +476,11 @@ function TestEditorInner() {
     <div className="min-h-screen bg-neutral-50">
       <Header />
       {inProductChrome && (
-        <SidebarNav dossierId={dossierId} currentPage="artifact" />
+        <SidebarNav
+          dossierId={dossierId}
+          collectionId={dossier?.collection_id}
+          currentPage="artifact"
+        />
       )}
 
       <TermSearchDialog
@@ -989,6 +994,17 @@ function TestEditorInner() {
                       }}
                     >
                       External
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        if (!editor) return;
+                        insertSimpleTable(editor);
+                      }}
+                    >
+                      Table
                     </Button>
                   </div>
                 </div>

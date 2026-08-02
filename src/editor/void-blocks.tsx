@@ -21,6 +21,8 @@ import {
   handleVoidBlockEdgeArrowExit,
   handleVoidBlockTextareaArrowExit,
 } from "@/editor/voidNavigation";
+import { resolveImageSrc } from "@/lib/imageSrc";
+import { uploadImage } from "@/api/client";
 
 type MermaidBlockElement = {
   type: "mermaid_block";
@@ -851,6 +853,10 @@ function ImageBlockComponent(props: PlateElementProps) {
   const src = typeof el.src === "string" ? el.src : "";
   const alt = typeof el.alt === "string" ? el.alt : "";
   const caption = typeof el.caption === "string" ? el.caption : "";
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const resolvedSrc = resolveImageSrc(src);
 
   const isHiddenNode = (node: unknown) => {
     const nodeId =
@@ -870,6 +876,27 @@ function ImageBlockComponent(props: PlateElementProps) {
 
   const updateNode = (patch: Partial<ImageBlockElement>) => {
     Transforms.setNodes(props.editor, patch, { at: props.path as any });
+  };
+
+  const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const result = await uploadImage(file);
+      if (!alt.trim() && file.name) {
+        const stem = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
+        updateNode(stem ? { src: result.url, alt: stem } : { src: result.url });
+      } else {
+        updateNode({ src: result.url });
+      }
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setUploading(false);
+    }
   };
 
   if (hidden) return null;
@@ -895,6 +922,35 @@ function ImageBlockComponent(props: PlateElementProps) {
         <div contentEditable={false} className="mt-2 space-y-2">
           <div className="space-y-1">
             <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+              Upload
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/webp,image/png,image/jpeg,image/gif,.webp,.png,.jpg,.jpeg,.gif"
+                className="hidden"
+                onChange={handleUpload}
+              />
+              <button
+                type="button"
+                disabled={uploading}
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={() => fileInputRef.current?.click()}
+                className="h-7 rounded border border-neutral-300 bg-white px-2 text-[11px] font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+              >
+                {uploading ? "Uploading…" : "Choose image…"}
+              </button>
+              <span className="text-[10px] text-neutral-500">
+                webp / png / jpeg / gif · max 2MB
+              </span>
+            </div>
+            {uploadError ? (
+              <div className="text-[11px] text-red-600">{uploadError}</div>
+            ) : null}
+          </div>
+          <div className="space-y-1">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
               Source URL
             </div>
             <input
@@ -911,16 +967,15 @@ function ImageBlockComponent(props: PlateElementProps) {
                 );
               }}
               className="h-7 w-full rounded border border-neutral-200 bg-white px-2 text-[11px] text-neutral-700"
-              placeholder="https://…"
+              placeholder="https://… or /uploads/images/…"
             />
             <div className="text-[10px] text-neutral-500">
-              WebP only for now. Other formats will be auto-converted after the
-              Next.js migration.
+              Upload above, or paste a .webp / .png / .jpg / .gif URL.
             </div>
           </div>
           <div className="space-y-1">
             <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
-              Alt Text
+              Alt text
             </div>
             <input
               value={alt}
@@ -958,13 +1013,13 @@ function ImageBlockComponent(props: PlateElementProps) {
           <div className="mt-2 rounded border border-neutral-200 bg-white p-2">
             {src ? (
               <img
-                src={src}
+                src={resolvedSrc}
                 alt={alt}
                 className="max-h-[320px] w-auto max-w-full rounded"
               />
             ) : (
               <div className="text-[11px] text-neutral-500">
-                Add an image URL to preview.
+                Upload or add an image URL to preview.
               </div>
             )}
             {caption ? (
@@ -982,7 +1037,7 @@ function ImageBlockComponent(props: PlateElementProps) {
         >
           {src ? (
             <img
-              src={src}
+              src={resolvedSrc}
               alt={alt}
               className="max-h-[320px] w-auto max-w-full rounded"
             />
