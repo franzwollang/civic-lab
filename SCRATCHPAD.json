@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T01:45Z",
-  "turn": 71,
+  "updated_at": "2026-08-02T01:50Z",
+  "turn": 72,
   "focus": {
     "milestone": "R0+",
-    "issue": "Fumadocs unpin",
-    "goal": "Tailwind 4.3.3 + fumadocs 16.14; smoke green"
+    "issue": null,
+    "goal": "Fumadocs unpin done; hand off next Optional"
   },
   "recent": [
-    "Merged 74f7 tip (R0+image+dist) onto 86b6",
-    "Tailwind/Vite 4.3.3; fumadocs-ui/core 16.14.0; mdx 14.2.7",
-    "vite build green with inset-s-4 in CSS"
+    "Fumadocs unpin green: 49/49 smokes + vite build",
+    "Tailwind 4.3.3; fumadocs-ui/core 16.14.0; mdx 14.2.7",
+    "Merged 74f7 tip onto 86b6 before new work"
   ],
   "discoveries": [
-    "fumadocs-mdx 15+ requires Vite 7/8 — keep 14.x on Vite 6",
+    "fumadocs-mdx 15+ needs Vite 7/8 — stay on 14.x with Vite 6",
     "Cron tips must merge latest progression PR when starting from main"
   ],
   "open_threads": [
     "Next Optional: server/index+db split, or OAuth / moderator polish",
     "Manuals 3D globe still deferred (SVG satisfies CONCEPT)"
   ],
-  "next_step": "Finish smoke suite; hand off server split or OAuth/mod polish",
+  "next_step": "Optional: split server/index.ts + server/db.ts, or OAuth/mod polish",
   "blockers": []
 }
