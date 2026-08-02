@@ -74,7 +74,12 @@ that is actionable, or stop if blocked on product decisions.
   `OIDC_ISSUER`/`CLIENT_ID`/`CLIENT_SECRET`/`REDIRECT_URI` +
   `OIDC_SUBJECT_MAP`; `OIDC_MOCK=1` for local/smoke; session
   `provider: "oidc"`; same cookie + `requireSessionActor`;
-  `smoke-oidc`). JWKS signature verify / real IdP deploy remain ops.
+  `smoke-oidc`).
+- [x] **OIDC JWKS id_token verify** — done
+  (`server/auth/oidcJwks.ts` + `src/lib/oidcJwks.ts`; jose RS/ES verify;
+  `OIDC_JWKS_URI` or discovery `jwks_uri`; iss/aud/exp/nonce checks;
+  non-mock token path; `smoke-oidc` local RSA + bad-sig + nonce mismatch).
+  Real IdP deploy remains ops.
 - [x] **Moderator polish** — done
   - [x] **Canon revert audit** — done (`POST /api/artifacts/:id/revert`;
     Owner-only; Canon-only; parent/target revision; `revert` audit;

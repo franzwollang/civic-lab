@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-02T06:40Z",
-  "turn": 86,
+  "updated_at": "2026-08-02T06:55Z",
+  "turn": 87,
   "focus": {
     "milestone": "R0+",
-    "issue": "External OIDC swap-in",
-    "goal": "Env-gated OIDC binds same session cookie"
+    "issue": "OIDC JWKS id_token verify",
+    "goal": "Wire jose JWKS verify + claim checks"
   },
   "recent": [
-    "Merged tip 0ffe (model→forecast) onto fresh cron b1c5",
-    "server/auth/oidc.ts + /api/auth/oidc status/start/callback",
-    "OIDC_SUBJECT_MAP + OIDC_MOCK; provider on session me",
-    "smoke-oidc green; session/server-split/http-gates OK"
+    "Merged tip b1c5 (OIDC swap-in) onto fresh cron 630f",
+    "server/auth/oidcJwks.ts + src/lib/oidcJwks.ts claim checks",
+    "Non-mock token path verifies id_token; OIDC_JWKS_URI optional",
+    "smoke-oidc: RSA success + bad-sig + nonce mismatch"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
-    "OIDC mock loops to callback; use cookieHeaderFromResponse in smokes"
+    "jose createLocalJWKSet + token-endpoint hook keeps JWKS smoke offline"
   ],
   "open_threads": [
     "Optional: Manuals 3D globe (SVG satisfies CONCEPT)",
-    "JWKS verify / richer implication DAG still deferred"
+    "Richer implication DAG / scoring still deferred"
   ],
-  "next_step": "Optional: Manuals 3D globe, or JWKS/production OIDC hardening",
+  "next_step": "Optional: Manuals 3D globe, or implication DAG / scoring (deferred)",
   "blockers": []
 }
