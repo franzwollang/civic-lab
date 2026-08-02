@@ -63,6 +63,9 @@ import {
   type AuditLogRow,
   type BoardHideRow,
 } from "./db/moderationDb";
+import { getAttributions, getTerms } from "./db/registries";
+import { getUserIdentity } from "./db/identities";
+import { evaluateStewardEligibility } from "../src/lib/identityPolicy";
 import {
   actorMayCreateFinding,
   isFindingSeverity,
