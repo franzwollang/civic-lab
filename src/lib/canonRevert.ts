@@ -10,6 +10,7 @@ import {
   getPrototypeUser,
   type PrototypeUser,
 } from "../app/lib/prototype-users";
+import { getEffectivePrototypeUser } from "./effectiveUsers";
 
 export type CanonRevertErrorCode =
   | "unknown_actor"
@@ -44,7 +45,8 @@ export function validateCanonRevert(
   const user =
     users.length > 0
       ? users.find((u) => u.id === input.actor_id)
-      : getPrototypeUser(input.actor_id);
+      : getEffectivePrototypeUser(input.actor_id) ??
+        getPrototypeUser(input.actor_id);
   if (!user) {
     return {
       ok: false,

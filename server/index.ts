@@ -47,6 +47,9 @@ import {
   listUserIdentities,
   hideUserFromBoards,
   liftBoardHide,
+  changeUserRoles,
+  listEffectiveUsers,
+  reloadRoleOverrides,
   promoteCandidateFinding,
   promoteThreadToRfc,
   putAttributions,
@@ -396,6 +399,13 @@ const boardHideLiftBodySchema = z.object({
   actor_id: z.string().min(1),
   subject_user_id: z.string().min(1),
   note: z.string().nullable().optional(),
+});
+
+/** CONCEPT §9.1 — Owner role appointment (full replacement set). */
+const roleChangeBodySchema = z.object({
+  actor_id: z.string().min(1),
+  roles: z.array(z.string()).min(1),
+  rationale: z.string().nullable().optional(),
 });
 
 /** CONCEPT §8.6 — Owner identity attestation. */
@@ -1193,6 +1203,40 @@ app.post("/api/board-hides/lift", async (c) => {
     return c.json({ error: result.error }, status);
   }
   return c.json({ hide: result.hide, audit: result.audit });
+});
+
+// CONCEPT §9.1 / §9.4 — Owner role appointment + audit
+app.get("/api/users", async (c) => {
+  await reloadRoleOverrides();
+  return c.json(await listEffectiveUsers());
+});
+
+app.post("/api/users/:userId/roles", async (c) => {
+  const parsed = roleChangeBodySchema.safeParse(
+    (await c.req.json().catch(() => ({}))) ?? {},
+  );
+  if (!parsed.success) {
+    return c.json({ error: "Invalid role-change payload" }, 400);
+  }
+  const result = await changeUserRoles({
+    actor_id: parsed.data.actor_id,
+    subject_user_id: c.req.param("userId"),
+    roles: parsed.data.roles,
+    rationale: parsed.data.rationale,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_owner"
+        ? 403
+        : result.error.code === "unknown_user" ||
+            result.error.code === "unknown_actor"
+          ? 404
+          : result.error.code === "no_change"
+            ? 409
+            : 400;
+    return c.json({ error: result.error }, status);
+  }
+  return c.json({ user: result.user, audit: result.audit });
 });
 
 app.get("/api/audit-logs", async (c) => {

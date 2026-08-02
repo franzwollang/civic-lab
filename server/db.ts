@@ -73,6 +73,16 @@ import {
   type VerificationStatus,
 } from "../src/lib/identityPolicy";
 import { getPrototypeUser } from "../src/app/lib/prototype-users";
+import {
+  clearRoleOverrides,
+  listEffectivePrototypeUsers,
+  setRoleOverrides,
+} from "../src/lib/effectiveUsers";
+import {
+  roleChangeAuditPayload,
+  validateRoleChange,
+  type RoleChangeErrorCode,
+} from "../src/lib/roleChange";
 import { randomUUID } from "crypto";
 import {
   artifactHref,
@@ -113,6 +123,31 @@ let prisma: PrismaClient | null = null;
 
 export function setPrisma(client: PrismaClient) {
   prisma = client;
+  // Best-effort; smokes call reloadRoleOverrides after seed.
+  void reloadRoleOverrides().catch(() => {
+    clearRoleOverrides();
+  });
+}
+
+/** Load DB role appointments into the effective-user cache. */
+export async function reloadRoleOverrides(): Promise<void> {
+  const rows = await getPrisma().userRoleAssignment.findMany();
+  const entries: Array<[string, PrototypeRole[]]> = [];
+  for (const row of rows) {
+    const roles = parseRoleList(row.roles);
+    if (roles) entries.push([row.userId, roles]);
+  }
+  setRoleOverrides(entries);
+}
+
+function parseRoleList(raw: unknown): PrototypeRole[] | null {
+  if (!Array.isArray(raw)) return null;
+  const out: PrototypeRole[] = [];
+  for (const item of raw) {
+    if (typeof item !== "string") return null;
+    out.push(item as PrototypeRole);
+  }
+  return out;
 }
 
 export function getPrisma(): PrismaClient {
@@ -4194,6 +4229,111 @@ export async function liftBoardHide(input: {
   });
 
   return { ok: true, hide: mapBoardHide(hide), audit };
+}
+
+
+// ---------------------------------------------------------------------------
+// CONCEPT §9.1 / §9.4 — Owner role appointment + audit
+// ---------------------------------------------------------------------------
+
+export type RoleChangeMutationError = {
+  code: RoleChangeErrorCode | "invalid_input";
+  message: string;
+};
+
+export type EffectiveUserRow = {
+  user_id: string;
+  display_name: string;
+  roles: PrototypeRole[];
+  roles_source: "seed" | "override";
+};
+
+export async function listEffectiveUsers(): Promise<EffectiveUserRow[]> {
+  await reloadRoleOverrides();
+  const overrides = await getPrisma().userRoleAssignment.findMany();
+  const overrideIds = new Set(overrides.map((r) => r.userId));
+  return listEffectivePrototypeUsers().map((u) => ({
+    user_id: u.id,
+    display_name: u.display_name,
+    roles: [...u.roles],
+    roles_source: overrideIds.has(u.id) ? "override" : "seed",
+  }));
+}
+
+export async function changeUserRoles(input: {
+  actor_id: string;
+  subject_user_id: string;
+  roles: readonly string[];
+  rationale?: string | null;
+}): Promise<
+  | {
+      ok: true;
+      user: EffectiveUserRow;
+      audit: AuditLogRow;
+    }
+  | { ok: false; error: RoleChangeMutationError }
+> {
+  await reloadRoleOverrides();
+
+  const check = validateRoleChange({
+    actor_id: input.actor_id,
+    subject_user_id: input.subject_user_id,
+    roles: input.roles,
+  });
+  if (!check.ok) {
+    return { ok: false, error: { code: check.code, message: check.message } };
+  }
+
+  const seed = getPrototypeUser(input.subject_user_id);
+  if (!seed) {
+    return {
+      ok: false,
+      error: {
+        code: "unknown_user",
+        message: `Unknown subject user: ${input.subject_user_id}`,
+      },
+    };
+  }
+
+  const updatedAt = new Date();
+  await getPrisma().userRoleAssignment.upsert({
+    where: { userId: input.subject_user_id },
+    create: {
+      userId: input.subject_user_id,
+      roles: check.new_roles,
+      updatedBy: input.actor_id,
+      updatedAt,
+    },
+    update: {
+      roles: check.new_roles,
+      updatedBy: input.actor_id,
+      updatedAt,
+    },
+  });
+
+  await reloadRoleOverrides();
+
+  const audit = await appendAuditLog({
+    action: "role_change",
+    actor_id: input.actor_id,
+    subject_id: input.subject_user_id,
+    payload: roleChangeAuditPayload({
+      prior_roles: check.prior_roles,
+      new_roles: check.new_roles,
+      rationale: input.rationale,
+    }),
+  });
+
+  return {
+    ok: true,
+    user: {
+      user_id: seed.id,
+      display_name: seed.display_name,
+      roles: check.new_roles,
+      roles_source: "override",
+    },
+    audit,
+  };
 }
 
 
