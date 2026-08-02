@@ -4,6 +4,7 @@
  * - Disabled unless issuer + client_id + client_secret + redirect_uri are set.
  * - `OIDC_MOCK=1` skips network token exchange (smoke / local demos).
  * - `OIDC_SUBJECT_MAP` JSON maps OIDC `sub` or email → prototype user_id.
+ * - Non-mock path verifies `id_token` via JWKS (`server/auth/oidcJwks.ts`).
  */
 import { createHash, randomBytes } from "crypto";
 import {
@@ -12,6 +13,10 @@ import {
   type OidcPublicStatus,
 } from "../../src/lib/oidcAuth";
 import { getPrototypeUser } from "../../src/app/lib/prototype-users";
+import {
+  resolveConfiguredJwksUri,
+  verifyOidcIdToken,
+} from "./oidcJwks";
 
 export type OidcConfig = {
   issuer: string;
@@ -24,6 +29,8 @@ export type OidcConfig = {
   post_login_redirect: string;
   authorization_endpoint: string;
   token_endpoint: string;
+  /** Optional explicit JWKS URL (env `OIDC_JWKS_URI` or discovery). */
+  jwks_uri?: string;
 };
 
 type PendingAuth = {
@@ -41,9 +48,19 @@ export type OidcTokenExchange = (input: {
   config: OidcConfig;
   code: string;
   code_verifier: string;
+  expected_nonce: string;
 }) => Promise<{ sub: string; email?: string; preferred_username?: string }>;
 
 let tokenExchangeOverride: OidcTokenExchange | null = null;
+
+/** Test hook: supply token-endpoint JSON without network (still JWKS-verifies). */
+export type OidcTokenEndpointFn = (input: {
+  config: OidcConfig;
+  code: string;
+  code_verifier: string;
+}) => Promise<{ id_token: string }>;
+
+let tokenEndpointOverride: OidcTokenEndpointFn | null = null;
 
 export function setOidcTokenExchangeForTests(
   fn: OidcTokenExchange | null,
@@ -51,8 +68,20 @@ export function setOidcTokenExchangeForTests(
   tokenExchangeOverride = fn;
 }
 
+export function setOidcTokenEndpointForTests(
+  fn: OidcTokenEndpointFn | null,
+): void {
+  tokenEndpointOverride = fn;
+}
+
 export function clearOidcPendingForTests(): void {
   pendingByState.clear();
+}
+
+/** Peek pending nonce for JWKS smokes (state must still be live). */
+export function peekOidcPendingNonceForTests(state: string): string | null {
+  prunePending();
+  return pendingByState.get(state)?.nonce ?? null;
 }
 
 function trimEnv(name: string): string | undefined {
@@ -115,6 +144,7 @@ export function readOidcConfig(): OidcConfig | null {
     trimEnv(OIDC_ENV.postLoginRedirect) ?? "http://localhost:5173/";
 
   const issuerBase = issuer.replace(/\/+$/, "");
+  const jwks_uri = resolveConfiguredJwksUri();
   return {
     issuer: issuerBase,
     client_id,
@@ -126,6 +156,7 @@ export function readOidcConfig(): OidcConfig | null {
     post_login_redirect,
     authorization_endpoint: `${issuerBase}/authorize`,
     token_endpoint: `${issuerBase}/token`,
+    ...(jwks_uri ? { jwks_uri } : {}),
   };
 }
 
@@ -140,6 +171,7 @@ export function oidcPublicStatus(): OidcPublicStatus {
       redirect_uri: null,
       scopes: DEFAULT_OIDC_SCOPES,
       authorization_endpoint: null,
+      jwks_uri: null,
     };
   }
   return {
@@ -150,6 +182,7 @@ export function oidcPublicStatus(): OidcPublicStatus {
     redirect_uri: cfg.redirect_uri,
     scopes: cfg.scopes,
     authorization_endpoint: cfg.authorization_endpoint,
+    jwks_uri: cfg.jwks_uri ?? null,
   };
 }
 
@@ -210,57 +243,60 @@ async function defaultTokenExchange(input: {
   config: OidcConfig;
   code: string;
   code_verifier: string;
+  expected_nonce: string;
 }): Promise<{ sub: string; email?: string; preferred_username?: string }> {
-  const { config, code, code_verifier } = input;
+  const { config, code, code_verifier, expected_nonce } = input;
   if (config.mock || code.startsWith("mock:")) {
     const subject = code.startsWith("mock:") ? code.slice("mock:".length) : code;
     if (!subject) throw new Error("mock OIDC code missing subject");
     return { sub: subject, email: subject.includes("@") ? subject : undefined };
   }
 
-  const body = new URLSearchParams({
-    grant_type: "authorization_code",
-    code,
-    redirect_uri: config.redirect_uri,
-    client_id: config.client_id,
-    client_secret: config.client_secret,
-    code_verifier,
-  });
-  const res = await fetch(config.token_endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`OIDC token exchange failed (${res.status}): ${text}`);
+  let id_token: string;
+  if (tokenEndpointOverride) {
+    const tokenJson = await tokenEndpointOverride({
+      config,
+      code,
+      code_verifier,
+    });
+    if (!tokenJson?.id_token) {
+      throw new Error("OIDC token response missing id_token");
+    }
+    id_token = tokenJson.id_token;
+  } else {
+    const body = new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: config.redirect_uri,
+      client_id: config.client_id,
+      client_secret: config.client_secret,
+      code_verifier,
+    });
+    const res = await fetch(config.token_endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`OIDC token exchange failed (${res.status}): ${text}`);
+    }
+    const json = (await res.json()) as {
+      id_token?: string;
+      access_token?: string;
+    };
+    if (!json.id_token) {
+      throw new Error("OIDC token response missing id_token");
+    }
+    id_token = json.id_token;
   }
-  const json = (await res.json()) as {
-    id_token?: string;
-    access_token?: string;
-  };
-  if (!json.id_token) {
-    throw new Error("OIDC token response missing id_token");
-  }
-  // Prototype: decode JWT payload without signature verify (real deploy must
-  // verify against JWKS). Documented limitation until a JWKS client is wired.
-  const parts = json.id_token.split(".");
-  if (parts.length < 2) throw new Error("malformed id_token");
-  const payloadJson = Buffer.from(
-    parts[1].replace(/-/g, "+").replace(/_/g, "/"),
-    "base64",
-  ).toString("utf8");
-  const payload = JSON.parse(payloadJson) as {
-    sub?: string;
-    email?: string;
-    preferred_username?: string;
-  };
-  if (!payload.sub) throw new Error("id_token missing sub");
-  return {
-    sub: payload.sub,
-    email: payload.email,
-    preferred_username: payload.preferred_username,
-  };
+
+  // Production path: JWKS signature verify + iss/aud/exp/nonce checks.
+  return verifyOidcIdToken({
+    id_token,
+    config,
+    expected_nonce,
+  });
 }
 
 export async function resolveOidcCallback(input: {
@@ -280,6 +316,7 @@ export async function resolveOidcCallback(input: {
     config: cfg,
     code: input.code,
     code_verifier: pending.code_verifier,
+    expected_nonce: pending.nonce,
   });
 
   const user_id = mapOidcSubjectToUserId(cfg, claims);
