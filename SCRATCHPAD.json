@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T00:40Z",
+  "turn": 65,
   "focus": {
     "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "issue": "CONCEPT.md rewrite pass",
+    "goal": "Editorial CONCEPT pass for hierarchy/claims/lanes"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Home preamble + live exemplars; smoke-home-preamble; 45/45",
+    "Merged 1fb6 tip (About→tables) onto a831",
+    "Plate tables MVP; typed posts; fixture retirement",
+    "Living About/FAQ artifacts"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron tips must merge latest progression PR when starting from main",
+    "HOME_EXEMPLARS centralizes seeded tour hrefs for smoke"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "CONCEPT rewrite next",
+    "Optional: image upload / Fumadocs unpin"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "CONCEPT.md editorial rewrite (OPEN_ISSUES §6)",
   "blockers": []
 }
