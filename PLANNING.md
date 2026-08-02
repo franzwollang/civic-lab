@@ -19,7 +19,8 @@ lives in `SCRATCHPAD.json`.
 | Schema growth | Grow tables with features; seeds disposable |
 | Package manager | **pnpm@9.15.9** (`packageManager`; lockfile v9) |
 | onlyBuiltDependencies | In **`package.json` → `pnpm.onlyBuiltDependencies`** (never JSON arrays in `.npmrc`) |
-| Fumadocs | **Pinned 16.5.4** — 16.12+ breaks Vite (`-inset-s-4`) |
+| Fumadocs | **`fumadocs-ui`/`core` 16.14.0** + Tailwind **4.3.3** (`-inset-s-4`); `fumadocs-mdx` 14.2.7 (Vite 6) |
+| Build output | **`dist/` gitignored** — regenerate via `pnpm build`; not committed |
 | API server | **Hono** + `@hono/node-server`; Prisma server-side only (`server/`) |
 | `/docs` | Engineering only |
 | Prototype identity | Seed users + **header impersonation** + identity attestation hooks |
@@ -65,12 +66,13 @@ lives in `SCRATCHPAD.json`.
 | Layer | Reality |
 |---|---|
 | Product UI | Data-driven corpus; Collection splash = live dashboard; fixture dossier dashboard redirected |
-| Editor | Plate lists/links/blockquotes/evidence/external_artifact; tables/images residual |
+| Editor | Plate lists/links/blockquotes/evidence/external_artifact/tables/images (upload) |
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
 | Auth | Impersonation + identity hooks; body `actor_id` until IdP |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
-**Phase:** **Residual / polish** after M0–M9. Policy hardening (§K) landed.
+**Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
+R0 marathon (About/FAQ → CONCEPT rewrite) landed.
 
 ---
 
@@ -88,7 +90,7 @@ lives in `SCRATCHPAD.json`.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | About/FAQ artifacts; fixture retirement; typed posts; tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `done` | About/FAQ artifacts; fixtures; typed posts; tables; home exemplars; CONCEPT rewrite |
 
 ---
 
@@ -96,12 +98,20 @@ lives in `SCRATCHPAD.json`.
 
 Optimize for **observable slices** with smokes. Prefer this order:
 
-1. **About → artifact** (pattern already proven by Charter)  
-2. **Fixture retirement** on dossier/thread surfaces  
-3. **Typed finding/mitigation posts** (small schema/UI)  
-4. **Plate tables** (editor depth)  
-5. **Home CONCEPT links** / FAQ artifact / CONCEPT rewrite (docs-heavy)  
-6. Only then: image upload, Fumadocs unpin, server split, OAuth
+1. ~~**About → artifact**~~ (**done** — `canon-about`, `/about` redirect, `smoke-about`)
+2. ~~**FAQ → artifact**~~ (**done** — `canon-faq`, `/faq` redirect, `smoke-faq`)
+3. ~~**Fixture retirement**~~ (**done** — demo pages deleted; legacy redirects; `smoke-fixture-retirement`)
+4. ~~**Typed finding/mitigation posts**~~ (**done** — RT gate; composer; filters; `smoke-typed-posts`)
+5. ~~**Plate tables**~~ (**done** — `@platejs/table@52`; reader/export; `smoke-editor-tables`)
+6. ~~**Home CONCEPT links**~~ (**done** — `#what-is-this` + live exemplars; `smoke-home-preamble`)
+7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
+8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
+9. ~~**`dist/` gitignore**~~ (**done** — stop tracking Vite build output; `smoke-dist-gitignore`)
+10. ~~**Fumadocs unpin**~~ (**done** — Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; `smoke-fumadocs`)
+11. ~~**Canon revert audit**~~ (**done** — Owner `POST …/revert`; `smoke-canon-revert`)
+12. ~~**Role-change audit**~~ (**done** — Owner `POST /api/users/:id/roles`;
+    overrides + effective users; `smoke-role-change`)
+13. **Optional / deferred next:** mod queue UI, server split, OAuth, Manuals 3D globe
 
 **Agent rules of thumb**
 
@@ -115,9 +125,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-See `OPEN_ISSUES.md` marathon queue. No architecture blockers. Known debt:
-server monolith size, tracked `dist/`, client→server import of prototype-users,
-tsc not covering `server/` (Vite/smoke are the gates today).
+R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
+role-change audit done — see remaining `OPEN_ISSUES.md` **Optional / deferred**.
+No architecture blockers. Known debt: server monolith size, client→server import
+of prototype-users (header still seed roles until IdP), tsc not covering
+`server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -126,4 +138,5 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **About artifact migration** (OPEN_ISSUES §1).
+- Next: **mod queue UI** (remaining moderator polish), else server split /
+  OAuth — prefer actionable Optional items with clear AC.
