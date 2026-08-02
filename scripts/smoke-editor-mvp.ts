@@ -84,9 +84,10 @@ async function main() {
     "save path must not hardcode global scope",
   );
 
-  const dbSrc = readFileSync("server/db.ts", "utf8");
-  assert.match(dbSrc, /validateDocumentStructureForMerge/);
-  assert.match(dbSrc, /content_invalid/);
+  // Merge-strict structural gate lives with RevSet/decide in threadsDb.
+  const threadsDbSrc = readFileSync("server/db/threadsDb.ts", "utf8");
+  assert.match(threadsDbSrc, /validateDocumentStructureForMerge/);
+  assert.match(threadsDbSrc, /content_invalid/);
 
   process.env.DATABASE_URL = "file:./smoke-editor-mvp.db";
   await fs.rm(DB_PATH, { force: true });
@@ -107,7 +108,7 @@ async function main() {
       throw new Error(`expected seeded, got ${seeded}`);
     }
 
-    // Non-webp image is a hard structural error — blocked on RevSet propose.
+    // Unsupported image format is a hard structural error — blocked on RevSet propose.
     const badImage = await createRevSet({
       thread_id: "thread-us-voter-reg-rfc",
       author_id: "user-alice",
@@ -117,15 +118,33 @@ async function main() {
         {
           type: "image_block",
           id: "img1",
-          src: "https://example.com/photo.png",
+          src: "https://example.com/photo.bmp",
           children: [{ text: "" }],
         },
       ],
     });
-    assert.equal(badImage.ok, false, "non-webp image RevSet should fail");
+    assert.equal(badImage.ok, false, "unsupported image RevSet should fail");
     if (!badImage.ok) {
       assert.equal(badImage.error.code, "content_invalid");
     }
+
+    // PNG URL is allowed after the upload pipeline (webp-only constraint lifted).
+    const okPng = await createRevSet({
+      thread_id: "thread-us-voter-reg-rfc",
+      author_id: "user-alice",
+      summary: "png image proposal",
+      content_json: [
+        { type: "h2", id: "h2", children: [{ text: "Ok" }] },
+        {
+          type: "image_block",
+          id: "img2",
+          src: "https://example.com/photo.png",
+          alt: "Photo",
+          children: [{ text: "" }],
+        },
+      ],
+    });
+    assert.equal(okPng.ok, true, "png image RevSet should succeed");
 
     // Warning-class missing term → ok on normal structure, fail on merge-strict.
     const emptyTerms = { terms: new Map<string, { status?: string }>() };

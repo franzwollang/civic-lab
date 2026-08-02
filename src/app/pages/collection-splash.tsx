@@ -9,16 +9,20 @@ import {
   TrendingUp,
   EyeOff,
   ScrollText,
+  UserCog,
 } from "lucide-react";
 import { Header } from "../components/header";
 import { DossierCard } from "../components/cards";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import {
+  changeUserRoles,
   getAuditLogs,
   getCollectionDashboard,
+  getUsers,
   hideUserFromBoards,
   liftBoardHide,
+  type EffectiveUserRow,
 } from "../../api/client";
 import type { AuditLogRow, CollectionDashboard } from "../../doc/types";
 import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
@@ -27,8 +31,12 @@ import {
   buildHierarchyCrumbs,
 } from "../lib/object-nav";
 import { useActingUserOptional } from "../lib/acting-user";
-import { userHasCapability } from "../lib/role-affordances";
-import { PROTOTYPE_USERS } from "../lib/prototype-users";
+import { roleShortLabel, userHasCapability } from "../lib/role-affordances";
+import {
+  PROTOTYPE_USERS,
+  type PrototypeRole,
+} from "../lib/prototype-users";
+import { PROTOTYPE_ROLE_VALUES } from "../../lib/roleChange";
 import { ActingAsHint } from "../components/acting-as-hint";
 
 type LoadState =
@@ -270,13 +278,32 @@ function CollectionDashboardView({
         </Card>
 
         <Card className="border border-neutral-200 bg-white p-6 lg:col-span-2">
-          <div className="mb-2 flex items-center gap-2">
-            <ScrollText className="h-4 w-4 text-neutral-600" />
-            <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
-              Audit log
-            </h2>
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <ScrollText className="h-4 w-4 text-neutral-600" />
+              <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
+                Audit log
+              </h2>
+            </div>
+            <Link
+              to={`/mod?collection=${encodeURIComponent(dashboard.collection.collection_id)}`}
+              className="text-xs font-medium text-neutral-700 underline"
+              data-testid="mod-queue-from-audit"
+            >
+              Full moderation queue →
+            </Link>
           </div>
           <AuditLogPanel />
+        </Card>
+
+        <Card className="border border-neutral-200 bg-white p-6 lg:col-span-2">
+          <div className="mb-2 flex items-center gap-2">
+            <UserCog className="h-4 w-4 text-neutral-600" />
+            <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
+              Role appointment
+            </h2>
+          </div>
+          <RoleAppointmentPanel />
         </Card>
 
         {/* Manuals-only panels keep chrome slot even when deferred */}
@@ -462,7 +489,7 @@ function AuditLogPanel() {
         />
         <p className="text-sm text-neutral-500">
           Steward / Owner only — merges, adjudications, Accepted Risk, board-hide,
-          and soft-deletes (CONCEPT §9.4).
+          role changes, and soft-deletes (CONCEPT §9.4).
         </p>
       </div>
     );
@@ -511,6 +538,169 @@ function AuditLogPanel() {
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+function RoleAppointmentPanel() {
+  const acting = useActingUserOptional();
+  const canAppoint = userHasCapability(acting.user, "appoint_roles");
+  const [users, setUsers] = useState<EffectiveUserRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [subjectId, setSubjectId] = useState("");
+  const [roles, setRoles] = useState<PrototypeRole[]>([]);
+  const [rationale, setRationale] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  useEffect(() => {
+    if (!canAppoint) return;
+    let cancelled = false;
+    setLoading(true);
+    void getUsers()
+      .then((rows) => {
+        if (!cancelled) setUsers(rows);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load users");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [canAppoint, reloadToken]);
+
+  useEffect(() => {
+    if (!subjectId) {
+      setRoles([]);
+      return;
+    }
+    const row = users.find((u) => u.user_id === subjectId);
+    setRoles(row ? ([...row.roles] as PrototypeRole[]) : []);
+  }, [subjectId, users]);
+
+  function toggleRole(role: PrototypeRole) {
+    setRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
+    );
+  }
+
+  async function onSubmit() {
+    if (!acting.userId || !subjectId || roles.length === 0) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await changeUserRoles(subjectId, {
+        actor_id: acting.userId,
+        roles,
+        rationale: rationale.trim() || null,
+      });
+      setRationale("");
+      setReloadToken((n) => n + 1);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Role change failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!canAppoint) {
+    return (
+      <div className="space-y-2">
+        <ActingAsHint
+          requireCapability="appoint_roles"
+          capabilityLabel="appoint and change roles"
+        />
+        <p className="text-sm text-neutral-500">
+          Owner only — appoint stewards, editors, Red Team, and adjudicators
+          (CONCEPT §9.1). Changes are append-only audited.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3" data-testid="role-appointment-panel">
+      <ActingAsHint
+        requireCapability="appoint_roles"
+        capabilityLabel="appoint and change roles"
+      />
+      <p className="text-xs text-neutral-500">
+        Owner role appointment (CONCEPT §9.1 / §9.4). Seed catalog stays the user
+        directory; appointments persist as overrides and feed server gates.
+      </p>
+      {loading ? (
+        <p className="text-sm text-neutral-500">Loading users…</p>
+      ) : null}
+      <div className="flex flex-wrap items-end gap-3">
+        <label className="text-xs text-neutral-600">
+          Account
+          <select
+            className="mt-1 block rounded border border-neutral-300 bg-white px-2 py-1 text-sm"
+            value={subjectId}
+            onChange={(e) => setSubjectId(e.target.value)}
+            data-testid="role-change-subject"
+          >
+            <option value="">Select…</option>
+            {users.map((u) => (
+              <option key={u.user_id} value={u.user_id}>
+                {u.display_name} ({u.roles.map((r) => roleShortLabel(r as PrototypeRole)).join(", ")})
+                {u.roles_source === "override" ? " · override" : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="min-w-[12rem] flex-1 text-xs text-neutral-600">
+          Rationale (optional)
+          <input
+            className="mt-1 block w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm"
+            value={rationale}
+            onChange={(e) => setRationale(e.target.value)}
+            placeholder="Appoint / demote note"
+            data-testid="role-change-rationale"
+          />
+        </label>
+      </div>
+      {subjectId ? (
+        <fieldset className="space-y-1">
+          <legend className="text-xs text-neutral-600">Roles</legend>
+          <div className="flex flex-wrap gap-2">
+            {PROTOTYPE_ROLE_VALUES.map((role) => (
+              <label
+                key={role}
+                className="inline-flex items-center gap-1.5 rounded border border-neutral-200 bg-neutral-50 px-2 py-1 text-xs"
+              >
+                <input
+                  type="checkbox"
+                  checked={roles.includes(role)}
+                  onChange={() => toggleRole(role)}
+                  data-testid={`role-change-${role}`}
+                />
+                {roleShortLabel(role)}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+      <button
+        type="button"
+        disabled={busy || !subjectId || roles.length === 0}
+        onClick={() => void onSubmit()}
+        className="rounded bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+        data-testid="role-change-submit"
+      >
+        Save roles
+      </button>
+      {error ? (
+        <p className="text-xs text-red-700" role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
