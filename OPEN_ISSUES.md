@@ -14,19 +14,20 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ## Marathon queue (ordered)
 
-### 1. About / FAQ → living artifacts
+### 1. FAQ → living artifact
 
-- [ ] **Migrate About (then FAQ) into Canon artifacts**
-  - **Scope:** `src/app/pages/about.tsx`, optionally `faq` route; seeds under
-    `prisma/seed/pages.json` + `page_revisions.json`; dossier
-    `canon-governance-1` (or new) under `collection-canon`.
+- [ ] **Migrate FAQ into Canon artifact**
+  - **Scope:** `src/app/pages/faq.tsx`; seeds under `prisma/seed/pages.json` +
+    `page_revisions.json`; dossier `canon-governance-1` under `collection-canon`
+    (same pattern as Charter + About).
   - **Done when:**
-    - Seeded artifact(s) with Plate `content_json` mirroring current prose
-    - `/about` redirects (or renders via DocumentReader) to the artifact
-    - Owner/`owner_merge_only` edit gate if Charter-like; else editor-capable
-    - Smoke asserts artifact + redirect/route
-  - **Verify:** `pnpm test:smoke` + manual `/about`
-  - **Out of scope:** home explainer (next); legal boilerplate
+    - Seeded `canon-faq` (or similar) with Plate `content_json` mirroring FAQ prose
+    - `/faq` redirects (hash-preserving) to the artifact
+    - Heading block ids preserve FAQ `#` anchors (`do-i-need-math`, …)
+    - Owner/`owner_merge_only` if Charter-like; smoke asserts artifact + redirect
+  - **Verify:** `pnpm test:smoke` + manual `/faq`
+  - **Out of scope:** home explainer; legal boilerplate
+  - **Note:** About already migrated (`canon-about`); `/about` redirects there
 
 ### 2. Fixture retirement
 
@@ -99,7 +100,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~39 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~40 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
@@ -115,5 +116,5 @@ pnpm db:reset            # wipe + reseed local SQLite
 ## Notes
 
 - Lane hygiene and separation of powers remain load-bearing CONCEPT constraints.
-- Three content systems: Fumadocs `/docs`, static About/FAQ (until migrated),
-  artifact editor — unify deliberately.
+- Three content systems: Fumadocs `/docs`, static FAQ (until migrated; About is
+  now living Canon artifact `canon-about`), artifact editor — unify deliberately.
