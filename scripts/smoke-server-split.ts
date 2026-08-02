@@ -31,6 +31,7 @@ import {
   setPrisma,
 } from "../server/db";
 import { registerArtifactRoutes } from "../server/routes/artifacts";
+import { registerAuthRoutes } from "../server/routes/auth";
 import { registerClaimRoutes } from "../server/routes/claims";
 import { registerCorpusRoutes } from "../server/routes/corpus";
 import { registerFindingRoutes } from "../server/routes/findings";
@@ -54,6 +55,8 @@ const REQUIRED_FILES = [
   "server/db/artifactsDb.ts",
   "server/db/threadsDb.ts",
   "server/db/corpusDb.ts",
+  "server/auth/session.ts",
+  "server/routes/auth.ts",
   "server/routes/health.ts",
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",

@@ -12,17 +12,18 @@ import {
   listFindings,
   promoteCandidateFinding,
 } from "../db";
+import { requireSessionActor } from "../auth/session";
 
 const flagCandidateBodySchema = z.object({
   candidate_id: z.string().min(1).optional(),
   post_id: z.string().min(1),
-  flagger_id: z.string().min(1),
+  flagger_id: z.string().min(1).optional(),
   note: z.string().nullable().optional(),
   created_at: z.string().optional(),
 });
 
 const promoteCandidateBodySchema = z.object({
-  author_id: z.string().min(1),
+  author_id: z.string().min(1).optional(),
   title: z.string().min(1).optional(),
   severity: z.enum(["low", "med", "high", "critical"]),
   likelihood: z.string().nullable().optional(),
@@ -59,7 +60,7 @@ const findingBodySchema = z.object({
     .optional(),
   evidence: z.string().nullable().optional(),
   attack_path: z.string().nullable().optional(),
-  author_id: z.string().min(1),
+  author_id: z.string().min(1).optional(),
   created_at: z.string().optional(),
   targets: z
     .array(
@@ -83,7 +84,7 @@ const acceptedRiskBodySchema = z.object({
   rationale: z.string().min(1),
   evidence_considered: z.string().nullable().optional(),
   reopen_triggers: z.string().nullable().optional(),
-  signer_id: z.string().min(1),
+  signer_id: z.string().min(1).optional(),
   signed_at: z.string().optional(),
 });
 
@@ -120,13 +121,18 @@ export function registerFindingRoutes(app: Hono): void {
   });
 
   app.post("/api/findings", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = findingBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
     if (!parsed.success) {
       return c.json({ error: "Invalid finding payload" }, 400);
     }
-    const result = await createFinding(parsed.data);
+    const result = await createFinding({
+      ...parsed.data,
+      author_id: actor,
+    });
     if (!result.ok) {
       const status =
         result.error.code === "not_found"
@@ -164,6 +170,8 @@ export function registerFindingRoutes(app: Hono): void {
   });
 
   app.post("/api/threads/:threadId/candidates", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = flagCandidateBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -173,6 +181,7 @@ export function registerFindingRoutes(app: Hono): void {
     const result = await flagCandidateFinding({
       thread_id: c.req.param("threadId"),
       ...parsed.data,
+      flagger_id: actor,
     });
     if (!result.ok) {
       const status =
@@ -189,6 +198,8 @@ export function registerFindingRoutes(app: Hono): void {
   });
 
   app.post("/api/candidates/:candidateId/promote", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = promoteCandidateBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -198,6 +209,7 @@ export function registerFindingRoutes(app: Hono): void {
     const result = await promoteCandidateFinding({
       candidate_id: c.req.param("candidateId"),
       ...parsed.data,
+      author_id: actor,
     });
     if (!result.ok) {
       const status =
@@ -226,6 +238,8 @@ export function registerFindingRoutes(app: Hono): void {
   });
 
   app.post("/api/threads/:threadId/accepted-risk", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = acceptedRiskBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -235,6 +249,7 @@ export function registerFindingRoutes(app: Hono): void {
     const result = await createAcceptedRisk({
       thread_id: c.req.param("threadId"),
       ...parsed.data,
+      signer_id: actor,
     });
     if (!result.ok) {
       const status =

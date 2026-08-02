@@ -154,51 +154,74 @@ async function main() {
     }
 
     // HTTP: RT create finding; non-RT 403; invalid type 400.
-    const httpOk = await app.request("/api/threads/thread-us-multi-open/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        author_id: "user-dave",
-        type: "finding",
-        body: "HTTP typed finding note",
-        post_id: "post-smoke-typed-finding-http",
+    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const daveCookie = await loginAs("user-dave");
+    const carolCookie = await loginAs("user-carol");
+
+    const httpOk = await app.request(
+      "/api/threads/thread-us-multi-open/posts",
+      withSession(daveCookie, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "finding",
+          body: "HTTP typed finding note",
+          post_id: "post-smoke-typed-finding-http",
+        }),
       }),
-    });
+    );
     if (httpOk.status !== 201) {
       throw new Error(`HTTP RT finding expected 201, got ${httpOk.status}`);
     }
-    const httpBody = (await httpOk.json()) as { type?: string };
+    const httpBody = (await httpOk.json()) as { type?: string; author_id?: string };
     if (httpBody.type !== "finding") {
       throw new Error("HTTP finding response type wrong");
+    }
+    if (httpBody.author_id !== "user-dave") {
+      throw new Error("HTTP finding author must come from session");
     }
 
     const httpForbid = await app.request(
       "/api/threads/thread-us-multi-open/posts",
-      {
+      withSession(carolCookie, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          author_id: "user-carol",
           type: "mitigation",
           body: "HTTP non-RT mitigation",
         }),
-      },
+      }),
     );
     if (httpForbid.status !== 403) {
       throw new Error(`HTTP non-RT typed post expected 403, got ${httpForbid.status}`);
     }
 
-    const httpBad = await app.request("/api/threads/thread-us-multi-open/posts", {
+    const httpBad = await app.request(
+      "/api/threads/thread-us-multi-open/posts",
+      withSession(daveCookie, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "not_a_type",
+          body: "bad",
+        }),
+      }),
+    );
+    if (httpBad.status !== 400) {
+      throw new Error(`HTTP invalid type expected 400, got ${httpBad.status}`);
+    }
+
+    const httpUnauth = await app.request("/api/threads/thread-us-multi-open/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         author_id: "user-dave",
-        type: "not_a_type",
-        body: "bad",
+        type: "finding",
+        body: "no session",
       }),
     });
-    if (httpBad.status !== 400) {
-      throw new Error(`HTTP invalid type expected 400, got ${httpBad.status}`);
+    if (httpUnauth.status !== 401) {
+      throw new Error(`HTTP unauth post expected 401, got ${httpUnauth.status}`);
     }
 
     console.log("smoke-typed-posts: ok");

@@ -165,16 +165,22 @@ async function main() {
       throw new Error("role_change audit missing from list");
     }
 
-    // Restore steward via HTTP
-    const httpOk = await app.request("/api/users/user-alice/roles", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        actor_id: "user-eve",
-        roles: ["steward", "contributor"],
-        rationale: "Smoke restore steward",
+    // Restore steward via HTTP (session Owner; body actor_id ignored)
+    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const eveCookie = await loginAs("user-eve");
+    const carolCookie = await loginAs("user-carol");
+
+    const httpOk = await app.request(
+      "/api/users/user-alice/roles",
+      withSession(eveCookie, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roles: ["steward", "contributor"],
+          rationale: "Smoke restore steward",
+        }),
       }),
-    });
+    );
     if (httpOk.status !== 200) {
       throw new Error(`HTTP Owner role change expected 200, got ${httpOk.status}`);
     }
@@ -192,14 +198,17 @@ async function main() {
       throw new Error("restored Alice should decide Manual");
     }
 
-    const httpForbidden = await app.request("/api/users/user-bob/roles", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        actor_id: "user-carol",
-        roles: ["editor", "contributor"],
+    const httpForbidden = await app.request(
+      "/api/users/user-bob/roles",
+      withSession(carolCookie, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          actor_id: "user-eve",
+          roles: ["editor", "contributor"],
+        }),
       }),
-    });
+    );
     if (httpForbidden.status !== 403) {
       throw new Error(
         `HTTP editor role change expected 403, got ${httpForbidden.status}`,

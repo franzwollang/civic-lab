@@ -15,6 +15,7 @@ import {
   revertCanonArtifact,
   updateArtifact,
 } from "../db";
+import { requireSessionActor } from "../auth/session";
 import { validateRevisionPayload } from "../validateRevision";
 
 async function handleListArtifacts() {
@@ -327,15 +328,10 @@ export function registerArtifactRoutes(app: Hono): void {
 
   /** CONCEPT §9.3 / §9.4 — Owner reverts Canon artifact to a prior revision. */
   app.post("/api/artifacts/:artifactId/revert", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const artifactId = c.req.param("artifactId");
     const body = await c.req.json().catch(() => ({}));
-    const actorId =
-      typeof (body as { actor_id?: unknown }).actor_id === "string"
-        ? (body as { actor_id: string }).actor_id.trim()
-        : "";
-    if (!actorId) {
-      return c.json({ error: "actor_id is required" }, 400);
-    }
     const targetRaw = (body as { target_revision_id?: unknown })
       .target_revision_id;
     const target_revision_id =
@@ -345,7 +341,7 @@ export function registerArtifactRoutes(app: Hono): void {
 
     const result = await revertCanonArtifact({
       artifact_id: artifactId,
-      actor_id: actorId,
+      actor_id: actor,
       target_revision_id,
     });
     if (!result.ok) {

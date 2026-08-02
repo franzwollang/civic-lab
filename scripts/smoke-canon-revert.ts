@@ -157,15 +157,19 @@ async function main() {
       throw new Error("revert audit missing from list");
     }
 
-    // Re-advance tip, then HTTP Owner revert + editor 403
+    // Re-advance tip, then HTTP Owner revert + editor 403 (session-bound)
     await updateArtifact(ABOUT_ARTIFACT_ID, { current_revision_id: childRev });
+    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const eveCookie = await loginAs("user-eve");
+    const carolCookie = await loginAs("user-carol");
+
     const httpOk = await app.request(
       `/api/artifacts/${ABOUT_ARTIFACT_ID}/revert`,
-      {
+      withSession(eveCookie, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ actor_id: "user-eve" }),
-      },
+        body: JSON.stringify({}),
+      }),
     );
     if (httpOk.status !== 200) {
       throw new Error(`HTTP Owner revert expected 200, got ${httpOk.status}`);
@@ -180,11 +184,11 @@ async function main() {
 
     const httpForbidden = await app.request(
       `/api/artifacts/${ABOUT_ARTIFACT_ID}/revert`,
-      {
+      withSession(carolCookie, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ actor_id: "user-carol" }),
-      },
+        body: JSON.stringify({ actor_id: "user-eve" }),
+      }),
     );
     if (httpForbidden.status !== 403) {
       throw new Error(

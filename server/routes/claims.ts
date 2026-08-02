@@ -9,6 +9,7 @@ import {
   listClaims,
   requestClaimAdjudication,
 } from "../db";
+import { requireSessionActor } from "../auth/session";
 
 const claimBodySchema = z.object({
   claim_id: z.string().min(1).optional(),
@@ -34,12 +35,12 @@ const claimBodySchema = z.object({
 });
 
 const requestAdjudicationSchema = z.object({
-  author_id: z.string().min(1),
+  author_id: z.string().min(1).optional(),
   note: z.string().nullable().optional(),
 });
 
 const adjudicateSchema = z.object({
-  author_id: z.string().min(1),
+  author_id: z.string().min(1).optional(),
   status: z.string().min(1),
   rationale: z.string().min(1),
   require_queued: z.boolean().optional(),
@@ -71,13 +72,18 @@ export function registerClaimRoutes(app: Hono): void {
   });
 
   app.post("/api/claims", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = claimBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
     if (!parsed.success) {
       return c.json({ error: "Invalid claim payload" }, 400);
     }
-    const result = await createClaim(parsed.data);
+    const result = await createClaim({
+      ...parsed.data,
+      author_id: actor,
+    });
     if (!result.ok) {
       const status =
         result.error.code === "not_found"
@@ -96,6 +102,8 @@ export function registerClaimRoutes(app: Hono): void {
   });
 
   app.post("/api/claims/:claimId/request-adjudication", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = requestAdjudicationSchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -104,7 +112,7 @@ export function registerClaimRoutes(app: Hono): void {
     }
     const result = await requestClaimAdjudication({
       claim_id: c.req.param("claimId"),
-      author_id: parsed.data.author_id,
+      author_id: actor,
       note: parsed.data.note,
     });
     if (!result.ok) {
@@ -120,6 +128,8 @@ export function registerClaimRoutes(app: Hono): void {
   });
 
   app.post("/api/claims/:claimId/adjudicate", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = adjudicateSchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -128,7 +138,7 @@ export function registerClaimRoutes(app: Hono): void {
     }
     const result = await adjudicateClaim({
       claim_id: c.req.param("claimId"),
-      author_id: parsed.data.author_id,
+      author_id: actor,
       status: parsed.data.status,
       rationale: parsed.data.rationale,
       require_queued: parsed.data.require_queued,

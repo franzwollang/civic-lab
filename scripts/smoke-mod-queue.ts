@@ -199,15 +199,21 @@ async function main() {
       throw new Error("include_deleted should surface tombstone");
     }
 
-    // HTTP: audit soft-delete feed gated
+    // HTTP: audit soft-delete feed gated by session
+    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const bobCookie = await loginAs("user-bob");
+    const aliceCookie = await loginAs("user-alice");
+
     const denyBob = await app.request(
-      "/api/audit-logs?action=post_soft_delete&limit=10&actor_id=user-bob",
+      "/api/audit-logs?action=post_soft_delete&limit=10",
+      withSession(bobCookie),
     );
     if (denyBob.status !== 403) {
       throw new Error(`Bob audit expected 403, got ${denyBob.status}`);
     }
     const okAlice = await app.request(
-      "/api/audit-logs?action=post_soft_delete&limit=50&actor_id=user-alice",
+      "/api/audit-logs?action=post_soft_delete&limit=50",
+      withSession(aliceCookie),
     );
     if (okAlice.status !== 200) {
       throw new Error(`Alice audit expected 200, got ${okAlice.status}`);
@@ -232,7 +238,8 @@ async function main() {
     }
 
     const includeDeleted = await app.request(
-      `/api/threads/thread-us-multi-open?include_deleted=1&actor_id=user-alice`,
+      `/api/threads/thread-us-multi-open?include_deleted=1`,
+      withSession(aliceCookie),
     );
     if (includeDeleted.status !== 200) {
       throw new Error(`include_deleted HTTP ${includeDeleted.status}`);
