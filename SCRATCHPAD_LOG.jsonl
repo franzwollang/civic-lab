@@ -57,3 +57,36 @@
 {"ts":"2026-07-25T20:40Z","focus":"moderator tools residual","summary":"soft-delete + audit wiring; 38/38 smokes","next":"About/FAQ artifact migration"}
 {"ts":"2026-08-01T16:15Z","focus":"integrate cloud tip + review","summary":"Merged #45; 38/38 smokes; OPEN_ISSUES/PLANNING updated with §K hardening","next":"implement §K majors or About/FAQ"}
 {"ts":"2026-08-01T16:30Z","focus":"R0 marathon ready","summary":"§K fixed; HTTP gates smoke; docs/AC queue for About-next; 39 smokes expected","next":"About artifact migration"}
+{"ts":"2026-08-01T22:50Z","focus":"About living artifact","summary":"Seeded canon-about + redirect + smoke-about; DocumentReader heading ids; 40/40","next":"FAQ artifact migration"}
+{"ts":"2026-08-01T23:10Z","focus":"FAQ living artifact","summary":"Merged About tip; seeded canon-faq + redirect + smoke-faq; 41/41 + vite build","next":"Fixture retirement on dossier/thread surfaces"}
+{"ts":"2026-08-01T23:40Z","focus":"fixture retirement","summary":"Merged FAQ tip; deleted descriptive+red-team demos; live nav/actions; 42/42 + vite build","next":"Typed finding/mitigation posts"}
+{"ts":"2026-08-01T23:55Z","focus":"typed finding/mitigation posts","summary":"Merged e9da tip; RT-gated finding|mitigation; composer+filters+smoke-typed-posts; 43/43 + vite build","next":"Plate tables MVP"}
+{"ts":"2026-08-02T00:06Z","focus":"Plate tables MVP","summary":"Merged fa48 tip; tables plugin+toolbar+reader/export+smoke; 44/44 + vite build","next":"Home preamble live exemplar links"}
+{"ts":"2026-08-02T00:40Z","focus":"home preamble exemplars","summary":"Merged 1fb6 tip; #what-is-this + live Collection/dossier/RFC links; smoke-home-preamble; 45/45","next":"CONCEPT.md rewrite pass"}
+{"ts":"2026-08-02T00:45Z","focus":"CONCEPT rewrite","summary":"Merged a831 tip; CONCEPT editorial pass + smoke-concept; R0 done; next image upload","next":"Image upload pipeline (Optional)"}
+{"ts":"2026-08-02T01:15Z","focus":"image upload pipeline","summary":"Merged 3148 tip; upload API+editor+validation+smoke; CONCEPT Appendix C cleared","next":"Run smokes/build; hand off Fumadocs unpin or dist/ gitignore"}
+{"ts":"2026-08-02T01:20Z","focus":"image upload pipeline","summary":"47/47 smokes + vite build green; dist refreshed; hand off Fumadocs/dist","next":"Optional Fumadocs unpin or dist/ gitignore"}
+{"ts":"2026-08-02T01:25Z","focus":"dist/ gitignore","summary":"Merged 02aa tip; ignore+untrack dist/; smoke-dist-gitignore; Fumadocs deferred to Tailwind bump","next":"pnpm test:smoke + build; hand off Fumadocs or server split"}
+{"ts":"2026-08-02T01:30Z","focus":"dist/ gitignore","summary":"48/48 smokes + vite build green; dist untracked; hand off Fumadocs/server split","next":"Optional: Tailwind≥4.3.2 + Fumadocs unpin, or server/index+db split"}
+{"ts":"2026-08-02T01:45Z","focus":"Fumadocs unpin","summary":"Merged 74f7 tip; Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; smoke-fumadocs; vite build green","next":"pnpm test:smoke; hand off server split or OAuth/mod polish"}
+{"ts":"2026-08-02T01:50Z","focus":"Fumadocs unpin","summary":"49/49 smokes + vite build green; Fumadocs Optional closed; hand off server split/OAuth","next":"Optional: server/index+db split, or OAuth / moderator polish"}
+{"ts":"2026-08-02T02:20Z","focus":"Canon revert audit","summary":"Owner Canon revert API+UI+smoke; merged 86b6 tip first","next":"role-change audit or mod queue UI"}
+{"ts":"2026-08-02T02:26Z","focus":"role-change audit","summary":"Owner role appoint API+UI+smoke; merged fc83 tip first; 51/51 smokes","next":"mod queue UI"}
+{"ts":"2026-08-02T02:55Z","focus":"mod queue UI","summary":"Merged 50b2 tip; /mod steward/Owner/Adjudicator queue; 52/52 smokes + vite build","next":"Optional: server split or OAuth/IdP"}
+{"ts":"2026-08-02T03:10Z","focus":"server split","summary":"Merged 6b15 tip; db+routes first slice; 53/53 smokes + vite build","next":"Optional: OAuth/IdP or deeper server module slices"}
+{"ts":"2026-08-02T03:25Z","focus":"server split routes M5-M7","summary":"Merged 0f09 tip; threads/claims/findings registrars; key smokes green","next":"full smoke+build; hand off OAuth or artifacts/db modules"}
+{"ts":"2026-08-02T03:50Z","focus":"server split artifacts routes","summary":"Merged 3de5 tip; artifacts registrar; 53/53 smokes + vite build","next":"Optional: OAuth/IdP or server/db.ts domain modules"}
+{"ts": "2026-08-02T04:15Z", "focus": "server-split findingsDb", "summary": "merged tip d28a; extracted findingsDb; createAcceptedRisk stays for merge-authority deps", "next": "OAuth/IdP or remaining db.ts domain modules"}
+{"ts":"2026-08-02T04:35Z","focus":"server-split claimsDb","summary":"merged tip 388c; extracted claimsDb; 53/53 smokes + vite build","next":"OAuth/IdP or remaining threads/artifacts db modules"}
+{"ts":"2026-08-02T04:50Z","focus":"server-split artifactsDb","summary":"merged tip 4f29; extracted artifactsDb; 53/53 smokes + vite build","next":"OAuth/IdP or threads db module from server/db.ts"}
+{"ts":"2026-08-02T05:15Z","focus":"server-split threadsDb","summary":"merged tip ebd9; extracted threadsDb; 53/53 smokes + vite build","next":"OAuth/IdP or remaining corpus/dashboard db module"}
+{"ts":"2026-08-02T05:30Z","focus":"server-split corpusDb","summary":"merged tip c707; extracted corpusDb; 53/53 smokes + vite build","next":"OAuth/IdP session→actor binding"}
+{"ts":"2026-08-02T05:55Z","focus":"OAuth/IdP session→actor","summary":"IdP-lite cookie session; mutations use session actor; 54/54 smokes","next":"Optional Manuals 3D globe or model→forecast / external OIDC"}
+{"ts":"2026-08-02T06:20Z","focus":"model→forecast implication MVP","summary":"merged tip e7a3; implies_forecast links + seed + UI + smoke","next":"Optional Manuals 3D globe or external OIDC"}
+{"ts":"2026-08-02T06:40Z","focus":"external OIDC swap-in","summary":"merged tip 0ffe; OIDC routes+mock smoke; same session cookie as IdP-lite","next":"Optional Manuals 3D globe or JWKS/production OIDC hardening"}
+{"ts":"2026-08-02T06:55Z","focus":"OIDC JWKS verify","summary":"jose JWKS id_token verify + claim checks; smoke extended","next":"Optional Manuals 3D globe or implication DAG"}
+{"ts":"2026-08-02T07:20Z","focus":"implication DAG UI","summary":"merged tip 630f; buildImplicationGraph + ClaimImplicationGraph + smoke","next":"Optional Manuals 3D globe (product-gated) or scoring propagation"}
+{"ts":"2026-08-02T07:25Z","focus":"implication score propagation","summary":"merged tip bae4; scoreModelImplications + DAG UI + smoke-claim-implication-scores","next":"Optional Manuals 3D globe (product-gated) or stop"}
+{"ts":"2026-08-02T07:45Z","focus":"queue empty handoff","summary":"merged tip d369; clarified globe + reputation rollup blockers; stop","next":"Stop until product/CONCEPT; next cron merge tip first"}
+{"ts":"2026-08-02T08:05Z","focus":"empty-queue handoff","summary":"Merged tip 07de onto a649; confirmed no actionable OPEN_ISSUES; smoke 58/58; stop","next":"merge furthest tip next cron; stop if still only gated items"}
+{"ts":"2026-08-02T08:25Z","focus":"empty-queue handoff","summary":"Merged tip a649 onto ecb9; confirmed no actionable OPEN_ISSUES; smoke 58/58; stop","next":"merge furthest tip next cron; stop if still only gated items"}
