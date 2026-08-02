@@ -144,8 +144,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 26. ~~**Model→forecast implication DAG UI**~~ (**done** —
     `buildImplicationGraph`; `ClaimImplicationGraph` on artifact claims;
     `smoke-claim-implication-graph`)
-27. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
-    CONCEPT), scoring propagation across implication edges
+27. ~~**Model→forecast implication score propagation**~~ (**done** —
+    `scoreModelImplications`; advisory Brier/log/skill on models from
+    resolved implied forecasts; `smoke-claim-implication-scores`)
+28. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
+    CONCEPT); reputation-board rollup of implication scores
 
 **Agent rules of thumb**
 
@@ -161,12 +164,12 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
 role-change audit + mod queue UI + server split + IdP-lite session→actor +
-model→forecast implication MVP + DAG UI + external OIDC swap-in + OIDC JWKS
-verify done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No
-architecture blockers. Known debt: `db.ts` still hosts `createAcceptedRisk`
-(intentional bridge) + barrels; client→server import of prototype-users (seed
-catalog still drives roles until IdP directory); tsc not covering `server/`
-(Vite/smoke are the gates today).
+model→forecast implication MVP + DAG UI + score propagation + external OIDC
+swap-in + OIDC JWKS verify done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred**. No architecture blockers. Known debt: `db.ts` still
+hosts `createAcceptedRisk` (intentional bridge) + barrels; client→server import
+of prototype-users (seed catalog still drives roles until IdP directory); tsc
+not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -175,5 +178,5 @@ catalog still drives roles until IdP directory); tsc not covering `server/`
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Manuals 3D globe** (optional; SVG already satisfies CONCEPT) or
-  scoring propagation across implication edges (deferred).
+- Next: **Manuals 3D globe** (optional; SVG already satisfies CONCEPT) or stop
+  if only product-gated / deferred items remain.

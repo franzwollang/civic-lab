@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-02T07:20Z",
-  "turn": 88,
+  "updated_at": "2026-08-02T07:25Z",
+  "turn": 89,
   "focus": {
     "milestone": "R0+",
-    "issue": "Model→forecast implication DAG UI",
-    "goal": "Artifact-scoped read-only implication graph"
+    "issue": "Implication score propagation",
+    "goal": "Advisory Brier/log/skill from implied forecasts"
   },
   "recent": [
-    "Merged tip 630f (OIDC JWKS) onto fresh cron bae4",
-    "buildImplicationGraph + ClaimImplicationGraph on ArtifactClaimsPanel",
-    "smoke-claim-implication-graph for page-001 seed triangle",
+    "Merged tip bae4 (implication DAG) onto fresh cron d369",
+    "scoreModelImplications + DAG UI advisory score summary",
+    "smoke-claim-implication-scores (seed n=1 + synthetic)",
     "Skipped Manuals 3D globe (SVG satisfies; product-gated)"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
-    "Implication DAG needs no new API when claims already loaded"
+    "Implication scores reuse claimMetrics; no new API"
   ],
   "open_threads": [
     "Optional: Manuals 3D globe (SVG satisfies CONCEPT)",
-    "Scoring propagation across implication edges still deferred"
+    "Reputation-board rollup of implication scores deferred"
   ],
-  "next_step": "Optional: Manuals 3D globe only if product asks; else scoring propagation (deferred)",
+  "next_step": "Optional: Manuals 3D globe only if product asks; else stop (queue empty)",
   "blockers": []
 }
