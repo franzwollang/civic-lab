@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-02T08:05Z",
-  "turn": 91,
+  "updated_at": "2026-08-02T08:25Z",
+  "turn": 92,
   "focus": {
     "milestone": "R0+",
     "issue": null,
     "goal": "Handoff: tip synced — queue empty, stop"
   },
   "recent": [
-    "Cron a649 started at main; merged tip 07de (PR #73) FF",
+    "Cron ecb9 started at main; merged tip a649 (PR #74) FF",
     "Confirmed only globe (product-gated) + reputation rollup (CONCEPT) left",
     "pnpm test:smoke 58/58 after tip sync"
   ],
