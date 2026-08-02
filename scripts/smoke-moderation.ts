@@ -156,12 +156,13 @@ async function main() {
       throw new Error(`expected seeded, got ${seeded}`);
     }
 
-    const post = await createThreadPost({
+    const postResult = await createThreadPost({
       thread_id: "thread-us-provisional-open",
       author_id: "user-bob",
       body: "Please soft-delete me (moderation smoke)",
     });
-    if (!post) throw new Error("createThreadPost failed");
+    if (!postResult.ok) throw new Error("createThreadPost failed");
+    const post = postResult.post;
 
     // Wrong thread_id must 404 with no write (URL pre-check)
     const mismatch = await softDeleteThreadPost({
@@ -229,12 +230,13 @@ async function main() {
     }
 
     // Canon post — steward forbidden, Owner ok
-    const canonPost = await createThreadPost({
+    const canonResult = await createThreadPost({
       thread_id: "thread-canon-goals-section",
       author_id: "user-bob",
       body: "Canon noise",
     });
-    if (!canonPost) throw new Error("canon post create failed");
+    if (!canonResult.ok) throw new Error("canon post create failed");
+    const canonPost = canonResult.post;
     const stewardCanonDb = await softDeleteThreadPost({
       post_id: canonPost.post_id,
       actor_id: "user-alice",

@@ -9,6 +9,7 @@ import {
   type EmpiricalType,
   type CanonScope,
 } from "../../lib/claimLegality";
+import { mergeImpliesForecastLinks } from "../../lib/claimImplications";
 import { useActingUserOptional } from "../lib/acting-user";
 import { ActingAsHint } from "./acting-as-hint";
 import { Button } from "./ui/button";
@@ -72,6 +73,7 @@ export function ClaimComposer({
   const [resolutionCriteria, setResolutionCriteria] = useState("");
   const [preferredSources, setPreferredSources] = useState("");
   const [canonCitations, setCanonCitations] = useState("");
+  const [impliedForecastIds, setImpliedForecastIds] = useState("");
   const [sectionId, setSectionId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,6 +107,7 @@ export function ClaimComposer({
     setResolutionCriteria("");
     setPreferredSources("");
     setCanonCitations("");
+    setImpliedForecastIds("");
     setSectionId("");
   }
 
@@ -118,6 +121,10 @@ export function ClaimComposer({
       .map((s) => s.trim())
       .filter(Boolean);
     const citations = canonCitations
+      .split(/[\n,]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const impliedIds = impliedForecastIds
       .split(/[\n,]/)
       .map((s) => s.trim())
       .filter(Boolean);
@@ -146,6 +153,11 @@ export function ClaimComposer({
       return;
     }
 
+    const links =
+      profile === "empirical" && empiricalType === "model" && impliedIds.length
+        ? mergeImpliesForecastLinks({ forecastClaimIds: impliedIds })
+        : [];
+
     setSubmitting(true);
     setError(null);
     try {
@@ -166,6 +178,7 @@ export function ClaimComposer({
         resolution_criteria: draft.resolution_criteria,
         preferred_sources: sources,
         canon_citations: citations,
+        links,
         author_id: authorId,
       });
       resetForm();
@@ -181,6 +194,7 @@ export function ClaimComposer({
   const isCanonEmpirical =
     profile === "empirical" && ownerContext.area_kind === "canon";
   const isForecast = profile === "empirical" && empiricalType === "forecast";
+  const isModel = profile === "empirical" && empiricalType === "model";
 
   return (
     <Card className="border border-neutral-200 bg-white p-4">
@@ -303,6 +317,29 @@ export function ClaimComposer({
                 className="bg-white"
               />
             </div>
+          </div>
+        )}
+
+        {isModel && (
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="claim-implies-forecasts"
+              className="text-xs uppercase tracking-wider text-neutral-500"
+            >
+              Implies forecasts (claim ids)
+            </Label>
+            <Input
+              id="claim-implies-forecasts"
+              value={impliedForecastIds}
+              onChange={(e) => setImpliedForecastIds(e.target.value)}
+              placeholder="claim-canon-turnout-trend, claim-…"
+              disabled={!enabled || submitting}
+              className="bg-white"
+            />
+            <p className="text-xs text-neutral-500">
+              Optional. Links this model to empirical forecast claims it
+              implies (CONCEPT §5.2 MVP).
+            </p>
           </div>
         )}
 

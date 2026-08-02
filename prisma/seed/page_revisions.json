@@ -9680,7 +9680,407 @@
       }
     ]
   },
-
+  {
+    "revision_id": "rev-canon-about-1",
+    "page_id": "canon-about",
+    "parent_revision_id": null,
+    "created_at": "2026-08-01T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "about-title",
+        "children": [
+          {
+            "text": "About Civic Lab"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "about-lede",
+        "children": [
+          {
+            "text": "A governance engineering lab: living specs, adversarial review, and transparent uncertainty. Site path /about resolves here (owner_merge_only Canon artifact)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "about-intro",
+        "children": [
+          {
+            "text": "Civic Lab is a forum/wiki hybrid for building high-quality, revisioned knowledge bases about political systems, economic systems, voting systems, cultural institutions, and the real-world plans needed to move societies toward better outcomes."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "how-to-read",
+        "children": [
+          {
+            "text": "How To Read Civic Lab"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-p1",
+        "children": [
+          {
+            "text": "You'll encounter math, science, and CS terms here. They're not required—but they're common because they make complex reasoning more legible and disagreements more auditable."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-li1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Start with the plain-language summary of an artifact or RFC."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-li2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Use formal sections as optional precision tools when needed."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-li3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "If something is unclear, ask for a rewrite as a resolvable claim with definitions, thresholds, and time windows."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "charter",
+        "children": [
+          {
+            "text": "Not a Neutral Platform"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p1",
+        "children": [
+          {
+            "text": "Civic Lab has an explicit living Charter (Owner-gated Canon artifact) and a clear editor-in-chief model. The trade is simple: higher signal, stronger standards, and an auditable trail of reasoning."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p2",
+        "children": [
+          {
+            "text": "A living system: assumptions are explicit; uncertainty is tracked, not hidden; claims are tied to evidence where possible."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "two-channels",
+        "children": [
+          {
+            "text": "Two Channels"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-p1",
+        "children": [
+          {
+            "text": "The platform separates ideals from execution so both can be held to rigorous, legible standards."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-canon",
+        "children": [
+          {
+            "text": "Canon (Ideal): The Canon is the spec. It defines a coherent ideal framework: core principles, constraints, invariants, and mechanisms—plus the tests, metrics, and failure modes that let us argue about it rigorously."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-manuals",
+        "children": [
+          {
+            "text": "Country Manuals (Execution): pragmatic field guides—current conditions, constraints, incentives, and stepwise plans. Country-specific by design; descriptive intelligence, prescriptive strategy, and alignment steps toward the Canon. Allowed to be bluntly realistic; required to be intellectually honest."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "workflow",
+        "children": [
+          {
+            "text": "How Work Gets Done Here"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-threads",
+        "children": [
+          {
+            "text": "Threads-first collaboration: discussion happens in threads attached to larger semantic units (dossiers), not scattered comment sections."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-rfc",
+        "children": [
+          {
+            "text": "RFC workflow (change control): when discussion becomes actionable, a thread can be promoted to an RFC. RFCs bundle revisions, diffs, and review into a single, auditable path from proposal to merge."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-rt",
+        "children": [
+          {
+            "text": "Red Team cases (first-class dissent): strong disagreement, skepticism, and deconstruction aren't buried—they're formalized. Red Team cases produce structured findings, mitigation discussions, and accepted-risk signoffs when needed."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "standards",
+        "children": [
+          {
+            "text": "Standards and Uncertainty"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-p1",
+        "children": [
+          {
+            "text": "We push hard for measurability when possible, and for clarity when direct measurement isn't available."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-li1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Where reality is measurable: descriptive claims are written to be resolvable; claims can include explicit confidence; the platform tracks claim quality and forecast calibration."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-li2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Where reality is not directly measurable: assumptions, definitions, and tradeoffs are explicit; dissent is preserved, not memory-holed."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "governance",
+        "children": [
+          {
+            "text": "Governance"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-li1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Civic Lab is a curated system."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-li2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "The Canon has final editorial oversight (benevolent dictator model)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-li3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Country Manuals can be stewarded by appointed maintainers."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-li4",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Global Red Team and adjudication functions are designed to prevent local bubbles and improve rigor."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-li5",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "This structure is explicit because the alternative is hidden power and invisible drift."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "who-this-is-for",
+        "children": [
+          {
+            "text": "Who This Is For"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "who-li1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "People who want to treat governance like engineering: mechanisms, incentives, failure modes, and tests."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "who-li2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "People willing to write clearly, cite sources, quantify claims when possible, and keep disagreements legible."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "who-li3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Practitioners, researchers, and serious independents who want a high-signal place to build long-range synthesis."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "get-involved",
+        "children": [
+          {
+            "text": "Get Involved"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-p1",
+        "children": [
+          {
+            "text": "The site is readable by anyone. Contribution access is gated to keep quality high. Read the Canon and Country Manuals; join dossier threads and RFC reviews (verified access); steward a dossier, contribute revisions, or participate in Red Team reviews."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-p2",
+        "children": [
+          {
+            "text": "Start by reading a dossier you care about and opening a thread with a concrete correction, a resolvable claim, a structured objection (red-team style), or a well-scoped RFC proposal."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "what-to-expect",
+        "children": [
+          {
+            "text": "What You Can Expect"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "expect-li1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Strong opinions, explicit assumptions, and transparent decision-making."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "expect-li2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "A living archive of disagreement—kept readable and attributable."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "expect-li3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "A place where synthesis is allowed, but hand-waving isn't."
+          }
+        ]
+      }
+    ]
+  },
   {
     "revision_id": "rev-us-alignment-1",
     "page_id": "us-alignment",
@@ -9721,6 +10121,2553 @@
         "children": [
           {
             "text": "Every alignment RFC should cite page-001 (Voting Systems) criteria when claiming progress toward Canon ideals."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "revision_id": "rev-canon-faq-1",
+    "page_id": "canon-faq",
+    "parent_revision_id": null,
+    "created_at": "2026-08-01T00:00:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "faq-title",
+        "children": [
+          {
+            "text": "Civic Lab FAQ"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-lede",
+        "children": [
+          {
+            "text": "Living, revisioned governance specs with structured review, adversarial testing, and transparent uncertainty. Site path /faq resolves here (owner_merge_only Canon artifact)."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-1",
+        "children": [
+          {
+            "text": "What is Civic Lab?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-2",
+        "children": [
+          {
+            "text": "Civic Lab is a forum/wiki hybrid for building living, revisioned governance specs—and the country-specific manuals required to move real societies toward better outcomes. It’s designed like an engineering lab: explicit assumptions, structured review, adversarial testing (red team), and transparent uncertainty."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "do-i-need-math",
+        "children": [
+          {
+            "text": "Do I need math or CS to use Civic Lab?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-3",
+        "children": [
+          {
+            "text": "No. Civic Lab is written to be readable without technical background. Technical terms, math, and formal models show up because they reduce ambiguity and make arguments auditable—but they’re optional precision tools, not a prerequisite."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-4",
+        "children": [
+          {
+            "text": "Practical rule: read the plain-language summary first. Only dive into formal sections when you want to check definitions, test claims, or resolve a disagreement precisely."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "why-technical",
+        "children": [
+          {
+            "text": "Why does Civic Lab use technical language?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-5",
+        "children": [
+          {
+            "text": "Because governance debates are often argument-shaped, not evidence-shaped. Technical motifs (models, definitions, invariants, tests, failure modes, metrics) help compress complexity and make “what would change my mind” explicit."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-6",
+        "children": [
+          {
+            "text": "The intent is clarity, not gatekeeping."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "unfamiliar-terms",
+        "children": [
+          {
+            "text": "What if I hit unfamiliar terms or notation?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-7",
+        "children": [
+          {
+            "text": "• Skip the formal block and keep reading the summary."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-8",
+        "children": [
+          {
+            "text": "• Ask for a plain-language rewrite."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-9",
+        "children": [
+          {
+            "text": "• If it’s a descriptive claim, ask for it to be rewritten as a resolvable claim with definitions, thresholds, and time windows."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-10",
+        "children": [
+          {
+            "text": "What is Civic Lab not?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-11",
+        "children": [
+          {
+            "text": "• Not a neutral public square"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-12",
+        "children": [
+          {
+            "text": "• Not a social media debate arena"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-13",
+        "children": [
+          {
+            "text": "• Not a journal"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-14",
+        "children": [
+          {
+            "text": "• Not a political party, lobbying group, or persuasion campaign"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-15",
+        "children": [
+          {
+            "text": "• Not a place for operational “how-to” wrongdoing"
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-16",
+        "children": [
+          {
+            "text": "What’s the core value proposition?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-17",
+        "children": [
+          {
+            "text": "A place where:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-18",
+        "children": [
+          {
+            "text": "• Broad synthesis is allowed (with uncertainty made explicit)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-19",
+        "children": [
+          {
+            "text": "• “Truth contact” is enforced via claims/tests where possible."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-20",
+        "children": [
+          {
+            "text": "• Dissent is preserved as durable structure (red team)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-21",
+        "children": [
+          {
+            "text": "• Changes are reviewed via RFC workflows, not comment wars."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-22",
+        "children": [
+          {
+            "text": "Mission and Philosophy"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-23",
+        "children": [
+          {
+            "text": "What are you optimizing for: truth, persuasion, or execution?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-24",
+        "children": [
+          {
+            "text": "Truth is primary. Execution is supported through Country Manuals. Persuasion is assumed to happen outside the platform via third-party groups."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-25",
+        "children": [
+          {
+            "text": "Why does “truth-first” matter if politics is messy?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-26",
+        "children": [
+          {
+            "text": "Because you can still:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-27",
+        "children": [
+          {
+            "text": "• Model incentives and failure modes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-28",
+        "children": [
+          {
+            "text": "• Score forecasts in descriptive lanes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-29",
+        "children": [
+          {
+            "text": "• Define invariants and constraints."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-30",
+        "children": [
+          {
+            "text": "• Track uncertainty explicitly."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-31",
+        "children": [
+          {
+            "text": "Even when values differ, clarity about mechanisms reduces noise."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-32",
+        "children": [
+          {
+            "text": "What’s the “two-stage pipeline” idea?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-33",
+        "children": [
+          {
+            "text": "• Exploration and synthesis: coherent, model-driven extensions are allowed even if partially validated—uncertainty is explicit."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-34",
+        "children": [
+          {
+            "text": "• Consolidation: mature work is distilled into narrower falsifiable claims, publishable units, or actionable steps."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-35",
+        "children": [
+          {
+            "text": "This is analogous to branch expansion and pruning in search: explore candidate frameworks, then tighten."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "two-channels",
+        "children": [
+          {
+            "text": "Structure: Canon vs Country Manuals"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-36",
+        "children": [
+          {
+            "text": "What are the two main channels?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-37",
+        "children": [
+          {
+            "text": "Canon (Ideal): The spec—principles, invariants, mechanisms, tests, failure modes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-38",
+        "children": [
+          {
+            "text": "Country Manuals (Execution + realpolitik): Country-specific manuals with current constraints, stepwise plans, descriptive intelligence, and strategic objectives."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-39",
+        "children": [
+          {
+            "text": "Is the Canon one universal optimum?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-40",
+        "children": [
+          {
+            "text": "Yes—one coherent Canon, supported by multiple models that admit adaptation under explicit assumptions."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-41",
+        "children": [
+          {
+            "text": "How do you prevent Canon from becoming ideology or dogma?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-42",
+        "children": [
+          {
+            "text": "By forcing:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-43",
+        "children": [
+          {
+            "text": "• Explicit assumptions and invariants."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-44",
+        "children": [
+          {
+            "text": "• Clear “what evidence would change this” notes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-45",
+        "children": [
+          {
+            "text": "• Structured red-team cases."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-46",
+        "children": [
+          {
+            "text": "• Durable dissent records even when changes are vetoed."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-47",
+        "children": [
+          {
+            "text": "What is the role of realpolitik?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-48",
+        "children": [
+          {
+            "text": "Manuals can include objective-driven, amoral institutional strategy analysis. Canon can remain deeply normative/humanistic. The platform separates these concerns to preserve clarity."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "objects",
+        "children": [
+          {
+            "text": "Core Collaboration Objects"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-49",
+        "children": [
+          {
+            "text": "What is a Dossier?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-50",
+        "children": [
+          {
+            "text": "A Dossier is the primary semantic container. It groups artifacts (documents), threads (subforum), RFCs (change proposals), red-team cases/findings, and dashboards/metrics."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-51",
+        "children": [
+          {
+            "text": "What is an Artifact?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-52",
+        "children": [
+          {
+            "text": "A structured wiki-style document inside a dossier: Canon specs, Country manual chapters, case studies, procedures, and definitions/glossaries. Artifacts are revisioned and attributable."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-53",
+        "children": [
+          {
+            "text": "Why threads-first instead of per-page comments?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-54",
+        "children": [
+          {
+            "text": "Because:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-55",
+        "children": [
+          {
+            "text": "• Most discussion does not become changes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-56",
+        "children": [
+          {
+            "text": "• Per-page comments fragment context."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-57",
+        "children": [
+          {
+            "text": "• Meaningful debate often spans multiple related artifacts."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-58",
+        "children": [
+          {
+            "text": "Threads are the primary unit. They can later become RFCs if needed."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "rfcs",
+        "children": [
+          {
+            "text": "RFCs: Change Control"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-59",
+        "children": [
+          {
+            "text": "What is an RFC?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-60",
+        "children": [
+          {
+            "text": "A Request for Change is a structured proposal thread: it has scope and acceptance criteria, contains revision sets (RevSets), produces a merge/reject/park decision, and leaves an auditable trail."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-61",
+        "children": [
+          {
+            "text": "Why not just allow direct wiki edits?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-62",
+        "children": [
+          {
+            "text": "The goal is to avoid lowest common denominator drift. RFCs concentrate negotiation in one place, preserve provenance, and support higher standards and accountability."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-63",
+        "children": [
+          {
+            "text": "What is a Revision Set?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-64",
+        "children": [
+          {
+            "text": "A RevSet is a bundled patch proposal within an RFC. Authors can iteratively update RevSets until the RFC is decided."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-65",
+        "children": [
+          {
+            "text": "What qualifies as a high impact RFC?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-66",
+        "children": [
+          {
+            "text": "Examples:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-67",
+        "children": [
+          {
+            "text": "• Changes to Canon invariants/definitions."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-68",
+        "children": [
+          {
+            "text": "• Changes that alter scoring/resolution policies."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-69",
+        "children": [
+          {
+            "text": "• Major alterations to a country manual strategy track."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-70",
+        "children": [
+          {
+            "text": "• Changes that materially alter institutional procedures."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-71",
+        "children": [
+          {
+            "text": "High-impact RFCs trigger stronger red-team expectations."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "red-team",
+        "children": [
+          {
+            "text": "Red Team: Structured Dissent"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-72",
+        "children": [
+          {
+            "text": "What are Red Team cases?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-73",
+        "children": [
+          {
+            "text": "Red Team cases are first-class adversarial review processes that produce structured Findings. A finding is a durable record of a counterexample, exploit path, failure mode, missing constraint, bad assumption, or contradictory evidence."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-74",
+        "children": [
+          {
+            "text": "How is Red Team different from normal critique?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-75",
+        "children": [
+          {
+            "text": "Red Team has:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-76",
+        "children": [
+          {
+            "text": "• Structured findings (not just comments)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-77",
+        "children": [
+          {
+            "text": "• Statuses (open/mitigated/accepted-risk)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-78",
+        "children": [
+          {
+            "text": "• Gating power on high-impact merges."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-79",
+        "children": [
+          {
+            "text": "• A persistent, searchable adversarial record."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-80",
+        "children": [
+          {
+            "text": "Who can file Findings?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-81",
+        "children": [
+          {
+            "text": "Only Red Team members file formal findings. Others can comment, flag candidate findings, propose evidence, and request RT review."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-82",
+        "children": [
+          {
+            "text": "How do candidate findings work?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-83",
+        "children": [
+          {
+            "text": "Observers can flag messages. Red Team members can promote flagged messages into formal findings if they meet quality standards."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-84",
+        "children": [
+          {
+            "text": "What is the “Supreme Court opinion” concept?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-85",
+        "children": [
+          {
+            "text": "When the owner vetoes a Canon change, the decision should produce an Opinion artifact: the decision, the strongest counterarguments (steelman), the rationale, and what evidence would change the decision. This ensures veto power is transparent, not arbitrary."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-86",
+        "children": [
+          {
+            "text": "Claims, Forecasting, and Metrics"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-87",
+        "children": [
+          {
+            "text": "What is a claim on Civic Lab?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-88",
+        "children": [
+          {
+            "text": "A claim is a resolvable statement in the descriptive lane: a time-stamped fact with confidence, a probabilistic forecast with deadline and criteria, or a model claim tied to forecast implications. Each claim includes resolution criteria, preferred sources, confidence/probability, and a defined time horizon."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-89",
+        "children": [
+          {
+            "text": "What do you mean by forcing claims to be resolvable?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-90",
+        "children": [
+          {
+            "text": "You ban vague rhetoric unless it’s rewritten with metric thresholds, time windows, and explicit criteria for what would count as true/false."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-91",
+        "children": [
+          {
+            "text": "Example: Bad: “Corruption is increasing.” Good: “CPI rank worsens by ≥10 places between 2026–2028.”"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-92",
+        "children": [
+          {
+            "text": "What is the difference between claim quality and forecast accuracy metrics?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-93",
+        "children": [
+          {
+            "text": "Claim quality metrics are about process hygiene and legibility: invalidated rate, ambiguity rate, time-to-resolution, citation density, and optional specificity scores. Forecast accuracy metrics measure truth calibration: log score, Brier score, calibration curves, sharpness, and skill vs baseline."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-94",
+        "children": [
+          {
+            "text": "Can scoring be gamed?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-95",
+        "children": [
+          {
+            "text": "Yes. Any single metric can be gamed, which is why Civic Lab tracks a bundle and treats scores as signals, not permission gates."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-96",
+        "children": [
+          {
+            "text": "Will scores automatically grant privileges?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-97",
+        "children": [
+          {
+            "text": "No. Privileges are discretionary, but scores create transparency and accountability."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-98",
+        "children": [
+          {
+            "text": "What about areas where scoring doesn’t apply?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-99",
+        "children": [
+          {
+            "text": "Use reputation and provenance: merged RFC contributions, red-team gates passed, endorsements scoped by dossier/topic, review labor and adjudication support, and quality of critique and clarity."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "governance-roles",
+        "children": [
+          {
+            "text": "Governance and Roles"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-100",
+        "children": [
+          {
+            "text": "Who runs the platform?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-101",
+        "children": [
+          {
+            "text": "A benevolent dictator model: owner has final veto on Canon, stewards can govern country manuals, and red-team/adjudicators are global independent roles."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-102",
+        "children": [
+          {
+            "text": "Why global Red Team and adjudicators?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-103",
+        "children": [
+          {
+            "text": "To prevent localized bubbles and ideological capture. Country stewards cannot silence global red-team findings or override adjudications."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-104",
+        "children": [
+          {
+            "text": "What is the separation of powers?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-105",
+        "children": [
+          {
+            "text": "• Stewards/owner merge content."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-106",
+        "children": [
+          {
+            "text": "• Adjudicators resolve claim disputes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-107",
+        "children": [
+          {
+            "text": "• Red Team issues findings."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-108",
+        "children": [
+          {
+            "text": "• Adjudicators do not merge; Red Team does not merge."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-109",
+        "children": [
+          {
+            "text": "Identity policy: are accounts pseudonymous?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-110",
+        "children": [
+          {
+            "text": "Publicly pseudonymous is allowed. Internally, contributors are real-ID verified."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-111",
+        "children": [
+          {
+            "text": "Content Hygiene: Manual Lanes and Realpolitik"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-112",
+        "children": [
+          {
+            "text": "What are the manual lanes?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-113",
+        "children": [
+          {
+            "text": "Each manual artifact has exactly one primary lane: Descriptive (what is true now + forecasts), Prescriptive (plans to achieve an objective with explicit actors), and Alignment (steps moving toward Canon invariants)."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-114",
+        "children": [
+          {
+            "text": "Why separate lanes?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-115",
+        "children": [
+          {
+            "text": "To avoid conflating:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-116",
+        "children": [
+          {
+            "text": "• Evidence vs advocacy."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-117",
+        "children": [
+          {
+            "text": "• Prediction vs aspiration."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-118",
+        "children": [
+          {
+            "text": "• Alignment vs power politics."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-119",
+        "children": [
+          {
+            "text": "Lane separation keeps documents legible and reviewable."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-120",
+        "children": [
+          {
+            "text": "How do you keep realpolitik from becoming a cookbook for harm?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-121",
+        "children": [
+          {
+            "text": "• Stay at institutional/state level."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-122",
+        "children": [
+          {
+            "text": "• Require explicit side-effects and blowback fields."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-123",
+        "children": [
+          {
+            "text": "• Avoid operational step-by-step instructions for wrongdoing."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-124",
+        "children": [
+          {
+            "text": "• Prefer analysis, constraints, and risk disclosure over tactical guidance."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-125",
+        "children": [
+          {
+            "text": "Document Editing and Syntax Support"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-126",
+        "children": [
+          {
+            "text": "What document syntaxes are supported natively?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-127",
+        "children": [
+          {
+            "text": "Core:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-128",
+        "children": [
+          {
+            "text": "• Markdown-style content (headings, lists, tables)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-129",
+        "children": [
+          {
+            "text": "• LaTeX math (inline + block)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-130",
+        "children": [
+          {
+            "text": "• Mermaid diagrams."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-131",
+        "children": [
+          {
+            "text": "• Procedure blocks (pseudocode.js syntax)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-132",
+        "children": [
+          {
+            "text": "Optional highlight-only snippets: JSON, YAML, TOML, CSV."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-133",
+        "children": [
+          {
+            "text": "Why have structured snippets if you’re not a programming platform?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-134",
+        "children": [
+          {
+            "text": "Because governance design needs precise card-like objects:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-135",
+        "children": [
+          {
+            "text": "• Claim templates."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-136",
+        "children": [
+          {
+            "text": "• Strategy action templates."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-137",
+        "children": [
+          {
+            "text": "• Risk matrices."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-138",
+        "children": [
+          {
+            "text": "• Small evidence datasets."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-139",
+        "children": [
+          {
+            "text": "• Taxonomy definitions."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-140",
+        "children": [
+          {
+            "text": "Highlight-only support makes these copyable and unambiguous without turning the site into an IDE."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-141",
+        "children": [
+          {
+            "text": "Publications and External Outputs"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-142",
+        "children": [
+          {
+            "text": "Is publication an explicit goal?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-143",
+        "children": [
+          {
+            "text": "Publication is a supported outcome, not the primary goal. The platform is publication-compatible by design through immutable revision history, provenance and attribution logs, red-team appendices, and export bundles (later)."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-144",
+        "children": [
+          {
+            "text": "Will there be tooling to help publish?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-145",
+        "children": [
+          {
+            "text": "Potential supports:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-146",
+        "children": [
+          {
+            "text": "• Export an artifact/RFC bundle into Markdown/LaTeX + citations."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-147",
+        "children": [
+          {
+            "text": "• Contribution log export."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-148",
+        "children": [
+          {
+            "text": "• Authorship proposal workflow with dispute windows."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-149",
+        "children": [
+          {
+            "text": "• Publication track labels with stricter hygiene."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-150",
+        "children": [
+          {
+            "text": "Community, Access, and Avoiding Reddit"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-151",
+        "children": [
+          {
+            "text": "How do you prevent the early community from poisoning the well?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-152",
+        "children": [
+          {
+            "text": "By launching as:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-153",
+        "children": [
+          {
+            "text": "• Read-only public."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-154",
+        "children": [
+          {
+            "text": "• Gated write access."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-155",
+        "children": [
+          {
+            "text": "• Structured workflows (RFCs, red-team)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-156",
+        "children": [
+          {
+            "text": "• Minimal unstructured chat surfaces."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-157",
+        "children": [
+          {
+            "text": "The public face is the artifact library and the audit trail, not the chat stream."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-158",
+        "children": [
+          {
+            "text": "Is manual ID verification scalable?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-159",
+        "children": [
+          {
+            "text": "Not initially. Culture formation matters more than scale. Verification can be delegated or outsourced later."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "participation-ladder",
+        "children": [
+          {
+            "text": "What is the participation ladder?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-160",
+        "children": [
+          {
+            "text": "See the onboarding section below."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "onboarding",
+        "children": [
+          {
+            "text": "Onboarding"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-161",
+        "children": [
+          {
+            "text": "Civic Lab has two primary workflows: reading and mapping the landscape, and contributing through structured change. Pick your role below."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-162",
+        "children": [
+          {
+            "text": "Role 0: Reader (no account required)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-163",
+        "children": [
+          {
+            "text": "Goal: understand the Canon and the manuals."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-164",
+        "children": [
+          {
+            "text": "What you can do:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-165",
+        "children": [
+          {
+            "text": "• Browse dossiers."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-166",
+        "children": [
+          {
+            "text": "• Read artifacts."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-167",
+        "children": [
+          {
+            "text": "• Read RFC history and red-team cases."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-168",
+        "children": [
+          {
+            "text": "• Follow tags and topics."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-169",
+        "children": [
+          {
+            "text": "Recommended first steps:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-170",
+        "children": [
+          {
+            "text": "• Read “Constitution / Mission / Standards” dossier."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-171",
+        "children": [
+          {
+            "text": "• Read one Canon dossier you care about."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-172",
+        "children": [
+          {
+            "text": "• Read one Country Manual dossier you care about."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-173",
+        "children": [
+          {
+            "text": "• Skim a few RFC decisions and Red Team findings to understand how disagreements are handled."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-174",
+        "children": [
+          {
+            "text": "Role 1: Observer (account; unverified)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-175",
+        "children": [
+          {
+            "text": "Goal: ask good questions and flag issues without degrading signal quality."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-176",
+        "children": [
+          {
+            "text": "You can do:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-177",
+        "children": [
+          {
+            "text": "• Follow dossiers."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-178",
+        "children": [
+          {
+            "text": "• Bookmark artifacts."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-179",
+        "children": [
+          {
+            "text": "• Open discussion threads in limited zones (optional, based on policy)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-180",
+        "children": [
+          {
+            "text": "• Flag candidate red-team findings (if enabled)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-181",
+        "children": [
+          {
+            "text": "• Propose claim rewrites (in thread form)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-182",
+        "children": [
+          {
+            "text": "Your first contribution should be one of:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-183",
+        "children": [
+          {
+            "text": "• A concrete correction with a citation."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-184",
+        "children": [
+          {
+            "text": "• A resolvable claim rewrite (add threshold + time window)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-185",
+        "children": [
+          {
+            "text": "• A candidate finding flag with evidence."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-186",
+        "children": [
+          {
+            "text": "Role 2: Verified Contributor (real-ID verified)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-187",
+        "children": [
+          {
+            "text": "Goal: participate in dossier subforums, propose RFCs, and submit RevSets."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-188",
+        "children": [
+          {
+            "text": "You can do:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-189",
+        "children": [
+          {
+            "text": "• Open and participate in dossier threads."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-190",
+        "children": [
+          {
+            "text": "• Promote threads into RFCs (or request promotion)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-191",
+        "children": [
+          {
+            "text": "• Submit revision sets (patches)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-192",
+        "children": [
+          {
+            "text": "• Participate in red-team discussions (not file findings unless RT)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-193",
+        "children": [
+          {
+            "text": "Expected standards:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-194",
+        "children": [
+          {
+            "text": "• Cite sources for descriptive claims."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-195",
+        "children": [
+          {
+            "text": "• State uncertainty/confidence explicitly."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-196",
+        "children": [
+          {
+            "text": "• Keep lane hygiene in manuals."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-197",
+        "children": [
+          {
+            "text": "Suggested starter tasks:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-198",
+        "children": [
+          {
+            "text": "• Fix one artifact for clarity + citations."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-199",
+        "children": [
+          {
+            "text": "• Submit one small RFC with a clean RevSet."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-200",
+        "children": [
+          {
+            "text": "• Convert vague statements into resolvable claims."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-201",
+        "children": [
+          {
+            "text": "Role 3: Steward (appointed)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-202",
+        "children": [
+          {
+            "text": "Goal: maintain coherence and quality in a dossier or country manual."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-203",
+        "children": [
+          {
+            "text": "You can do:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-204",
+        "children": [
+          {
+            "text": "• Approve/merge RFCs in your scope."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-205",
+        "children": [
+          {
+            "text": "• Enforce lane hygiene."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-206",
+        "children": [
+          {
+            "text": "• Curate dossier structure and templates."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-207",
+        "children": [
+          {
+            "text": "• Request red-team review for high-impact changes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-208",
+        "children": [
+          {
+            "text": "Steward responsibilities:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-209",
+        "children": [
+          {
+            "text": "• Document decisions."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-210",
+        "children": [
+          {
+            "text": "• Maintain minimal standards and civility."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-211",
+        "children": [
+          {
+            "text": "• Avoid local capture (global red-team/adjudicators can override bubbles)."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-212",
+        "children": [
+          {
+            "text": "Role 4: Red Team Member (global)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-213",
+        "children": [
+          {
+            "text": "Goal: adversarially test claims, invariants, and high-impact proposals."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-214",
+        "children": [
+          {
+            "text": "You can do:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-215",
+        "children": [
+          {
+            "text": "• File formal findings."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-216",
+        "children": [
+          {
+            "text": "• Promote candidate findings."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-217",
+        "children": [
+          {
+            "text": "• Require mitigations or accepted-risk signoffs for high-impact merges."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-218",
+        "children": [
+          {
+            "text": "What good looks like:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-219",
+        "children": [
+          {
+            "text": "• Precise counterexamples."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-220",
+        "children": [
+          {
+            "text": "• Crisp failure modes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-221",
+        "children": [
+          {
+            "text": "• Evidence-backed critiques."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-222",
+        "children": [
+          {
+            "text": "• Clear severity/likelihood judgments."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-223",
+        "children": [
+          {
+            "text": "Role 5: Adjudicator (global)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-224",
+        "children": [
+          {
+            "text": "Goal: resolve claim disputes when sources conflict or resolution criteria are contested."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-225",
+        "children": [
+          {
+            "text": "You can do:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-226",
+        "children": [
+          {
+            "text": "• Mark claims resolved/ambiguous/source-conflict/invalidated."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-227",
+        "children": [
+          {
+            "text": "• Document adjudication rationale."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-228",
+        "children": [
+          {
+            "text": "• Maintain resolution policy consistency."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-229",
+        "children": [
+          {
+            "text": "Constraints:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-230",
+        "children": [
+          {
+            "text": "• Adjudicators do not merge content (separation of powers)."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-231",
+        "children": [
+          {
+            "text": "Contribution Playbooks"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-232",
+        "children": [
+          {
+            "text": "A) Open a Thread (good)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-233",
+        "children": [
+          {
+            "text": "Use when you want to:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-234",
+        "children": [
+          {
+            "text": "• Ask a scoped question."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-235",
+        "children": [
+          {
+            "text": "• Raise an objection."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-236",
+        "children": [
+          {
+            "text": "• Suggest a small improvement."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-237",
+        "children": [
+          {
+            "text": "• Request evidence."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-238",
+        "children": [
+          {
+            "text": "• Propose a claim rewrite."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-239",
+        "children": [
+          {
+            "text": "Thread template:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-240",
+        "children": [
+          {
+            "text": "• Target artifact/section."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-241",
+        "children": [
+          {
+            "text": "• What’s wrong or missing."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-242",
+        "children": [
+          {
+            "text": "• Your proposed fix."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-243",
+        "children": [
+          {
+            "text": "• Evidence/references."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-244",
+        "children": [
+          {
+            "text": "• Confidence level."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-245",
+        "children": [
+          {
+            "text": "B) Promote to RFC (when change is real)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-246",
+        "children": [
+          {
+            "text": "Use when:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-247",
+        "children": [
+          {
+            "text": "• You want to change Canon text."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-248",
+        "children": [
+          {
+            "text": "• You want to restructure a manual."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-249",
+        "children": [
+          {
+            "text": "• You want to update definitions/invariants."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-250",
+        "children": [
+          {
+            "text": "• You’re proposing nontrivial edits."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-251",
+        "children": [
+          {
+            "text": "RFC template:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-252",
+        "children": [
+          {
+            "text": "• Scope."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-253",
+        "children": [
+          {
+            "text": "• Acceptance criteria."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-254",
+        "children": [
+          {
+            "text": "• Risk/side-effect notes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-255",
+        "children": [
+          {
+            "text": "• Revision set(s)."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "faq-h3-256",
+        "children": [
+          {
+            "text": "C) Flag Candidate Finding"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-257",
+        "children": [
+          {
+            "text": "Use when:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-258",
+        "children": [
+          {
+            "text": "• You believe a serious flaw exists."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-259",
+        "children": [
+          {
+            "text": "• You found contradictory evidence."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-260",
+        "children": [
+          {
+            "text": "• You found an exploit/failure mode."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-p-261",
+        "children": [
+          {
+            "text": "Candidate finding template:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-262",
+        "children": [
+          {
+            "text": "• Claim/invariant targeted."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-263",
+        "children": [
+          {
+            "text": "• Failure mode summary."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-264",
+        "children": [
+          {
+            "text": "• Evidence."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-265",
+        "children": [
+          {
+            "text": "• Severity + likelihood guess."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "faq-h2-266",
+        "children": [
+          {
+            "text": "What should I do first?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-267",
+        "children": [
+          {
+            "text": "• If you’re evidence-minded: start in Descriptive lane claim cleanup."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-268",
+        "children": [
+          {
+            "text": "• If you’re systems-minded: start in Canon invariants + tests."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-269",
+        "children": [
+          {
+            "text": "• If you’re strategic: start in a Country Manual alignment steps."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "faq-li-270",
+        "children": [
+          {
+            "text": "• If you’re adversarial: start by flagging candidate red-team findings."
           }
         ]
       }
