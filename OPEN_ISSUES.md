@@ -79,11 +79,13 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** kept for
   Vite 6; `-inset-s-4` in build CSS; `smoke-fumadocs`)
-- [x] **Split `server/index.ts` / `server/db.ts`** — done (leaf modules
-  `server/db/{prisma,registries,search,moderationDb,identities}.ts`; route
-  registrars `server/routes/{health,uploads,corpus,moderation}.ts`; barrels
-  keep `server/db` + `export const app` stable; `smoke-server-split`; further
-  threads/findings/artifacts route+db slices optional)
+- [x] **Split `server/index.ts` / `server/db.ts`** — done
+  - First slice: `server/db/{prisma,registries,search,moderationDb,identities}.ts`
+    + `server/routes/{health,uploads,corpus,moderation}.ts`
+  - Second slice: `server/routes/{threads,claims,findings}.ts` (M5–M7 HTTP);
+    `server/index.ts` ~425 lines; `smoke-server-split` asserts modules
+  - Remaining optional: artifacts route registrar; extract
+    threads/findings/claims/artifacts **db** modules from `server/db.ts`
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---

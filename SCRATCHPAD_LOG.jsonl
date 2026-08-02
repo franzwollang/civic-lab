@@ -74,3 +74,4 @@
 {"ts":"2026-08-02T02:26Z","focus":"role-change audit","summary":"Owner role appoint API+UI+smoke; merged fc83 tip first; 51/51 smokes","next":"mod queue UI"}
 {"ts":"2026-08-02T02:55Z","focus":"mod queue UI","summary":"Merged 50b2 tip; /mod steward/Owner/Adjudicator queue; 52/52 smokes + vite build","next":"Optional: server split or OAuth/IdP"}
 {"ts":"2026-08-02T03:10Z","focus":"server split","summary":"Merged 6b15 tip; db+routes first slice; 53/53 smokes + vite build","next":"Optional: OAuth/IdP or deeper server module slices"}
+{"ts":"2026-08-02T03:25Z","focus":"server split routes M5-M7","summary":"Merged 0f09 tip; threads/claims/findings registrars; key smokes green","next":"full smoke+build; hand off OAuth or artifacts/db modules"}

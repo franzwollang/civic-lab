@@ -114,10 +114,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 13. ~~**Mod queue UI**~~ (**done** — `/mod` deleted posts / findings /
     adjudication; `smoke-mod-queue`)
 14. ~~**Server split (first slice)**~~ (**done** — `server/db/*` leaf modules +
-    `server/routes/*` registrars; `smoke-server-split`; threads/findings/artifacts
-    slices remain optional)
-15. **Optional / deferred next:** OAuth/IdP, Manuals 3D globe, deeper server
-    module slices, model→forecast graph
+    health/uploads/corpus/moderation routes; `smoke-server-split`)
+15. ~~**Server split (threads/claims/findings routes)**~~ (**done** —
+    `server/routes/{threads,claims,findings}.ts`; index ~425 lines)
+16. **Optional / deferred next:** OAuth/IdP, artifacts route + db module
+    extraction, Manuals 3D globe, model→forecast graph
 
 **Agent rules of thumb**
 
@@ -132,11 +133,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
-role-change audit + mod queue UI + server split (first slice) done — see remaining
-`OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers. Known debt:
-deeper threads/findings/artifacts server modules, client→server import of
-prototype-users (header still seed roles until IdP), tsc not covering `server/`
-(Vite/smoke are the gates today).
+role-change audit + mod queue UI + server split (routes through findings) done —
+see remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers.
+Known debt: artifacts route + `server/db.ts` domain modules, client→server
+import of prototype-users (header still seed roles until IdP), tsc not covering
+`server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -145,4 +146,4 @@ prototype-users (header still seed roles until IdP), tsc not covering `server/`
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **OAuth / IdP**, or optional deeper server module slices / Manuals 3D globe.
+- Next: **OAuth / IdP**, or artifacts route + db module extraction / Manuals 3D globe.

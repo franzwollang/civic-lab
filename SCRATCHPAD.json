@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T03:10Z",
-  "turn": 76,
+  "updated_at": "2026-08-02T03:25Z",
+  "turn": 77,
   "focus": {
     "milestone": "R0+",
-    "issue": "Split server/index.ts + server/db.ts",
-    "goal": "Server split first slice landed; hand off OAuth"
+    "issue": "Server split threads/claims/findings routes",
+    "goal": "Second route-registrar slice landed; hand off OAuth"
   },
   "recent": [
-    "Server split green: 53/53 smokes + vite build",
-    "Merged 6b15 tip (mod queue) onto 0f09 before new work",
-    "db leaf modules + routes/{health,uploads,corpus,moderation}"
+    "Merged tip 0f09/PR#59 onto cron branch before new work",
+    "Extracted server/routes/{threads,claims,findings}.ts; index ~425 lines",
+    "smoke-server-split + http-gates + typed-posts + threads green"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "After extracting db modules, remaining db.ts must import cross-deps"
+    "Route registrars are safer first than db.ts domain extraction (circular deps)"
   ],
   "open_threads": [
-    "Next Optional: OAuth/IdP (or deeper threads/findings server slices)",
+    "Next Optional: OAuth/IdP, or artifacts routes + db.ts domain modules",
     "Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: OAuth/IdP session→actor binding, or deeper server module slices",
+  "next_step": "Optional: OAuth/IdP session→actor, or extract artifacts routes + db domain modules",
   "blockers": []
 }
