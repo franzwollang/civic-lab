@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-02T09:05Z",
-  "turn": 94,
+  "updated_at": "2026-08-02T09:25Z",
+  "turn": 95,
   "focus": {
     "milestone": "R0+",
     "issue": null,
     "goal": "Handoff: tip synced — queue empty, stop"
   },
   "recent": [
-    "Cron e11e started at main; merged tip 0004 (PR #76) FF",
+    "Cron 0af6 started at main; merged tip e11e (PR #77) FF",
     "Confirmed only globe (product-gated) + reputation rollup (CONCEPT) left",
     "No actionable OPEN_ISSUES with AC; stop again"
   ],
