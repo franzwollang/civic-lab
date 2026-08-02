@@ -13,7 +13,7 @@ import { seedIfEmpty } from "../prisma/seed";
 import { setPrisma } from "../server/db";
 import { app } from "../server/index";
 import { clearAllSessionsForTests } from "../server/auth/session";
-import { loginAs, withSession } from "./smoke-session-helper";
+import { loginAs, withSession } from "./session-smoke-helper";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();

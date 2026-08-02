@@ -154,7 +154,7 @@ async function main() {
     }
 
     // HTTP: RT create finding; non-RT 403; invalid type 400.
-    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const { loginAs, withSession } = await import("./session-smoke-helper");
     const daveCookie = await loginAs("user-dave");
     const carolCookie = await loginAs("user-carol");
 

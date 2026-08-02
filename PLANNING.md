@@ -68,7 +68,7 @@ lives in `SCRATCHPAD.json`.
 | Product UI | Data-driven corpus; Collection splash = live dashboard; fixture dossier dashboard redirected |
 | Editor | Plate lists/links/blockquotes/evidence/external_artifact/tables/images (upload) |
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
-| Auth | Impersonation + identity hooks; body `actor_id` until IdP |
+| Auth | Session cookie IdP-lite (`/api/auth/*`) + identity hooks; body `actor_id` not trusted |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 | Server layout | Route registrars under `server/routes/*`; `db/{corpusDb,findingsDb,claimsDb,artifactsDb,threadsDb}.ts` + leaf modules; `db.ts` ≈ createAcceptedRisk + barrels; `index.ts` ~64 lines |
 
@@ -133,8 +133,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 21. ~~**Server split (corpusDb module)**~~ (**done** —
     `server/db/corpusDb.ts`; Area/Collection/Dossier + §11 dashboard;
     `createAcceptedRisk` remains in `db.ts`)
-22. **Optional / deferred next:** OAuth/IdP session→actor, Manuals 3D
-    globe, model→forecast graph
+22. ~~**OAuth/IdP session→actor**~~ (**done** — prototype IdP-lite cookie
+    session; mutations use session actor; `smoke-session-actor`)
+23. **Optional / deferred next:** Manuals 3D globe, model→forecast graph,
+    external OIDC provider swap-in for `/api/auth/login`
 
 **Agent rules of thumb**
 
@@ -153,7 +155,7 @@ role-change audit + mod queue UI + server split (routes + findingsDb + claimsDb 
 artifactsDb + threadsDb + corpusDb) done — see remaining `OPEN_ISSUES.md`
 **Optional / deferred**. No architecture blockers. Known debt: `db.ts` still
 hosts `createAcceptedRisk` (intentional bridge), client→server import of
-prototype-users (header still seed roles until IdP), tsc not covering
+prototype-users (seed catalog still drives roles until IdP directory), tsc not covering
 `server/` (Vite/smoke are the gates today).
 
 ---
@@ -163,5 +165,5 @@ prototype-users (header still seed roles until IdP), tsc not covering
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **OAuth/IdP** session→actor binding (body `actor_id` trust remains
-  until then).
+- Next: **Manuals 3D globe** (optional) or **model→forecast graph** (deferred),
+  or external OIDC swap-in for `/api/auth/login`.

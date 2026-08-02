@@ -62,8 +62,13 @@ that is actionable, or stop if blocked on product decisions.
   `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
   `smoke-image-upload`; CONCEPT Appendix C residual cleared)
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
-- [ ] **Full OAuth / IdP** — bind session→server actor; body `actor_id` trust
-  remains until then (explicit)
+- [x] **Full OAuth / IdP (prototype IdP-lite)** — done
+  (`POST /api/auth/login|impersonate|logout`, `GET /api/auth/me`;
+  httpOnly `civic_lab_session` cookie; mutations + gated reads use
+  session actor — body/query `actor_id` no longer trusted;
+  header switcher syncs session; `AUTH_MODE=session_with_identity_hooks`;
+  `smoke-session-actor` + HTTP smokes updated). External OIDC provider
+  wiring remains a future swap-in for login.
 - [x] **Moderator polish** — done
   - [x] **Canon revert audit** — done (`POST /api/artifacts/:id/revert`;
     Owner-only; Canon-only; parent/target revision; `revert` audit;
@@ -99,8 +104,8 @@ that is actionable, or stop if blocked on product decisions.
   - Eighth slice: `server/db/corpusDb.ts` (Area/Collection/Dossier +
     §11 Collection dashboard/reputation; queries `prisma.thread` directly;
     `createAcceptedRisk` stays in `db.ts`; `smoke-server-split` ownership)
-  - Remaining optional: **OAuth/IdP** session→actor binding (`db.ts` now
-    only hosts `createAcceptedRisk` + barrels)
+  - Auth slice: `server/auth/session.ts` + `server/routes/auth.ts`
+    (session→actor); `db.ts` still hosts `createAcceptedRisk` + barrels
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---

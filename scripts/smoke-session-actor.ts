@@ -13,7 +13,7 @@ import { app } from "../server/index";
 import { clearAllSessionsForTests } from "../server/auth/session";
 import { SESSION_AUTH_MODE, SESSION_COOKIE_NAME } from "../src/lib/sessionAuth";
 import { AUTH_MODE } from "../src/lib/identityPolicy";
-import { loginAs, withSession } from "./smoke-session-helper";
+import { loginAs, withSession } from "./session-smoke-helper";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();

@@ -159,7 +159,7 @@ async function main() {
 
     // Re-advance tip, then HTTP Owner revert + editor 403 (session-bound)
     await updateArtifact(ABOUT_ARTIFACT_ID, { current_revision_id: childRev });
-    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const { loginAs, withSession } = await import("./session-smoke-helper");
     const eveCookie = await loginAs("user-eve");
     const carolCookie = await loginAs("user-carol");
 

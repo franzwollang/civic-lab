@@ -200,7 +200,7 @@ async function main() {
     }
 
     // HTTP: audit soft-delete feed gated by session
-    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const { loginAs, withSession } = await import("./session-smoke-helper");
     const bobCookie = await loginAs("user-bob");
     const aliceCookie = await loginAs("user-alice");
 

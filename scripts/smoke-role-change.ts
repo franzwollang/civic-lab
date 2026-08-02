@@ -166,7 +166,7 @@ async function main() {
     }
 
     // Restore steward via HTTP (session Owner; body actor_id ignored)
-    const { loginAs, withSession } = await import("./smoke-session-helper");
+    const { loginAs, withSession } = await import("./session-smoke-helper");
     const eveCookie = await loginAs("user-eve");
     const carolCookie = await loginAs("user-carol");
 
