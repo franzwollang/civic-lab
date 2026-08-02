@@ -13,12 +13,14 @@ export type RoleCapability =
   | "merge_manual"
   | "merge_canon_routine"
   | "merge_canon_restricted"
+  | "revert_canon"
   | "sign_ar_manual"
   | "sign_ar_canon"
   | "create_findings"
   | "adjudicate_claims"
   | "board_hide"
   | "attest_identity"
+  | "appoint_roles"
   | "moderate_posts"
   | "view_audit";
 
@@ -29,12 +31,14 @@ const CAPABILITY_LABEL: Record<RoleCapability, string> = {
   merge_manual: "Merge Manual RFCs",
   merge_canon_routine: "Merge routine Canon RFCs",
   merge_canon_restricted: "Merge restricted Canon / Owner veto",
+  revert_canon: "Revert Canon revisions",
   sign_ar_manual: "Sign Accepted Risk (Manual)",
   sign_ar_canon: "Sign Accepted Risk (Canon)",
   create_findings: "Create / promote Findings",
   adjudicate_claims: "Adjudicate claims",
   board_hide: "Hide accounts from boards (abuse)",
   attest_identity: "Attest real-identity / country ties",
+  appoint_roles: "Appoint / change roles",
   moderate_posts: "Soft-delete ordinary posts",
   view_audit: "View append-only audit log",
 };
@@ -63,10 +67,12 @@ const ROLE_CAPABILITIES: Record<PrototypeRole, readonly RoleCapability[]> = {
     "merge_manual",
     "merge_canon_routine",
     "merge_canon_restricted",
+    "revert_canon",
     "sign_ar_manual",
     "sign_ar_canon",
     "board_hide",
     "attest_identity",
+    "appoint_roles",
     "moderate_posts",
     "view_audit",
   ],
@@ -141,7 +147,7 @@ export function summarizeRoleAffordances(
   const role_labels = user.roles.map(roleShortLabel);
   const headline =
     primary === "owner"
-      ? "Owner — restricted Canon merge + board-hide + post moderation"
+      ? "Owner — restricted Canon merge/revert + roles + board-hide + moderation"
       : primary === "editor"
         ? "Editor — routine Canon merge"
         : primary === "steward"

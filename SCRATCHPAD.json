@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T07:25Z",
+  "turn": 89,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": "Implication score propagation",
+    "goal": "Advisory Brier/log/skill from implied forecasts"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip bae4 (implication DAG) onto fresh cron d369",
+    "scoreModelImplications + DAG UI advisory score summary",
+    "smoke-claim-implication-scores (seed n=1 + synthetic)",
+    "Skipped Manuals 3D globe (SVG satisfies; product-gated)"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Fresh cron at main must merge furthest progression tip first",
+    "Implication scores reuse claimMetrics; no new API"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Optional: Manuals 3D globe (SVG satisfies CONCEPT)",
+    "Reputation-board rollup of implication scores deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: Manuals 3D globe only if product asks; else stop (queue empty)",
   "blockers": []
 }
