@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T02:20Z",
-  "turn": 73,
+  "updated_at": "2026-08-02T02:26Z",
+  "turn": 74,
   "focus": {
     "milestone": "R0+",
-    "issue": "Moderator polish — Canon revert",
-    "goal": "Owner Canon revert + audit landed; hand off role-change/mod queue"
+    "issue": "Moderator polish — role-change audit",
+    "goal": "Owner role appoint + audit landed; hand off mod queue UI"
   },
   "recent": [
-    "Canon revert green: 50/50 smokes + vite build",
-    "Merged 86b6 tip (Fumadocs unpin) onto fc83 before new work",
-    "Owner POST /api/artifacts/:id/revert + artifact Revert chrome"
+    "Role-change green: 51/51 smokes + vite build",
+    "Merged fc83 tip (Canon revert) onto 50b2 before new work",
+    "POST /api/users/:id/roles + UserRoleAssignment + Role appointment panel"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "fumadocs-mdx 15+ needs Vite 7/8 — stay on 14.x with Vite 6"
+    "Effective-user cache feeds merge gates; header still uses seed roles"
   ],
   "open_threads": [
-    "Next Optional: role-change audit or mod queue UI",
+    "Next Optional: mod queue UI",
     "Then server split / OAuth; Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: role-change audit (Owner appoint) or mod queue UI",
+  "next_step": "Optional: mod queue UI (soft-deleted posts + findings/adjudication)",
   "blockers": []
 }

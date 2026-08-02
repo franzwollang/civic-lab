@@ -109,7 +109,9 @@ Optimize for **observable slices** with smokes. Prefer this order:
 9. ~~**`dist/` gitignore**~~ (**done** — stop tracking Vite build output; `smoke-dist-gitignore`)
 10. ~~**Fumadocs unpin**~~ (**done** — Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; `smoke-fumadocs`)
 11. ~~**Canon revert audit**~~ (**done** — Owner `POST …/revert`; `smoke-canon-revert`)
-12. **Optional / deferred next:** role-change audit, mod queue UI, server split, OAuth, Manuals 3D globe
+12. ~~**Role-change audit**~~ (**done** — Owner `POST /api/users/:id/roles`;
+    overrides + effective users; `smoke-role-change`)
+13. **Optional / deferred next:** mod queue UI, server split, OAuth, Manuals 3D globe
 
 **Agent rules of thumb**
 
@@ -123,10 +125,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert
-done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture
-blockers. Known debt: server monolith size, client→server import of
-prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
+R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
+role-change audit done — see remaining `OPEN_ISSUES.md` **Optional / deferred**.
+No architecture blockers. Known debt: server monolith size, client→server import
+of prototype-users (header still seed roles until IdP), tsc not covering
+`server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -135,5 +138,5 @@ prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **role-change audit** or **mod queue UI** (remaining moderator polish),
-  else server split / OAuth — prefer actionable Optional items with clear AC.
+- Next: **mod queue UI** (remaining moderator polish), else server split /
+  OAuth — prefer actionable Optional items with clear AC.

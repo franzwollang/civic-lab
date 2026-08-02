@@ -68,8 +68,10 @@ that is actionable, or stop if blocked on product decisions.
   - [x] **Canon revert audit** — done (`POST /api/artifacts/:id/revert`;
     Owner-only; Canon-only; parent/target revision; `revert` audit;
     artifact Revert chrome; `smoke-canon-revert`)
-  - [ ] **Role-change audit** — Owner appoint/change roles with append-only
-    `role_change` audit (prototype roles still client-seeded today)
+  - [x] **Role-change audit** — done (`POST /api/users/:id/roles`;
+    `UserRoleAssignment` overrides; effective-user cache for merge/moderation
+    gates; `role_change` audit; Collection Role appointment panel;
+    `smoke-role-change`)
   - [ ] **Mod queue UI** — steward/Owner surface for soft-deleted posts +
     open findings / adjudication queue (beyond Collection audit panel)
 - [ ] **Model→forecast implication graph** — deferred
@@ -87,7 +89,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~50 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~51 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
