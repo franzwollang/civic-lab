@@ -70,6 +70,7 @@ lives in `SCRATCHPAD.json`.
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
 | Auth | Impersonation + identity hooks; body `actor_id` until IdP |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
+| Server layout | Route registrars under `server/routes/*`; `index.ts` ~64 lines |
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
 R0 marathon (About/FAQ → CONCEPT rewrite) landed.
@@ -116,8 +117,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 14. ~~**Server split (first slice)**~~ (**done** — `server/db/*` leaf modules +
     health/uploads/corpus/moderation routes; `smoke-server-split`)
 15. ~~**Server split (threads/claims/findings routes)**~~ (**done** —
-    `server/routes/{threads,claims,findings}.ts`; index ~425 lines)
-16. **Optional / deferred next:** OAuth/IdP, artifacts route + db module
+    `server/routes/{threads,claims,findings}.ts`)
+16. ~~**Server split (artifacts routes)**~~ (**done** —
+    `server/routes/artifacts.ts`; index ~64 lines; `smoke-server-split`)
+17. **Optional / deferred next:** OAuth/IdP, `server/db.ts` domain module
     extraction, Manuals 3D globe, model→forecast graph
 
 **Agent rules of thumb**
@@ -133,11 +136,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
-role-change audit + mod queue UI + server split (routes through findings) done —
+role-change audit + mod queue UI + server split (routes through artifacts) done —
 see remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers.
-Known debt: artifacts route + `server/db.ts` domain modules, client→server
-import of prototype-users (header still seed roles until IdP), tsc not covering
-`server/` (Vite/smoke are the gates today).
+Known debt: `server/db.ts` domain modules, client→server import of
+prototype-users (header still seed roles until IdP), tsc not covering `server/`
+(Vite/smoke are the gates today).
 
 ---
 
@@ -146,4 +149,4 @@ import of prototype-users (header still seed roles until IdP), tsc not covering
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **OAuth / IdP**, or artifacts route + db module extraction / Manuals 3D globe.
+- Next: **OAuth / IdP**, or `server/db.ts` domain module extraction / Manuals 3D globe.

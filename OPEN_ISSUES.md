@@ -82,10 +82,11 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Split `server/index.ts` / `server/db.ts`** — done
   - First slice: `server/db/{prisma,registries,search,moderationDb,identities}.ts`
     + `server/routes/{health,uploads,corpus,moderation}.ts`
-  - Second slice: `server/routes/{threads,claims,findings}.ts` (M5–M7 HTTP);
-    `server/index.ts` ~425 lines; `smoke-server-split` asserts modules
-  - Remaining optional: artifacts route registrar; extract
-    threads/findings/claims/artifacts **db** modules from `server/db.ts`
+  - Second slice: `server/routes/{threads,claims,findings}.ts` (M5–M7 HTTP)
+  - Third slice: `server/routes/artifacts.ts` (artifacts/pages/sections/
+    attributions/terms + Canon revert); `server/index.ts` ~64 lines
+  - Remaining optional: extract threads/findings/claims/artifacts **db**
+    modules from `server/db.ts` (prefer after clarifying circular deps)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
