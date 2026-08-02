@@ -45,7 +45,7 @@ async function main() {
       throw new Error(`expected seeded, got ${seeded}`);
     }
 
-    const claims = await getArtifactClaims("page-001");
+    const claims = await listClaims({ artifactId: "page-001" });
     if (!hasImplicationEdges(claims)) {
       throw new Error("page-001 seed should include model→forecast edges");
     }
