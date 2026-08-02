@@ -7,9 +7,9 @@
     "goal": "Owner Canon revert + audit landed; hand off role-change/mod queue"
   },
   "recent": [
-    "Canon revert: POST /api/artifacts/:id/revert + smoke-canon-revert",
+    "Canon revert green: 50/50 smokes + vite build",
     "Merged 86b6 tip (Fumadocs unpin) onto fc83 before new work",
-    "Fumadocs unpin green: 49/49 smokes + vite build"
+    "Owner POST /api/artifacts/:id/revert + artifact Revert chrome"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
