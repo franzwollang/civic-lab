@@ -22,6 +22,7 @@ import { getDossiers, getFindings, getThreads } from "../../api/client";
 import type { DossierRow, FindingRow, ThreadRow as ThreadApiRow } from "../../doc/types";
 import { laneForDossier } from "../lib/dossier-display";
 import { getPrototypeUser } from "../lib/prototype-users";
+import { HOME_EXEMPLARS } from "../../lib/homeExemplars";
 
 const HOME_PANEL_LIMIT = 5;
 
@@ -200,7 +201,7 @@ export function Home() {
                     variant="ghost"
                     className="text-neutral-700"
                   >
-                    <Link to="/about">What is this?</Link>
+                    <Link to="/#what-is-this">What is this?</Link>
                   </Button>
                 </div>
               </div>
@@ -256,6 +257,45 @@ export function Home() {
                 </Card>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="mb-16" id="what-is-this">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold text-neutral-900">
+                What is this?
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm text-neutral-600">
+                Canon holds truth-first ideal specs. Country Manuals hold
+                execution under realpolitik — with lane hygiene so Descriptive,
+                Prescriptive, and Alignment stay separate. Threads are primary;
+                RFCs promote change with RevSets. Scorable claims make forecasts
+                and requirements auditable. Red Team files findings; Adjudicators
+                resolve contested claims.
+              </p>
+            </div>
+            <Link
+              to="/about"
+              className="shrink-0 text-sm font-medium text-neutral-600 hover:text-neutral-900"
+            >
+              Full About →
+            </Link>
+          </div>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+            Tour live exemplars
+          </p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            {HOME_EXEMPLARS.map((ex) => (
+              <Link
+                key={ex.id}
+                to={ex.href}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 underline-offset-4 hover:underline"
+              >
+                {ex.label}
+                <ArrowUpRight className="h-3.5 w-3.5 text-neutral-500" />
+              </Link>
+            ))}
           </div>
         </section>
 
