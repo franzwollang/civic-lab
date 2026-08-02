@@ -67,3 +67,4 @@
 {"ts":"2026-08-02T01:15Z","focus":"image upload pipeline","summary":"Merged 3148 tip; upload API+editor+validation+smoke; CONCEPT Appendix C cleared","next":"Run smokes/build; hand off Fumadocs unpin or dist/ gitignore"}
 {"ts":"2026-08-02T01:20Z","focus":"image upload pipeline","summary":"47/47 smokes + vite build green; dist refreshed; hand off Fumadocs/dist","next":"Optional Fumadocs unpin or dist/ gitignore"}
 {"ts":"2026-08-02T01:25Z","focus":"dist/ gitignore","summary":"Merged 02aa tip; ignore+untrack dist/; smoke-dist-gitignore; Fumadocs deferred to Tailwind bump","next":"pnpm test:smoke + build; hand off Fumadocs or server split"}
+{"ts":"2026-08-02T01:30Z","focus":"dist/ gitignore","summary":"48/48 smokes + vite build green; dist untracked; hand off Fumadocs/server split","next":"Optional: Tailwind≥4.3.2 + Fumadocs unpin, or server/index+db split"}
