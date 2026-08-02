@@ -10,6 +10,7 @@ import {
   type PrototypeRole,
   type PrototypeUser,
 } from "../app/lib/prototype-users";
+import { getEffectivePrototypeUser } from "./effectiveUsers";
 import {
   evaluateStewardEligibility,
   type IdentityRecord,
@@ -41,7 +42,7 @@ function rolesOf(
   const user =
     users.length > 0
       ? users.find((u) => u.id === actorId)
-      : getPrototypeUser(actorId);
+      : getEffectivePrototypeUser(actorId) ?? getPrototypeUser(actorId);
   return user ? [...user.roles] : null;
 }
 

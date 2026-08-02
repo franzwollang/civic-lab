@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T03:25Z",
+  "turn": 77,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": "Server split threads/claims/findings routes",
+    "goal": "Second route-registrar slice landed; hand off OAuth"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip 0f09/PR#59 onto cron branch before new work",
+    "Extracted server/routes/{threads,claims,findings}.ts; index ~425 lines",
+    "smoke-server-split + http-gates + typed-posts + threads green"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron tips must merge furthest progression PR before picking next Optional",
+    "Route registrars are safer first than db.ts domain extraction (circular deps)"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Next Optional: OAuth/IdP, or artifacts routes + db.ts domain modules",
+    "Manuals 3D globe still deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: OAuth/IdP session→actor, or extract artifacts routes + db domain modules",
   "blockers": []
 }
