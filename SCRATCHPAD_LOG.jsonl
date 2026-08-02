@@ -72,3 +72,4 @@
 {"ts":"2026-08-02T01:50Z","focus":"Fumadocs unpin","summary":"49/49 smokes + vite build green; Fumadocs Optional closed; hand off server split/OAuth","next":"Optional: server/index+db split, or OAuth / moderator polish"}
 {"ts":"2026-08-02T02:20Z","focus":"Canon revert audit","summary":"Owner Canon revert API+UI+smoke; merged 86b6 tip first","next":"role-change audit or mod queue UI"}
 {"ts":"2026-08-02T02:26Z","focus":"role-change audit","summary":"Owner role appoint API+UI+smoke; merged fc83 tip first; 51/51 smokes","next":"mod queue UI"}
+{"ts":"2026-08-02T02:55Z","focus":"mod queue UI","summary":"Merged 50b2 tip; /mod steward/Owner/Adjudicator queue; 52/52 smokes + vite build","next":"Optional: server split or OAuth/IdP"}

@@ -72,8 +72,9 @@ that is actionable, or stop if blocked on product decisions.
     `UserRoleAssignment` overrides; effective-user cache for merge/moderation
     gates; `role_change` audit; Collection Role appointment panel;
     `smoke-role-change`)
-  - [ ] **Mod queue UI** — steward/Owner surface for soft-deleted posts +
-    open findings / adjudication queue (beyond Collection audit panel)
+  - [x] **Mod queue UI** — done (`/mod` soft-deleted posts + open findings +
+    adjudication tabs; steward Canon filter; header + Collection audit link;
+    `getThread` include_deleted; `smoke-mod-queue`)
 - [ ] **Model→forecast implication graph** — deferred
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** kept for
