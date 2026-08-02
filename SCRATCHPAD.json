@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T02:55Z",
-  "turn": 75,
+  "updated_at": "2026-08-02T03:10Z",
+  "turn": 76,
   "focus": {
     "milestone": "R0+",
-    "issue": "Moderator polish — mod queue UI",
-    "goal": "Mod queue landed; hand off server split / OAuth"
+    "issue": "Split server/index.ts + server/db.ts",
+    "goal": "Server split first slice landed; hand off OAuth"
   },
   "recent": [
-    "Mod queue green: 52/52 smokes + vite build",
-    "Merged 50b2 tip (role-change) onto 6b15 before new work",
-    "/mod tabs: soft-deletes, open findings, adjudication"
+    "Server split green: 53/53 smokes + vite build",
+    "Merged 6b15 tip (mod queue) onto 0f09 before new work",
+    "db leaf modules + routes/{health,uploads,corpus,moderation}"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "Soft-delete feed via audit action filter; steward hides Canon rows"
+    "After extracting db modules, remaining db.ts must import cross-deps"
   ],
   "open_threads": [
-    "Next Optional: server split or OAuth/IdP",
+    "Next Optional: OAuth/IdP (or deeper threads/findings server slices)",
     "Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: split server/index.ts + server/db.ts, or OAuth/IdP",
+  "next_step": "Optional: OAuth/IdP session→actor binding, or deeper server module slices",
   "blockers": []
 }

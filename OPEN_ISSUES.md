@@ -64,7 +64,7 @@ that is actionable, or stop if blocked on product decisions.
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [ ] **Full OAuth / IdP** — bind session→server actor; body `actor_id` trust
   remains until then (explicit)
-- [ ] **Moderator polish (remaining)**
+- [x] **Moderator polish** — done
   - [x] **Canon revert audit** — done (`POST /api/artifacts/:id/revert`;
     Owner-only; Canon-only; parent/target revision; `revert` audit;
     artifact Revert chrome; `smoke-canon-revert`)
@@ -79,8 +79,11 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** kept for
   Vite 6; `-inset-s-4` in build CSS; `smoke-fumadocs`)
-- [ ] **Split `server/index.ts` / `server/db.ts`** — quality debt; do only if a
-  feature turn is blocked by file size
+- [x] **Split `server/index.ts` / `server/db.ts`** — done (leaf modules
+  `server/db/{prisma,registries,search,moderationDb,identities}.ts`; route
+  registrars `server/routes/{health,uploads,corpus,moderation}.ts`; barrels
+  keep `server/db` + `export const app` stable; `smoke-server-split`; further
+  threads/findings/artifacts route+db slices optional)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
@@ -90,7 +93,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~52 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~53 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
