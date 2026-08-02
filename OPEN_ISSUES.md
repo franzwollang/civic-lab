@@ -85,8 +85,11 @@ that is actionable, or stop if blocked on product decisions.
   - Second slice: `server/routes/{threads,claims,findings}.ts` (M5–M7 HTTP)
   - Third slice: `server/routes/artifacts.ts` (artifacts/pages/sections/
     attributions/terms + Canon revert); `server/index.ts` ~64 lines
-  - Remaining optional: extract threads/findings/claims/artifacts **db**
-    modules from `server/db.ts` (prefer after clarifying circular deps)
+  - Fourth slice: `server/db/findingsDb.ts` (Findings / Candidates /
+    Accepted Risk reads; `createAcceptedRisk` stays in `db.ts` for merge-
+    authority deps); `smoke-server-split` asserts module ownership
+  - Remaining optional: extract threads/claims/artifacts **db** modules
+    from `server/db.ts` (prefer after clarifying circular deps)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---

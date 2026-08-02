@@ -9,8 +9,10 @@ import { promisify } from "util";
 import { PrismaClient } from "@prisma/client";
 import {
   appendAuditLog,
+  createFinding,
   getAttributions,
   getPrisma,
+  listFindings,
   listUserIdentities,
   searchCorpus,
   setPrisma,
@@ -34,6 +36,7 @@ const REQUIRED_FILES = [
   "server/db/search.ts",
   "server/db/moderationDb.ts",
   "server/db/identities.ts",
+  "server/db/findingsDb.ts",
   "server/routes/health.ts",
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",
@@ -61,6 +64,27 @@ async function main() {
   }
   if (typeof appendAuditLog !== "function" || typeof listUserIdentities !== "function") {
     throw new Error("moderation/identity barrel exports missing");
+  }
+  if (typeof listFindings !== "function" || typeof createFinding !== "function") {
+    throw new Error("findingsDb barrel exports missing");
+  }
+  const findingsSrc = await fs.readFile(
+    path.join(ROOT, "server/db/findingsDb.ts"),
+    "utf8",
+  );
+  if (
+    !findingsSrc.includes("export async function listFindings") ||
+    !findingsSrc.includes("export async function createFinding") ||
+    !findingsSrc.includes("export async function flagCandidateFinding")
+  ) {
+    throw new Error("findingsDb.ts must own Findings/Candidate Finding accessors");
+  }
+  const dbSrc = await fs.readFile(path.join(ROOT, "server/db.ts"), "utf8");
+  if (/export async function listFindings/.test(dbSrc)) {
+    throw new Error("listFindings must live in server/db/findingsDb.ts, not db.ts");
+  }
+  if (!dbSrc.includes('from "./db/findingsDb"')) {
+    throw new Error("server/db.ts must re-export findingsDb");
   }
   if (
     typeof registerArtifactRoutes !== "function" ||

@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T03:50Z",
-  "turn": 78,
+  "updated_at": "2026-08-02T04:15Z",
+  "turn": 79,
   "focus": {
     "milestone": "R0+",
-    "issue": "Server split artifacts routes",
-    "goal": "Artifacts registrar landed; hand off OAuth/db modules"
+    "issue": "Server split findingsDb",
+    "goal": "Extract findingsDb; hand off OAuth / remaining db modules"
   },
   "recent": [
-    "Merged furthest tip 3de5 (R0+optional through M5–M7 routes) onto cron branch",
-    "Extracted server/routes/artifacts.ts; index.ts 64 lines",
-    "smoke-server-split + sections/revision/evidence updated; 53/53 green"
+    "Merged furthest tip d28a (R0+optional through artifacts routes) onto cron branch",
+    "Extracted server/db/findingsDb.ts; createAcceptedRisk stays in db.ts",
+    "smoke-server-split asserts findingsDb ownership"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "Route registrars before db.ts domain extraction avoids circular deps"
+    "createAcceptedRisk needs resolveMergeAuthority \u2014 keep in db.ts to avoid cycles"
   ],
   "open_threads": [
-    "Next Optional: OAuth/IdP session→actor, or db.ts domain modules",
+    "Next Optional: OAuth/IdP session\u2192actor, or threads/claims/artifacts db modules",
     "Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: OAuth/IdP session→actor, or extract domain modules from server/db.ts",
+  "next_step": "Optional: OAuth/IdP session\u2192actor, or extract threads/claims/artifacts from server/db.ts",
   "blockers": []
 }

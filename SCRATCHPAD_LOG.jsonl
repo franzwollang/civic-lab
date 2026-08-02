@@ -76,3 +76,4 @@
 {"ts":"2026-08-02T03:10Z","focus":"server split","summary":"Merged 6b15 tip; db+routes first slice; 53/53 smokes + vite build","next":"Optional: OAuth/IdP or deeper server module slices"}
 {"ts":"2026-08-02T03:25Z","focus":"server split routes M5-M7","summary":"Merged 0f09 tip; threads/claims/findings registrars; key smokes green","next":"full smoke+build; hand off OAuth or artifacts/db modules"}
 {"ts":"2026-08-02T03:50Z","focus":"server split artifacts routes","summary":"Merged 3de5 tip; artifacts registrar; 53/53 smokes + vite build","next":"Optional: OAuth/IdP or server/db.ts domain modules"}
+{"ts": "2026-08-02T04:15Z", "focus": "server-split findingsDb", "summary": "merged tip d28a; extracted findingsDb; createAcceptedRisk stays for merge-authority deps", "next": "OAuth/IdP or remaining db.ts domain modules"}
