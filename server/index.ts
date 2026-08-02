@@ -240,7 +240,7 @@ const termsRegistrySchema = z.object({
 const threadPostBodySchema = z.object({
   post_id: z.string().min(1).optional(),
   author_id: z.string().min(1),
-  type: z.enum(["comment", "mitigation"]).optional(),
+  type: z.enum(["comment", "finding", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
 });
@@ -697,10 +697,16 @@ app.post("/api/threads/:threadId/posts", async (c) => {
     ...parsed.data,
     thread_id: c.req.param("threadId"),
   });
-  if (!created) {
-    return c.json({ error: "Thread not found" }, 404);
+  if (!created.ok) {
+    if (created.error.code === "not_found") {
+      return c.json({ error: created.error.message }, 404);
+    }
+    if (created.error.code === "forbidden") {
+      return c.json({ error: created.error.message, code: created.error.code }, 403);
+    }
+    return c.json({ error: created.error.message, code: created.error.code }, 400);
   }
-  return c.json(created, 201);
+  return c.json(created.post, 201);
 });
 
 /** CONCEPT §9.4 — soft-delete ordinary post (steward Manual / Owner global). */

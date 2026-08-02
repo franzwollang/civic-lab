@@ -91,8 +91,10 @@ import {
 } from "../src/lib/findings";
 import {
   actorMayFlagCandidate,
+  actorMayPostTypedFindingOrMitigation,
   actorMayPromoteCandidate,
   isCandidateStatus,
+  isRedTeamPostType,
   isTimelinePostType,
 } from "../src/lib/candidateFindings";
 import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
@@ -2178,6 +2180,11 @@ export async function createRevSet(input: {
   return { ok: true, revset: mapRevSet(row, mergeArtifactId) };
 }
 
+export type CreateThreadPostError =
+  | { code: "not_found"; message: string }
+  | { code: "invalid_type"; message: string }
+  | { code: "forbidden"; message: string };
+
 export async function createThreadPost(input: {
   post_id?: string;
   thread_id: string;
@@ -2185,15 +2192,42 @@ export async function createThreadPost(input: {
   type?: string;
   body: string;
   created_at?: string;
-}): Promise<ThreadPostRow | null> {
+}): Promise<
+  | { ok: true; post: ThreadPostRow }
+  | { ok: false; error: CreateThreadPostError }
+> {
   const thread = await getPrisma().thread.findUnique({
     where: { threadId: input.thread_id },
   });
-  if (!thread) return null;
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
 
   const type = input.type ?? "comment";
   if (!isTimelinePostType(type)) {
-    return null;
+    return {
+      ok: false,
+      error: {
+        code: "invalid_type",
+        message: `Invalid post type "${type}" (allowed: comment, finding, mitigation)`,
+      },
+    };
+  }
+
+  if (
+    isRedTeamPostType(type) &&
+    !actorMayPostTypedFindingOrMitigation(input.author_id)
+  ) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Only Red Team may post finding or mitigation types",
+      },
+    };
   }
 
   const row = await getPrisma().threadPost.create({
@@ -2206,7 +2240,7 @@ export async function createThreadPost(input: {
       createdAt: input.created_at ? new Date(input.created_at) : new Date(),
     },
   });
-  return mapThreadPost(row);
+  return { ok: true, post: mapThreadPost(row) };
 }
 
 export type SoftDeletePostError =
