@@ -39,12 +39,10 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ### 5. Home / About CONCEPT alignment
 
-- [ ] **Home preamble links to live exemplars**
-  - **Scope:** `src/app/pages/home.tsx`
-  - **Done when:** explicit Canon vs Manuals + thread-first + claims + Red Team
-    copy with deep links to e.g. `/collection/collection-us`,
-    `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
-  - **Verify:** manual; no new smoke required if copy-only
+- [x] **Home preamble links to live exemplars** — done
+  (`#what-is-this` on `/`; Canon/Manuals + lanes + threads/RFC + claims +
+  Red Team/Adjudicators; `HOME_EXEMPLARS` → Collection/dossier/thread/RFC/
+  finding; `smoke-home-preamble`)
 
 ### 6. CONCEPT.md rewrite pass
 
@@ -76,7 +74,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~44 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~45 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

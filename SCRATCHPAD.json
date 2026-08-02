@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-02T00:06Z",
-  "turn": 64,
+  "updated_at": "2026-08-02T00:40Z",
+  "turn": 65,
   "focus": {
     "milestone": "R0",
-    "issue": "Home preamble live exemplars",
-    "goal": "Home CONCEPT links to live corpus routes"
+    "issue": "CONCEPT.md rewrite pass",
+    "goal": "Editorial CONCEPT pass for hierarchy/claims/lanes"
   },
   "recent": [
-    "Plate tables MVP: @platejs/table@52; reader/export; 44/44",
-    "Merged fa48 tip (About/FAQ/fixtures/typed posts) onto 1fb6",
-    "Typed posts + fixture retirement + living About/FAQ",
-    "§K hardening + R0 marathon queue"
+    "Home preamble + live exemplars; smoke-home-preamble; 45/45",
+    "Merged 1fb6 tip (About→tables) onto a831",
+    "Plate tables MVP; typed posts; fixture retirement",
+    "Living About/FAQ artifacts"
   ],
   "discoveries": [
     "Cron tips must merge latest progression PR when starting from main",
-    "TablePlugin nests tr/td/th; register withComponent on all four"
+    "HOME_EXEMPLARS centralizes seeded tour hrefs for smoke"
   ],
   "open_threads": [
-    "Home CONCEPT links next",
-    "CONCEPT rewrite after home"
+    "CONCEPT rewrite next",
+    "Optional: image upload / Fumadocs unpin"
   ],
-  "next_step": "Home preamble links to live exemplars (OPEN_ISSUES §5)",
+  "next_step": "CONCEPT.md editorial rewrite (OPEN_ISSUES §6)",
   "blockers": []
 }
