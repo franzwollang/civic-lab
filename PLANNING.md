@@ -111,7 +111,9 @@ Optimize for **observable slices** with smokes. Prefer this order:
 11. ~~**Canon revert audit**~~ (**done** — Owner `POST …/revert`; `smoke-canon-revert`)
 12. ~~**Role-change audit**~~ (**done** — Owner `POST /api/users/:id/roles`;
     overrides + effective users; `smoke-role-change`)
-13. **Optional / deferred next:** mod queue UI, server split, OAuth, Manuals 3D globe
+13. ~~**Mod queue UI**~~ (**done** — `/mod` deleted posts / findings /
+    adjudication; `smoke-mod-queue`)
+14. **Optional / deferred next:** server split, OAuth, Manuals 3D globe
 
 **Agent rules of thumb**
 
@@ -126,10 +128,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
-role-change audit done — see remaining `OPEN_ISSUES.md` **Optional / deferred**.
-No architecture blockers. Known debt: server monolith size, client→server import
-of prototype-users (header still seed roles until IdP), tsc not covering
-`server/` (Vite/smoke are the gates today).
+role-change audit + mod queue UI done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred**. No architecture blockers. Known debt: server monolith
+size, client→server import of prototype-users (header still seed roles until
+IdP), tsc not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -138,5 +140,5 @@ of prototype-users (header still seed roles until IdP), tsc not covering
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **mod queue UI** (remaining moderator polish), else server split /
-  OAuth — prefer actionable Optional items with clear AC.
+- Next: **server split** (`server/index.ts` / `server/db.ts`) or **OAuth / IdP** —
+  prefer actionable Optional items with clear AC; Manuals 3D globe still deferred.

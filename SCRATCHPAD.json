@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T02:26Z",
-  "turn": 74,
+  "updated_at": "2026-08-02T02:55Z",
+  "turn": 75,
   "focus": {
     "milestone": "R0+",
-    "issue": "Moderator polish — role-change audit",
-    "goal": "Owner role appoint + audit landed; hand off mod queue UI"
+    "issue": "Moderator polish — mod queue UI",
+    "goal": "Mod queue landed; hand off server split / OAuth"
   },
   "recent": [
-    "Role-change green: 51/51 smokes + vite build",
-    "Merged fc83 tip (Canon revert) onto 50b2 before new work",
-    "POST /api/users/:id/roles + UserRoleAssignment + Role appointment panel"
+    "Mod queue green: 52/52 smokes + vite build",
+    "Merged 50b2 tip (role-change) onto 6b15 before new work",
+    "/mod tabs: soft-deletes, open findings, adjudication"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "Effective-user cache feeds merge gates; header still uses seed roles"
+    "Soft-delete feed via audit action filter; steward hides Canon rows"
   ],
   "open_threads": [
-    "Next Optional: mod queue UI",
-    "Then server split / OAuth; Manuals 3D globe still deferred"
+    "Next Optional: server split or OAuth/IdP",
+    "Manuals 3D globe still deferred"
   ],
-  "next_step": "Optional: mod queue UI (soft-deleted posts + findings/adjudication)",
+  "next_step": "Optional: split server/index.ts + server/db.ts, or OAuth/IdP",
   "blockers": []
 }
