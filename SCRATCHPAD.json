@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-08-02T01:30Z",
-  "turn": 70,
+  "updated_at": "2026-08-02T01:45Z",
+  "turn": 71,
   "focus": {
     "milestone": "R0+",
-    "issue": null,
-    "goal": "dist/ gitignore done; hand off next Optional"
+    "issue": "Fumadocs unpin",
+    "goal": "Tailwind 4.3.3 + fumadocs 16.14; smoke green"
   },
   "recent": [
-    "dist/ gitignore green: 48/48 smokes + vite build",
-    "Merged 02aa tip (image upload / R0+) onto 74f7",
-    "Chose dist/gitignore over Fumadocs (needs Tailwind≥4.3.2)"
+    "Merged 74f7 tip (R0+image+dist) onto 86b6",
+    "Tailwind/Vite 4.3.3; fumadocs-ui/core 16.14.0; mdx 14.2.7",
+    "vite build green with inset-s-4 in CSS"
   ],
   "discoveries": [
-    "Cron tips must merge latest progression PR when starting from main",
-    "Fumadocs inset-s unblock path: Tailwind 4.3.2+ (still on 4.1.12)"
+    "fumadocs-mdx 15+ requires Vite 7/8 — keep 14.x on Vite 6",
+    "Cron tips must merge latest progression PR when starting from main"
   ],
   "open_threads": [
-    "Next Optional: Fumadocs unpin after Tailwind≥4.3.2, or server split",
-    "OAuth / moderator polish still deferred"
+    "Next Optional: server/index+db split, or OAuth / moderator polish",
+    "Manuals 3D globe still deferred (SVG satisfies CONCEPT)"
   ],
-  "next_step": "Optional: bump Tailwind≥4.3.2 then Fumadocs unpin, or split server/",
+  "next_step": "Finish smoke suite; hand off server split or OAuth/mod polish",
   "blockers": []
 }

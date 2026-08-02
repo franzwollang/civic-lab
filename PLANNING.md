@@ -19,7 +19,7 @@ lives in `SCRATCHPAD.json`.
 | Schema growth | Grow tables with features; seeds disposable |
 | Package manager | **pnpm@9.15.9** (`packageManager`; lockfile v9) |
 | onlyBuiltDependencies | In **`package.json` → `pnpm.onlyBuiltDependencies`** (never JSON arrays in `.npmrc`) |
-| Fumadocs | **Pinned 16.5.4** — 16.12+ needs Tailwind ≥4.3.2 for `-inset-s-4` |
+| Fumadocs | **`fumadocs-ui`/`core` 16.14.0** + Tailwind **4.3.3** (`-inset-s-4`); `fumadocs-mdx` 14.2.7 (Vite 6) |
 | Build output | **`dist/` gitignored** — regenerate via `pnpm build`; not committed |
 | API server | **Hono** + `@hono/node-server`; Prisma server-side only (`server/`) |
 | `/docs` | Engineering only |
@@ -107,7 +107,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
 8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
 9. ~~**`dist/` gitignore**~~ (**done** — stop tracking Vite build output; `smoke-dist-gitignore`)
-10. **Optional / deferred next:** Fumadocs unpin (needs Tailwind ≥4.3.2), server split, OAuth, moderator polish
+10. ~~**Fumadocs unpin**~~ (**done** — Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; `smoke-fumadocs`)
+11. **Optional / deferred next:** server split, OAuth, moderator polish, Manuals 3D globe
 
 **Agent rules of thumb**
 
@@ -121,10 +122,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-R0 marathon + image upload + `dist/` gitignore done — see remaining
-`OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers. Known debt:
-server monolith size, client→server import of prototype-users, tsc not covering
-`server/` (Vite/smoke are the gates today), Fumadocs still pinned at 16.5.4.
+R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin done — see
+remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers.
+Known debt: server monolith size, client→server import of prototype-users,
+tsc not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -133,5 +134,5 @@ server monolith size, client→server import of prototype-users, tsc not coverin
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Fumadocs unpin** (Tailwind ≥4.3.2 first) or **server split** / OAuth /
+- Next: **server split** (`server/index.ts` / `server/db.ts`) or OAuth /
   moderator polish — prefer actionable Optional items with clear AC.
