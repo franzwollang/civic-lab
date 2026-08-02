@@ -9,8 +9,10 @@ import { promisify } from "util";
 import { PrismaClient } from "@prisma/client";
 import {
   appendAuditLog,
+  createArtifact,
   createClaim,
   createFinding,
+  getArtifact,
   getAttributions,
   getPrisma,
   listClaims,
@@ -40,6 +42,7 @@ const REQUIRED_FILES = [
   "server/db/identities.ts",
   "server/db/findingsDb.ts",
   "server/db/claimsDb.ts",
+  "server/db/artifactsDb.ts",
   "server/routes/health.ts",
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",
@@ -74,6 +77,9 @@ async function main() {
   if (typeof listClaims !== "function" || typeof createClaim !== "function") {
     throw new Error("claimsDb barrel exports missing");
   }
+  if (typeof getArtifact !== "function" || typeof createArtifact !== "function") {
+    throw new Error("artifactsDb barrel exports missing");
+  }
   const findingsSrc = await fs.readFile(
     path.join(ROOT, "server/db/findingsDb.ts"),
     "utf8",
@@ -97,6 +103,20 @@ async function main() {
   ) {
     throw new Error("claimsDb.ts must own Claims/adjudication accessors");
   }
+  const artifactsSrc = await fs.readFile(
+    path.join(ROOT, "server/db/artifactsDb.ts"),
+    "utf8",
+  );
+  if (
+    !artifactsSrc.includes("export async function listArtifacts") ||
+    !artifactsSrc.includes("export async function getArtifact") ||
+    !artifactsSrc.includes("export async function createArtifact") ||
+    !artifactsSrc.includes("export async function revertCanonArtifact") ||
+    !artifactsSrc.includes("export async function syncSectionsForArtifact") ||
+    !artifactsSrc.includes("export async function createArtifactRevision")
+  ) {
+    throw new Error("artifactsDb.ts must own Artifact/revision/section accessors");
+  }
   const dbSrc = await fs.readFile(path.join(ROOT, "server/db.ts"), "utf8");
   if (/export async function listFindings/.test(dbSrc)) {
     throw new Error("listFindings must live in server/db/findingsDb.ts, not db.ts");
@@ -104,11 +124,20 @@ async function main() {
   if (/export async function listClaims/.test(dbSrc)) {
     throw new Error("listClaims must live in server/db/claimsDb.ts, not db.ts");
   }
+  if (/export async function listArtifacts/.test(dbSrc)) {
+    throw new Error("listArtifacts must live in server/db/artifactsDb.ts, not db.ts");
+  }
+  if (/export async function getArtifact/.test(dbSrc)) {
+    throw new Error("getArtifact must live in server/db/artifactsDb.ts, not db.ts");
+  }
   if (!dbSrc.includes('from "./db/findingsDb"')) {
     throw new Error("server/db.ts must re-export findingsDb");
   }
   if (!dbSrc.includes('from "./db/claimsDb"')) {
     throw new Error("server/db.ts must re-export claimsDb");
+  }
+  if (!dbSrc.includes('from "./db/artifactsDb"')) {
+    throw new Error("server/db.ts must re-export artifactsDb");
   }
   if (
     typeof registerArtifactRoutes !== "function" ||
