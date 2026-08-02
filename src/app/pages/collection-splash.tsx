@@ -278,11 +278,20 @@ function CollectionDashboardView({
         </Card>
 
         <Card className="border border-neutral-200 bg-white p-6 lg:col-span-2">
-          <div className="mb-2 flex items-center gap-2">
-            <ScrollText className="h-4 w-4 text-neutral-600" />
-            <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
-              Audit log
-            </h2>
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <ScrollText className="h-4 w-4 text-neutral-600" />
+              <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
+                Audit log
+              </h2>
+            </div>
+            <Link
+              to={`/mod?collection=${encodeURIComponent(dashboard.collection.collection_id)}`}
+              className="text-xs font-medium text-neutral-700 underline"
+              data-testid="mod-queue-from-audit"
+            >
+              Full moderation queue →
+            </Link>
           </div>
           <AuditLogPanel />
         </Card>

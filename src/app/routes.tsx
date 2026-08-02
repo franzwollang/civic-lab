@@ -16,6 +16,7 @@ import {
   CollectionSplash,
 } from "./pages/collection-splash";
 import { ManualsIndex } from "./pages/manuals-index";
+import { ModQueue } from "./pages/mod-queue";
 
 /** Legacy descriptive demo → live Artifact reader. */
 function RedirectDescriptiveArtifact() {
@@ -66,6 +67,10 @@ export const router = createBrowserRouter([
   {
     path: "/manuals",
     Component: ManualsIndex,
+  },
+  {
+    path: "/mod",
+    Component: ModQueue,
   },
   {
     path: "/collection/:collectionId",

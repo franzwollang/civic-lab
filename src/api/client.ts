@@ -267,8 +267,17 @@ export async function getThreads(opts?: {
   return handleResponse<ThreadRow[]>(response);
 }
 
-export async function getThread(threadId: string): Promise<ThreadRow> {
-  const response = await fetch(`${API_BASE}/threads/${threadId}`);
+export async function getThread(
+  threadId: string,
+  opts?: { include_deleted?: boolean; actor_id?: string },
+): Promise<ThreadRow> {
+  const params = new URLSearchParams();
+  if (opts?.include_deleted) params.set("include_deleted", "1");
+  if (opts?.actor_id) params.set("actor_id", opts.actor_id);
+  const qs = params.toString();
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}${qs ? `?${qs}` : ""}`,
+  );
   return handleResponse<ThreadRow>(response);
 }
 
