@@ -232,6 +232,7 @@ async function main() {
     throw new Error("createAcceptedRisk must remain in server/db.ts");
   }
   if (
+    typeof registerAuthRoutes !== "function" ||
     typeof registerArtifactRoutes !== "function" ||
     typeof registerCorpusRoutes !== "function" ||
     typeof registerHealthRoutes !== "function" ||
@@ -247,6 +248,9 @@ async function main() {
   const indexSrc = await fs.readFile(path.join(ROOT, "server/index.ts"), "utf8");
   if (!indexSrc.includes("registerArtifactRoutes")) {
     throw new Error("server/index.ts must register artifact routes");
+  }
+  if (!indexSrc.includes("registerAuthRoutes")) {
+    throw new Error("server/index.ts must register auth routes");
   }
   if (
     /app\.(get|post|patch)\(\s*["'`]\/api\/artifacts/.test(indexSrc) ||
