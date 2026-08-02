@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T06:55Z",
+  "turn": 87,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": "OIDC JWKS id_token verify",
+    "goal": "Wire jose JWKS verify + claim checks"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip b1c5 (OIDC swap-in) onto fresh cron 630f",
+    "server/auth/oidcJwks.ts + src/lib/oidcJwks.ts claim checks",
+    "Non-mock token path verifies id_token; OIDC_JWKS_URI optional",
+    "smoke-oidc: RSA success + bad-sig + nonce mismatch"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Fresh cron at main must merge furthest progression tip first",
+    "jose createLocalJWKSet + token-endpoint hook keeps JWKS smoke offline"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Optional: Manuals 3D globe (SVG satisfies CONCEPT)",
+    "Richer implication DAG / scoring still deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: Manuals 3D globe, or implication DAG / scoring (deferred)",
   "blockers": []
 }
