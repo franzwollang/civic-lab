@@ -94,6 +94,19 @@ async function main() {
       throw new Error("canon-charter must be owner_merge_only");
     }
 
+    const about = await prisma.artifact.findUnique({
+      where: { artifactId: "canon-about" },
+    });
+    if (!about || about.dossierId !== "canon-governance-1") {
+      throw new Error("canon-about should belong to canon-governance-1");
+    }
+    if (!about.ownerMergeOnly) {
+      throw new Error("canon-about must be owner_merge_only");
+    }
+    if (about.slug !== "about") {
+      throw new Error(`canon-about slug: ${about.slug}`);
+    }
+
     const underUsVoting = await prisma.artifact.findMany({
       where: { dossierId: "us-voting-1" },
       orderBy: { slug: "asc" },

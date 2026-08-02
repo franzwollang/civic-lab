@@ -9680,7 +9680,913 @@
       }
     ]
   },
-
+  {
+    "revision_id": "rev-canon-about-1",
+    "page_id": "canon-about",
+    "parent_revision_id": null,
+    "created_at": "2026-07-01T00:05:00.000Z",
+    "author": "seed",
+    "content_json": [
+      {
+        "type": "h2",
+        "id": "about-title",
+        "children": [
+          {
+            "text": "About Civic Lab"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "about-tagline",
+        "children": [
+          {
+            "text": "A governance engineering lab: living specs, adversarial review, and transparent uncertainty."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "about-intro",
+        "children": [
+          {
+            "text": "Civic Lab is a forum/wiki hybrid for building high-quality, revisioned knowledge bases about political systems, economic systems, voting systems, cultural institutions, and the real-world plans needed to move societies toward better outcomes."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "about-links",
+        "children": [
+          {
+            "text": "Start with the "
+          },
+          {
+            "type": "a",
+            "url": "/faq",
+            "children": [
+              {
+                "text": "FAQ"
+              }
+            ]
+          },
+          {
+            "text": " or the living "
+          },
+          {
+            "type": "a",
+            "url": "/constitution",
+            "children": [
+              {
+                "text": "Charter"
+              }
+            ]
+          },
+          {
+            "text": ". Site path /about resolves to this Canon artifact."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "how-to-read",
+        "children": [
+          {
+            "text": "How To Read Civic Lab"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-p1",
+        "children": [
+          {
+            "text": "You’ll encounter math, science, and CS terms here. They’re not required—but they’re common because they make complex reasoning more legible and disagreements more auditable."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-b1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Start with the plain-language summary of an artifact or RFC."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-b2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Use formal sections as optional precision tools when needed."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-b3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "If something is unclear, ask for a rewrite as a resolvable claim with definitions, thresholds, and time windows."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "how-to-read-faq",
+        "children": [
+          {
+            "text": "See also: "
+          },
+          {
+            "type": "a",
+            "url": "/faq#do-i-need-math",
+            "children": [
+              {
+                "text": "FAQ: Do I need math/CS?"
+              }
+            ]
+          },
+          {
+            "text": " · "
+          },
+          {
+            "type": "a",
+            "url": "/faq#unfamiliar-terms",
+            "children": [
+              {
+                "text": "FAQ: Unfamiliar terms"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "charter",
+        "children": [
+          {
+            "text": "Not a Neutral Platform"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-p1",
+        "children": [
+          {
+            "text": "Civic Lab has an explicit living Charter (Owner-gated Canon artifact) and a clear editor-in-chief model. The trade is simple: higher signal, stronger standards, and an auditable trail of reasoning."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "charter-living",
+        "children": [
+          {
+            "text": "A Living System"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-b1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Assumptions are explicit."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-b2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Uncertainty is tracked, not hidden."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "charter-b3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Claims are tied to evidence where possible."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "two-channels",
+        "children": [
+          {
+            "text": "Two Channels"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-p1",
+        "children": [
+          {
+            "text": "The platform separates ideals from execution so both can be held to rigorous, legible standards."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#two-channels",
+            "children": [
+              {
+                "text": "FAQ: Canon vs Country Manuals"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "two-channels-canon",
+        "children": [
+          {
+            "text": "Canon (Ideal)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-canon-p",
+        "children": [
+          {
+            "text": "The Canon is the spec. It defines a coherent ideal framework: core principles, constraints, invariants, and mechanisms—plus the tests, metrics, and failure modes that let us argue about it rigorously."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-canon-b1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Assumptions are explicit."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-canon-b2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Uncertainty is tracked, not hidden."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-canon-b3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Claims are tied to evidence where possible."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "two-channels-manuals",
+        "children": [
+          {
+            "text": "Country Manuals (Execution)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-manuals-p1",
+        "children": [
+          {
+            "text": "Country Manuals are pragmatic field guides: current conditions, constraints, incentives, and stepwise plans. They are country-specific by design and include descriptive intelligence, prescriptive strategy, and alignment steps toward the Canon."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "two-channels-manuals-p2",
+        "children": [
+          {
+            "text": "This side is allowed to be bluntly realistic. It is also required to be intellectually honest."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "workflow",
+        "children": [
+          {
+            "text": "How Work Gets Done Here"
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "workflow-threads",
+        "children": [
+          {
+            "text": "Threads-first Collaboration"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-threads-p",
+        "children": [
+          {
+            "text": "Discussion happens in threads attached to larger semantic units (dossiers), not scattered comment sections."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-threads-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#objects",
+            "children": [
+              {
+                "text": "FAQ: Core collaboration objects"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "workflow-rfc",
+        "children": [
+          {
+            "text": "RFC Workflow (Change Control)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-rfc-p",
+        "children": [
+          {
+            "text": "When discussion becomes actionable, a thread can be promoted to an RFC (Request for Change). RFCs bundle revisions, diffs, and review into a single, auditable path from proposal to merge."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-rfc-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#rfcs",
+            "children": [
+              {
+                "text": "FAQ: RFCs"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "workflow-rt",
+        "children": [
+          {
+            "text": "Red Team Cases (First-class Dissent)"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-rt-p",
+        "children": [
+          {
+            "text": "Strong disagreement, skepticism, and deconstruction aren’t buried—they’re formalized. Red Team cases produce structured findings, mitigation discussions, and accepted-risk signoffs when needed."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "workflow-rt-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#red-team",
+            "children": [
+              {
+                "text": "FAQ: Red Team"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "standards",
+        "children": [
+          {
+            "text": "Standards and Uncertainty"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-p1",
+        "children": [
+          {
+            "text": "We push hard for measurability when possible, and for clarity when direct measurement isn’t available."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "standards-measurable",
+        "children": [
+          {
+            "text": "Where Reality Is Measurable"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-m1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Descriptive claims are written to be resolvable now or later."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-m2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Claims can include explicit confidence."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-m3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "The platform tracks claim quality and forecast calibration."
+          }
+        ]
+      },
+      {
+        "type": "h3",
+        "id": "standards-not",
+        "children": [
+          {
+            "text": "Where Reality Is Not Directly Measurable"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-n1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Assumptions, definitions, and tradeoffs are explicit."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-n2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Dissent is preserved, not memory-holed."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "standards-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#why-technical",
+            "children": [
+              {
+                "text": "FAQ: Why the technical language?"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "governance",
+        "children": [
+          {
+            "text": "Governance"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-b1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Civic Lab is a curated system."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-b2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "The Canon has final editorial oversight (benevolent dictator model)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-b3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Country Manuals can be stewarded by appointed maintainers."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-b4",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Global Red Team and adjudication functions are designed to prevent local bubbles and improve rigor."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-b5",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "This structure is explicit because the alternative is hidden power and invisible drift."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "gov-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#governance-roles",
+            "children": [
+              {
+                "text": "FAQ: Governance and roles"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "who-this-is-for",
+        "children": [
+          {
+            "text": "Who This Is For"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "who-b1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "People who want to treat governance like engineering: mechanisms, incentives, failure modes, and tests."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "who-b2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "People willing to write clearly, cite sources, quantify claims when possible, and keep disagreements legible."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "who-b3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Practitioners, researchers, and serious independents who want a high-signal place to build long-range synthesis."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "who-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#participation-ladder",
+            "children": [
+              {
+                "text": "FAQ: Participation ladder"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "get-involved",
+        "children": [
+          {
+            "text": "Get Involved"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-faq",
+        "children": [
+          {
+            "type": "a",
+            "url": "/faq#onboarding",
+            "children": [
+              {
+                "text": "FAQ: Onboarding paths"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-p1",
+        "children": [
+          {
+            "text": "The site is readable by anyone. Contribution access is gated to keep quality high."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-b1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Read: browse the Canon and Country Manuals."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-b2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Join discussion: participate in dossier threads and RFC reviews (verified access)."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-b3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Help build: steward a dossier, contribute revisions, or participate in Red Team reviews."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-p2",
+        "children": [
+          {
+            "text": "If you want to contribute, start by reading a dossier you care about and opening a thread with either:"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-b4",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "a concrete correction,"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-b5",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "a resolvable claim,"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-b6",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "a structured objection (red-team style),"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "get-involved-b7",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "or a well-scoped RFC proposal."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "what-to-expect",
+        "children": [
+          {
+            "text": "What You Can Expect"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "expect-b1",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "Strong opinions, explicit assumptions, and transparent decision-making."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "expect-b2",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "A living archive of disagreement—kept readable and attributable."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "expect-b3",
+        "listStyleType": "disc",
+        "indent": 1,
+        "children": [
+          {
+            "text": "A place where synthesis is allowed, but hand-waving isn’t."
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "id": "ready-to-explore",
+        "children": [
+          {
+            "text": "Ready to explore?"
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ready-p1",
+        "children": [
+          {
+            "text": "Start with the Canon or browse a Country Manual to see the system in action."
+          }
+        ]
+      },
+      {
+        "type": "p",
+        "id": "ready-links",
+        "children": [
+          {
+            "type": "a",
+            "url": "/canon",
+            "children": [
+              {
+                "text": "Explore Canon"
+              }
+            ]
+          },
+          {
+            "text": " · "
+          },
+          {
+            "type": "a",
+            "url": "/manuals",
+            "children": [
+              {
+                "text": "Browse Manuals"
+              }
+            ]
+          },
+          {
+            "text": "."
+          }
+        ]
+      }
+    ]
+  },
   {
     "revision_id": "rev-us-alignment-1",
     "page_id": "us-alignment",
