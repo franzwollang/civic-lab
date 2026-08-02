@@ -158,6 +158,19 @@ async function main() {
   ) {
     throw new Error("threadsDb.ts must own Thread/RFC/RevSet/decide accessors");
   }
+  const corpusSrc = await fs.readFile(
+    path.join(ROOT, "server/db/corpusDb.ts"),
+    "utf8",
+  );
+  if (
+    !corpusSrc.includes("export async function listAreas") ||
+    !corpusSrc.includes("export async function getCollection") ||
+    !corpusSrc.includes("export async function getCollectionDashboard") ||
+    !corpusSrc.includes("export async function listDossiers") ||
+    !corpusSrc.includes("export async function getDossier")
+  ) {
+    throw new Error("corpusDb.ts must own Area/Collection/Dossier/dashboard accessors");
+  }
   const dbSrc = await fs.readFile(path.join(ROOT, "server/db.ts"), "utf8");
   if (/export async function listFindings/.test(dbSrc)) {
     throw new Error("listFindings must live in server/db/findingsDb.ts, not db.ts");
@@ -183,6 +196,20 @@ async function main() {
   if (/export async function decideThread/.test(dbSrc)) {
     throw new Error("decideThread must live in server/db/threadsDb.ts, not db.ts");
   }
+  if (/export async function listAreas/.test(dbSrc)) {
+    throw new Error("listAreas must live in server/db/corpusDb.ts, not db.ts");
+  }
+  if (/export async function getCollectionDashboard/.test(dbSrc)) {
+    throw new Error(
+      "getCollectionDashboard must live in server/db/corpusDb.ts, not db.ts",
+    );
+  }
+  if (/export async function listDossiers/.test(dbSrc)) {
+    throw new Error("listDossiers must live in server/db/corpusDb.ts, not db.ts");
+  }
+  if (/export async function getDossier/.test(dbSrc)) {
+    throw new Error("getDossier must live in server/db/corpusDb.ts, not db.ts");
+  }
   if (!dbSrc.includes('from "./db/findingsDb"')) {
     throw new Error("server/db.ts must re-export findingsDb");
   }
@@ -194,6 +221,12 @@ async function main() {
   }
   if (!dbSrc.includes('from "./db/threadsDb"')) {
     throw new Error("server/db.ts must re-export threadsDb");
+  }
+  if (!dbSrc.includes('from "./db/corpusDb"')) {
+    throw new Error("server/db.ts must re-export corpusDb");
+  }
+  if (!dbSrc.includes("export async function createAcceptedRisk")) {
+    throw new Error("createAcceptedRisk must remain in server/db.ts");
   }
   if (
     typeof registerArtifactRoutes !== "function" ||

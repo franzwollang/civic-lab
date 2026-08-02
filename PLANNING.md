@@ -70,7 +70,7 @@ lives in `SCRATCHPAD.json`.
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
 | Auth | Impersonation + identity hooks; body `actor_id` until IdP |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
-| Server layout | Route registrars under `server/routes/*`; `db/{findingsDb,claimsDb,artifactsDb}.ts` + leaf db modules; `index.ts` ~64 lines |
+| Server layout | Route registrars under `server/routes/*`; `db/{corpusDb,findingsDb,claimsDb,artifactsDb,threadsDb}.ts` + leaf modules; `db.ts` ≈ createAcceptedRisk + barrels; `index.ts` ~64 lines |
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
 R0 marathon (About/FAQ → CONCEPT rewrite) landed.
@@ -130,9 +130,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 20. ~~**Server split (threadsDb module)**~~ (**done** —
     `server/db/threadsDb.ts`; Thread/RFC/RevSet/decide/merge-authority;
     `createAcceptedRisk` remains in `db.ts`)
-21. **Optional / deferred next:** OAuth/IdP session→actor, remaining
-    `server/db.ts` corpus/dashboard module, Manuals 3D globe,
-    model→forecast graph
+21. ~~**Server split (corpusDb module)**~~ (**done** —
+    `server/db/corpusDb.ts`; Area/Collection/Dossier + §11 dashboard;
+    `createAcceptedRisk` remains in `db.ts`)
+22. **Optional / deferred next:** OAuth/IdP session→actor, Manuals 3D
+    globe, model→forecast graph
 
 **Agent rules of thumb**
 
@@ -148,11 +150,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
 role-change audit + mod queue UI + server split (routes + findingsDb + claimsDb +
-artifactsDb + threadsDb) done — see remaining `OPEN_ISSUES.md` **Optional /
-deferred**. No architecture blockers. Known debt: remaining `server/db.ts`
-corpus/dashboard body, client→server import of prototype-users (header still
-seed roles until IdP), tsc not covering `server/` (Vite/smoke are the gates
-today).
+artifactsDb + threadsDb + corpusDb) done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred**. No architecture blockers. Known debt: `db.ts` still
+hosts `createAcceptedRisk` (intentional bridge), client→server import of
+prototype-users (header still seed roles until IdP), tsc not covering
+`server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -161,5 +163,5 @@ today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **OAuth/IdP** session→actor, or extract remaining **corpus/dashboard**
-  from `server/db.ts`.
+- Next: **OAuth/IdP** session→actor binding (body `actor_id` trust remains
+  until then).

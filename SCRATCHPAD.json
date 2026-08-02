@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-02T05:15Z",
-  "turn": 82,
+  "updated_at": "2026-08-02T05:30Z",
+  "turn": 83,
   "focus": {
     "milestone": "R0+",
-    "issue": "Server split threadsDb",
-    "goal": "Extract threadsDb; hand off OAuth / corpus db"
+    "issue": "Server split corpusDb",
+    "goal": "Extract corpusDb; hand off OAuth/IdP"
   },
   "recent": [
-    "Merged furthest tip ebd9 (artifactsDb) onto cron branch c707",
-    "Extracted server/db/threadsDb.ts; createAcceptedRisk stays in db.ts",
-    "Retargeted smoke-editor-mvp merge markers to threadsDb",
+    "Merged furthest tip c707 (threadsDb) onto cron branch e827",
+    "Extracted server/db/corpusDb.ts; createAcceptedRisk stays in db.ts",
+    "smoke-server-split asserts corpusDb ownership + barrel re-exports",
     "53/53 smokes + vite build green"
   ],
   "discoveries": [
     "Cron tips must merge furthest progression PR before picking next Optional",
-    "threadsDb owns merge-authority; createAcceptedRisk imports it from db.ts"
+    "corpusDb queries prisma.thread directly — avoid importing threadsDb"
   ],
   "open_threads": [
-    "Next Optional: OAuth/IdP session→actor, or corpus/dashboard db module",
-    "Manuals 3D globe still deferred"
+    "Next Optional: OAuth/IdP session→actor binding",
+    "Manuals 3D globe + model→forecast graph still deferred"
   ],
-  "next_step": "Optional: OAuth/IdP session→actor, or extract corpus from server/db.ts",
+  "next_step": "Optional: OAuth/IdP — bind session→server actor (replace body actor_id trust)",
   "blockers": []
 }

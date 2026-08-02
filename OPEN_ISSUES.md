@@ -96,8 +96,11 @@ that is actionable, or stop if blocked on product decisions.
     merge-authority; `createAcceptedRisk` stays in `db.ts` and imports
     `resolveMergeAuthorityForArtifact`; `smoke-server-split` + editor-mvp
     source markers updated)
-  - Remaining optional: extract **corpus** dashboard/reputation from
-    `server/db.ts`, or **OAuth/IdP** session→actor binding
+  - Eighth slice: `server/db/corpusDb.ts` (Area/Collection/Dossier +
+    §11 Collection dashboard/reputation; queries `prisma.thread` directly;
+    `createAcceptedRisk` stays in `db.ts`; `smoke-server-split` ownership)
+  - Remaining optional: **OAuth/IdP** session→actor binding (`db.ts` now
+    only hosts `createAcceptedRisk` + barrels)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
