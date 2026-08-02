@@ -795,6 +795,40 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
             {children}
           </blockquote>
         );
+      case ELEMENT_TYPES.TABLE:
+        return (
+          <div key={key} className="mb-4 w-full overflow-x-auto">
+            <table className="w-full border-collapse border border-neutral-300 text-sm">
+              <tbody className="[&>tr]:border-b [&>tr]:border-neutral-200">
+                {children}
+              </tbody>
+            </table>
+          </div>
+        );
+      case ELEMENT_TYPES.TABLE_ROW:
+        return (
+          <tr key={key} className="border-b border-neutral-200">
+            {children}
+          </tr>
+        );
+      case ELEMENT_TYPES.TABLE_CELL_HEADER:
+        return (
+          <th
+            key={key}
+            className="border border-neutral-200 bg-neutral-50 px-2 py-1.5 text-left align-top text-sm font-semibold leading-6 text-neutral-900"
+          >
+            {children}
+          </th>
+        );
+      case ELEMENT_TYPES.TABLE_CELL:
+        return (
+          <td
+            key={key}
+            className="border border-neutral-200 px-2 py-1.5 align-top text-sm leading-6 text-neutral-700"
+          >
+            {children}
+          </td>
+        );
       case ELEMENT_TYPES.PARAGRAPH: {
         const listStyleType =
           typeof node.listStyleType === "string" ? node.listStyleType : null;
@@ -877,6 +911,10 @@ export const DOCUMENT_READER_NODE_TYPES = [
   ELEMENT_TYPES.H3,
   ELEMENT_TYPES.H4,
   ELEMENT_TYPES.BLOCKQUOTE,
+  ELEMENT_TYPES.TABLE,
+  ELEMENT_TYPES.TABLE_ROW,
+  ELEMENT_TYPES.TABLE_CELL,
+  ELEMENT_TYPES.TABLE_CELL_HEADER,
   ELEMENT_TYPES.MATH_INLINE,
   ELEMENT_TYPES.MATH_BLOCK,
   ELEMENT_TYPES.MERMAID_BLOCK,
