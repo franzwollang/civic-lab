@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T05:55Z",
+  "turn": 84,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": "OAuth/IdP session→actor",
+    "goal": "Cookie session binds actor; body actor_id untrusted"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip e827 (corpusDb) onto cron branch e7a3 before new work",
+    "IdP-lite: /api/auth/login|logout|me + civic_lab_session cookie",
+    "Mutations/gated reads use session actor; switcher syncs login",
+    "54/54 smokes + vite build green (smoke-session-actor)"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Prefer same-origin /api (Vite proxy) so session cookies stay first-party",
+    "Rename helpers out of smoke-* or run-smokes picks them up"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Optional next: Manuals 3D globe or model→forecast graph",
+    "External OIDC can swap into /api/auth/login later"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: Manuals 3D globe, or defer and pick model→forecast / OIDC",
   "blockers": []
 }
