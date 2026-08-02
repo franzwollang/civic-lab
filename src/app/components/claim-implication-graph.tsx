@@ -2,7 +2,9 @@ import { ArrowRight, GitBranch } from "lucide-react";
 import type { ClaimRow } from "../../doc/types";
 import {
   buildImplicationGraph,
+  scoreModelImplicationsById,
   type ImplicationGraphNode,
+  type ModelImplicationScore,
 } from "../../lib/claimImplications";
 import { Badge } from "./ui/badge";
 
@@ -30,15 +32,54 @@ function statusLabel(status: string): string {
   return status.replace(/_/g, " ");
 }
 
+function fmtScore(n: number | null, digits = 3): string {
+  if (n === null || !Number.isFinite(n)) return "—";
+  return n.toFixed(digits);
+}
+
+function ModelScoreSummary({ score }: { score: ModelImplicationScore }) {
+  return (
+    <div
+      className="mt-2 rounded border border-emerald-200/80 bg-white/70 px-2 py-1.5 text-[11px] text-emerald-900"
+      data-testid={`implication-score-${score.model_claim_id}`}
+      data-scored-n={score.scored_n}
+      data-public-board={score.public_board_eligible ? "1" : "0"}
+    >
+      <div className="font-semibold uppercase tracking-wider text-emerald-800/80">
+        Implied forecast score (advisory)
+      </div>
+      <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[10px] text-emerald-900/90">
+        <span>n={score.scored_n}</span>
+        <span>Brier {fmtScore(score.mean_brier)}</span>
+        <span>log {fmtScore(score.mean_log_score)}</span>
+        <span>skill {fmtScore(score.mean_skill_vs_baseline)}</span>
+        {score.open_n > 0 && <span>open {score.open_n}</span>}
+        {score.missing_n > 0 && <span>missing {score.missing_n}</span>}
+      </div>
+      {!score.public_board_eligible && score.scored_n > 0 && (
+        <p className="mt-0.5 text-[10px] text-emerald-800/70">
+          Below public-board threshold (n≥20); advisory only.
+        </p>
+      )}
+      {score.scored_n === 0 && (
+        <p className="mt-0.5 text-[10px] text-emerald-800/70">
+          No resolved implied forecasts yet.
+        </p>
+      )}
+    </div>
+  );
+}
+
 /**
  * Read-only artifact-scoped model→forecast implication DAG (CONCEPT §5.2).
  * Two-tier layout: models on the left, forecasts on the right.
- * Does not propagate scores — display only.
+ * Advisory score propagation: resolved implied forecasts → model Brier/log/skill.
  */
 export function ClaimImplicationGraph({ claims }: Props) {
   const graph = buildImplicationGraph(claims);
   if (graph.edges.length === 0) return null;
 
+  const scoresByModel = scoreModelImplicationsById(claims);
   const models = graph.nodes.filter((n) => n.role === "model");
   const forecasts = graph.nodes.filter((n) => n.role === "forecast");
   const targetsByModel = new Map<string, string[]>();
@@ -67,13 +108,20 @@ export function ClaimImplicationGraph({ claims }: Props) {
           {graph.edges.length} edge{graph.edges.length === 1 ? "" : "s"}
         </Badge>
         <span className="text-[11px] text-neutral-500">
-          Model → forecast (read-only; scoring propagation deferred)
+          Model → forecast (advisory score propagation from resolved forecasts)
         </span>
       </div>
 
       <div className="space-y-4">
         {models.map((model) => {
           const targetIds = targetsByModel.get(model.claim_id) ?? [];
+          const modelScore = scoresByModel.get(model.claim_id);
+          const contribById = new Map(
+            (modelScore?.contributions ?? []).map((c) => [
+              c.forecast_claim_id,
+              c,
+            ]),
+          );
           return (
             <div
               key={model.claim_id}
@@ -100,6 +148,7 @@ export function ClaimImplicationGraph({ claims }: Props) {
                   </span>
                 </div>
                 <p className="text-sm leading-snug">{truncate(model.text)}</p>
+                {modelScore && <ModelScoreSummary score={modelScore} />}
               </div>
 
               <div
@@ -116,6 +165,7 @@ export function ClaimImplicationGraph({ claims }: Props) {
                 {targetIds.map((tid) => {
                   const node = forecastById.get(tid);
                   if (!node) return null;
+                  const contrib = contribById.get(tid);
                   return (
                     <div
                       key={`${model.claim_id}-${tid}`}
@@ -123,6 +173,7 @@ export function ClaimImplicationGraph({ claims }: Props) {
                       data-claim-id={node.claim_id}
                       data-role="forecast"
                       data-testid={`implication-forecast-${node.claim_id}`}
+                      data-scored={contrib?.scored ? "1" : "0"}
                     >
                       <div className="mb-1 flex flex-wrap items-center gap-1.5">
                         <Badge
@@ -146,6 +197,16 @@ export function ClaimImplicationGraph({ claims }: Props) {
                       <p className="text-sm leading-snug">
                         {truncate(node.text)}
                       </p>
+                      {contrib?.scored && (
+                        <p
+                          className="mt-1 font-mono text-[10px] text-violet-900/80"
+                          data-testid={`implication-contrib-${node.claim_id}`}
+                        >
+                          contrib Brier {fmtScore(contrib.brier)} · log{" "}
+                          {fmtScore(contrib.log_score)} · skill{" "}
+                          {fmtScore(contrib.skill_vs_baseline)}
+                        </p>
+                      )}
                     </div>
                   );
                 })}

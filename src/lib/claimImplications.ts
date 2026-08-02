@@ -3,9 +3,22 @@
  *
  * Model empirical claims may link to forecast claims they imply via
  * `{ kind: "implies_forecast", claim_id }` entries in `Claim.links`.
- * Artifact-scoped read-only DAG UI is supported; scoring propagation
- * across edges remains deferred.
+ * Artifact-scoped read-only DAG UI + advisory score propagation:
+ * resolved implied forecasts contribute Brier/log/skill to the model.
+ * Cross-artifact / reputation-board rollups remain out of scope.
  */
+
+import {
+  DEFAULT_FORECAST_BASELINE,
+  PUBLIC_BOARD_MIN_N,
+  brierScore,
+  clampProbability,
+  computeForecastAccuracy,
+  logScore,
+  outcomeFromEmpiricalStatus,
+  skillVsBaseline,
+  type BinaryOutcome,
+} from "./claimMetrics";
 
 export const IMPLIES_FORECAST_KIND = "implies_forecast" as const;
 
@@ -281,4 +294,176 @@ export function buildImplicationGraph(
 /** True when the claim set has at least one model→forecast implication edge. */
 export function hasImplicationEdges(claims: ImplicationClaimRef[]): boolean {
   return buildImplicationGraph(claims).edges.length > 0;
+}
+
+/** Per-forecast contribution toward a model's advisory implied score. */
+export type ImplicationScoreContribution = {
+  forecast_claim_id: string;
+  status: string;
+  probability: number | null;
+  outcome: BinaryOutcome | null;
+  brier: number | null;
+  log_score: number | null;
+  skill_vs_baseline: number | null;
+  /** True when resolved true/false with a probability (scored). */
+  scored: boolean;
+  /** False when the forecast id is not in the loaded claim set. */
+  present: boolean;
+};
+
+/**
+ * Advisory accuracy for one model from its implied forecasts' resolutions.
+ * Does not mutate claim records; scores stay advisory (§5.6 / §5.9).
+ */
+export type ModelImplicationScore = {
+  model_claim_id: string;
+  implied_forecast_ids: string[];
+  scored_n: number;
+  open_n: number;
+  missing_n: number;
+  mean_brier: number | null;
+  mean_log_score: number | null;
+  mean_skill_vs_baseline: number | null;
+  baseline_p: number;
+  baseline_label: string;
+  public_board_eligible: boolean;
+  contributions: ImplicationScoreContribution[];
+};
+
+function round4(n: number | null): number | null {
+  if (n === null) return null;
+  return Math.round(n * 10000) / 10000;
+}
+
+/**
+ * Propagate forecast accuracy onto model claims via implies_forecast edges.
+ * Returns one row per model that has at least one implication edge.
+ */
+export function scoreModelImplications(
+  claims: ImplicationClaimRef[],
+  opts?: { baseline_p?: number; baseline_label?: string },
+): ModelImplicationScore[] {
+  const baseline_p = clampProbability(
+    opts?.baseline_p ?? DEFAULT_FORECAST_BASELINE,
+  );
+  const baseline_label =
+    opts?.baseline_label ?? "default binary baseline p = 0.5";
+  const byId = new Map(claims.map((c) => [c.claim_id, c]));
+  const results: ModelImplicationScore[] = [];
+
+  for (const claim of claims) {
+    if (claim.empirical_type !== "model") continue;
+    const forecastIds = forecastIdsFromImpliesLinks(claim.links);
+    if (forecastIds.length === 0) continue;
+
+    const contributions: ImplicationScoreContribution[] = [];
+    let open_n = 0;
+    let missing_n = 0;
+    const scoredInputs: {
+      profile: string;
+      status: string;
+      empirical_type: string | null;
+      probability: number | null;
+    }[] = [];
+
+    for (const fid of forecastIds) {
+      const target = byId.get(fid);
+      if (!target) {
+        missing_n += 1;
+        contributions.push({
+          forecast_claim_id: fid,
+          status: "unknown",
+          probability: null,
+          outcome: null,
+          brier: null,
+          log_score: null,
+          skill_vs_baseline: null,
+          scored: false,
+          present: false,
+        });
+        continue;
+      }
+
+      const outcome = outcomeFromEmpiricalStatus(target.status);
+      const probability =
+        typeof target.probability === "number" ? target.probability : null;
+      const canScore =
+        target.profile === "empirical" &&
+        target.empirical_type === "forecast" &&
+        outcome !== null &&
+        probability !== null;
+
+      if (target.status === "open") open_n += 1;
+
+      if (canScore && outcome !== null && probability !== null) {
+        const brier = brierScore(probability, outcome);
+        const log = logScore(probability, outcome);
+        const baselineBrier = brierScore(baseline_p, outcome);
+        scoredInputs.push({
+          profile: "empirical",
+          status: target.status,
+          empirical_type: "forecast",
+          probability,
+        });
+        contributions.push({
+          forecast_claim_id: fid,
+          status: target.status,
+          probability,
+          outcome,
+          brier: round4(brier),
+          log_score: round4(log),
+          skill_vs_baseline: round4(skillVsBaseline(brier, baselineBrier)),
+          scored: true,
+          present: true,
+        });
+      } else {
+        contributions.push({
+          forecast_claim_id: fid,
+          status: target.status,
+          probability,
+          outcome,
+          brier: null,
+          log_score: null,
+          skill_vs_baseline: null,
+          scored: false,
+          present: true,
+        });
+      }
+    }
+
+    const accuracy = computeForecastAccuracy(scoredInputs, {
+      baseline_p,
+      baseline_label,
+    });
+
+    results.push({
+      model_claim_id: claim.claim_id,
+      implied_forecast_ids: forecastIds,
+      scored_n: accuracy.n,
+      open_n,
+      missing_n,
+      mean_brier: accuracy.mean_brier,
+      mean_log_score: accuracy.mean_log_score,
+      mean_skill_vs_baseline: accuracy.mean_skill_vs_baseline,
+      baseline_p: accuracy.baseline_p,
+      baseline_label: accuracy.baseline_label,
+      public_board_eligible: accuracy.n >= PUBLIC_BOARD_MIN_N,
+      contributions,
+    });
+  }
+
+  results.sort((a, b) => a.model_claim_id.localeCompare(b.model_claim_id));
+  return results;
+}
+
+/** Lookup helper for UI: model claim id → advisory implication score. */
+export function scoreModelImplicationsById(
+  claims: ImplicationClaimRef[],
+  opts?: { baseline_p?: number; baseline_label?: string },
+): Map<string, ModelImplicationScore> {
+  const map = new Map<string, ModelImplicationScore>();
+  for (const row of scoreModelImplications(claims, opts)) {
+    map.set(row.model_claim_id, row);
+  }
+  return map;
 }

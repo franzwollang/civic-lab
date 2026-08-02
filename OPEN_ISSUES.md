@@ -98,8 +98,13 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Model→forecast implication DAG UI** — done
   (`buildImplicationGraph` / `hasImplicationEdges`; read-only
   `ClaimImplicationGraph` on `ArtifactClaimsPanel`; seed triangle on
-  `page-001`; `smoke-claim-implication-graph`). Scoring propagation still
-  deferred.
+  `page-001`; `smoke-claim-implication-graph`).
+- [x] **Model→forecast implication score propagation** — done
+  (`scoreModelImplications` / `scoreModelImplicationsById`; advisory
+  Brier/log/skill from resolved implied forecasts onto models; DAG UI
+  summary + per-edge contrib; n≥20 public-board gate; seed page-001
+  asserts n=1; `smoke-claim-implication-scores`). Reputation-board
+  rollup of implication scores still deferred.
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** kept for
   Vite 6; `-inset-s-4` in build CSS; `smoke-fumadocs`)
