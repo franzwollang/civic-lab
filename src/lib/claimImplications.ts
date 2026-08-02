@@ -66,6 +66,7 @@ export function buildImpliesForecastLink(claimId: string): ImpliesForecastLink {
 /**
  * Normalize authoring input (ids or link objects) into implies_forecast links.
  * Non-implication entries in `existingLinks` are preserved.
+ * Forecast claim ids are de-duplicated.
  */
 export function mergeImpliesForecastLinks(opts: {
   existingLinks?: unknown[];
@@ -74,10 +75,14 @@ export function mergeImpliesForecastLinks(opts: {
   const preserved = (opts.existingLinks ?? []).filter(
     (item) => !isImpliesForecastLink(item),
   );
-  const links = opts.forecastClaimIds
-    .map((id) => id.trim())
-    .filter(Boolean)
-    .map(buildImpliesForecastLink);
+  const seen = new Set<string>();
+  const links: ImpliesForecastLink[] = [];
+  for (const raw of opts.forecastClaimIds) {
+    const id = raw.trim();
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    links.push(buildImpliesForecastLink(id));
+  }
   return [...preserved, ...links];
 }
 
