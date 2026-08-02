@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T23:55Z",
-  "turn": 63,
+  "updated_at": "2026-08-02T00:06Z",
+  "turn": 64,
   "focus": {
     "milestone": "R0",
-    "issue": "Plate tables MVP",
-    "goal": "Plate table plugin + toolbar + reader/export"
+    "issue": "Home preamble live exemplars",
+    "goal": "Home CONCEPT links to live corpus routes"
   },
   "recent": [
-    "Typed posts: finding|mitigation RT gate; composer; filters; 43/43",
-    "Merged e9da tip (About/FAQ/fixtures) onto fa48 before typed posts",
-    "Fixture retirement + FAQ/About living artifacts",
+    "Plate tables MVP: @platejs/table@52; reader/export; 44/44",
+    "Merged fa48 tip (About/FAQ/fixtures/typed posts) onto 1fb6",
+    "Typed posts + fixture retirement + living About/FAQ",
     "§K hardening + R0 marathon queue"
   ],
   "discoveries": [
     "Cron tips must merge latest progression PR when starting from main",
-    "createThreadPost now returns Result (not null) for typed-post gates"
+    "TablePlugin nests tr/td/th; register withComponent on all four"
   ],
   "open_threads": [
-    "Plate tables next",
-    "Home CONCEPT links; CONCEPT rewrite"
+    "Home CONCEPT links next",
+    "CONCEPT rewrite after home"
   ],
-  "next_step": "Implement Plate tables MVP (OPEN_ISSUES §4)",
+  "next_step": "Home preamble links to live exemplars (OPEN_ISSUES §5)",
   "blockers": []
 }

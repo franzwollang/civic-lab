@@ -33,13 +33,9 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ### 4. Editor tables (defer images if needed)
 
-- [ ] **Plate tables MVP**
-  - **Scope:** add table plugin compatible with Plate 52; toolbar insert;
-    DocumentReader + plainTextExport; structural validation allowlist
-  - **Done when:** insert/edit simple table in `/test/editor`; round-trip save;
-    smoke on content_json shape
-  - **Out of scope:** image upload pipeline (separate); keep `.webp`-only until
-    upload exists
+- [x] **Plate tables MVP** — done (`@platejs/table@52`; toolbar insert;
+  DocumentReader + markdown export; structural row/cell checks;
+  `smoke-editor-tables`)
 
 ### 5. Home / About CONCEPT alignment
 
@@ -80,7 +76,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~43 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~44 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
