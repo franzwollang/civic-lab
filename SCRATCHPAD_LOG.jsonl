@@ -87,3 +87,4 @@
 {"ts":"2026-08-02T06:55Z","focus":"OIDC JWKS verify","summary":"jose JWKS id_token verify + claim checks; smoke extended","next":"Optional Manuals 3D globe or implication DAG"}
 {"ts":"2026-08-02T07:20Z","focus":"implication DAG UI","summary":"merged tip 630f; buildImplicationGraph + ClaimImplicationGraph + smoke","next":"Optional Manuals 3D globe (product-gated) or scoring propagation"}
 {"ts":"2026-08-02T07:25Z","focus":"implication score propagation","summary":"merged tip bae4; scoreModelImplications + DAG UI + smoke-claim-implication-scores","next":"Optional Manuals 3D globe (product-gated) or stop"}
+{"ts":"2026-08-02T07:45Z","focus":"queue empty handoff","summary":"merged tip d369; clarified globe + reputation rollup blockers; stop","next":"Stop until product/CONCEPT; next cron merge tip first"}

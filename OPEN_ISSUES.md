@@ -61,8 +61,14 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Image upload pipeline** — done (`POST /api/uploads/images`;
   `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
   `smoke-image-upload`; CONCEPT Appendix C residual cleared)
-- [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT §1.2;
-  keep flat picker unless product asks for WebGL
+- [ ] **Manuals 3D globe** — **product-gated / do not implement.** SVG map+list
+  already satisfies CONCEPT §1.2; keep flat picker unless product explicitly
+  asks for WebGL. No acceptance criteria until then.
+- [ ] **Reputation-board rollup of implication scores** — **CONCEPT-deferred.**
+  §5.2 / §9.2 / §12 keep reputation (labor signals) separate from claim/forecast
+  scores; artifact-scoped `scoreModelImplications` is done. No AC until CONCEPT
+  specifies attribution (user vs model claim), collection vs cross-collection
+  scope, and whether this belongs on claim-metrics vs reputation panels.
 - [x] **Full OAuth / IdP (prototype IdP-lite)** — done
   (`POST /api/auth/login|impersonate|logout`, `GET /api/auth/me`;
   httpOnly `civic_lab_session` cookie; mutations + gated reads use

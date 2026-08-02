@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-02T07:25Z",
-  "turn": 89,
+  "updated_at": "2026-08-02T07:45Z",
+  "turn": 90,
   "focus": {
     "milestone": "R0+",
-    "issue": "Implication score propagation",
-    "goal": "Advisory Brier/log/skill from implied forecasts"
+    "issue": null,
+    "goal": "Handoff: queue empty — stop"
   },
   "recent": [
-    "Merged tip bae4 (implication DAG) onto fresh cron d369",
-    "scoreModelImplications + DAG UI advisory score summary",
-    "smoke-claim-implication-scores (seed n=1 + synthetic)",
-    "Skipped Manuals 3D globe (SVG satisfies; product-gated)"
+    "Merged tip d369 (implication scores) onto cron 07de",
+    "Confirmed globe product-gated; reputation rollup CONCEPT-deferred",
+    "Clarified OPEN_ISSUES optional blockers; fixed PLANNING stale scoring note"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
-    "Implication scores reuse claimMetrics; no new API"
+    "Reputation board ≠ claim scores (§9.2); do not invent rollup AC"
   ],
   "open_threads": [
-    "Optional: Manuals 3D globe (SVG satisfies CONCEPT)",
-    "Reputation-board rollup of implication scores deferred"
+    "Optional: Manuals 3D globe only if product asks",
+    "Deferred: reputation rollup needs CONCEPT AC"
   ],
-  "next_step": "Optional: Manuals 3D globe only if product asks; else stop (queue empty)",
+  "next_step": "Stop until product asks for globe or CONCEPT adds rollup AC; merge tip on next cron",
   "blockers": []
 }

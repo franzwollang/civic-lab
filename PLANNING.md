@@ -50,7 +50,7 @@ lives in `SCRATCHPAD.json`.
 | Audit | Append-only; soft-delete posts; audit list steward/Owner-gated |
 | External artifacts | App D node + provider whitelist; attribution `immutable_ref` |
 | Collection dashboard | Shared chrome; live §11 panels on Collection splash |
-| Model claim graph | Artifact-scoped read-only DAG UI; scoring propagation deferred |
+| Model claim graph | Artifact DAG + advisory score propagation; reputation rollup deferred |
 
 ### Claim profile summary
 
@@ -147,8 +147,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 27. ~~**Model→forecast implication score propagation**~~ (**done** —
     `scoreModelImplications`; advisory Brier/log/skill on models from
     resolved implied forecasts; `smoke-claim-implication-scores`)
-28. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
-    CONCEPT); reputation-board rollup of implication scores
+28. **Optional / deferred next (product-gated):** Manuals 3D globe (SVG already
+    satisfies CONCEPT §1.2 — do not build WebGL unless product asks)
+29. **Deferred (needs CONCEPT):** reputation-board rollup of implication scores
+    — §9.2 keeps reputation separate from claim scores; stay deferred
 
 **Agent rules of thumb**
 
@@ -178,5 +180,5 @@ not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Manuals 3D globe** (optional; SVG already satisfies CONCEPT) or stop
-  if only product-gated / deferred items remain.
+- Next: **stop** — only product-gated Manuals 3D globe and CONCEPT-deferred
+  reputation rollup remain. Resume when product asks or CONCEPT adds AC.
