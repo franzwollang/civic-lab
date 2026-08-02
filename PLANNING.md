@@ -182,4 +182,4 @@ not covering `server/` (Vite/smoke are the gates today).
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
 - Next: **stop** — only product-gated Manuals 3D globe and CONCEPT-deferred
   reputation rollup remain. Resume when product asks or CONCEPT adds AC.
-  Cron `061b` synced tip from `14f2` / PR #82 (empty-queue handoff; smoke 58/58).
+  Cron `db8a` synced tip from `061b` / PR #83 (empty-queue handoff; smoke 58/58).
