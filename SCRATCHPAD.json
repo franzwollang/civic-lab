@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-02T00:45Z",
-  "turn": 66,
+  "updated_at": "2026-08-02T01:15Z",
+  "turn": 67,
   "focus": {
-    "milestone": "R0",
-    "issue": null,
-    "goal": "R0 done; hand off to optional image upload"
+    "milestone": "R0+",
+    "issue": "Image upload pipeline",
+    "goal": "Upload API + editor insert; clear webp-only"
   },
   "recent": [
-    "CONCEPT editorial rewrite + smoke-concept; R0 done",
-    "Merged a831 tip (About→home preamble) onto 3148",
-    "Home preamble + live exemplars; 45/45",
-    "Plate tables; typed posts; fixture retirement; About/FAQ"
+    "Image upload pipeline: API, editor, smoke-image-upload",
+    "Merged 3148 tip (R0 CONCEPT rewrite) onto 02aa",
+    "CONCEPT rewrite; home preamble; Plate tables; typed posts"
   ],
   "discoveries": [
     "Cron tips must merge latest progression PR when starting from main",
-    "R0 marathon queue cleared — Optional/deferred next"
+    "Relative /uploads/… src resolved via API origin in reader/editor"
   ],
   "open_threads": [
-    "Next: image upload pipeline (Optional)",
-    "Fumadocs unpin / server split / OAuth still deferred"
+    "Next Optional: Fumadocs unpin or dist/ gitignore",
+    "OAuth / server split still deferred"
   ],
-  "next_step": "Image upload pipeline (OPEN_ISSUES Optional) or product redirect",
+  "next_step": "Verify smokes/build; hand off to next Optional (Fumadocs or dist/)",
   "blockers": []
 }

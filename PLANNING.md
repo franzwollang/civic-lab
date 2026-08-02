@@ -119,9 +119,9 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-R0 marathon queue cleared — see `OPEN_ISSUES.md` **Optional / deferred**.
-No architecture blockers. Known debt: server monolith size, tracked `dist/`,
-client→server import of prototype-users, tsc not covering `server/`
+R0 marathon + image upload done — see remaining `OPEN_ISSUES.md` **Optional /
+deferred**. No architecture blockers. Known debt: server monolith size, tracked
+`dist/`, client→server import of prototype-users, tsc not covering `server/`
 (Vite/smoke are the gates today).
 
 ---
@@ -131,5 +131,5 @@ client→server import of prototype-users, tsc not covering `server/`
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Image upload pipeline** (first actionable Optional item) unless product
-  redirects; else Fumadocs unpin / server split / OAuth.
+- Next: **Fumadocs unpin** or **`dist/` gitignore** / server split / OAuth (product
+  call) — prefer actionable Optional items with clear AC.
