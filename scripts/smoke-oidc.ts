@@ -1,5 +1,6 @@
 /**
  * Smoke: external OIDC swap-in for session login (mock mode, no network secrets).
+ * Also covers JWKS id_token verify with a local RSA key (no live IdP).
  * Run: DATABASE_URL="file:./smoke-oidc.db" pnpm exec tsx scripts/smoke-oidc.ts
  */
 import { promises as fs } from "fs";
@@ -7,25 +8,38 @@ import path from "path";
 import { PrismaClient } from "@prisma/client";
 import { execFile } from "child_process";
 import { promisify } from "util";
+import * as jose from "jose";
 import { seedIfEmpty } from "../prisma/seed";
 import { setPrisma } from "../server/db";
 import { app } from "../server/index";
 import { clearAllSessionsForTests } from "../server/auth/session";
 import {
   clearOidcPendingForTests,
+  peekOidcPendingNonceForTests,
+  setOidcTokenEndpointForTests,
   setOidcTokenExchangeForTests,
 } from "../server/auth/oidc";
+import { setOidcJwksHooksForTests } from "../server/auth/oidcJwks";
 import { SESSION_AUTH_MODE } from "../src/lib/sessionAuth";
 import {
   DEFAULT_OIDC_SCOPES,
   OIDC_AUTH_PROVIDER,
   OIDC_ENV,
 } from "../src/lib/oidcAuth";
+import {
+  assertOidcIdTokenClaims,
+  audienceIncludes,
+} from "../src/lib/oidcJwks";
 import { cookieHeaderFromResponse, withSession } from "./session-smoke-helper";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
 const DB_PATH = path.join(ROOT, "prisma", "smoke-oidc.db");
+const SMOKE_JWKS_URI =
+  "https://oidc.test/realms/civic/protocol/openid-connect/certs";
+const SMOKE_ISSUER = "https://oidc.test/realms/civic";
+const SMOKE_CLIENT_ID = "civic-lab-smoke";
+const SMOKE_KID = "smoke-rsa-1";
 
 async function json(res: Response) {
   const text = await res.text();
@@ -37,8 +51,8 @@ async function json(res: Response) {
 }
 
 function applyOidcEnv(): void {
-  process.env[OIDC_ENV.issuer] = "https://oidc.test/realms/civic";
-  process.env[OIDC_ENV.clientId] = "civic-lab-smoke";
+  process.env[OIDC_ENV.issuer] = SMOKE_ISSUER;
+  process.env[OIDC_ENV.clientId] = SMOKE_CLIENT_ID;
   process.env[OIDC_ENV.clientSecret] = "smoke-only-not-a-real-secret";
   process.env[OIDC_ENV.redirectUri] =
     "http://localhost:8787/api/auth/oidc/callback";
@@ -49,6 +63,7 @@ function applyOidcEnv(): void {
   });
   process.env[OIDC_ENV.postLoginRedirect] = "http://localhost:5173/";
   process.env[OIDC_ENV.scopes] = DEFAULT_OIDC_SCOPES;
+  delete process.env[OIDC_ENV.jwksUri];
 }
 
 function clearOidcEnv(): void {
@@ -73,12 +88,39 @@ async function main() {
   clearAllSessionsForTests();
   clearOidcPendingForTests();
   setOidcTokenExchangeForTests(null);
+  setOidcTokenEndpointForTests(null);
+  setOidcJwksHooksForTests(null);
   clearOidcEnv();
 
   try {
     const seeded = await seedIfEmpty(prisma);
     if (seeded !== "seeded") throw new Error(`expected seeded, got ${seeded}`);
     setPrisma(prisma);
+
+    // --- Claim helper unit checks (no network) ---
+    if (!audienceIncludes("civic-lab-smoke", "civic-lab-smoke")) {
+      throw new Error("audienceIncludes string failed");
+    }
+    if (!audienceIncludes(["a", "civic-lab-smoke"], "civic-lab-smoke")) {
+      throw new Error("audienceIncludes array failed");
+    }
+    try {
+      assertOidcIdTokenClaims({
+        payload: {
+          sub: "x",
+          iss: SMOKE_ISSUER,
+          aud: "wrong",
+          exp: Math.floor(Date.now() / 1000) + 60,
+        },
+        issuer: SMOKE_ISSUER,
+        client_id: SMOKE_CLIENT_ID,
+      });
+      throw new Error("expected aud mismatch to throw");
+    } catch (err) {
+      if (!(err instanceof Error) || !err.message.includes("aud mismatch")) {
+        throw err;
+      }
+    }
 
     const disabled = await json(await app.request("/api/auth/oidc/status"));
     if (
@@ -106,13 +148,15 @@ async function main() {
       mock?: boolean;
       client_id?: string;
       issuer?: string;
+      jwks_uri?: string | null;
     };
     if (
       status.status !== 200 ||
       !statusBody.enabled ||
       !statusBody.mock ||
       statusBody.client_id !== "civic-lab-smoke" ||
-      !statusBody.issuer?.includes("oidc.test")
+      !statusBody.issuer?.includes("oidc.test") ||
+      statusBody.jwks_uri != null
     ) {
       throw new Error(`bad OIDC status: ${JSON.stringify(status)}`);
     }
@@ -196,7 +240,6 @@ async function main() {
     const audit = await json(
       await app.request("/api/audit-logs?limit=3", withSession(aliceCookie)),
     );
-    // Alice is steward — may or may not pass steward gate; Owner path uses Eve.
     // Soft check: must not be anonymous 401 for "session missing".
     if (audit.status === 401) {
       const msg = JSON.stringify(audit.body);
@@ -287,8 +330,6 @@ async function main() {
     const overrideStart = await json(
       await app.request("/api/auth/oidc/start?format=json&login_hint=sub-eve"),
     );
-    // Non-mock start points at external authorize URL — synthesize callback
-    // with the pending state from JSON (start still returns state).
     const overrideState = (overrideStart.body as { state: string }).state;
     const overrideAuthUrl = (overrideStart.body as { authorization_url: string })
       .authorization_url;
@@ -312,9 +353,162 @@ async function main() {
       );
     }
 
+    // --- JWKS production path (local RSA key; no live IdP) ---
+    setOidcTokenExchangeForTests(null);
+    clearOidcPendingForTests();
+    const { privateKey, publicKey } = await jose.generateKeyPair("RS256");
+    const publicJwk = await jose.exportJWK(publicKey);
+    publicJwk.kid = SMOKE_KID;
+    publicJwk.alg = "RS256";
+    publicJwk.use = "sig";
+    const jwksDoc = { keys: [publicJwk] };
+
+    process.env[OIDC_ENV.jwksUri] = SMOKE_JWKS_URI;
+    setOidcJwksHooksForTests({
+      fetchJwks: async (uri) => {
+        if (uri !== SMOKE_JWKS_URI) {
+          throw new Error(`unexpected jwks uri ${uri}`);
+        }
+        return jwksDoc;
+      },
+    });
+
+    const jwksStatus = await json(await app.request("/api/auth/oidc/status"));
+    if (
+      (jwksStatus.body as { jwks_uri?: string | null }).jwks_uri !==
+      SMOKE_JWKS_URI
+    ) {
+      throw new Error(
+        `status should expose OIDC_JWKS_URI: ${JSON.stringify(jwksStatus)}`,
+      );
+    }
+
+    const jwksStart = await json(
+      await app.request("/api/auth/oidc/start?format=json&login_hint=sub-eve"),
+    );
+    const jwksState = (jwksStart.body as { state: string }).state;
+    const nonce = peekOidcPendingNonceForTests(jwksState);
+    if (!nonce) throw new Error("pending nonce missing for JWKS smoke");
+
+    setOidcTokenEndpointForTests(async () => {
+      const id_token = await new jose.SignJWT({
+        sub: "sub-eve",
+        email: "eve@civic.test",
+        nonce,
+      })
+        .setProtectedHeader({ alg: "RS256", kid: SMOKE_KID })
+        .setIssuer(SMOKE_ISSUER)
+        .setAudience(SMOKE_CLIENT_ID)
+        .setIssuedAt()
+        .setExpirationTime("5m")
+        .sign(privateKey);
+      return { id_token };
+    });
+
+    const jwksCb = await json(
+      await app.request(
+        `/api/auth/oidc/callback?code=auth-code-jwks&state=${encodeURIComponent(
+          jwksState,
+        )}&format=json`,
+        { headers: { Accept: "application/json" } },
+      ),
+    );
+    if (
+      jwksCb.status !== 200 ||
+      (jwksCb.body as { user_id?: string }).user_id !== "user-eve" ||
+      (jwksCb.body as { provider?: string }).provider !== OIDC_AUTH_PROVIDER
+    ) {
+      throw new Error(`JWKS verify login failed: ${JSON.stringify(jwksCb)}`);
+    }
+
+    // Bad signature (different key) must fail.
+    clearOidcPendingForTests();
+    const { privateKey: otherKey } = await jose.generateKeyPair("RS256");
+    const badStart2 = await json(
+      await app.request("/api/auth/oidc/start?format=json&login_hint=sub-eve"),
+    );
+    const badState2 = (badStart2.body as { state: string }).state;
+    const badNonce = peekOidcPendingNonceForTests(badState2)!;
+    setOidcTokenEndpointForTests(async () => {
+      const id_token = await new jose.SignJWT({
+        sub: "sub-eve",
+        nonce: badNonce,
+      })
+        .setProtectedHeader({ alg: "RS256", kid: SMOKE_KID })
+        .setIssuer(SMOKE_ISSUER)
+        .setAudience(SMOKE_CLIENT_ID)
+        .setIssuedAt()
+        .setExpirationTime("5m")
+        .sign(otherKey);
+      return { id_token };
+    });
+    const badSig = await json(
+      await app.request(
+        `/api/auth/oidc/callback?code=bad-sig&state=${encodeURIComponent(
+          badState2,
+        )}&format=json`,
+        { headers: { Accept: "application/json" } },
+      ),
+    );
+    if (badSig.status !== 400) {
+      throw new Error(
+        `bad JWKS signature expected 400, got ${badSig.status}: ${JSON.stringify(badSig)}`,
+      );
+    }
+    const badMsg = JSON.stringify(badSig.body);
+    if (
+      !badMsg.includes("JWKS") &&
+      !badMsg.includes("signature") &&
+      !badMsg.includes("verify")
+    ) {
+      throw new Error(
+        `bad signature error should mention JWKS/verify: ${badMsg}`,
+      );
+    }
+
+    // Nonce mismatch must fail.
+    clearOidcPendingForTests();
+    const nonceStart = await json(
+      await app.request("/api/auth/oidc/start?format=json&login_hint=sub-eve"),
+    );
+    const nonceState = (nonceStart.body as { state: string }).state;
+    setOidcTokenEndpointForTests(async () => {
+      const id_token = await new jose.SignJWT({
+        sub: "sub-eve",
+        nonce: "not-the-pending-nonce",
+      })
+        .setProtectedHeader({ alg: "RS256", kid: SMOKE_KID })
+        .setIssuer(SMOKE_ISSUER)
+        .setAudience(SMOKE_CLIENT_ID)
+        .setIssuedAt()
+        .setExpirationTime("5m")
+        .sign(privateKey);
+      return { id_token };
+    });
+    const nonceCb = await json(
+      await app.request(
+        `/api/auth/oidc/callback?code=bad-nonce&state=${encodeURIComponent(
+          nonceState,
+        )}&format=json`,
+        { headers: { Accept: "application/json" } },
+      ),
+    );
+    if (nonceCb.status !== 400) {
+      throw new Error(
+        `nonce mismatch expected 400, got ${nonceCb.status}: ${JSON.stringify(nonceCb)}`,
+      );
+    }
+    if (!JSON.stringify(nonceCb.body).includes("nonce")) {
+      throw new Error(
+        `nonce mismatch should mention nonce: ${JSON.stringify(nonceCb)}`,
+      );
+    }
+
     console.log("smoke-oidc: OK");
   } finally {
     setOidcTokenExchangeForTests(null);
+    setOidcTokenEndpointForTests(null);
+    setOidcJwksHooksForTests(null);
     clearOidcPendingForTests();
     clearOidcEnv();
     clearAllSessionsForTests();

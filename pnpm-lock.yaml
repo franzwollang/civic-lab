@@ -170,6 +170,9 @@ importers:
       input-otp:
         specifier: 1.4.2
         version: 1.4.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      jose:
+        specifier: '5'
+        version: 5.10.0
       js-toml:
         specifier: 1.0.2
         version: 1.0.2
@@ -3440,6 +3443,9 @@ packages:
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
+
+  jose@5.10.0:
+    resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
 
   jotai-optics@0.4.0:
     resolution: {integrity: sha512-osbEt9AgS55hC4YTZDew2urXKZkaiLmLqkTS/wfW5/l0ib8bmmQ7kBXSFaosV6jDDWSp00IipITcJARFHdp42g==}
@@ -7812,6 +7818,8 @@ snapshots:
   is-plain-object@5.0.0: {}
 
   jiti@2.7.0: {}
+
+  jose@5.10.0: {}
 
   jotai-optics@0.4.0(jotai@2.8.4(@types/react@19.2.17)(react@19.2.4))(optics-ts@2.4.1):
     dependencies:

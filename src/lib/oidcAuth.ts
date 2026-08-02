@@ -22,6 +22,8 @@ export type OidcPublicStatus = {
   redirect_uri: string | null;
   scopes: string;
   authorization_endpoint: string | null;
+  /** Present when `OIDC_JWKS_URI` is set (discovery used otherwise). */
+  jwks_uri: string | null;
 };
 
 export const DEFAULT_OIDC_SCOPES = "openid profile email";
@@ -36,4 +38,6 @@ export const OIDC_ENV = {
   subjectMap: "OIDC_SUBJECT_MAP",
   mock: "OIDC_MOCK",
   postLoginRedirect: "OIDC_POST_LOGIN_REDIRECT",
+  /** Optional: skip discovery and use this JWKS URL directly. */
+  jwksUri: "OIDC_JWKS_URI",
 } as const;
