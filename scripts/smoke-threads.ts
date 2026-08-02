@@ -89,7 +89,7 @@ async function main() {
       author_id: "user-dave",
       body: "Smoke reply",
     });
-    if (!reply || reply.author_id !== "user-dave") {
+    if (!reply.ok || reply.post.author_id !== "user-dave") {
       throw new Error("createThreadPost failed");
     }
     const after = await getThread("thread-us-provisional-open");

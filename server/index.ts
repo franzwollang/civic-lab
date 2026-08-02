@@ -19,45 +19,29 @@ import {
   getAcceptedRiskForThread,
   getArtifact,
   getAttributions,
-  getAreaByKind,
   getCandidateFinding,
   getClaim,
-  getCollection,
-  getCollectionDashboard,
   getDossier,
   getFinding,
   getSection,
   getTerms,
   getThread,
   listAdjudicationQueue,
-  listAreas,
   listArtifactRevisions,
   listArtifacts,
-  listArtifactsByDossier,
-  listAuditLogs,
-  listBoardHides,
   listCandidateFindings,
   listClaims,
-  listCollections,
-  listDossiers,
   listFindings,
   listRevSets,
   listSections,
   listThreads,
-  listUserIdentities,
-  hideUserFromBoards,
-  liftBoardHide,
   promoteCandidateFinding,
   promoteThreadToRfc,
   putAttributions,
   putTerms,
   requestClaimAdjudication,
-  requestIdentityVerification,
   adjudicateClaim,
-  attestUserIdentity,
-  getStewardEligibilityForUser,
-  getUserIdentity,
-  searchCorpus,
+  revertCanonArtifact,
   setPrisma,
   softDeleteThreadPost,
   updateArtifact,
@@ -65,6 +49,10 @@ import {
 import { validateRevisionPayload } from "./validateRevision";
 import { validateImmutableRef } from "../src/lib/immutableRef";
 import { actorMayViewAuditLog } from "../src/lib/moderation";
+import { registerCorpusRoutes } from "./routes/corpus";
+import { registerHealthRoutes } from "./routes/health";
+import { registerModerationRoutes } from "./routes/moderation";
+import { registerUploadRoutes } from "./routes/uploads";
 
 const PORT = Number(process.env.PORT) || 8787;
 const BODY_LIMIT = 2 * 1024 * 1024;
@@ -240,7 +228,7 @@ const termsRegistrySchema = z.object({
 const threadPostBodySchema = z.object({
   post_id: z.string().min(1).optional(),
   author_id: z.string().min(1),
-  type: z.enum(["comment", "mitigation"]).optional(),
+  type: z.enum(["comment", "finding", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
 });
@@ -381,37 +369,6 @@ const acceptedRiskBodySchema = z.object({
   reopen_triggers: z.string().nullable().optional(),
   signer_id: z.string().min(1),
   signed_at: z.string().optional(),
-});
-
-/** CONCEPT §5.9 — Owner board-hide for abuse. */
-const boardHideBodySchema = z.object({
-  actor_id: z.string().min(1),
-  subject_user_id: z.string().min(1),
-  reason: z.string().min(1),
-});
-
-const boardHideLiftBodySchema = z.object({
-  actor_id: z.string().min(1),
-  subject_user_id: z.string().min(1),
-  note: z.string().nullable().optional(),
-});
-
-/** CONCEPT §8.6 — Owner identity attestation. */
-const identityAttestBodySchema = z.object({
-  actor_id: z.string().min(1),
-  verification_status: z.enum([
-    "unverified",
-    "pending",
-    "verified",
-    "rejected",
-  ]),
-  country_codes: z.array(z.string()).optional(),
-  long_term_ties_note: z.string().nullable().optional(),
-  provider_stub: z.string().nullable().optional(),
-});
-
-const identityRequestBodySchema = z.object({
-  actor_id: z.string().min(1),
 });
 
 // CONCEPT `/api/artifacts` primary; legacy `/api/pages` kept (page_id ≡ artifact id).
@@ -559,89 +516,50 @@ app.patch("/api/pages/:pageId", async (c) => {
   return c.json(result.body, result.status);
 });
 
-// M4 corpus IA — Area → Collection → Dossier
-app.get("/api/areas", async (c) => c.json(await listAreas()));
-
-app.get("/api/areas/:areaId/collections", async (c) => {
-  const areaId = c.req.param("areaId");
-  const area = await listAreas().then((rows) =>
-    rows.find((a) => a.area_id === areaId),
-  );
-  if (!area) {
-    return c.json({ error: "Area not found" }, 404);
+/** CONCEPT §9.3 / §9.4 — Owner reverts Canon artifact to a prior revision. */
+app.post("/api/artifacts/:artifactId/revert", async (c) => {
+  const artifactId = c.req.param("artifactId");
+  const body = await c.req.json().catch(() => ({}));
+  const actorId =
+    typeof (body as { actor_id?: unknown }).actor_id === "string"
+      ? (body as { actor_id: string }).actor_id.trim()
+      : "";
+  if (!actorId) {
+    return c.json({ error: "actor_id is required" }, 400);
   }
-  return c.json(await listCollections(areaId));
-});
+  const targetRaw = (body as { target_revision_id?: unknown })
+    .target_revision_id;
+  const target_revision_id =
+    typeof targetRaw === "string" && targetRaw.trim()
+      ? targetRaw.trim()
+      : undefined;
 
-app.get("/api/collections", async (c) => {
-  const areaId = c.req.query("area_id");
-  const kind = c.req.query("kind");
-  if (kind) {
-    const area = await getAreaByKind(kind);
-    if (!area) {
-      return c.json([]);
-    }
-    return c.json(await listCollections(area.area_id));
+  const result = await revertCanonArtifact({
+    artifact_id: artifactId,
+    actor_id: actorId,
+    target_revision_id,
+  });
+  if (!result.ok) {
+    const status =
+      result.error.code === "not_found" ||
+      result.error.code === "target_missing"
+        ? 404
+        : result.error.code === "not_owner" ||
+            result.error.code === "not_canon" ||
+            result.error.code === "unknown_actor"
+          ? 403
+          : 400;
+    return c.json({ error: result.error }, status);
   }
-  return c.json(await listCollections(areaId));
+  return c.json({
+    artifact: result.artifact,
+    from_revision_id: result.from_revision_id,
+    to_revision_id: result.to_revision_id,
+    audit: result.audit,
+  });
 });
 
-app.get("/api/collections/:collectionId", async (c) => {
-  const collection = await getCollection(c.req.param("collectionId"));
-  if (!collection) {
-    return c.json({ error: "Collection not found" }, 404);
-  }
-  return c.json(collection);
-});
-
-/** CONCEPT §11 shared Collection dashboard (dossier health + deferred stubs). */
-app.get("/api/collections/:collectionId/dashboard", async (c) => {
-  const dashboard = await getCollectionDashboard(c.req.param("collectionId"));
-  if (!dashboard) {
-    return c.json({ error: "Collection not found" }, 404);
-  }
-  return c.json(dashboard);
-});
-
-app.get("/api/collections/:collectionId/dossiers", async (c) => {
-  const collectionId = c.req.param("collectionId");
-  const collection = await getCollection(collectionId);
-  if (!collection) {
-    return c.json({ error: "Collection not found" }, 404);
-  }
-  return c.json(await listDossiers(collectionId));
-});
-
-app.get("/api/dossiers", async (c) => {
-  const collectionId = c.req.query("collection_id");
-  return c.json(await listDossiers(collectionId));
-});
-
-/** M8 first-cut discovery search over dossiers / artifacts / threads / claims. */
-app.get("/api/search", async (c) => {
-  const q = c.req.query("q") ?? "";
-  const limitRaw = c.req.query("limit");
-  const limit =
-    limitRaw != null && limitRaw !== "" ? Number(limitRaw) : undefined;
-  return c.json(await searchCorpus(q, limit));
-});
-
-app.get("/api/dossiers/:dossierId", async (c) => {
-  const dossier = await getDossier(c.req.param("dossierId"));
-  if (!dossier) {
-    return c.json({ error: "Dossier not found" }, 404);
-  }
-  return c.json(dossier);
-});
-
-app.get("/api/dossiers/:dossierId/artifacts", async (c) => {
-  const dossierId = c.req.param("dossierId");
-  const dossier = await getDossier(dossierId);
-  if (!dossier) {
-    return c.json({ error: "Dossier not found" }, 404);
-  }
-  return c.json(await listArtifactsByDossier(dossierId));
-});
+registerCorpusRoutes(app);
 
 // M5 Threads + posts + targets (CONCEPT §3)
 app.get("/api/threads", async (c) => {
@@ -697,10 +615,16 @@ app.post("/api/threads/:threadId/posts", async (c) => {
     ...parsed.data,
     thread_id: c.req.param("threadId"),
   });
-  if (!created) {
-    return c.json({ error: "Thread not found" }, 404);
+  if (!created.ok) {
+    if (created.error.code === "not_found") {
+      return c.json({ error: created.error.message }, 404);
+    }
+    if (created.error.code === "forbidden") {
+      return c.json({ error: created.error.message, code: created.error.code }, 403);
+    }
+    return c.json({ error: created.error.message, code: created.error.code }, 400);
   }
-  return c.json(created, 201);
+  return c.json(created.post, 201);
 });
 
 /** CONCEPT §9.4 — soft-delete ordinary post (steward Manual / Owner global). */
@@ -1094,154 +1018,10 @@ app.post("/api/claims/:claimId/adjudicate", async (c) => {
   return c.json(result.claim);
 });
 
-// M9 anti-gaming — Owner board-hide + append-only audit (CONCEPT §5.9 / §9.4)
-app.get("/api/board-hides", async (c) => {
-  const includeLifted = c.req.query("include_lifted") === "1";
-  return c.json(await listBoardHides({ include_lifted: includeLifted }));
-});
+registerModerationRoutes(app);
 
-app.post("/api/board-hides", async (c) => {
-  const parsed = boardHideBodySchema.safeParse(
-    (await c.req.json().catch(() => ({}))) ?? {},
-  );
-  if (!parsed.success) {
-    return c.json({ error: "Invalid board-hide payload" }, 400);
-  }
-  const result = await hideUserFromBoards(parsed.data);
-  if (!result.ok) {
-    const status =
-      result.error.code === "not_owner" ||
-      result.error.code === "cannot_hide_self"
-        ? 403
-        : result.error.code === "already_hidden"
-          ? 409
-          : result.error.code === "unknown_user"
-            ? 404
-            : 400;
-    return c.json({ error: result.error }, status);
-  }
-  return c.json({ hide: result.hide, audit: result.audit }, 201);
-});
-
-app.post("/api/board-hides/lift", async (c) => {
-  const parsed = boardHideLiftBodySchema.safeParse(
-    (await c.req.json().catch(() => ({}))) ?? {},
-  );
-  if (!parsed.success) {
-    return c.json({ error: "Invalid board-hide lift payload" }, 400);
-  }
-  const result = await liftBoardHide(parsed.data);
-  if (!result.ok) {
-    const status =
-      result.error.code === "not_owner"
-        ? 403
-        : result.error.code === "not_hidden" ||
-            result.error.code === "unknown_user"
-          ? 404
-          : 400;
-    return c.json({ error: result.error }, status);
-  }
-  return c.json({ hide: result.hide, audit: result.audit });
-});
-
-app.get("/api/audit-logs", async (c) => {
-  const actorId = c.req.query("actor_id")?.trim();
-  if (!actorId || !actorMayViewAuditLog(actorId)) {
-    return c.json(
-      {
-        error: {
-          code: "forbidden",
-          message: "Audit log requires steward or Owner (actor_id query)",
-        },
-      },
-      403,
-    );
-  }
-  const action = c.req.query("action") ?? undefined;
-  const limitRaw = c.req.query("limit");
-  const limit = limitRaw ? Number(limitRaw) : undefined;
-  return c.json(
-    await listAuditLogs({
-      action,
-      limit: Number.isFinite(limit) ? limit : undefined,
-    }),
-  );
-});
-
-/** CONCEPT §8.6 — real-identity policy hooks (impersonation session + attestation). */
-app.get("/api/identities", async (c) => c.json(await listUserIdentities()));
-
-app.get("/api/identities/:userId", async (c) => {
-  const identity = await getUserIdentity(c.req.param("userId"));
-  if (!identity) {
-    return c.json({ error: "Identity record not found" }, 404);
-  }
-  return c.json(identity);
-});
-
-app.get("/api/identities/:userId/steward-eligibility", async (c) => {
-  const country = c.req.query("country") ?? null;
-  return c.json(
-    await getStewardEligibilityForUser({
-      user_id: c.req.param("userId"),
-      country_code: country,
-    }),
-  );
-});
-
-app.post("/api/identities/:userId/request", async (c) => {
-  const parsed = identityRequestBodySchema.safeParse(
-    (await c.req.json().catch(() => ({}))) ?? {},
-  );
-  if (!parsed.success) {
-    return c.json({ error: "Invalid identity request payload" }, 400);
-  }
-  const result = await requestIdentityVerification({
-    actor_id: parsed.data.actor_id,
-    subject_user_id: c.req.param("userId"),
-  });
-  if (!result.ok) {
-    const status =
-      result.error.code === "not_owner"
-        ? 403
-        : result.error.code === "unknown_user"
-          ? 404
-          : 400;
-    return c.json({ error: result.error }, status);
-  }
-  return c.json({ identity: result.identity, audit: result.audit });
-});
-
-app.post("/api/identities/:userId/attest", async (c) => {
-  const parsed = identityAttestBodySchema.safeParse(
-    (await c.req.json().catch(() => ({}))) ?? {},
-  );
-  if (!parsed.success) {
-    return c.json({ error: "Invalid identity attest payload" }, 400);
-  }
-  const result = await attestUserIdentity({
-    actor_id: parsed.data.actor_id,
-    subject_user_id: c.req.param("userId"),
-    verification_status: parsed.data.verification_status,
-    country_codes: parsed.data.country_codes,
-    long_term_ties_note: parsed.data.long_term_ties_note,
-    provider_stub: parsed.data.provider_stub,
-  });
-  if (!result.ok) {
-    const status =
-      result.error.code === "not_owner"
-        ? 403
-        : result.error.code === "unknown_user"
-          ? 404
-          : 400;
-    return c.json({ error: result.error }, status);
-  }
-  return c.json({ identity: result.identity, audit: result.audit });
-});
-
-app.get("/api/health", (c) =>
-  c.json({ ok: true, service: "civic-lab-api", port: PORT }),
-);
+registerHealthRoutes(app, PORT);
+registerUploadRoutes(app);
 
 async function main() {
   const client = await bootstrapDatabase();

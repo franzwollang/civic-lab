@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-08-02T03:10Z",
+  "turn": 76,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "R0+",
+    "issue": "Split server/index.ts + server/db.ts",
+    "goal": "Server split first slice landed; hand off OAuth"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Server split green: 53/53 smokes + vite build",
+    "Merged 6b15 tip (mod queue) onto 0f09 before new work",
+    "db leaf modules + routes/{health,uploads,corpus,moderation}"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron tips must merge furthest progression PR before picking next Optional",
+    "After extracting db modules, remaining db.ts must import cross-deps"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Next Optional: OAuth/IdP (or deeper threads/findings server slices)",
+    "Manuals 3D globe still deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: OAuth/IdP session→actor binding, or deeper server module slices",
   "blockers": []
 }
