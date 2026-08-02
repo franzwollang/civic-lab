@@ -50,7 +50,7 @@ lives in `SCRATCHPAD.json`.
 | Audit | Append-only; soft-delete posts; audit list steward/Owner-gated |
 | External artifacts | App D node + provider whitelist; attribution `immutable_ref` |
 | Collection dashboard | Shared chrome; live §11 panels on Collection splash |
-| Model claim graph | Deferred |
+| Model claim graph | MVP `implies_forecast` links; DAG UI deferred |
 
 ### Claim profile summary
 
@@ -135,8 +135,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
     `createAcceptedRisk` remains in `db.ts`)
 22. ~~**OAuth/IdP session→actor**~~ (**done** — prototype IdP-lite cookie
     session; mutations use session actor; `smoke-session-actor`)
-23. **Optional / deferred next:** Manuals 3D globe, model→forecast graph,
-    external OIDC provider swap-in for `/api/auth/login`
+23. ~~**Model→forecast implication MVP**~~ (**done** — `implies_forecast`
+    links; seed + composer/list; `smoke-claim-implications`)
+24. **Optional / deferred next:** Manuals 3D globe (SVG already satisfies
+    CONCEPT), external OIDC provider swap-in for `/api/auth/login`,
+    richer implication DAG / scoring propagation
 
 **Agent rules of thumb**
 
@@ -151,8 +154,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
-role-change audit + mod queue UI + server split (routes + findingsDb + claimsDb +
-artifactsDb + threadsDb + corpusDb) done — see remaining `OPEN_ISSUES.md`
+role-change audit + mod queue UI + server split + IdP-lite session→actor +
+model→forecast implication MVP done — see remaining `OPEN_ISSUES.md`
 **Optional / deferred**. No architecture blockers. Known debt: `db.ts` still
 hosts `createAcceptedRisk` (intentional bridge), client→server import of
 prototype-users (seed catalog still drives roles until IdP directory), tsc not covering
@@ -165,5 +168,5 @@ prototype-users (seed catalog still drives roles until IdP directory), tsc not c
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Manuals 3D globe** (optional) or **model→forecast graph** (deferred),
-  or external OIDC swap-in for `/api/auth/login`.
+- Next: **Manuals 3D globe** (optional; SVG already satisfies) or
+  **external OIDC** swap-in for `/api/auth/login`, or richer implication DAG.

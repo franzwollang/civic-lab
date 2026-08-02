@@ -9,6 +9,10 @@ import {
   type ClaimOwnerContext,
 } from "../../src/lib/claimLegality";
 import {
+  validateModelImplicationLinks,
+  type ClaimImplicationError,
+} from "../../src/lib/claimImplications";
+import {
   isAdjudicationPending,
   validateAdjudicate,
   validateRequestAdjudication,
@@ -173,7 +177,8 @@ export type CreateClaimError =
   | { code: "not_found" }
   | { code: "no_owner_context" }
   | { code: "section_mismatch" }
-  | ClaimLegalityError;
+  | ClaimLegalityError
+  | ClaimImplicationError;
 
 export async function createClaim(input: {
   claim_id?: string;
@@ -234,6 +239,56 @@ export async function createClaim(input: {
   }
 
   const claimId = input.claim_id ?? randomUUID();
+  const links = input.links ?? [];
+
+  // CONCEPT §5.2 MVP: validate implies_forecast edges on model claims.
+  {
+    const candidateIds = [
+      ...new Set(
+        (Array.isArray(links) ? links : [])
+          .filter(
+            (item): item is { kind: string; claim_id: string } =>
+              !!item &&
+              typeof item === "object" &&
+              (item as { kind?: unknown }).kind === "implies_forecast" &&
+              typeof (item as { claim_id?: unknown }).claim_id === "string",
+          )
+          .map((item) => item.claim_id.trim())
+          .filter(Boolean),
+      ),
+    ];
+    const targets =
+      candidateIds.length > 0
+        ? await getPrisma().claim.findMany({
+            where: { claimId: { in: candidateIds } },
+            select: {
+              claimId: true,
+              profile: true,
+              empiricalType: true,
+            },
+          })
+        : [];
+    const byId = new Map(
+      targets.map((t) => [
+        t.claimId,
+        {
+          claim_id: t.claimId,
+          profile: t.profile,
+          empirical_type: t.empiricalType,
+        },
+      ]),
+    );
+    const implication = validateModelImplicationLinks({
+      empirical_type: input.empirical_type,
+      links: Array.isArray(links) ? links : [],
+      self_claim_id: claimId,
+      resolveForecast: (id) => byId.get(id) ?? null,
+    });
+    if (!implication.ok) {
+      return { ok: false, error: implication.error };
+    }
+  }
+
   const row = await getPrisma().claim.create({
     data: {
       claimId,
@@ -253,7 +308,7 @@ export async function createClaim(input: {
       preferredSources: input.preferred_sources ?? [],
       adjudicationRule: input.adjudication_rule ?? null,
       canonCitations: input.canon_citations ?? [],
-      links: input.links ?? [],
+      links,
       createdAt: input.created_at ? new Date(input.created_at) : new Date(),
       authorId: input.author_id ?? null,
     },

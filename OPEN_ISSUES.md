@@ -61,7 +61,8 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Image upload pipeline** — done (`POST /api/uploads/images`;
   `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
   `smoke-image-upload`; CONCEPT Appendix C residual cleared)
-- [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
+- [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT §1.2;
+  keep flat picker unless product asks for WebGL
 - [x] **Full OAuth / IdP (prototype IdP-lite)** — done
   (`POST /api/auth/login|impersonate|logout`, `GET /api/auth/me`;
   httpOnly `civic_lab_session` cookie; mutations + gated reads use
@@ -80,7 +81,10 @@ that is actionable, or stop if blocked on product decisions.
   - [x] **Mod queue UI** — done (`/mod` soft-deleted posts + open findings +
     adjudication tabs; steward Canon filter; header + Collection audit link;
     `getThread` include_deleted; `smoke-mod-queue`)
-- [ ] **Model→forecast implication graph** — deferred
+- [x] **Model→forecast implication graph (MVP)** — done
+  (`implies_forecast` link kind on model claims; create validation;
+  composer + claim-list display; seed `claim-canon-enp-model`;
+  `smoke-claim-implications`). DAG UI / scoring propagation remain deferred.
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** kept for
   Vite 6; `-inset-s-4` in build CSS; `smoke-fumadocs`)
@@ -115,7 +119,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~54 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~55 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
