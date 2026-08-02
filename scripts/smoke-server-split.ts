@@ -17,6 +17,11 @@ import {
   getPrisma,
   listClaims,
   listFindings,
+  listThreads,
+  getThread,
+  promoteThreadToRfc,
+  decideThread,
+  resolveMergeAuthorityForArtifact,
   listUserIdentities,
   searchCorpus,
   setPrisma,
@@ -43,6 +48,7 @@ const REQUIRED_FILES = [
   "server/db/findingsDb.ts",
   "server/db/claimsDb.ts",
   "server/db/artifactsDb.ts",
+  "server/db/threadsDb.ts",
   "server/routes/health.ts",
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",
@@ -79,6 +85,15 @@ async function main() {
   }
   if (typeof getArtifact !== "function" || typeof createArtifact !== "function") {
     throw new Error("artifactsDb barrel exports missing");
+  }
+  if (
+    typeof listThreads !== "function" ||
+    typeof getThread !== "function" ||
+    typeof promoteThreadToRfc !== "function" ||
+    typeof decideThread !== "function" ||
+    typeof resolveMergeAuthorityForArtifact !== "function"
+  ) {
+    throw new Error("threadsDb barrel exports missing");
   }
   const findingsSrc = await fs.readFile(
     path.join(ROOT, "server/db/findingsDb.ts"),
@@ -117,6 +132,19 @@ async function main() {
   ) {
     throw new Error("artifactsDb.ts must own Artifact/revision/section accessors");
   }
+  const threadsSrc = await fs.readFile(
+    path.join(ROOT, "server/db/threadsDb.ts"),
+    "utf8",
+  );
+  if (
+    !threadsSrc.includes("export async function listThreads") ||
+    !threadsSrc.includes("export async function getThread") ||
+    !threadsSrc.includes("export async function promoteThreadToRfc") ||
+    !threadsSrc.includes("export async function decideThread") ||
+    !threadsSrc.includes("export async function resolveMergeAuthorityForArtifact")
+  ) {
+    throw new Error("threadsDb.ts must own Thread/RFC/RevSet/decide accessors");
+  }
   const dbSrc = await fs.readFile(path.join(ROOT, "server/db.ts"), "utf8");
   if (/export async function listFindings/.test(dbSrc)) {
     throw new Error("listFindings must live in server/db/findingsDb.ts, not db.ts");
@@ -130,6 +158,18 @@ async function main() {
   if (/export async function getArtifact/.test(dbSrc)) {
     throw new Error("getArtifact must live in server/db/artifactsDb.ts, not db.ts");
   }
+  if (/export async function listThreads/.test(dbSrc)) {
+    throw new Error("listThreads must live in server/db/threadsDb.ts, not db.ts");
+  }
+  if (/export async function getThread/.test(dbSrc)) {
+    throw new Error("getThread must live in server/db/threadsDb.ts, not db.ts");
+  }
+  if (/export async function promoteThreadToRfc/.test(dbSrc)) {
+    throw new Error("promoteThreadToRfc must live in server/db/threadsDb.ts, not db.ts");
+  }
+  if (/export async function decideThread/.test(dbSrc)) {
+    throw new Error("decideThread must live in server/db/threadsDb.ts, not db.ts");
+  }
   if (!dbSrc.includes('from "./db/findingsDb"')) {
     throw new Error("server/db.ts must re-export findingsDb");
   }
@@ -138,6 +178,9 @@ async function main() {
   }
   if (!dbSrc.includes('from "./db/artifactsDb"')) {
     throw new Error("server/db.ts must re-export artifactsDb");
+  }
+  if (!dbSrc.includes('from "./db/threadsDb"')) {
+    throw new Error("server/db.ts must re-export threadsDb");
   }
   if (
     typeof registerArtifactRoutes !== "function" ||
