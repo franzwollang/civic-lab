@@ -9,9 +9,11 @@ import { promisify } from "util";
 import { PrismaClient } from "@prisma/client";
 import {
   appendAuditLog,
+  createClaim,
   createFinding,
   getAttributions,
   getPrisma,
+  listClaims,
   listFindings,
   listUserIdentities,
   searchCorpus,
@@ -37,6 +39,7 @@ const REQUIRED_FILES = [
   "server/db/moderationDb.ts",
   "server/db/identities.ts",
   "server/db/findingsDb.ts",
+  "server/db/claimsDb.ts",
   "server/routes/health.ts",
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",
@@ -68,6 +71,9 @@ async function main() {
   if (typeof listFindings !== "function" || typeof createFinding !== "function") {
     throw new Error("findingsDb barrel exports missing");
   }
+  if (typeof listClaims !== "function" || typeof createClaim !== "function") {
+    throw new Error("claimsDb barrel exports missing");
+  }
   const findingsSrc = await fs.readFile(
     path.join(ROOT, "server/db/findingsDb.ts"),
     "utf8",
@@ -79,12 +85,30 @@ async function main() {
   ) {
     throw new Error("findingsDb.ts must own Findings/Candidate Finding accessors");
   }
+  const claimsSrc = await fs.readFile(
+    path.join(ROOT, "server/db/claimsDb.ts"),
+    "utf8",
+  );
+  if (
+    !claimsSrc.includes("export async function listClaims") ||
+    !claimsSrc.includes("export async function createClaim") ||
+    !claimsSrc.includes("export async function adjudicateClaim") ||
+    !claimsSrc.includes("export async function listAdjudicationQueue")
+  ) {
+    throw new Error("claimsDb.ts must own Claims/adjudication accessors");
+  }
   const dbSrc = await fs.readFile(path.join(ROOT, "server/db.ts"), "utf8");
   if (/export async function listFindings/.test(dbSrc)) {
     throw new Error("listFindings must live in server/db/findingsDb.ts, not db.ts");
   }
+  if (/export async function listClaims/.test(dbSrc)) {
+    throw new Error("listClaims must live in server/db/claimsDb.ts, not db.ts");
+  }
   if (!dbSrc.includes('from "./db/findingsDb"')) {
     throw new Error("server/db.ts must re-export findingsDb");
+  }
+  if (!dbSrc.includes('from "./db/claimsDb"')) {
+    throw new Error("server/db.ts must re-export claimsDb");
   }
   if (
     typeof registerArtifactRoutes !== "function" ||
