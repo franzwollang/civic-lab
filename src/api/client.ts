@@ -151,6 +151,27 @@ export async function updateArtifact(
   return handleResponse<ArtifactRow>(response);
 }
 
+/** CONCEPT §9.3 — Owner reverts a Canon artifact to a prior revision. */
+export async function revertCanonArtifact(
+  artifactId: string,
+  input: { actor_id: string; target_revision_id?: string },
+): Promise<{
+  artifact: ArtifactRow;
+  from_revision_id: string;
+  to_revision_id: string;
+  audit: AuditLogRow;
+}> {
+  const response = await fetch(
+    `${API_BASE}/artifacts/${artifactId}/revert`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    },
+  );
+  return handleResponse(response);
+}
+
 /**
  * Resolve a route param that may be an artifact id or a slug
  * (e.g. `page-001` or `voting-systems`).
@@ -246,8 +267,17 @@ export async function getThreads(opts?: {
   return handleResponse<ThreadRow[]>(response);
 }
 
-export async function getThread(threadId: string): Promise<ThreadRow> {
-  const response = await fetch(`${API_BASE}/threads/${threadId}`);
+export async function getThread(
+  threadId: string,
+  opts?: { include_deleted?: boolean; actor_id?: string },
+): Promise<ThreadRow> {
+  const params = new URLSearchParams();
+  if (opts?.include_deleted) params.set("include_deleted", "1");
+  if (opts?.actor_id) params.set("actor_id", opts.actor_id);
+  const qs = params.toString();
+  const response = await fetch(
+    `${API_BASE}/threads/${threadId}${qs ? `?${qs}` : ""}`,
+  );
   return handleResponse<ThreadRow>(response);
 }
 
@@ -624,6 +654,36 @@ export async function liftBoardHide(body: {
   return handleResponse(response);
 }
 
+export type EffectiveUserRow = {
+  user_id: string;
+  display_name: string;
+  roles: string[];
+  roles_source: "seed" | "override";
+};
+
+/** CONCEPT §9.1 — seed users with effective (seed|override) roles. */
+export async function getUsers(): Promise<EffectiveUserRow[]> {
+  const response = await fetch(`${API_BASE}/users`);
+  return handleResponse<EffectiveUserRow[]>(response);
+}
+
+/** CONCEPT §9.1 / §9.4 — Owner appoints roles; append-only `role_change` audit. */
+export async function changeUserRoles(
+  userId: string,
+  body: {
+    actor_id: string;
+    roles: string[];
+    rationale?: string | null;
+  },
+): Promise<{ user: EffectiveUserRow; audit: AuditLogRow }> {
+  const response = await fetch(`${API_BASE}/users/${userId}/roles`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse(response);
+}
+
 export async function getAuditLogs(opts?: {
   action?: string;
   limit?: number;
@@ -749,4 +809,24 @@ export async function putTerms(registry: TermRegistry): Promise<TermRegistry> {
     body: JSON.stringify(registry),
   });
   return handleResponse<TermRegistry>(response);
+}
+
+export type UploadedImage = {
+  url: string;
+  filename: string;
+  mime: string;
+  bytes: number;
+};
+
+/** Upload a raster image (webp/png/jpeg/gif) to the prototype filesystem store. */
+export async function uploadImage(file: File | Blob): Promise<UploadedImage> {
+  const form = new FormData();
+  const name =
+    file instanceof File && file.name ? file.name : "upload.bin";
+  form.append("file", file, name);
+  const response = await fetch(`${API_BASE}/uploads/images`, {
+    method: "POST",
+    body: form,
+  });
+  return handleResponse<UploadedImage>(response);
 }
