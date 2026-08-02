@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-08-02T01:15Z",
-  "turn": 67,
+  "updated_at": "2026-08-02T01:20Z",
+  "turn": 68,
   "focus": {
     "milestone": "R0+",
-    "issue": "Image upload pipeline",
-    "goal": "Upload API + editor insert; clear webp-only"
+    "issue": null,
+    "goal": "Image upload done; hand off next Optional"
   },
   "recent": [
-    "Image upload pipeline: API, editor, smoke-image-upload",
+    "Image upload green: 47/47 smokes + vite build",
     "Merged 3148 tip (R0 CONCEPT rewrite) onto 02aa",
     "CONCEPT rewrite; home preamble; Plate tables; typed posts"
   ],
@@ -19,6 +19,6 @@
     "Next Optional: Fumadocs unpin or dist/ gitignore",
     "OAuth / server split still deferred"
   ],
-  "next_step": "Verify smokes/build; hand off to next Optional (Fumadocs or dist/)",
+  "next_step": "Optional: Fumadocs unpin or dist/ gitignore (product call)",
   "blockers": []
 }
