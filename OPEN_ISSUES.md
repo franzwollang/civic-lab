@@ -66,11 +66,11 @@ that is actionable, or stop if blocked on product decisions.
   remains until then (explicit)
 - [ ] **Moderator polish** — Canon revert audit; role-change audit; mod queue UI
 - [ ] **Model→forecast implication graph** — deferred
-- [ ] **Fumadocs unpin** — stay on 16.5.4 until `inset-s-*` or prebuilt CSS
+- [ ] **Fumadocs unpin** — stay on 16.5.4 until Tailwind ≥4.3.2 (resolves
+  `-inset-s-4`) or prebuilt CSS; then bump `fumadocs-*` and verify `/docs`
 - [ ] **Split `server/index.ts` / `server/db.ts`** — quality debt; do only if a
   feature turn is blocked by file size
-- [ ] **`dist/` gitignore** — repo currently tracks build output by convention;
-  optional cleanup (large noisy diffs)
+- [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
 
@@ -79,7 +79,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~47 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~48 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

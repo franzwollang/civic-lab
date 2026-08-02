@@ -19,7 +19,8 @@ lives in `SCRATCHPAD.json`.
 | Schema growth | Grow tables with features; seeds disposable |
 | Package manager | **pnpm@9.15.9** (`packageManager`; lockfile v9) |
 | onlyBuiltDependencies | In **`package.json` → `pnpm.onlyBuiltDependencies`** (never JSON arrays in `.npmrc`) |
-| Fumadocs | **Pinned 16.5.4** — 16.12+ breaks Vite (`-inset-s-4`) |
+| Fumadocs | **Pinned 16.5.4** — 16.12+ needs Tailwind ≥4.3.2 for `-inset-s-4` |
+| Build output | **`dist/` gitignored** — regenerate via `pnpm build`; not committed |
 | API server | **Hono** + `@hono/node-server`; Prisma server-side only (`server/`) |
 | `/docs` | Engineering only |
 | Prototype identity | Seed users + **header impersonation** + identity attestation hooks |
@@ -65,7 +66,7 @@ lives in `SCRATCHPAD.json`.
 | Layer | Reality |
 |---|---|
 | Product UI | Data-driven corpus; Collection splash = live dashboard; fixture dossier dashboard redirected |
-| Editor | Plate lists/links/blockquotes/evidence/external_artifact; tables/images residual |
+| Editor | Plate lists/links/blockquotes/evidence/external_artifact/tables/images (upload) |
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
 | Auth | Impersonation + identity hooks; body `actor_id` until IdP |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
@@ -105,7 +106,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 6. ~~**Home CONCEPT links**~~ (**done** — `#what-is-this` + live exemplars; `smoke-home-preamble`)
 7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
 8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
-9. **Optional / deferred next:** Fumadocs unpin, server split, OAuth, `dist/` gitignore
+9. ~~**`dist/` gitignore**~~ (**done** — stop tracking Vite build output; `smoke-dist-gitignore`)
+10. **Optional / deferred next:** Fumadocs unpin (needs Tailwind ≥4.3.2), server split, OAuth, moderator polish
 
 **Agent rules of thumb**
 
@@ -119,10 +121,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-R0 marathon + image upload done — see remaining `OPEN_ISSUES.md` **Optional /
-deferred**. No architecture blockers. Known debt: server monolith size, tracked
-`dist/`, client→server import of prototype-users, tsc not covering `server/`
-(Vite/smoke are the gates today).
+R0 marathon + image upload + `dist/` gitignore done — see remaining
+`OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers. Known debt:
+server monolith size, client→server import of prototype-users, tsc not covering
+`server/` (Vite/smoke are the gates today), Fumadocs still pinned at 16.5.4.
 
 ---
 
@@ -131,5 +133,5 @@ deferred**. No architecture blockers. Known debt: server monolith size, tracked
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Fumadocs unpin** or **`dist/` gitignore** / server split / OAuth (product
-  call) — prefer actionable Optional items with clear AC.
+- Next: **Fumadocs unpin** (Tailwind ≥4.3.2 first) or **server split** / OAuth /
+  moderator polish — prefer actionable Optional items with clear AC.
