@@ -19,7 +19,8 @@ lives in `SCRATCHPAD.json`.
 | Schema growth | Grow tables with features; seeds disposable |
 | Package manager | **pnpm@9.15.9** (`packageManager`; lockfile v9) |
 | onlyBuiltDependencies | In **`package.json` → `pnpm.onlyBuiltDependencies`** (never JSON arrays in `.npmrc`) |
-| Fumadocs | **Pinned 16.5.4** — 16.12+ breaks Vite (`-inset-s-4`) |
+| Fumadocs | **`fumadocs-ui`/`core` 16.14.0** + Tailwind **4.3.3** (`-inset-s-4`); `fumadocs-mdx` 14.2.7 (Vite 6) |
+| Build output | **`dist/` gitignored** — regenerate via `pnpm build`; not committed |
 | API server | **Hono** + `@hono/node-server`; Prisma server-side only (`server/`) |
 | `/docs` | Engineering only |
 | Prototype identity | Seed users + **header impersonation** + identity attestation hooks |
@@ -49,7 +50,7 @@ lives in `SCRATCHPAD.json`.
 | Audit | Append-only; soft-delete posts; audit list steward/Owner-gated |
 | External artifacts | App D node + provider whitelist; attribution `immutable_ref` |
 | Collection dashboard | Shared chrome; live §11 panels on Collection splash |
-| Model claim graph | Deferred |
+| Model claim graph | Artifact DAG + advisory score propagation; reputation rollup deferred |
 
 ### Claim profile summary
 
@@ -65,12 +66,14 @@ lives in `SCRATCHPAD.json`.
 | Layer | Reality |
 |---|---|
 | Product UI | Data-driven corpus; Collection splash = live dashboard; fixture dossier dashboard redirected |
-| Editor | Plate lists/links/blockquotes/evidence/external_artifact; tables/images residual |
+| Editor | Plate lists/links/blockquotes/evidence/external_artifact/tables/images (upload) |
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
-| Auth | Impersonation + identity hooks; body `actor_id` until IdP |
+| Auth | Session cookie IdP-lite + optional OIDC (`/api/auth/oidc/*`) with JWKS id_token verify; identity hooks; body `actor_id` not trusted |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
+| Server layout | Route registrars under `server/routes/*`; `db/{corpusDb,findingsDb,claimsDb,artifactsDb,threadsDb}.ts` + leaf modules; `db.ts` ≈ createAcceptedRisk + barrels; `index.ts` ~64 lines |
 
-**Phase:** **Residual / polish** after M0–M9. Policy hardening (§K) landed.
+**Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
+R0 marathon (About/FAQ → CONCEPT rewrite) landed.
 
 ---
 
@@ -88,7 +91,7 @@ lives in `SCRATCHPAD.json`.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | About/FAQ artifacts; fixture retirement; typed posts; tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `done` | About/FAQ artifacts; fixtures; typed posts; tables; home exemplars; CONCEPT rewrite |
 
 ---
 
@@ -96,12 +99,58 @@ lives in `SCRATCHPAD.json`.
 
 Optimize for **observable slices** with smokes. Prefer this order:
 
-1. **About → artifact** (pattern already proven by Charter)  
-2. **Fixture retirement** on dossier/thread surfaces  
-3. **Typed finding/mitigation posts** (small schema/UI)  
-4. **Plate tables** (editor depth)  
-5. **Home CONCEPT links** / FAQ artifact / CONCEPT rewrite (docs-heavy)  
-6. Only then: image upload, Fumadocs unpin, server split, OAuth
+1. ~~**About → artifact**~~ (**done** — `canon-about`, `/about` redirect, `smoke-about`)
+2. ~~**FAQ → artifact**~~ (**done** — `canon-faq`, `/faq` redirect, `smoke-faq`)
+3. ~~**Fixture retirement**~~ (**done** — demo pages deleted; legacy redirects; `smoke-fixture-retirement`)
+4. ~~**Typed finding/mitigation posts**~~ (**done** — RT gate; composer; filters; `smoke-typed-posts`)
+5. ~~**Plate tables**~~ (**done** — `@platejs/table@52`; reader/export; `smoke-editor-tables`)
+6. ~~**Home CONCEPT links**~~ (**done** — `#what-is-this` + live exemplars; `smoke-home-preamble`)
+7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
+8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
+9. ~~**`dist/` gitignore**~~ (**done** — stop tracking Vite build output; `smoke-dist-gitignore`)
+10. ~~**Fumadocs unpin**~~ (**done** — Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; `smoke-fumadocs`)
+11. ~~**Canon revert audit**~~ (**done** — Owner `POST …/revert`; `smoke-canon-revert`)
+12. ~~**Role-change audit**~~ (**done** — Owner `POST /api/users/:id/roles`;
+    overrides + effective users; `smoke-role-change`)
+13. ~~**Mod queue UI**~~ (**done** — `/mod` deleted posts / findings /
+    adjudication; `smoke-mod-queue`)
+14. ~~**Server split (first slice)**~~ (**done** — `server/db/*` leaf modules +
+    health/uploads/corpus/moderation routes; `smoke-server-split`)
+15. ~~**Server split (threads/claims/findings routes)**~~ (**done** —
+    `server/routes/{threads,claims,findings}.ts`)
+16. ~~**Server split (artifacts routes)**~~ (**done** —
+    `server/routes/artifacts.ts`; index ~64 lines; `smoke-server-split`)
+17. ~~**Server split (findingsDb module)**~~ (**done** —
+    `server/db/findingsDb.ts`; `createAcceptedRisk` remains in `db.ts`)
+18. ~~**Server split (claimsDb module)**~~ (**done** —
+    `server/db/claimsDb.ts`; Claims CRUD + adjudication queue)
+19. ~~**Server split (artifactsDb module)**~~ (**done** —
+    `server/db/artifactsDb.ts`; Artifact CRUD / revert / revisions /
+    sections; `createAcceptedRisk` remains in `db.ts`)
+20. ~~**Server split (threadsDb module)**~~ (**done** —
+    `server/db/threadsDb.ts`; Thread/RFC/RevSet/decide/merge-authority;
+    `createAcceptedRisk` remains in `db.ts`)
+21. ~~**Server split (corpusDb module)**~~ (**done** —
+    `server/db/corpusDb.ts`; Area/Collection/Dossier + §11 dashboard;
+    `createAcceptedRisk` remains in `db.ts`)
+22. ~~**OAuth/IdP session→actor**~~ (**done** — prototype IdP-lite cookie
+    session; mutations use session actor; `smoke-session-actor`)
+23. ~~**Model→forecast implication MVP**~~ (**done** — `implies_forecast`
+    links; seed + composer/list; `smoke-claim-implications`)
+24. ~~**External OIDC swap-in**~~ (**done** — `/api/auth/oidc/*`; env-gated;
+    mock + subject map; `smoke-oidc`)
+25. ~~**OIDC JWKS id_token verify**~~ (**done** — jose JWKS verify +
+    iss/aud/exp/nonce; `OIDC_JWKS_URI`/discovery; `smoke-oidc`)
+26. ~~**Model→forecast implication DAG UI**~~ (**done** —
+    `buildImplicationGraph`; `ClaimImplicationGraph` on artifact claims;
+    `smoke-claim-implication-graph`)
+27. ~~**Model→forecast implication score propagation**~~ (**done** —
+    `scoreModelImplications`; advisory Brier/log/skill on models from
+    resolved implied forecasts; `smoke-claim-implication-scores`)
+28. **Optional / deferred next (product-gated):** Manuals 3D globe (SVG already
+    satisfies CONCEPT §1.2 — do not build WebGL unless product asks)
+29. **Deferred (needs CONCEPT):** reputation-board rollup of implication scores
+    — §9.2 keeps reputation separate from claim scores; stay deferred
 
 **Agent rules of thumb**
 
@@ -115,9 +164,14 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-See `OPEN_ISSUES.md` marathon queue. No architecture blockers. Known debt:
-server monolith size, tracked `dist/`, client→server import of prototype-users,
-tsc not covering `server/` (Vite/smoke are the gates today).
+R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + Canon revert +
+role-change audit + mod queue UI + server split + IdP-lite session→actor +
+model→forecast implication MVP + DAG UI + score propagation + external OIDC
+swap-in + OIDC JWKS verify done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred**. No architecture blockers. Known debt: `db.ts` still
+hosts `createAcceptedRisk` (intentional bridge) + barrels; client→server import
+of prototype-users (seed catalog still drives roles until IdP directory); tsc
+not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -126,4 +180,6 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **About artifact migration** (OPEN_ISSUES §1).
+- Next: **stop** — only product-gated Manuals 3D globe and CONCEPT-deferred
+  reputation rollup remain. Resume when product asks or CONCEPT adds AC.
+  Cron `db8a` synced tip from `061b` / PR #83 (empty-queue handoff; smoke 58/58).
