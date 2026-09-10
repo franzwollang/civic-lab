@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T05:20Z",
+  "turn": 77,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "post-R0",
+    "issue": null,
+    "goal": "Mod queue done; next deferred Manuals globe / forecast / OIDC"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip 1f3e / PR #103 role-change stack",
+    "Ported mod queue UI from e7a3 onto tip (session auth)",
+    "/mod + header + smoke-mod-queue; suite 54/54"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron at main must merge furthest tip before new work",
+    "Reapply e7a3 mod-queue files; do not merge e7a3 wholesale"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
+    "Model→forecast graph deferred; external OIDC optional"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: Manuals globe, model→forecast graph, or external OIDC — or stop if product-blocked",
   "blockers": []
 }
