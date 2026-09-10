@@ -110,8 +110,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 10. ~~**Fumadocs unpin**~~ (**done** — Tailwind 4.3.3; fumadocs 16.14.0; `smoke-fumadocs`)
 11. ~~**Server split (leaf + registrars)**~~ (**done** — `server/db/*` leaves +
     `server/routes/{health,uploads,corpus,moderation}`; `smoke-server-split`)
-12. **Optional / deferred next:** deeper server split (threads/claims/findings/
-    artifacts modules), OAuth / IdP, moderator polish, Manuals globe
+12. ~~**Domain route registrars**~~ (**done** — `artifacts` / `threads` /
+    `claims` / `findings`; slim `index.ts`; suite **50/50**)
+13. **Optional / deferred next:** domain db modules (`*Db.ts`), OAuth / IdP,
+    moderator polish, Manuals globe
 
 **Agent rules of thumb**
 
@@ -126,10 +128,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + server leaf
-split done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No
-architecture blockers. Known debt: deeper `db.ts` domain modules still large,
-client→server import of prototype-users, tsc not covering `server/` (Vite/smoke
-are the gates today).
+split + **domain route registrars** done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred**. No architecture blockers. Known debt: `db.ts` domain
+modules still large (~3.6k), client→server import of prototype-users, tsc not
+covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -138,5 +140,5 @@ are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **deeper server split** (threads/claims/findings/artifacts modules) or
-  **OAuth / IdP** / moderator polish — prefer actionable Optional items with AC.
+- Next: **domain db modules** (`artifactsDb`/`threadsDb`/`claimsDb`/`findingsDb`)
+  or **OAuth / IdP** / moderator polish — prefer actionable Optional items with AC.

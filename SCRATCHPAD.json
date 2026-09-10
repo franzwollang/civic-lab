@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T04:20Z",
-  "turn": 71,
+  "updated_at": "2026-09-10T04:25Z",
+  "turn": 72,
   "focus": {
     "milestone": "post-R0",
-    "issue": "Deeper server split",
-    "goal": "Leaf split done; hand off domain modules or OAuth"
+    "issue": "Domain db module extract",
+    "goal": "Route registrars done; extract *Db.ts next"
   },
   "recent": [
-    "Server leaf split green: 50/50 smokes + vite build",
-    "Merged tip 9faa / PR #97 onto cron 3379",
-    "Extracted db leaves + health/uploads/corpus/moderation routes"
+    "Domain route registrars: artifacts/threads/claims/findings; index 64 lines",
+    "Merged tip 3379 / PR #98 onto cron e8c6",
+    "Smoke 50/50 + vite build green"
   ],
   "discoveries": [
-    "Parallel e7a3 stack diverged at 6645e7d — reapply slices; don't merge wholesale",
-    "index.ts still needs getDossier + actorMayViewAuditLog after route extract"
+    "Do not copy e827 revertCanon route — Canon revert not on tip",
+    "Smokes that grep index.ts need retarget to routes/*.ts"
   ],
   "open_threads": [
-    "Next: deeper split or OAuth / moderator polish",
-    "Keep createAcceptedRisk in server/db.ts across domain extracts"
+    "Next: artifactsDb/threadsDb/claimsDb/findingsDb (+ corpusDb)",
+    "Keep createAcceptedRisk in server/db.ts; reapply e827 carefully"
   ],
-  "next_step": "Merge this tip; Optional: deeper server split or OAuth/IdP",
+  "next_step": "Merge this tip; Optional: domain db modules or OAuth/IdP",
   "blockers": []
 }

@@ -43,8 +43,10 @@ that is actionable, or stop if blocked on product decisions.
   (`server/db/{prisma,registries,search,moderationDb,identities}`;
   `server/routes/{health,uploads,corpus,moderation}`; barrels stable;
   `smoke-server-split`; suite **50/50**)
-- [ ] **Deeper server split** — extract threads/claims/findings/artifacts route
-  registrars + domain db modules; keep `createAcceptedRisk` in `server/db.ts`
+- [ ] **Deeper server split (domain db modules)** — route registrars done
+  (`server/routes/{artifacts,threads,claims,findings}`; slim `index.ts`);
+  still extract `artifactsDb` / `threadsDb` / `claimsDb` / `findingsDb` /
+  optionally `corpusDb`; keep `createAcceptedRisk` in `server/db.ts`
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---

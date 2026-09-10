@@ -9,15 +9,20 @@ import { promisify } from "util";
 import { PrismaClient } from "@prisma/client";
 import {
   appendAuditLog,
+  createAcceptedRisk,
   getAttributions,
   getPrisma,
   listUserIdentities,
   searchCorpus,
   setPrisma,
 } from "../server/db";
+import { registerArtifactRoutes } from "../server/routes/artifacts";
+import { registerClaimRoutes } from "../server/routes/claims";
 import { registerCorpusRoutes } from "../server/routes/corpus";
+import { registerFindingRoutes } from "../server/routes/findings";
 import { registerHealthRoutes } from "../server/routes/health";
 import { registerModerationRoutes } from "../server/routes/moderation";
+import { registerThreadRoutes } from "../server/routes/threads";
 import { registerUploadRoutes } from "../server/routes/uploads";
 import { seedIfEmpty } from "../prisma/seed";
 
@@ -34,6 +39,10 @@ const REQUIRED_FILES = [
   "server/routes/uploads.ts",
   "server/routes/corpus.ts",
   "server/routes/moderation.ts",
+  "server/routes/artifacts.ts",
+  "server/routes/threads.ts",
+  "server/routes/claims.ts",
+  "server/routes/findings.ts",
 ];
 
 async function main() {
@@ -54,13 +63,39 @@ async function main() {
   if (typeof appendAuditLog !== "function" || typeof listUserIdentities !== "function") {
     throw new Error("moderation/identity barrel exports missing");
   }
+  if (typeof createAcceptedRisk !== "function") {
+    throw new Error("createAcceptedRisk must remain on server/db barrel");
+  }
   if (
     typeof registerCorpusRoutes !== "function" ||
     typeof registerHealthRoutes !== "function" ||
     typeof registerModerationRoutes !== "function" ||
-    typeof registerUploadRoutes !== "function"
+    typeof registerUploadRoutes !== "function" ||
+    typeof registerArtifactRoutes !== "function" ||
+    typeof registerThreadRoutes !== "function" ||
+    typeof registerClaimRoutes !== "function" ||
+    typeof registerFindingRoutes !== "function"
   ) {
     throw new Error("route registrar exports missing");
+  }
+
+  const indexSrc = await fs.readFile(path.join(ROOT, "server/index.ts"), "utf8");
+  for (const name of [
+    "registerArtifactRoutes",
+    "registerThreadRoutes",
+    "registerClaimRoutes",
+    "registerFindingRoutes",
+  ]) {
+    if (!indexSrc.includes(name)) {
+      throw new Error(`server/index.ts must register ${name}`);
+    }
+  }
+  // Domain handlers should live in route modules, not the entrypoint.
+  if (indexSrc.includes("/api/threads/:threadId/posts")) {
+    throw new Error("thread post routes should live in server/routes/threads.ts");
+  }
+  if (indexSrc.includes("/api/claims") && indexSrc.includes("app.get(\"/api/claims\"")) {
+    throw new Error("claim routes should live in server/routes/claims.ts");
   }
 
   const dbPath = path.join(ROOT, "prisma", "smoke-server-split.db");
