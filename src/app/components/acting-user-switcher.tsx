@@ -87,11 +87,13 @@ export function ActingUserSwitcher() {
       <DropdownMenuContent align="end" className="w-80">
         <DropdownMenuLabel className="space-y-1 font-normal">
           <div className="text-xs font-medium uppercase tracking-wider text-neutral-500">
-            Impersonate (prototype)
+            Impersonate (session)
           </div>
           <p className="text-xs leading-snug text-neutral-600">
-            {affordances.headline}. Real-identity hooks (CONCEPT §8.6) gate
-            Manual steward actions; full OAuth later.
+            {affordances.headline}. Switcher binds a server session cookie
+            (IdP-lite); real-identity hooks (CONCEPT §8.6) still gate Manual
+            steward actions. When configured, `/api/auth/oidc/start` binds the
+            same session via external OIDC.
           </p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
