@@ -6,6 +6,9 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**
 (soft-delete pre-check, §8.6 eligibility, audit/`include_deleted` gates,
 reputation `deletedAt` filter, board-hide on claim metrics, HTTP smoke).
+About + FAQ living Canon artifacts are **done** (`canon-about`, `canon-faq`).
+Fixture descriptive + Red Team demo pages are **retired**.
+Typed finding/mitigation ThreadPost types are **done** (RT-gated create + smoke).
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
@@ -14,43 +17,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ## Marathon queue (ordered)
 
-### 1. About / FAQ → living artifacts
-
-- [ ] **Migrate About (then FAQ) into Canon artifacts**
-  - **Scope:** `src/app/pages/about.tsx`, optionally `faq` route; seeds under
-    `prisma/seed/pages.json` + `page_revisions.json`; dossier
-    `canon-governance-1` (or new) under `collection-canon`.
-  - **Done when:**
-    - Seeded artifact(s) with Plate `content_json` mirroring current prose
-    - `/about` redirects (or renders via DocumentReader) to the artifact
-    - Owner/`owner_merge_only` edit gate if Charter-like; else editor-capable
-    - Smoke asserts artifact + redirect/route
-  - **Verify:** `pnpm test:smoke` + manual `/about`
-  - **Out of scope:** home explainer (next); legal boilerplate
-
-### 2. Fixture retirement
-
-- [ ] **Retire remaining hardcoded dossier/artifact demo panels**
-  - **Scope:** grep `FIXTURE` / hardcoded US-voting copy under
-    `src/app/pages/{thread,rfc,artifact,dossier}*`; dossier tabs that still
-    show placeholder cards.
-  - **Done when:** listed fixtures replaced with API data or removed; no
-    “arrives with M7” copy; smoke or manual check on touched routes
-  - **Verify:** `pnpm test:smoke`; spot-check dossier + thread pages
-  - **Note:** `/dossier/:id/dashboard` already redirects to Collection splash
-
-### 3. Typed Finding / Mitigation posts
-
-- [ ] **First-class typed posts on thread timeline**
-  - **Scope:** `ThreadPost.type` values `finding` | `mitigation` (and existing);
-    `ReplyComposer` / `ThreadTimeline`; seed one of each; API already accepts
-    `type` string — tighten validation + UI affordances for Red Team.
-  - **Done when:** composer can post typed finding/mitigation; timeline filters
-    show them; smoke covers create + list filter
-  - **Verify:** extend `smoke-candidate-findings` or new smoke
-  - **Out of scope:** full Findings queue productization
-
-### 4. Editor tables (defer images if needed)
+### 1. Editor tables (defer images if needed)
 
 - [ ] **Plate tables MVP**
   - **Scope:** add table plugin compatible with Plate 52; toolbar insert;
@@ -60,7 +27,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
   - **Out of scope:** image upload pipeline (separate); keep `.webp`-only until
     upload exists
 
-### 5. Home / About CONCEPT alignment
+### 2. Home / About CONCEPT alignment
 
 - [ ] **Home preamble links to live exemplars**
   - **Scope:** `src/app/pages/home.tsx`
@@ -69,7 +36,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
     `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
   - **Verify:** manual; no new smoke required if copy-only
 
-### 6. CONCEPT.md rewrite pass
+### 3. CONCEPT.md rewrite pass
 
 - [ ] **Editorial pass (human-facing)**
   - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
@@ -99,7 +66,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~39 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~43 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
@@ -115,5 +82,5 @@ pnpm db:reset            # wipe + reseed local SQLite
 ## Notes
 
 - Lane hygiene and separation of powers remain load-bearing CONCEPT constraints.
-- Three content systems: Fumadocs `/docs`, static About/FAQ (until migrated),
-  artifact editor — unify deliberately.
+- Three content systems: Fumadocs `/docs`, living site artifacts (Charter /
+  About / FAQ under `canon-governance-1`), artifact editor — unify deliberately.

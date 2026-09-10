@@ -143,7 +143,13 @@ export function DossierOverview() {
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
-      <SidebarNav dossierId={id} currentPage="dossier" />
+      <SidebarNav
+        dossierId={id}
+        collectionId={
+          state.status === "ready" ? state.dossier.collection_id : undefined
+        }
+        currentPage="dossier"
+      />
 
       <main className="ml-64 pt-16">
         <div className="mx-auto max-w-[1200px] px-8 py-8">
