@@ -18,8 +18,12 @@ import {
   useArtifactDocument,
 } from "@/doc/ArtifactDocumentBody";
 import { artifactIdOf } from "@/doc/types";
-import type { ArtifactRow, DossierRow } from "@/doc/types";
-import { getDossier, getDossierArtifacts } from "@/api/client";
+import type { ArtifactRow, DossierRow, ThreadRow } from "@/doc/types";
+import {
+  getDossier,
+  getDossierArtifacts,
+  getDossierThreads,
+} from "@/api/client";
 import { ArtifactClaimsPanel } from "../components/artifact-claims-panel";
 import { ObjectBreadcrumbs } from "../components/object-breadcrumbs";
 import { laneForDossier, laneLabelForArtifact } from "../lib/dossier-display";
@@ -30,6 +34,15 @@ import {
 import { useActingUser } from "../lib/acting-user";
 import { userHasCapability } from "../lib/role-affordances";
 import { CHARTER_ARTIFACT_ID } from "@/lib/charter";
+import { ABOUT_ARTIFACT_ID } from "@/lib/about";
+import { FAQ_ARTIFACT_ID } from "@/lib/faq";
+
+function threadTargetsArtifact(thread: ThreadRow, id: string): boolean {
+  if (thread.merge_artifact_id === id) return true;
+  return (thread.targets ?? []).some(
+    (t) => t.target_kind === "artifact" && t.target_id === id,
+  );
+}
 
 export function ArtifactPage() {
   const { dossierId, artifactId } = useParams();
@@ -37,6 +50,7 @@ export function ArtifactPage() {
   const { user } = useActingUser();
   const [dossier, setDossier] = useState<DossierRow | null>(null);
   const [related, setRelated] = useState<ArtifactRow[]>([]);
+  const [threads, setThreads] = useState<ThreadRow[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,21 +58,25 @@ export function ArtifactPage() {
       if (!dossierId) {
         setDossier(null);
         setRelated([]);
+        setThreads([]);
         return;
       }
       try {
-        const [d, artifacts] = await Promise.all([
+        const [d, artifacts, dossierThreads] = await Promise.all([
           getDossier(dossierId),
           getDossierArtifacts(dossierId),
+          getDossierThreads(dossierId),
         ]);
         if (!cancelled) {
           setDossier(d);
           setRelated(artifacts);
+          setThreads(dossierThreads);
         }
       } catch {
         if (!cancelled) {
           setDossier(null);
           setRelated([]);
+          setThreads([]);
         }
       }
     }
@@ -100,6 +118,12 @@ export function ArtifactPage() {
   const isCharter =
     doc.status === "ready" &&
     artifactIdOf(doc.artifact) === CHARTER_ARTIFACT_ID;
+  const isAbout =
+    doc.status === "ready" &&
+    artifactIdOf(doc.artifact) === ABOUT_ARTIFACT_ID;
+  const isFaq =
+    doc.status === "ready" &&
+    artifactIdOf(doc.artifact) === FAQ_ARTIFACT_ID;
 
   const relatedFiltered = useMemo(() => {
     const currentSlug =
@@ -126,10 +150,33 @@ export function ArtifactPage() {
     });
   }, [dossier, dossierId, title]);
 
+  const currentArtifactId =
+    doc.status === "ready" ? artifactIdOf(doc.artifact) : artifactId;
+
+  const relatedThreads = useMemo(() => {
+    if (!currentArtifactId) return [];
+    return threads.filter((t) =>
+      threadTargetsArtifact(t, currentArtifactId),
+    );
+  }, [threads, currentArtifactId]);
+
+  const discussThread =
+    relatedThreads.find((t) => t.state === "open") ?? relatedThreads[0] ?? null;
+  const rfcThread =
+    relatedThreads.find(
+      (t) => t.state === "rfc" || t.state === "review",
+    ) ??
+    relatedThreads.find((t) => t.state === "decided") ??
+    null;
+
   return (
     <div className="min-h-screen bg-neutral-50">
       <Header />
-      <SidebarNav dossierId={dossierId} currentPage="artifact" />
+      <SidebarNav
+        dossierId={dossierId}
+        collectionId={dossier?.collection_id}
+        currentPage="artifact"
+      />
 
       <main className="ml-64 pt-16">
         <div className="mx-auto max-w-[1200px] px-8 py-8">
@@ -189,7 +236,13 @@ export function ArtifactPage() {
                       className="border border-neutral-400 bg-neutral-100 text-xs font-medium text-neutral-800"
                     >
                       <Shield className="mr-1 h-3 w-3" />
-                      {isCharter ? "Charter · Owner merge only" : "Owner merge only"}
+                      {isCharter
+                        ? "Charter · Owner merge only"
+                        : isAbout
+                          ? "About · Owner merge only"
+                          : isFaq
+                            ? "FAQ · Owner merge only"
+                            : "Owner merge only"}
                     </Badge>
                   )}
                 </div>
@@ -248,18 +301,43 @@ export function ArtifactPage() {
                       </Tooltip>
                     </TooltipProvider>
                   ) : null}
-                  <Link to="/thread/thread-1">
-                    <Button variant="outline" size="sm">
-                      <MessageSquare className="mr-2 h-4 w-4" />
-                      Start Thread
-                    </Button>
-                  </Link>
-                  <Link to="/thread/thread-1/rfc">
-                    <Button variant="outline" size="sm">
-                      <GitBranch className="mr-2 h-4 w-4" />
-                      Nominate for RFC
-                    </Button>
-                  </Link>
+                  {discussThread ? (
+                    <Link to={`/thread/${discussThread.thread_id}`}>
+                      <Button variant="outline" size="sm">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Open Thread
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link to={`/dossier/${dossierId}`}>
+                      <Button variant="outline" size="sm">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Dossier threads
+                      </Button>
+                    </Link>
+                  )}
+                  {rfcThread ? (
+                    <Link to={`/thread/${rfcThread.thread_id}/rfc`}>
+                      <Button variant="outline" size="sm">
+                        <GitBranch className="mr-2 h-4 w-4" />
+                        Open RFC
+                      </Button>
+                    </Link>
+                  ) : discussThread ? (
+                    <Link to={`/thread/${discussThread.thread_id}`}>
+                      <Button variant="outline" size="sm">
+                        <GitBranch className="mr-2 h-4 w-4" />
+                        Promote on thread
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link to={`/dossier/${dossierId}`}>
+                      <Button variant="outline" size="sm">
+                        <GitBranch className="mr-2 h-4 w-4" />
+                        Dossier RFCs
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               )}
 
@@ -343,6 +421,8 @@ export function ArtifactPage() {
                         <div className="text-neutral-600">
                           Owner only (`owner_merge_only`)
                           {isCharter ? " · living Charter" : ""}
+                          {isAbout ? " · living About" : ""}
+                          {isFaq ? " · living FAQ" : ""}
                         </div>
                       </div>
                     )}

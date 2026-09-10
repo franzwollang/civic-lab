@@ -65,6 +65,7 @@ import {
 import { validateRevisionPayload } from "./validateRevision";
 import { validateImmutableRef } from "../src/lib/immutableRef";
 import { actorMayViewAuditLog } from "../src/lib/moderation";
+import { readUploadedImage, saveUploadedImage } from "./uploads";
 
 const PORT = Number(process.env.PORT) || 8787;
 const BODY_LIMIT = 2 * 1024 * 1024;
@@ -240,7 +241,7 @@ const termsRegistrySchema = z.object({
 const threadPostBodySchema = z.object({
   post_id: z.string().min(1).optional(),
   author_id: z.string().min(1),
-  type: z.enum(["comment", "mitigation"]).optional(),
+  type: z.enum(["comment", "finding", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
 });
@@ -697,10 +698,16 @@ app.post("/api/threads/:threadId/posts", async (c) => {
     ...parsed.data,
     thread_id: c.req.param("threadId"),
   });
-  if (!created) {
-    return c.json({ error: "Thread not found" }, 404);
+  if (!created.ok) {
+    if (created.error.code === "not_found") {
+      return c.json({ error: created.error.message }, 404);
+    }
+    if (created.error.code === "forbidden") {
+      return c.json({ error: created.error.message, code: created.error.code }, 403);
+    }
+    return c.json({ error: created.error.message, code: created.error.code }, 400);
   }
-  return c.json(created, 201);
+  return c.json(created.post, 201);
 });
 
 /** CONCEPT §9.4 — soft-delete ordinary post (steward Manual / Owner global). */
@@ -1242,6 +1249,60 @@ app.post("/api/identities/:userId/attest", async (c) => {
 app.get("/api/health", (c) =>
   c.json({ ok: true, service: "civic-lab-api", port: PORT }),
 );
+
+/** Prototype image upload — stores under uploads/images/; returns relative /uploads/… URL. */
+app.post("/api/uploads/images", async (c) => {
+  const contentType = c.req.header("content-type") || "";
+  if (!contentType.toLowerCase().includes("multipart/form-data")) {
+    return c.json(
+      { error: "Expected multipart/form-data with a `file` field." },
+      400,
+    );
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = (await c.req.parseBody({ all: true })) as Record<string, unknown>;
+  } catch {
+    return c.json({ error: "Could not parse multipart body." }, 400);
+  }
+
+  const file = body.file;
+  if (!file || typeof file === "string") {
+    return c.json({ error: "Missing `file` upload field." }, 400);
+  }
+
+  const blob = file as File;
+  const mime = blob.type || "application/octet-stream";
+  const data = await blob.arrayBuffer();
+  const saved = await saveUploadedImage({
+    data,
+    mime,
+    originalName: typeof blob.name === "string" ? blob.name : undefined,
+  });
+  if (!saved.ok) {
+    return c.json({ error: saved.error }, saved.status as 400 | 413 | 415);
+  }
+  return c.json({
+    url: saved.url,
+    filename: saved.filename,
+    mime: saved.mime,
+    bytes: saved.bytes,
+  });
+});
+
+app.get("/uploads/images/:filename", async (c) => {
+  const filename = c.req.param("filename");
+  const file = await readUploadedImage(filename);
+  if (!file) return c.text("Not found", 404);
+  return new Response(file.data, {
+    status: 200,
+    headers: {
+      "Content-Type": file.mime,
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
+  });
+});
 
 async function main() {
   const client = await bootstrapDatabase();
