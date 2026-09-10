@@ -46,9 +46,13 @@ that is actionable, or stop if blocked on product decisions.
   adjudication tab; header link; `smoke-mod-queue`; suite **54/54**)
 - [x] **Model→forecast implication graph** — MVP links done (`implies_forecast`
   on model claims; seed `claim-canon-enp-model`; composer + list UI;
-  `smoke-claim-implications`; suite **55/55**). DAG UI / scoring propagation
-  remain deferred.
+  `smoke-claim-implications`). **DAG UI done** (`buildImplicationGraph`;
+  `ClaimImplicationGraph` on `ArtifactClaimsPanel`; page-001 seed triangle;
+  `smoke-claim-implication-graph`; suite **56/56**). Scoring propagation
+  remains deferred.
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
+- [ ] **Implication score propagation** — advisory edge scores deferred
+- [ ] **External OIDC provider swap-in** — IdP-lite done; real OIDC optional
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
   `smoke-fumadocs`; `-inset-s-4` compiles)
@@ -72,7 +76,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~55 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~56 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

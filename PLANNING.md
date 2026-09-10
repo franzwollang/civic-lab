@@ -73,7 +73,7 @@ lives in `SCRATCHPAD.json`.
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
 R0 marathon (About/FAQ → CONCEPT rewrite) landed. Canon revert + role-change +
-mod queue UI + model→forecast implication MVP landed.
+mod queue UI + model→forecast implication MVP + **artifact-scoped DAG UI** landed.
 
 ---
 
@@ -130,8 +130,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 18. ~~**Model→forecast implication links MVP**~~ (**done** — `implies_forecast`
     links; seed `claim-canon-enp-model`; composer + list; `smoke-claim-implications`;
     suite **55/55**)
-19. **Optional / deferred next:** Manuals globe, implication DAG/scoring,
-    external OIDC
+19. ~~**Model→forecast implication DAG UI**~~ (**done** — `buildImplicationGraph`;
+    `ClaimImplicationGraph` on ArtifactClaimsPanel; `smoke-claim-implication-graph`;
+    suite **56/56**)
+20. **Optional / deferred next:** Manuals globe, implication scoring, external OIDC
 
 **Agent rules of thumb**
 
@@ -147,8 +149,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
 split + IdP-lite session→actor + Canon revert + role-change + mod queue +
-model→forecast implication MVP done — see remaining `OPEN_ISSUES.md`
-**Optional / deferred** (Manuals globe / implication DAG·scoring / external
+model→forecast implication MVP + DAG UI done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred** (Manuals globe / implication scoring / external
 OIDC). No architecture blockers. Known debt: client→server import of
 prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
 
@@ -159,4 +161,4 @@ prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Optional** Manuals 3D globe, implication DAG/scoring, or external OIDC — or stop.
+- Next: **Optional** Manuals 3D globe, implication scoring, or external OIDC — or stop.

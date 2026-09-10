@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-09-10T05:15Z",
-  "turn": 78,
+  "updated_at": "2026-09-10T05:30Z",
+  "turn": 79,
   "focus": {
     "milestone": "post-R0",
-    "issue": null,
-    "goal": "Implication MVP done; next deferred globe / DAG / OIDC"
+    "issue": "Implication DAG UI",
+    "goal": "Artifact-scoped model→forecast DAG on claims panel"
   },
   "recent": [
-    "Merged tip 9db6 / PR #104 onto cron branch",
-    "Ported claimImplications MVP from parallel 0ffe",
-    "smoke-claim-implications; suite 55/55; vite build green"
+    "Merged tip 07af / PR #105 onto cron branch",
+    "Reapplied implication DAG UI from parallel bae4",
+    "smoke-claim-implication-graph; suite 56/56; vite build green"
   ],
   "discoveries": [
     "Cron at main must merge furthest tip before new work",
@@ -17,8 +17,8 @@
   ],
   "open_threads": [
     "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
-    "Implication DAG/scoring + external OIDC optional"
+    "Implication scoring + external OIDC optional"
   ],
-  "next_step": "Optional: Manuals globe, implication DAG/scoring, or external OIDC — or stop",
+  "next_step": "Optional: implication scoring, external OIDC, or Manuals globe — or stop",
   "blockers": []
 }
