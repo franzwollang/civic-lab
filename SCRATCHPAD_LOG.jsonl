@@ -74,3 +74,4 @@
 {"ts":"2026-09-10T04:50Z","focus":"OAuth IdP-lite session→actor","summary":"Merged tip 088c; ported cookie session auth without mod-polish deps; 51/51 smokes","next":"Canon revert audit (moderator polish)"}
 {"ts":"2026-09-10T04:55Z","focus":"Canon revert audit","summary":"Owner Canon revert + audit + smoke; hand off role-change","next":"Merge tip; role-change audit (appoint roles + last-Owner guard)"}
 {"ts":"2026-09-10T05:10Z","focus":"role-change audit","summary":"Owner role appointment with append-only audit on tip 0f0a","next":"mod queue UI"}
+{"ts":"2026-09-10T05:20Z","focus":"mod queue UI","summary":"Merged tip #103; ported /mod queue from e7a3; suite 54/54","next":"Optional Manuals globe / model→forecast / external OIDC or stop"}

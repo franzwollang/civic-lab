@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T05:10Z",
-  "turn": 76,
+  "updated_at": "2026-09-10T05:20Z",
+  "turn": 77,
   "focus": {
     "milestone": "post-R0",
-    "issue": "Moderator polish — mod queue UI",
-    "goal": "Role-change done; next soft-delete/findings mod queue"
+    "issue": null,
+    "goal": "Mod queue done; next deferred Manuals globe / forecast / OIDC"
   },
   "recent": [
-    "Merged tip 0f0a / PR #102 Canon revert stack",
-    "Role-change: UserRoleAssignment + effective users + session API",
-    "Collection Role appointment panel; smoke-role-change"
+    "Merged tip 1f3e / PR #103 role-change stack",
+    "Ported mod queue UI from e7a3 onto tip (session auth)",
+    "/mod + header + smoke-mod-queue; suite 54/54"
   ],
   "discoveries": [
-    "Port role-change onto tip with requireSessionActor (not body actor_id)",
-    "Keep changeUserRoles in moderationDb; bind reload via prisma.ts"
+    "Cron at main must merge furthest tip before new work",
+    "Reapply e7a3 mod-queue files; do not merge e7a3 wholesale"
   ],
   "open_threads": [
-    "Next: mod queue UI",
-    "Manuals 3D globe / model→forecast / external OIDC deferred"
+    "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
+    "Model→forecast graph deferred; external OIDC optional"
   ],
-  "next_step": "Optional: mod queue UI for soft-deleted posts + findings/adjudication",
+  "next_step": "Optional: Manuals globe, model→forecast graph, or external OIDC — or stop if product-blocked",
   "blockers": []
 }

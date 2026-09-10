@@ -494,7 +494,14 @@ function AuditLogPanel() {
       />
       <p className="text-xs text-neutral-500">
         Append-only site audit (CONCEPT §9.4). Soft-deleted posts stay in the DB;
-        Findings / Claims / Accepted Risk / merged RevSets are never hard-deleted.
+        Findings / Claims / Accepted Risk / merged RevSets are never hard-deleted.{" "}
+        <Link
+          to="/mod"
+          className="font-medium text-neutral-900 underline"
+          data-testid="audit-panel-mod-queue-link"
+        >
+          Open moderation queue
+        </Link>
       </p>
       {loading ? (
         <p className="text-sm text-neutral-500">Loading audit…</p>

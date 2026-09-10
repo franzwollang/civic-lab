@@ -72,8 +72,8 @@ lives in `SCRATCHPAD.json`.
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
-R0 marathon (About/FAQ → CONCEPT rewrite) landed. Canon revert + role-change
-appointment polish landed.
+R0 marathon (About/FAQ → CONCEPT rewrite) landed. Canon revert + role-change +
+mod queue UI landed.
 
 ---
 
@@ -125,8 +125,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 16. ~~**Role-change audit**~~ (**done** — `UserRoleAssignment`; effective users;
     session `POST /api/users/:id/roles`; Collection appoint UI;
     `smoke-role-change`; suite **53/53**)
-17. **Optional / deferred next:** mod queue UI, Manuals globe,
-    model→forecast graph, external OIDC
+17. ~~**Mod queue UI**~~ (**done** — `/mod` soft-deletes + open findings +
+    adjudication; steward Canon filter; `smoke-mod-queue`; suite **54/54**)
+18. **Optional / deferred next:** Manuals globe, model→forecast graph,
+    external OIDC
 
 **Agent rules of thumb**
 
@@ -141,10 +143,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
-split + IdP-lite session→actor + Canon revert + role-change done — see remaining
-`OPEN_ISSUES.md` **Optional / deferred** (mod queue UI next). No
-architecture blockers. Known debt: client→server import of prototype-users,
-tsc not covering `server/` (Vite/smoke are the gates today).
+split + IdP-lite session→actor + Canon revert + role-change + mod queue done —
+see remaining `OPEN_ISSUES.md` **Optional / deferred** (Manuals globe /
+model→forecast / external OIDC). No architecture blockers. Known debt:
+client→server import of prototype-users, tsc not covering `server/` (Vite/smoke
+are the gates today).
 
 ---
 

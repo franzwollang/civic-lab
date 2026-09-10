@@ -41,7 +41,9 @@ that is actionable, or stop if blocked on product decisions.
   users feed merge/moderation/Owner gates; `GET /api/users` + session
   `POST /api/users/:id/roles`; last-Owner guard; Collection Role appointment
   panel; `smoke-role-change`; suite **53/53**)
-- [ ] **Moderator polish (remaining)** — mod queue UI
+- [x] **Moderator polish (remaining)** — mod queue UI done (`/mod` page;
+  soft-deleted posts audit feed with steward Canon filter; open findings;
+  adjudication tab; header link; `smoke-mod-queue`; suite **54/54**)
 - [ ] **Model→forecast implication graph** — deferred
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
@@ -67,7 +69,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~53 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~54 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
