@@ -3,9 +3,11 @@ import {
   Calendar,
   CheckCircle2,
   HelpCircle,
+  Link2,
   XCircle,
 } from "lucide-react";
 import type { ClaimRow } from "../../doc/types";
+import { forecastIdsFromImpliesLinks } from "../../lib/claimImplications";
 import { Badge } from "./ui/badge";
 
 function formatStatusLabel(status: string): string {
@@ -117,6 +119,10 @@ type ClaimListItemProps = {
 export function ClaimListItem({ claim, artifactTitle }: ClaimListItemProps) {
   const deadline = shortDate(claim.deadline);
   const asOf = shortDate(claim.as_of);
+  const impliedForecastIds =
+    claim.empirical_type === "model"
+      ? forecastIdsFromImpliesLinks(claim.links)
+      : [];
 
   return (
     <div className="rounded-lg border border-neutral-200 bg-white p-4">
@@ -192,6 +198,24 @@ export function ClaimListItem({ claim, artifactTitle }: ClaimListItemProps) {
         )}
         {claim.author_id && <span>by {claim.author_id}</span>}
       </div>
+
+      {impliedForecastIds.length > 0 && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-neutral-100 pt-3 text-xs text-neutral-600">
+          <span className="inline-flex items-center gap-1 font-medium text-emerald-800">
+            <Link2 className="h-3.5 w-3.5" />
+            Implies forecasts
+          </span>
+          {impliedForecastIds.map((id) => (
+            <Badge
+              key={id}
+              variant="outline"
+              className="border border-emerald-200 bg-emerald-50 font-mono text-[11px] text-emerald-900"
+            >
+              {id}
+            </Badge>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
