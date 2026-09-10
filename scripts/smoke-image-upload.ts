@@ -45,8 +45,13 @@ async function json(res: Response) {
 async function main() {
   // Source markers
   const indexSrc = readFileSync(path.join(ROOT, "server/index.ts"), "utf8");
-  assert.match(indexSrc, /\/api\/uploads\/images/);
-  assert.match(indexSrc, /\/uploads\/images\/:filename/);
+  assert.match(indexSrc, /registerUploadRoutes/);
+  const uploadRoutesSrc = readFileSync(
+    path.join(ROOT, "server/routes/uploads.ts"),
+    "utf8",
+  );
+  assert.match(uploadRoutesSrc, /\/api\/uploads\/images/);
+  assert.match(uploadRoutesSrc, /\/uploads\/images\/:filename/);
 
   const voidSrc = readFileSync(
     path.join(ROOT, "src/editor/void-blocks.tsx"),
