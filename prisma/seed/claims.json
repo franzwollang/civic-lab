@@ -169,5 +169,31 @@
     "adjudication_rationale": "us-alignment revision includes Canon-cited provisional curing gap section.",
     "adjudicated_by": "user-frank",
     "adjudicated_at": "2026-03-01T15:00:00.000Z"
+  },
+  {
+    "claim_id": "claim-canon-enp-model",
+    "artifact_id": "page-001",
+    "section_id": null,
+    "profile": "empirical",
+    "text": "Where proportional representation raises the effective number of parliamentary parties, OECD turnout remains in a stable mid-range band through 2030 (model implications for ENP and turnout forecasts).",
+    "status": "open",
+    "empirical_type": "model",
+    "scope": "global",
+    "resolution_criteria": "Model remains coherent while linked forecasts keep their published resolution criteria; invalidate if either linked forecast is invalidated for criteria failure.",
+    "preferred_sources": ["ParlGov", "IDEA Voter Turnout Database"],
+    "adjudication_rule": "majority_adjudicator",
+    "canon_citations": [],
+    "links": [
+      {
+        "kind": "implies_forecast",
+        "claim_id": "claim-canon-pr-enp-resolved"
+      },
+      {
+        "kind": "implies_forecast",
+        "claim_id": "claim-canon-turnout-trend"
+      }
+    ],
+    "created_at": "2026-07-11T10:00:00.000Z",
+    "author_id": "user-carol"
   }
 ]
