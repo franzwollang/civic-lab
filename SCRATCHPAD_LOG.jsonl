@@ -57,3 +57,33 @@
 {"ts":"2026-07-25T20:40Z","focus":"moderator tools residual","summary":"soft-delete + audit wiring; 38/38 smokes","next":"About/FAQ artifact migration"}
 {"ts":"2026-08-01T16:15Z","focus":"integrate cloud tip + review","summary":"Merged #45; 38/38 smokes; OPEN_ISSUES/PLANNING updated with §K hardening","next":"implement §K majors or About/FAQ"}
 {"ts":"2026-08-01T16:30Z","focus":"R0 marathon ready","summary":"§K fixed; HTTP gates smoke; docs/AC queue for About-next; 39 smokes expected","next":"About artifact migration"}
+{"ts":"2026-08-02T12:55Z","focus":"R0 About artifact","summary":"canon-about living artifact + redirect/smoke; 40/40 green","next":"FAQ artifact migration"}
+{"ts":"2026-09-10T02:35Z","focus":"R0 FAQ artifact","summary":"Merged About tip 210a; seeded canon-faq; /faq redirect; smoke 41/41","next":"fixture retirement on dossier/thread surfaces"}
+{"ts":"2026-09-10T02:50Z","focus":"R0 fixture retirement","summary":"Merged tip 5fa3; retired demo pages; smoke 42/42; handoff typed posts","next":"typed finding/mitigation posts on thread timeline"}
+{"ts":"2026-09-10T02:43Z","focus":"R0 typed posts","summary":"Merged tip 389a; typed finding/mitigation posts; smoke 43/43; handoff Plate tables","next":"Plate tables MVP"}
+{"ts":"2026-09-10T03:10Z","focus":"R0 Plate tables","summary":"Merged tip 7967; cherry-picked tables MVP; smoke 44/44; handoff home preamble","next":"Home preamble live exemplar links"}
+{"ts":"2026-09-10T03:20Z","focus":"home preamble exemplars","summary":"Merged 9c79 tip; cherry-picked a831 home preamble; 45/45 + continuity","next":"CONCEPT.md rewrite pass"}
+{"ts":"2026-09-10T03:25Z","focus":"CONCEPT rewrite","summary":"Merged b2f6 tip; cherry-picked CONCEPT rewrite from 3148; smoke-concept; R0 done","next":"Image upload pipeline (Optional)"}
+{"ts": "2026-09-10T03:45Z", "focus": "image upload pipeline", "summary": "Merged tip 3b21; cherry-picked fb083ce; smoke 47/47 + vite build; CONCEPT Appendix C cleared", "next": "Fumadocs unpin or dist/ gitignore"}
+{"ts":"2026-09-10T03:55Z","focus":"dist/ gitignore","summary":"Merged tip aea1; untracked dist/; smoke-dist-gitignore; continuity updated","next":"Fumadocs unpin (Tailwind≥4.3.2) or server split"}
+{"ts":"2026-09-10T04:00Z","focus":"dist/ gitignore","summary":"48/48 smoke + vite build; dist untracked; handoff Fumadocs/server split","next":"Fumadocs unpin (Tailwind≥4.3.2) or server split"}
+{"ts":"2026-09-10T04:10Z","focus":"Fumadocs unpin","summary":"Merged tip 1cb7; Tailwind 4.3.3 + fumadocs 16.14; smoke-fumadocs; 49/49","next":"server split or OAuth / moderator polish"}
+{"ts":"2026-09-10T04:20Z","focus":"server-split leaf","summary":"Merged tip 9faa; extracted db leaves + route registrars; smoke 50/50 + vite build","next":"deeper server split or OAuth / moderator polish"}
+{"ts":"2026-09-10T04:25Z","focus":"domain route registrars","summary":"Merged tip 3379; extracted artifacts/threads/claims/findings routes; smoke 50/50","next":"domain db modules or OAuth / moderator polish"}
+{"ts":"2026-09-10T04:40Z","focus":"domain db modules","summary":"Merged tip e8c6; extracted *Db.ts domain modules; smoke 50/50 + vite build","next":"OAuth/IdP or moderator polish"}
+{"ts":"2026-09-10T04:50Z","focus":"OAuth IdP-lite session→actor","summary":"Merged tip 088c; ported cookie session auth without mod-polish deps; 51/51 smokes","next":"Canon revert audit (moderator polish)"}
+{"ts":"2026-09-10T04:55Z","focus":"Canon revert audit","summary":"Owner Canon revert + audit + smoke; hand off role-change","next":"Merge tip; role-change audit (appoint roles + last-Owner guard)"}
+{"ts":"2026-09-10T05:10Z","focus":"role-change audit","summary":"Owner role appointment with append-only audit on tip 0f0a","next":"mod queue UI"}
+{"ts":"2026-09-10T05:20Z","focus":"mod queue UI","summary":"Merged tip #103; ported /mod queue from e7a3; suite 54/54","next":"Optional Manuals globe / model→forecast / external OIDC or stop"}
+{"ts":"2026-09-10T05:12Z","focus":"model→forecast implication MVP","summary":"Merged tip #104; ported implies_forecast MVP from 0ffe onto tip","next":"Optional Manuals globe / implication DAG·scoring / external OIDC or stop"}
+{"ts":"2026-09-10T05:30Z","focus":"implication DAG UI","summary":"merged tip 07af; reapplied artifact-scoped ClaimImplicationGraph from bae4","next":"optional scoring / OIDC / globe or stop"}
+{"ts":"2026-09-10T05:40Z","focus":"implication score propagation","summary":"merged tip cca8; reapplied scoreModelImplications + smoke from d369","next":"optional Manuals globe / external OIDC or stop"}
+{"ts":"2026-09-10T05:55Z","focus":"external OIDC swap-in","summary":"Cherry-picked b1c5 OIDC onto tip 03b7; cookieHeaderFromResponse smoke fix","next":"optional OIDC JWKS / reputation rollup / stop"}
+{"ts":"2026-09-10T06:10Z","focus":"OIDC JWKS id_token verify","summary":"Merged tip 7194; cherry-picked bc48480 JWKS verify; smoke 58/58","next":"optional reputation rollup or stop"}
+{"ts":"2026-09-10T06:20Z","focus":"post-R0 stop handoff","summary":"Merged tip 3b8d onto fresh cron; clarified stop for product-gated Optionals","next":"stop until product unblocks globe or reputation rollup"}
+{"ts":"2026-09-10T06:30Z","focus":"post-R0 stop sync","summary":"FF-merged tip ea6f onto cron branch; confirmed empty actionable queue; smoke 58/58","next":"Stop unless product unblocks globe or reputation rollup"}
+{"ts":"2026-09-10T06:40Z","focus":"post-R0 stop sync","summary":"FF-merged tip 09c3 onto cron 8986; confirmed empty actionable queue; smoke 58/58","next":"Stop unless product unblocks globe or reputation rollup"}
+{"ts":"2026-09-10T06:50Z","focus":"post-R0 stop sync","summary":"FF-merged tip 8986 onto cron 42f2; confirmed empty actionable queue; smoke 58/58","next":"Stop unless product unblocks globe or reputation rollup"}
+{"ts":"2026-09-10T06:55Z","focus":"post-R0 stop sync","summary":"FF-merged tip 42f2 onto cron dfce; confirmed empty actionable queue; smoke 58/58","next":"Stop unless product unblocks globe or reputation rollup"}
+{"ts":"2026-09-10T07:05Z","focus":"post-R0 stop sync","summary":"FF-merged tip dfce onto cron 4400; confirmed empty actionable queue; smoke 58/58","next":"Stop unless product unblocks globe or reputation rollup"}
+{"ts":"2026-09-10T07:15Z","focus":"post-R0 stop sync","summary":"FF-merged tip 4400 onto cron b07f; confirmed empty actionable queue; smoke 58/58","next":"Stop unless product unblocks globe or reputation rollup"}
