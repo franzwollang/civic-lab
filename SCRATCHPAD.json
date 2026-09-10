@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T05:45Z",
+  "turn": 80,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "post-R0",
+    "issue": "Implication score propagation",
+    "goal": "Advisory Brier/log/skill from resolved implies_forecast edges"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip cca8 / PR #106 onto cron branch",
+    "Reapplied scoreModelImplications + DAG score UI from d369",
+    "smoke-claim-implication-scores; continuity updated"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron at main must merge furthest tip before new work",
+    "Reapply parallel optional slices; do not merge old stacks wholesale"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
+    "External OIDC optional (parallel b1c5/JWKS not on tip)"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: external OIDC (reapply b1c5) or Manuals globe — or stop",
   "blockers": []
 }
