@@ -53,7 +53,7 @@ async function main() {
   assert.match(dialogSrc, /validateImmutableRef/);
   assert.match(dialogSrc, /Immutable ref/);
 
-  const serverSrc = readFileSync("server/index.ts", "utf8");
+  const serverSrc = readFileSync("server/routes/artifacts.ts", "utf8");
   assert.match(serverSrc, /invalid_immutable_ref/);
   assert.match(serverSrc, /validateImmutableRef/);
 

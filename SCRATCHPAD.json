@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T12:40Z",
+  "turn": 121,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "post-R0",
+    "issue": null,
+    "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Cron 1175 at stale main: FF-merged tip 4e64 (PR #147 stack)",
+    "Verified tip suite 58/58 after merge + pnpm install",
+    "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)",
+    "Prefer stop; do not invent AC for deferred Optionals"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Fresh cron at main must merge furthest progression tip first",
+    "In-repo SCRATCHPAD on main can lag tip by many turns — trust tip after merge"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
+    "Reputation-board implication rollup deferred (needs product design)"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Stop until product unblocks globe or reputation rollup design",
   "blockers": []
 }
