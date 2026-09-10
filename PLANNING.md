@@ -88,7 +88,7 @@ lives in `SCRATCHPAD.json`.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | Fixture retirement; typed posts; tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `in progress` | Typed posts; tables; CONCEPT/home copy |
 
 ---
 
@@ -96,11 +96,10 @@ lives in `SCRATCHPAD.json`.
 
 Optimize for **observable slices** with smokes. Prefer this order:
 
-1. **Fixture retirement** on dossier/thread surfaces  
-2. **Typed finding/mitigation posts** (small schema/UI)  
-3. **Plate tables** (editor depth)  
-4. **Home CONCEPT links** / CONCEPT rewrite (docs-heavy)  
-5. Only then: image upload, Fumadocs unpin, server split, OAuth
+1. **Typed finding/mitigation posts** (small schema/UI)  
+2. **Plate tables** (editor depth)  
+3. **Home CONCEPT links** / CONCEPT rewrite (docs-heavy)  
+4. Only then: image upload, Fumadocs unpin, server split, OAuth
 
 **Agent rules of thumb**
 
@@ -125,4 +124,4 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Fixture retirement** (OPEN_ISSUES §1; About + FAQ living artifacts done).
+- Next: **Typed finding/mitigation posts** (OPEN_ISSUES §1; fixtures retired).

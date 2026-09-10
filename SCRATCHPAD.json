@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-09-10T02:35Z",
-  "turn": 61,
+  "updated_at": "2026-09-10T02:50Z",
+  "turn": 62,
   "focus": {
     "milestone": "R0",
-    "issue": "Retire remaining hardcoded dossier/artifact demo panels",
-    "goal": "Replace FIXTURE/demo panels with API data or remove"
+    "issue": "Typed finding/mitigation posts",
+    "goal": "Composer + timeline filter for finding|mitigation types"
   },
   "recent": [
-    "Migrated FAQ → canon-faq; /faq hash redirect; smoke-faq; 41/41",
-    "Merged About tip 210a; Migrated About → canon-about",
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash"
+    "Retired descriptive-artifact + red-team-review; smoke-fixture-retirement; 42/42",
+    "Merged FAQ tip 5fa3 (About+FAQ); fixed isCharter dup + smoke substring pitfall",
+    "Migrated FAQ → canon-faq; /faq hash redirect; smoke-faq",
+    "Migrated About → canon-about; DocumentReader headingDomId",
+    "§K hardening + HTTP gates; fixture dashboard → Collection splash"
   ],
   "discoveries": [
-    "Cron at main: merge furthest About tip before FAQ to avoid dual About seeds",
-    "DocumentReader headingDomId preserves /about# and /faq# deep links"
+    "Cron at main: merge furthest sequential tip (5fa3) before new R0 work",
+    "smoke includes(DescriptiveArtifact) false-positives Redirect* — use word bounds"
   ],
   "open_threads": [
-    "Fixture retirement next; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Typed finding/mitigation posts next (ReplyComposer / ThreadTimeline)",
+    "Plate tables; home preamble; CONCEPT rewrite"
   ],
-  "next_step": "Grep FIXTURE/demo panels under dossier/thread/rfc/artifact pages; retire or wire to API",
+  "next_step": "Typed posts: tighten ThreadPost.type validation + composer UI + smoke",
   "blockers": []
 }

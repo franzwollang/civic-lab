@@ -7,6 +7,7 @@ M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**
 (soft-delete pre-check, §8.6 eligibility, audit/`include_deleted` gates,
 reputation `deletedAt` filter, board-hide on claim metrics, HTTP smoke).
 About + FAQ living Canon artifacts are **done** (`canon-about`, `canon-faq`).
+Fixture descriptive + Red Team demo pages are **retired**.
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
@@ -15,18 +16,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ## Marathon queue (ordered)
 
-### 1. Fixture retirement
-
-- [ ] **Retire remaining hardcoded dossier/artifact demo panels**
-  - **Scope:** grep `FIXTURE` / hardcoded US-voting copy under
-    `src/app/pages/{thread,rfc,artifact,dossier}*`; dossier tabs that still
-    show placeholder cards.
-  - **Done when:** listed fixtures replaced with API data or removed; no
-    “arrives with M7” copy; smoke or manual check on touched routes
-  - **Verify:** `pnpm test:smoke`; spot-check dossier + thread pages
-  - **Note:** `/dossier/:id/dashboard` already redirects to Collection splash
-
-### 2. Typed Finding / Mitigation posts
+### 1. Typed Finding / Mitigation posts
 
 - [ ] **First-class typed posts on thread timeline**
   - **Scope:** `ThreadPost.type` values `finding` | `mitigation` (and existing);
@@ -37,7 +27,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
   - **Verify:** extend `smoke-candidate-findings` or new smoke
   - **Out of scope:** full Findings queue productization
 
-### 3. Editor tables (defer images if needed)
+### 2. Editor tables (defer images if needed)
 
 - [ ] **Plate tables MVP**
   - **Scope:** add table plugin compatible with Plate 52; toolbar insert;
@@ -47,7 +37,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
   - **Out of scope:** image upload pipeline (separate); keep `.webp`-only until
     upload exists
 
-### 4. Home / About CONCEPT alignment
+### 3. Home / About CONCEPT alignment
 
 - [ ] **Home preamble links to live exemplars**
   - **Scope:** `src/app/pages/home.tsx`
@@ -56,7 +46,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
     `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
   - **Verify:** manual; no new smoke required if copy-only
 
-### 5. CONCEPT.md rewrite pass
+### 4. CONCEPT.md rewrite pass
 
 - [ ] **Editorial pass (human-facing)**
   - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
@@ -86,7 +76,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~41 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~42 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
