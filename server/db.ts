@@ -277,28 +277,6 @@ export type CollectionReputationBoard = {
   hidden_user_ids: string[];
 };
 
-/** CONCEPT §5.9 / §9.4 — active board-hide row. */
-export type BoardHideRow = {
-  hide_id: string;
-  subject_user_id: string;
-  subject_display_name: string | null;
-  hidden_by: string;
-  reason: string;
-  created_at: string;
-  lifted_at: string | null;
-  lifted_by: string | null;
-};
-
-/** CONCEPT §9.4 — append-only audit entry. */
-export type AuditLogRow = {
-  audit_id: string;
-  action: string;
-  actor_id: string;
-  subject_id: string | null;
-  payload: unknown;
-  created_at: string;
-};
-
 export type CollectionDashboard = {
   collection: CollectionRow;
   stats: {

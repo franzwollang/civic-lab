@@ -21,6 +21,7 @@ import {
   getAttributions,
   getCandidateFinding,
   getClaim,
+  getDossier,
   getFinding,
   getSection,
   getTerms,
@@ -46,6 +47,7 @@ import {
 } from "./db";
 import { validateRevisionPayload } from "./validateRevision";
 import { validateImmutableRef } from "../src/lib/immutableRef";
+import { actorMayViewAuditLog } from "../src/lib/moderation";
 import { registerCorpusRoutes } from "./routes/corpus";
 import { registerHealthRoutes } from "./routes/health";
 import { registerModerationRoutes } from "./routes/moderation";
