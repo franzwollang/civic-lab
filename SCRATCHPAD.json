@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T04:00Z",
-  "turn": 69,
+  "updated_at": "2026-09-10T04:10Z",
+  "turn": 70,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
-    "goal": "dist/ gitignore done; hand off Fumadocs or server split"
+    "goal": "Fumadocs unpin done; hand off server split or OAuth"
   },
   "recent": [
-    "dist/gitignore green: 48/48 smokes + vite build",
-    "Merged tip aea1 / PR #95 onto cron 1cb7",
-    "Untracked dist/; smoke-dist-gitignore"
+    "Fumadocs unpin green: 49/49 smokes + vite build",
+    "Merged tip 1cb7 / PR #96 onto cron 9faa",
+    "Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; mdx 14.2.7"
   ],
   "discoveries": [
-    "Fumadocs inset-s unblock: Tailwind ≥4.3.2 (still 4.1.12)",
-    "Parallel 74f7/PR#54 / 86b6/PR#55 already have dist+Fumadocs — cherry-pick onto tip"
+    "Keep fumadocs-mdx 14.x on Vite 6; 15+ peers Vite 7+",
+    "Avoid fumadocs-ui 17 until separately validated"
   ],
   "open_threads": [
-    "Next: Fumadocs unpin (Tailwind≥4.3.2) or server split",
-    "OAuth / moderator polish still deferred"
+    "Next: server split or OAuth / moderator polish",
+    "Parallel PR #55 / 86b6 was older stack — reapplied on tip"
   ],
-  "next_step": "Merge this tip; Fumadocs unpin after Tailwind≥4.3.2 (or cherry-pick 86b6)",
+  "next_step": "Merge this tip; Optional: split server/index.ts+db.ts or OAuth",
   "blockers": []
 }

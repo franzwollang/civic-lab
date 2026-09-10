@@ -36,8 +36,9 @@ that is actionable, or stop if blocked on product decisions.
   remains until then (explicit)
 - [ ] **Moderator polish** — Canon revert audit; role-change audit; mod queue UI
 - [ ] **Model→forecast implication graph** — deferred
-- [ ] **Fumadocs unpin** — stay on 16.5.4 until Tailwind ≥4.3.2 (resolves
-  `-inset-s-4`) or prebuilt CSS; then bump `fumadocs-*` and verify `/docs`
+- [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
+  `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
+  `smoke-fumadocs`; `-inset-s-4` compiles)
 - [ ] **Split `server/index.ts` / `server/db.ts`** — quality debt; do only if a
   feature turn is blocked by file size
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
@@ -49,7 +50,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~48 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~49 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
