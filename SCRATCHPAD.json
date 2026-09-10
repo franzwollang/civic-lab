@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-09-10T02:50Z",
-  "turn": 62,
+  "updated_at": "2026-09-10T02:43Z",
+  "turn": 63,
   "focus": {
     "milestone": "R0",
-    "issue": "Typed finding/mitigation posts",
-    "goal": "Composer + timeline filter for finding|mitigation types"
+    "issue": "Plate tables MVP",
+    "goal": "Plate 52 table plugin + toolbar + reader/export smoke"
   },
   "recent": [
-    "Retired descriptive-artifact + red-team-review; smoke-fixture-retirement; 42/42",
-    "Merged FAQ tip 5fa3 (About+FAQ); fixed isCharter dup + smoke substring pitfall",
+    "Typed finding/mitigation posts; RT gate; smoke-typed-posts; 43/43",
+    "Merged tip 389a (About+FAQ+fixtures) onto cron branch before work",
+    "Retired descriptive-artifact + red-team-review; smoke-fixture-retirement",
     "Migrated FAQ → canon-faq; /faq hash redirect; smoke-faq",
-    "Migrated About → canon-about; DocumentReader headingDomId",
-    "§K hardening + HTTP gates; fixture dashboard → Collection splash"
+    "Migrated About → canon-about; DocumentReader headingDomId"
   ],
   "discoveries": [
-    "Cron at main: merge furthest sequential tip (5fa3) before new R0 work",
-    "smoke includes(DescriptiveArtifact) false-positives Redirect* — use word bounds"
+    "Cron at main: merge furthest sequential tip (389a) before new R0 work",
+    "createThreadPost returns Result; update callers to .ok / .error.code"
   ],
   "open_threads": [
-    "Typed finding/mitigation posts next (ReplyComposer / ThreadTimeline)",
-    "Plate tables; home preamble; CONCEPT rewrite"
+    "Plate tables MVP next",
+    "Home preamble; CONCEPT rewrite"
   ],
-  "next_step": "Typed posts: tighten ThreadPost.type validation + composer UI + smoke",
+  "next_step": "Plate tables: plugin + toolbar insert + DocumentReader/export + smoke",
   "blockers": []
 }

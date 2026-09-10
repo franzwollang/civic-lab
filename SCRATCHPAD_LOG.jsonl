@@ -60,3 +60,4 @@
 {"ts":"2026-08-02T12:55Z","focus":"R0 About artifact","summary":"canon-about living artifact + redirect/smoke; 40/40 green","next":"FAQ artifact migration"}
 {"ts":"2026-09-10T02:35Z","focus":"R0 FAQ artifact","summary":"Merged About tip 210a; seeded canon-faq; /faq redirect; smoke 41/41","next":"fixture retirement on dossier/thread surfaces"}
 {"ts":"2026-09-10T02:50Z","focus":"R0 fixture retirement","summary":"Merged tip 5fa3; retired demo pages; smoke 42/42; handoff typed posts","next":"typed finding/mitigation posts on thread timeline"}
+{"ts":"2026-09-10T02:43Z","focus":"R0 typed posts","summary":"Merged tip 389a; typed finding/mitigation posts; smoke 43/43; handoff Plate tables","next":"Plate tables MVP"}

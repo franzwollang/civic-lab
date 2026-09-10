@@ -8,6 +8,7 @@ M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**
 reputation `deletedAt` filter, board-hide on claim metrics, HTTP smoke).
 About + FAQ living Canon artifacts are **done** (`canon-about`, `canon-faq`).
 Fixture descriptive + Red Team demo pages are **retired**.
+Typed finding/mitigation ThreadPost types are **done** (RT-gated create + smoke).
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
@@ -16,18 +17,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ## Marathon queue (ordered)
 
-### 1. Typed Finding / Mitigation posts
-
-- [ ] **First-class typed posts on thread timeline**
-  - **Scope:** `ThreadPost.type` values `finding` | `mitigation` (and existing);
-    `ReplyComposer` / `ThreadTimeline`; seed one of each; API already accepts
-    `type` string — tighten validation + UI affordances for Red Team.
-  - **Done when:** composer can post typed finding/mitigation; timeline filters
-    show them; smoke covers create + list filter
-  - **Verify:** extend `smoke-candidate-findings` or new smoke
-  - **Out of scope:** full Findings queue productization
-
-### 2. Editor tables (defer images if needed)
+### 1. Editor tables (defer images if needed)
 
 - [ ] **Plate tables MVP**
   - **Scope:** add table plugin compatible with Plate 52; toolbar insert;
@@ -37,7 +27,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
   - **Out of scope:** image upload pipeline (separate); keep `.webp`-only until
     upload exists
 
-### 3. Home / About CONCEPT alignment
+### 2. Home / About CONCEPT alignment
 
 - [ ] **Home preamble links to live exemplars**
   - **Scope:** `src/app/pages/home.tsx`
@@ -46,7 +36,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
     `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
   - **Verify:** manual; no new smoke required if copy-only
 
-### 4. CONCEPT.md rewrite pass
+### 3. CONCEPT.md rewrite pass
 
 - [ ] **Editorial pass (human-facing)**
   - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
@@ -76,7 +66,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~42 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~43 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
