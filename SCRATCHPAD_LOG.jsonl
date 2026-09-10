@@ -57,3 +57,9 @@
 {"ts":"2026-07-25T20:40Z","focus":"moderator tools residual","summary":"soft-delete + audit wiring; 38/38 smokes","next":"About/FAQ artifact migration"}
 {"ts":"2026-08-01T16:15Z","focus":"integrate cloud tip + review","summary":"Merged #45; 38/38 smokes; OPEN_ISSUES/PLANNING updated with §K hardening","next":"implement §K majors or About/FAQ"}
 {"ts":"2026-08-01T16:30Z","focus":"R0 marathon ready","summary":"§K fixed; HTTP gates smoke; docs/AC queue for About-next; 39 smokes expected","next":"About artifact migration"}
+{"ts":"2026-08-02T12:55Z","focus":"R0 About artifact","summary":"canon-about living artifact + redirect/smoke; 40/40 green","next":"FAQ artifact migration"}
+{"ts":"2026-09-10T02:35Z","focus":"R0 FAQ artifact","summary":"Merged About tip 210a; seeded canon-faq; /faq redirect; smoke 41/41","next":"fixture retirement on dossier/thread surfaces"}
+{"ts":"2026-09-10T02:50Z","focus":"R0 fixture retirement","summary":"Merged tip 5fa3; retired demo pages; smoke 42/42; handoff typed posts","next":"typed finding/mitigation posts on thread timeline"}
+{"ts":"2026-09-10T02:43Z","focus":"R0 typed posts","summary":"Merged tip 389a; typed finding/mitigation posts; smoke 43/43; handoff Plate tables","next":"Plate tables MVP"}
+{"ts":"2026-09-10T03:10Z","focus":"R0 Plate tables","summary":"Merged tip 7967; cherry-picked tables MVP; smoke 44/44; handoff home preamble","next":"Home preamble live exemplar links"}
+{"ts":"2026-09-10T03:20Z","focus":"home preamble exemplars","summary":"Merged 9c79 tip; cherry-picked a831 home preamble; 45/45 + continuity","next":"CONCEPT.md rewrite pass"}

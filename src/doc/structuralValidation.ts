@@ -143,6 +143,76 @@ const createStructuralSchema = (registry?: StructuralValidationRegistry) =>
         lastHeadingLevel = headingLevel;
       }
 
+      if (node.type === "table") {
+        const rows = Array.isArray(node.children) ? node.children : [];
+        if (rows.length === 0) {
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            message: "Table must contain at least one row.",
+            path: [index, "children"],
+            params: { rule: "table-empty" },
+          });
+        }
+        rows.forEach((row, rowIndex) => {
+          if (!row || typeof row !== "object") {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: "Table children must be row elements.",
+              path: [index, "children", rowIndex],
+              params: { rule: "table-row-type" },
+            });
+            return;
+          }
+          const rowNode = row as SlateBlock;
+          if (rowNode.type !== "tr") {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: "Table children must be `tr` rows.",
+              path: [index, "children", rowIndex, "type"],
+              params: { rule: "table-row-type", expected: "tr" },
+            });
+            return;
+          }
+          const cells = Array.isArray(rowNode.children) ? rowNode.children : [];
+          if (cells.length === 0) {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: "Table row must contain at least one cell.",
+              path: [index, "children", rowIndex, "children"],
+              params: { rule: "table-row-empty" },
+            });
+          }
+          cells.forEach((cell, cellIndex) => {
+            if (!cell || typeof cell !== "object") {
+              ctx.addIssue({
+                code: ZodIssueCode.custom,
+                message: "Table row children must be cells.",
+                path: [index, "children", rowIndex, "children", cellIndex],
+                params: { rule: "table-cell-type" },
+              });
+              return;
+            }
+            const cellType = (cell as SlateBlock).type;
+            if (cellType !== "td" && cellType !== "th") {
+              ctx.addIssue({
+                code: ZodIssueCode.custom,
+                message: "Table cells must be `td` or `th`.",
+                path: [
+                  index,
+                  "children",
+                  rowIndex,
+                  "children",
+                  cellIndex,
+                  "type",
+                ],
+                params: { rule: "table-cell-type", expected: "td|th" },
+              });
+            }
+          });
+        });
+        return;
+      }
+
       if (node.type === "data_block") {
         const language =
           typeof (node as { language?: unknown }).language === "string"
