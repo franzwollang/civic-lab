@@ -176,4 +176,4 @@ are the gates today).
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
 - Next: **stop** until product unblocks Manuals globe or reputation-board
   implication rollup design. Fresh crons: merge furthest tip
-  (`cursor/next-task-progression-4e64` / prior `24fc`), confirm stop, exit.
+  (`cursor/next-planning-task-1175` / prior `4e64`), confirm stop, exit.
