@@ -1,8 +1,13 @@
-# Spec Draft — Canon + Country Manuals + Threads/RFC + Red Team + Scored Claims
+# Civic Lab — Product Concept
 
-> Engineering-lab style governance + knowledge system.
+> Product reference for the Civic Lab prototype (governance + knowledge system).
+> Roadmap lives in `PLANNING.md`; open work in `OPEN_ISSUES.md`.
 >
 > **Core idea:** A collaborative forum/wiki hybrid with a strict separation between (A) a **Canon** of ideal systems (truth-first specs) and (B) **Country Manuals** (execution + realpolitik) built around scorable, resolvable claims. The site is thread-first; actionable changes are handled via **RFC threads** with revision sets.
+>
+> **Hierarchy (normative):**  
+> **Area → Collection → Dossier → Artifact → ArtifactRevision / Section**  
+> UI “pages” are views only — not a domain type. Threads hang off dossiers and may target any of the above.
 
 ---
 
@@ -56,34 +61,50 @@
 
 ## 2. Core Information Units
 
+```
+Area                canon | manuals
+ └─ Collection      Canon singleton | one per country (country_code)
+     └─ Dossier     semantic cut; owns subforum + artifacts
+         └─ Artifact
+             ├─ ArtifactRevision   content_json body history
+             └─ Section            stable heading targets
+```
+
 ### 2.0 Areas and Collections
-- **Area:** `canon` | `manuals`.
+- **Area:** `canon` | `manuals` — the two-channel split (§1). Epistemic, not cosmetic.
 - **Collection:** Canon Area → **singleton** Collection; Manuals Area → **one Collection per country** (`country_code`).
 - A country Manual is always a **Collection of dossiers**, never a single dossier.
+- **Merge authority and dashboard scope are Collection-scoped** (§3.4, §11).
 
 ### 2.1 Dossiers (subforum-owning semantic units)
 A **Dossier** belongs to a Collection and owns:
 - a set of artifacts
 - a **subforum** (threads whose *default* home is this dossier)
-- metadata, tags, optional local roles, dossier dashboard
+- metadata, tags, optional local roles
 
-Examples:
+Examples (illustrative, not a schema):
 - Canon: `Voting Systems`, `Fiscal Capacity`, …
-- US Manual: `Federal Elections`, `State Election Administration`, … 
+- US Manual: `Federal Elections`, `State Election Administration`, …
 
-Dossiers are flexible semantic/functional cuts. **No enforced taxonomy templates** in v1 — Collections grow dossiers as needed. Optional free tags for navigation; seed data may show example cuts (not normative schema).
+Dossiers are flexible semantic/functional cuts. **No enforced taxonomy templates** — Collections grow dossiers as needed. Optional free tags for navigation; seed data may show example cuts (not normative).
+
+**Dashboard chrome** lives on the **Collection splash**, not as a separate dossier “dashboard product.” Dossier overview links up to Collection §11 panels.
 
 ### 2.2 Artifacts (revisioned documents)
 Artifacts are typed, revisioned documents within a dossier.
 
-Illustrative types: Concept/Glossary, Mechanism, System Design, Failure Mode, Metric, Case Study, Country Baseline Snapshot, Reform Ladder / Alignment Step, Descriptive Brief, Prescriptive Strategy Note, …
+Illustrative types: Concept/Glossary, Mechanism, System Design, Failure Mode, Metric, Case Study, Country Baseline Snapshot, Reform Ladder / Alignment Step, Descriptive Brief, Prescriptive Strategy Note, living site docs (Charter / About / FAQ), …
 
-- **Manual artifacts:** exactly one immutable **lane** — Descriptive | Prescriptive | Alignment.
-- **Canon artifacts:** no Manual lane.
-- Body = `ArtifactRevision` history (`content_json` + block index/hashes); UI “pages” are views, not a separate domain type.
+- **Manual artifacts:** exactly one immutable **lane** — Descriptive | Prescriptive | Alignment (§4).
+- **Canon artifacts:** no Manual lane; restricted governance docs may set `owner_merge_only`.
+- Body = `ArtifactRevision` history (`content_json` + block index/hashes).
+- **Page** = UI route/view over an artifact revision — **not** a domain type.
 
 ### 2.3 Sections
 Stable **Section** identities (synced from document structure, e.g. headings) exist so threads and citations can target finer grain than whole artifacts.
+
+### 2.4 Evidence, attributions, and terms (pointer)
+In-document **evidence blocks**, **attribution** registries, and **term** registries support citations without becoming Claims. See **Appendix E** for the object split (Attribution vs Term vs Evidence block vs Claim vs `external_artifact`).
 
 ---
 
@@ -108,18 +129,23 @@ States:
 ### 3.3 Promote to RFC
 Any thread can be promoted to an **RFC thread**.
 
-**RFC ↔ artifact rule:** only a **1:1** RFC–artifact mapping may merge content into that artifact.
+**RFC ↔ artifact rule:** only a **1:1 leaf** RFC–artifact mapping may merge content into that artifact.
 
-- **Single-artifact change:** one RFC; RevSets propose `ArtifactRevision`s; merge sets `current_revision_id`.
-- **Multi-artifact change:** RFC is **upgraded** to a **wrapper parent** + **sub-RFCs** (one per artifact). Only sub-RFCs merge content.
-- **Wrapper constraint:** all sub-RFCs in a wrapper MUST target artifacts in the **same Collection**. Cross-Collection programs use linked threads/citations, not one wrapper.
-- **Parent `decided`:** only when all children are `decided`.
-- **Accepted Risk:** attaches to the **merging (leaf) RFC** only.
+| Shape | Role | Merges content? |
+|---|---|---|
+| **Leaf RFC** | Exactly one target artifact; carries RevSets | **Yes** — merge sets `current_revision_id` |
+| **Wrapper parent** | Coordinates **sub-RFCs** (one leaf per artifact) | **No** — children merge; parent never writes revisions |
+
+- **Single-artifact change:** one leaf RFC; RevSets propose `ArtifactRevision`s.
+- **Multi-artifact change:** promote/upgrade to a **wrapper parent** + **sub-RFCs** (one leaf per artifact).
+- **Wrapper Collection constraint:** all sub-RFCs in a wrapper MUST target artifacts in the **same Collection**. Cross-Collection programs use linked threads/citations, not one wrapper.
+- **Parent `decided`:** only when **all** children are `decided` (`merged` | `rejected` | `parked`).
+- **Accepted Risk:** attaches to the **merging (leaf) RFC** only — never to the wrapper.
 
 Promotion behavior:
 - preserves discussion history
 - RFC header: scope, intent, acceptance criteria, review requirements; child links if wrapper
-- RevSets on each **merging** RFC
+- RevSets on each **leaf** (merging) RFC
 
 Permissions:
 - Contributors may **nominate** and may submit RevSets on RFCs they can participate in.
@@ -149,9 +175,13 @@ Every Manual artifact has exactly one **primary lane** (immutable after create):
 - **Prescriptive** — actor-specific objective-conditional strategy → **card fields**, not a claim bundle
 - **Alignment** — steps to advance Canon → **requirement claims** citing Canon
 
-**Default:** single-lane artifacts; cross-lane work via citations/links.
+**Default:** single-lane artifacts; cross-lane work via citations/links — **never** by changing `lane` after create (lane is immutable).
 
-**Composites:** an artifact that links across lanes may receive a **computed** soft “bridge/composite” label. Lane-specific automations may treat pure vs composite differently. No hard `bridge` type.
+**Soft label (`lane_soft_label`):** when an artifact’s claims/links reference Manual artifacts in a **different** lane, the API may expose a **computed** soft label:
+- default: `composite`
+- optional synonym: `bridge` (same meaning; UI may prefer either word)
+
+This is **display/automation hint only**. It is **not** a fourth lane, not stored as the artifact’s primary `lane`, and not creatable via PATCH. Lane-specific automations may treat pure vs composite differently.
 
 ### 4.2 Lane-specific semantics
 
@@ -174,7 +204,9 @@ Every Manual artifact has exactly one **primary lane** (immutable after create):
 
 ## 5. Scorable Claims System
 
-Claims are a shared abstraction with **profiles**. A claim is owned by an **artifact** (optional section link). **Profile must be legal** for that artifact:
+**One claims abstraction, two profiles** — not separate “fact objects” vs “requirement matrices.”
+
+A **Claim** is owned by an **artifact** (optional section link). Fields and scoring differ by **profile**, but identity, adjudication hooks, and metrics plumbing are shared. **Profile must be legal** for that artifact’s Area/lane:
 
 | Owning artifact | Legal claim profiles |
 |---|---|
@@ -183,22 +215,26 @@ Claims are a shared abstraction with **profiles**. A claim is owned by an **arti
 | Manual Prescriptive | none (cite only) |
 | Canon | `empirical` only (with `scope`) |
 
+There is **no Requirements Matrix entity** and no parallel “alignment checklist” type. Alignment progress is **requirement claims** that cite Canon (§10).
+
 ### 5.1 Profiles
 
-| Profile | Purpose |
-|---|---|
-| **`empirical`** | Resolvable world-knowledge (facts / forecasts / models) |
-| **`requirement`** | Locally interpreted Canon-linked obligations / alignment steps |
+| Profile | Purpose | Forecast scores? |
+|---|---|---|
+| **`empirical`** | Resolvable world-knowledge (facts / forecasts / models) | Yes (when typed/resolvable as forecast) |
+| **`requirement`** | Locally interpreted Canon-linked obligations / alignment steps | No — quality metrics only |
 
 ### 5.2 Empirical claims
-Types: fact | forecast | model (implication graph deferred).
+Types: fact | forecast | model.
 
 Fields: `text`, `type`, `as_of` XOR `deadline`, `probability` (required for scored forecasts), `resolution_criteria`, `preferred_sources`, `adjudication_rule`, `status` (`open | resolved_true | resolved_false | ambiguous | invalidated | source_conflict`), `links`. Canon: `scope` (`global | regional`).
+
+**Model→forecast implications:** model claims may carry `links` entries `{ kind: "implies_forecast", claim_id }` pointing at empirical forecast claims. Create/update rejects those links on non-model types and when the target is missing or not a forecast. Artifact claims panels render a read-only model→forecast implication DAG from loaded claims. Scoring propagation across edges remains deferred.
 
 ### 5.3 Requirement claims
 Fields: `text`, required **`canon_citations`**, optional deps / expected time-to-effect / confidence, `resolution_criteria`, `status` (`open | accepted | satisfied | failed | superseded | invalidated | disputed`), `links`.
 
-Scoring: **quality metrics only** (no Brier/log).
+This profile **replaces** any “Requirements Matrix” framing: citations + status on claims are the linkage. Scoring: **quality metrics only** (no Brier/log).
 
 ### 5.4 Scoring toolkit (empirical forecasts)
 Log (primary), Brier, calibration, sharpness, skill vs baseline; optional later WIS for quantiles. Clamp p ∈ [0.01, 0.99]; recency windows.
@@ -233,6 +269,8 @@ Ambiguous/source_conflict: usually no accuracy score. Invalidated: quality metri
 ---
 
 ## 6. Manual “Card” Schemas (Lane-Specific)
+
+Suggested **field packs** for Manual artifact bodies (editorial templates, not separate domain types). Claims remain the §5 objects; cards organize prose + claim tables.
 
 ### 6.1 Descriptive
 Lane, country/region tags, empirical claims table, optional actors/objectives, reality-value notes, evidence pack.
@@ -326,15 +364,21 @@ Real-identity accounts (policy). Country stewards: from the country or long-term
 ### 9.2 Reputation (non-scorable work)
 Separate from claim scores. Signals: merged RevSets, review labor, endorsements, attribution quality, red-team/adjudication work. Scope by **dossier/topic** (roll up to Collection). Advisory only. Subject to §5.9 anti-gaming floor (no permission coupling; abuse hiding).
 
-### 9.3 Charter
-Site-wide hard gate, preferred as a living Canon artifact with `owner_merge_only`.
+### 9.3 Charter and living site artifacts
+Site-wide hard gates and orientation docs are preferred as **living Canon artifacts** with `owner_merge_only` where governance-critical:
 
-**Minimum premises (normative until full prose lands):**
+| Artifact | Role | Route chrome |
+|---|---|---|
+| **Charter** | Normative site premises + amendment via Canon RFC | `/constitution` → artifact |
+| **About** | Product orientation (what Civic Lab is) | `/about` → artifact |
+| **FAQ** | Common questions | `/faq` → artifact |
+
+**Charter minimum premises (normative until full prose lands):**
 - Canon excludes divine authority as an epistemic premise for governance design.
 - Manuals may treat religion as a political force/institution, not as epistemic authority.
 - Separation of powers and advisory scores as in §0 invariants.
 
-Full Charter wording is **content** authored via ordinary Canon RFC process, not an open architecture question.
+Full Charter wording is **content** authored via ordinary Canon RFC process, not an open architecture question. About/FAQ follow the same living-doc pattern (Owner gate when `owner_merge_only`).
 
 ### 9.4 Moderation and audit (defaults)
 - **Append-only audit log** for: merges, reverts, claim status changes, adjudications, AcceptedRisk, role changes, board-hide actions.
@@ -343,9 +387,13 @@ Full Charter wording is **content** authored via ordinary Canon RFC process, not
 
 ---
 
-## 10. Canon ↔ Manual linkage
+## 10. Canon ↔ Manual linkage (no Requirements Matrix)
 
-No Requirements Matrix entity. Alignment uses **requirement claims** citing Canon via attribution/citation tooling. Optional matrix-like **views** are queries, not a second model.
+**There is no Requirements Matrix entity** and no second alignment model.
+
+- Manual **Alignment** artifacts use **`requirement` claims** that cite Canon (attribution/citation tooling).
+- Optional matrix-like **UI views** (grids of requirement claims × Canon targets) are **queries over claims**, not a stored matrix type.
+- Descriptive/Prescriptive Manual work cites Canon or Alignment as needed; it does not invent a parallel checklist schema.
 
 ---
 
@@ -373,11 +421,12 @@ Formerly open design questions — **defaults adopted** (revisit only with cause
 | Forecast baselines | Disclosed default (family base rate or 0.5) until richer baselines exist |
 | Anti-gaming | Advisory scores; n≥20 for boards; rolling windows; no score-wiping deletes |
 | Charter prose | Living `owner_merge_only` Canon artifact; minimum premises in §9.3; full text via RFC |
+| About / FAQ | Living Canon artifacts; site chrome redirects (`/about`, `/faq`) |
 | Canon editor merge | Editors merge routine; Owner for restricted / Critical-AcceptedRisk / `owner_merge_only` |
 | Manual promote | Stewards only (not Canon editors) |
 | Moderation / audit | Append-only audit; soft-delete posts; stewards local, owner global |
 | Observer “react” | Lightweight post reactions; no score weight |
-| Model→forecast graph | Still deferred (post claim UX) |
+| Model→forecast graph | Links + artifact-scoped read-only DAG UI; scoring propagation deferred |
 
 ---
 
@@ -387,9 +436,10 @@ Formerly open design questions — **defaults adopted** (revisit only with cause
 - Area { id, kind: canon | manuals }
 - Collection { id, area_id, country_code?, title }
 - Dossier { id, collection_id, title, tags }
-- Artifact { id, dossier_id, type, title, lane?, current_revision_id }
+- Artifact { id, dossier_id, type, title, lane?, owner_merge_only?, current_revision_id }
 - ArtifactRevision { id, artifact_id, parent_revision_id?, content_json, blocks, doc_root_hash, author_id, created_at }
 - Section { id, artifact_id, stable_key, title }
+- *(no Page entity; no Requirements Matrix entity)*
 
 ### Collaboration
 - Thread { id, home_dossier_id, state, decision_outcome?, is_redteam, parent_thread_id?, merge_artifact_id? }
@@ -410,27 +460,33 @@ Formerly open design questions — **defaults adopted** (revisit only with cause
 
 ## Appendix B — UI Outline (sketch)
 
-- Area entry → Collection splash/dashboard → Dossier subforum → Artifact reader/editor → Thread/RFC
-- Thread: home, targets, parent/child RFC links, typed timeline, Findings filters
-- Artifact: lane badge (Manuals), claims panels by profile, evidence/citations/terms
+- Area entry → Collection splash/dashboard (§11) → Dossier subforum → Artifact reader/editor → Thread/RFC
+- Living site chrome: `/constitution`, `/about`, `/faq` → Canon artifacts
+- Thread: home, targets, wrapper parent / leaf sub-RFC links, typed timeline (Finding | Mitigation | Comment), Findings filters
+- Artifact: lane badge (Manuals); soft `composite`/`bridge` hint when cross-lane; claims panels by profile; evidence/citations/terms
+- Home: orientation + deep links to live Collection / dossier / RFC / Finding exemplars
 
 ---
 
 ## Appendix C — Supported syntaxes and block types (MVP)
 
 ### Native
-- Markdown blocks (paragraph, heading, list, table, quote, code) — lists/tables may lag in editor MVP
+- Markdown blocks (paragraph, heading, list, **table**, quote, code)
 - `math_inline`, `math_block`
 - `mermaid_block`
 - `procedure_block` (pseudocode.js initially)
 - `evidence_block` (text/data/math + attribution)
 - `citation_inline`, `term_inline`
+- `image_block` (upload pipeline: webp/png/jpeg/gif via `/api/uploads/images`)
 
 ### Platform-lite
 - `data_block` for JSON/YAML/TOML/CSV (highlight/validate, no execution)
 
 ### External-by-reference
 - `external_artifact` (Appendix D)
+
+### Residual editor gaps
+- None for MVP block types; richer media (SVG, video) deferred
 
 ---
 
@@ -452,6 +508,8 @@ Reject missing general/specific forms; normalize IDs; store parsed components fo
 
 ## Appendix E — Evidence, attributions, and terms
 
+Detail for §2.4. Evidence supports Claims and prose; it does not replace them.
+
 ### E.1 Attributions
 Registry of sources (`url|book|paper|report|other`); optional `immutable_ref`; versioned registry. Citations: attribution id + optional locator + note.
 
@@ -467,5 +525,5 @@ In-doc excerpts bound to attributions (text/data/math). Not a substitute for Cla
 | Source identity | Attribution |
 | Vocabulary | Term |
 | Show excerpt | Evidence block |
-| Score / require | Claim |
-| Heavy external work | `external_artifact` |
+| Score / require | Claim (§5) |
+| Heavy external work | `external_artifact` (Appendix D) |
