@@ -175,4 +175,5 @@ are the gates today).
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
 - Next: **stop** until product unblocks Manuals globe or reputation-board
-  implication rollup design. Fresh crons: merge furthest tip, confirm stop, exit.
+  implication rollup design. Fresh crons: merge furthest tip
+  (`cursor/next-task-progression-ee40` / prior `b07f`), confirm stop, exit.

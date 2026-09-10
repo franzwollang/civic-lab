@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-10T07:15Z",
-  "turn": 89,
+  "updated_at": "2026-09-10T07:25Z",
+  "turn": 90,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Fresh cron b07f at main: FF-merged tip 4400 (PR #115 stop handoff)",
+    "Fresh cron ee40 at main: FF-merged tip b07f (PR #116 stop handoff)",
     "Verified suite 58/58 green on tip",
     "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)"
   ],
