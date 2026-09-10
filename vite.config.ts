@@ -24,6 +24,20 @@ export default defineConfig(async () => ({
     },
   },
 
+  server: {
+    proxy: {
+      // Prototype image uploads live on the Hono API host.
+      '/uploads': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+      },
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+      },
+    },
+  },
+
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 }))
