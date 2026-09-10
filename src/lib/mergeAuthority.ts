@@ -9,11 +9,13 @@
  * Thread home dossier never overrides this table.
  */
 import {
-  PROTOTYPE_USERS,
   type PrototypeRole,
   type PrototypeUser,
-  getPrototypeUser,
 } from "../app/lib/prototype-users";
+import {
+  getEffectivePrototypeUser,
+  listEffectivePrototypeUsers,
+} from "./effectiveUsers";
 
 export type AreaKind = "canon" | "manuals";
 
@@ -88,16 +90,16 @@ export function actorMayDecide(
   authorityClass: MergeAuthorityClass,
 ): boolean {
   if (!authorId) return false;
-  return userMayDecide(getPrototypeUser(authorId), authorityClass);
+  return userMayDecide(getEffectivePrototypeUser(authorId), authorityClass);
 }
 
 /** Prototype users who currently satisfy the authority class (global roles). */
 export function allowedPrototypeUserIds(
   authorityClass: MergeAuthorityClass,
 ): string[] {
-  return PROTOTYPE_USERS.filter((u) => userMayDecide(u, authorityClass)).map(
-    (u) => u.id,
-  );
+  return listEffectivePrototypeUsers()
+    .filter((u) => userMayDecide(u, authorityClass))
+    .map((u) => u.id);
 }
 
 export function buildMergeAuthoritySummary(
