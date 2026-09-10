@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T05:55Z",
+  "turn": 81,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "post-R0",
+    "issue": "External OIDC swap-in",
+    "goal": "Env-gated OIDC binds same session cookie as IdP-lite"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "On tip 03b7 (implication scores / PR #107)",
+    "Cherry-picked OIDC from b1c5; fixed smoke cookie helper",
+    "smoke-oidc + continuity; suite target 58/58"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Reapply parallel optional slices; do not merge old stacks wholesale",
+    "OIDC smoke must use cookieHeaderFromResponse (not value-only cookieFrom)"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
+    "OIDC JWKS verify optional (parallel 0004)",
+    "Reputation-board implication rollup deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Optional: OIDC JWKS (reapply 0004) or reputation rollup — or stop",
   "blockers": []
 }

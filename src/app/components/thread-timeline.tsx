@@ -311,21 +311,26 @@ export function ThreadTimeline({
             const post = entry.post;
             const candidate = candidatesByPost.get(post.post_id);
             const isMitigation = post.type === "mitigation";
+            const isFindingNote = post.type === "finding";
+            const accentClass = isFindingNote
+              ? "border-red-200 border-l-4 border-l-red-500"
+              : isMitigation
+                ? "border-amber-200 border-l-4 border-l-amber-500"
+                : "border-neutral-200";
+            const avatarClass = isFindingNote
+              ? "bg-red-700"
+              : isMitigation
+                ? "bg-amber-700"
+                : "bg-neutral-800";
             return (
               <Card
                 key={`post:${post.post_id}`}
-                className={`border bg-white p-6 ${
-                  isMitigation
-                    ? "border-amber-200 border-l-4 border-l-amber-500"
-                    : "border-neutral-200"
-                }`}
+                className={`border bg-white p-6 ${accentClass}`}
               >
                 <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-full text-white ${
-                        isMitigation ? "bg-amber-700" : "bg-neutral-800"
-                      }`}
+                      className={`flex h-10 w-10 items-center justify-center rounded-full text-white ${avatarClass}`}
                     >
                       <span className="text-xs font-semibold">
                         {authorInitials(post.author_id)}
@@ -408,14 +413,14 @@ export function ThreadTimeline({
             <ReplyComposer
               threadId={threadId}
               onPosted={onPosted}
-              allowMitigation
+              allowTypedPosts
             />
           )}
           {filter !== "all" && (
             <p className="text-xs text-neutral-500">
               Switch to All discussion to post a reply
               {actor?.roles.includes("red_team")
-                ? " or mitigation response"
+                ? ", finding note, or mitigation response"
                 : ""}
               .
             </p>
