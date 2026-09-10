@@ -7,6 +7,11 @@ export const ELEMENT_TYPES = {
   H4: "h4",
   BLOCKQUOTE: "blockquote",
 
+  TABLE: "table",
+  TABLE_ROW: "tr",
+  TABLE_CELL: "td",
+  TABLE_CELL_HEADER: "th",
+
   DATA_BLOCK: "data_block",
   MATH_BLOCK: "math_block",
   MERMAID_BLOCK: "mermaid_block",
