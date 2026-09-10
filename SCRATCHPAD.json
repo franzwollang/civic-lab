@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-10T06:30Z",
-  "turn": 84,
+  "updated_at": "2026-09-10T06:40Z",
+  "turn": 85,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Fresh cron at main: FF-merged tip ea6f (PR #110 stop handoff)",
+    "Fresh cron at main: FF-merged tip 09c3 (PR #111 stop handoff)",
     "Verified suite 58/58 + vite build green on tip",
     "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)"
   ],
