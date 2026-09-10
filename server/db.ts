@@ -4,7 +4,6 @@
  * `pages` / `page_revisions` via Prisma @@map. Wire JSON dual-emits
  * `artifact_id` (preferred) and legacy `page_id` (same value).
  */
-import type { PrismaClient } from "@prisma/client";
 import {
   extractSectionsFromContent,
   sectionIdFor,
@@ -48,40 +47,16 @@ import {
   type ReputationSignalEvent,
 } from "../src/lib/reputation";
 import {
-  validateBoardHide,
-  validateBoardHideLift,
-  type AuditAction,
-} from "../src/lib/boardHide";
-import {
   validateSoftDeletePost,
   type SoftDeleteContext,
 } from "../src/lib/moderation";
-import {
-  AUTH_MODE,
-  defaultIdentityRecord,
-  evaluateStewardEligibility,
-  isVerificationStatus,
-  normalizeCountryCode,
-  validateIdentityAttestation,
-  validateIdentityRequest,
-  type AttestationKind,
-  type IdentityRecord,
-  type VerificationStatus,
-} from "../src/lib/identityPolicy";
+import { evaluateStewardEligibility } from "../src/lib/identityPolicy";
 import { getPrototypeUser } from "../src/app/lib/prototype-users";
 import { randomUUID } from "crypto";
-import {
-  artifactHref,
-  claimHref,
-  clampSearchLimit,
-  dossierHref,
-  normalizeSearchQuery,
-  scoreMatch,
-  sortHits,
-  threadHref,
-  type SearchHit,
-  type SearchResponse,
-} from "../src/lib/search";
+import { getPrisma } from "./db/prisma";
+import { getAttributions, getTerms } from "./db/registries";
+import { appendAuditLog, listActiveBoardHides, type AuditLogRow, type BoardHideRow } from "./db/moderationDb";
+import { getUserIdentity } from "./db/identities";
 import {
   actorMayCreateFinding,
   isFindingSeverity,
@@ -91,8 +66,10 @@ import {
 } from "../src/lib/findings";
 import {
   actorMayFlagCandidate,
+  actorMayPostTypedFindingOrMitigation,
   actorMayPromoteCandidate,
   isCandidateStatus,
+  isRedTeamPostType,
   isTimelinePostType,
 } from "../src/lib/candidateFindings";
 import { actorMaySignAcceptedRisk } from "../src/lib/acceptedRisk";
@@ -102,19 +79,6 @@ import {
   type StructuralValidationRegistry,
 } from "../src/doc/structuralValidation";
 import type { PrototypeRole } from "../src/app/lib/prototype-users";
-
-let prisma: PrismaClient | null = null;
-
-export function setPrisma(client: PrismaClient) {
-  prisma = client;
-}
-
-export function getPrisma(): PrismaClient {
-  if (!prisma) {
-    throw new Error("Prisma client not initialized — call bootstrapDatabase first");
-  }
-  return prisma;
-}
 
 export type AreaRow = {
   area_id: string;
@@ -179,10 +143,6 @@ export type ArtifactRevisionRow = {
 /** @deprecated Prefer ArtifactRevisionRow */
 export type RevisionRow = ArtifactRevisionRow;
 
-export type RegistryPayload = {
-  version: number;
-  items: unknown[];
-};
 
 /** CONCEPT §11 Collection dashboard (shared chrome; data scoped to one Collection). */
 export type CollectionDashboardDossier = DossierRow & {
@@ -251,26 +211,70 @@ export type CollectionReputationBoard = {
   hidden_user_ids: string[];
 };
 
-/** CONCEPT §5.9 / §9.4 — active board-hide row. */
-export type BoardHideRow = {
-  hide_id: string;
-  subject_user_id: string;
-  subject_display_name: string | null;
-  hidden_by: string;
-  reason: string;
-  created_at: string;
-  lifted_at: string | null;
-  lifted_by: string | null;
+export type CollectionDashboardDossier = DossierRow & {
+  health: "seeded" | "empty";
+  lane_hint: "Descriptive" | "Prescriptive" | "Alignment";
 };
 
-/** CONCEPT §9.4 — append-only audit entry. */
-export type AuditLogRow = {
-  audit_id: string;
-  action: string;
-  actor_id: string;
-  subject_id: string | null;
-  payload: unknown;
-  created_at: string;
+export type CollectionEmpiricalQuality = {
+  total: number;
+  open: number;
+  resolved: number;
+  invalidated: number;
+  ambiguous_or_conflict: number;
+  invalidated_rate: number | null;
+  ambiguity_rate: number | null;
+  mean_citation_density: number | null;
+  mean_days_to_resolution: number | null;
+};
+
+export type CollectionForecastAccuracy = {
+  n: number;
+  mean_brier: number | null;
+  mean_log_score: number | null;
+  mean_skill_vs_baseline: number | null;
+  baseline_p: number;
+  baseline_label: string;
+  public_board_eligible: boolean;
+};
+
+export type RequirementSatisfactionSnapshot = {
+  open: number;
+  accepted: number;
+  satisfied: number;
+  failed: number;
+  superseded: number;
+  invalidated: number;
+  disputed: number;
+  other: number;
+};
+
+export type ReputationSignalCounts = {
+  merged_revsets: number;
+  review_labor: number;
+  red_team_findings: number;
+  adjudications: number;
+  accepted_risk_signs: number;
+  endorsements: number;
+};
+
+export type ReputationContributorRow = {
+  user_id: string;
+  display_name: string | null;
+  signals: ReputationSignalCounts;
+  signal_event_count: number;
+  advisory_score: number;
+};
+
+export type CollectionReputationBoard = {
+  advisory: true;
+  grants_permissions: false;
+  n: number;
+  public_board_eligible: boolean;
+  contributors: ReputationContributorRow[];
+  note: string;
+  /** Active Owner board-hides applied to this board (CONCEPT §5.9). */
+  hidden_user_ids: string[];
 };
 
 export type CollectionDashboard = {
@@ -913,139 +917,6 @@ async function collectReputationSignals(
   return events;
 }
 
-/**
- * M8 first-cut corpus search over dossiers / artifacts / threads / claims.
- * Case-insensitive substring match; ranked by scoreMatch helpers.
- */
-export async function searchCorpus(
-  rawQuery: string,
-  rawLimit?: number,
-): Promise<SearchResponse> {
-  const query = normalizeSearchQuery(rawQuery);
-  const limit = clampSearchLimit(rawLimit);
-  if (!query) {
-    return { query: "", hits: [] };
-  }
-
-  const prisma = getPrisma();
-  const [dossiers, artifacts, threads, claims] = await Promise.all([
-    prisma.dossier.findMany({
-      include: {
-        collection: { select: { title: true, countryCode: true } },
-      },
-    }),
-    prisma.artifact.findMany({
-      select: {
-        artifactId: true,
-        title: true,
-        slug: true,
-        dossierId: true,
-        lane: true,
-      },
-    }),
-    prisma.thread.findMany({
-      select: {
-        threadId: true,
-        title: true,
-        state: true,
-        homeDossierId: true,
-      },
-    }),
-    prisma.claim.findMany({
-      select: {
-        claimId: true,
-        text: true,
-        profile: true,
-        status: true,
-        artifactId: true,
-        artifact: { select: { dossierId: true, title: true } },
-      },
-    }),
-  ]);
-
-  const hits: SearchHit[] = [];
-
-  for (const d of dossiers) {
-    const tags = Array.isArray(d.tags)
-      ? d.tags.filter((t): t is string => typeof t === "string")
-      : [];
-    const score = scoreMatch(query, {
-      title: d.title,
-      body: d.summary,
-      tags,
-    });
-    if (score <= 0) continue;
-    const collectionLabel = d.collection.countryCode
-      ? `${d.collection.title} (${d.collection.countryCode})`
-      : d.collection.title;
-    hits.push({
-      kind: "dossier",
-      id: d.dossierId,
-      title: d.title,
-      subtitle: collectionLabel,
-      href: dossierHref(d.dossierId),
-      score,
-    });
-  }
-
-  for (const a of artifacts) {
-    const score = scoreMatch(query, {
-      title: a.title,
-      body: a.slug,
-      tags: a.lane ? [a.lane] : [],
-    });
-    if (score <= 0) continue;
-    const href = artifactHref(a.dossierId, a.artifactId);
-    if (!href) continue;
-    hits.push({
-      kind: "artifact",
-      id: a.artifactId,
-      title: a.title,
-      subtitle: a.lane ? `Lane: ${a.lane}` : null,
-      href,
-      score,
-    });
-  }
-
-  for (const t of threads) {
-    const score = scoreMatch(query, { title: t.title, body: t.state });
-    if (score <= 0) continue;
-    hits.push({
-      kind: "thread",
-      id: t.threadId,
-      title: t.title,
-      subtitle: `State: ${t.state}`,
-      href: threadHref(t.threadId, t.state),
-      score,
-    });
-  }
-
-  for (const c of claims) {
-    const score = scoreMatch(query, {
-      title: c.text,
-      body: `${c.profile} ${c.status}`,
-      tags: [c.profile, c.status],
-    });
-    if (score <= 0) continue;
-    const href = claimHref(c.artifact.dossierId, c.artifactId, c.claimId);
-    if (!href) continue;
-    const snippet =
-      c.text.length > 96 ? `${c.text.slice(0, 93)}…` : c.text;
-    hits.push({
-      kind: "claim",
-      id: c.claimId,
-      title: snippet,
-      subtitle: `${c.profile} · ${c.status} · ${c.artifact.title}`,
-      href,
-      score,
-    });
-  }
-
-  return {
-    query,
-    hits: sortHits(hits).slice(0, limit),
-  };
-}
 
 const dossierCollectionNavInclude = {
   title: true,
@@ -1393,70 +1264,6 @@ export async function createArtifactRevision(payload: {
 
 /** @deprecated Prefer createArtifactRevision */
 export const createRevision = createArtifactRevision;
-
-export async function getAttributions(): Promise<RegistryPayload> {
-  const row = await getPrisma().attributionsRegistry.findUnique({
-    where: { id: 1 },
-  });
-  if (!row) {
-    return { version: 0, items: [] };
-  }
-  return {
-    version: row.version,
-    items: row.items as unknown[],
-  };
-}
-
-export async function putAttributions(
-  next: RegistryPayload,
-): Promise<RegistryPayload> {
-  const row = await getPrisma().attributionsRegistry.upsert({
-    where: { id: 1 },
-    create: {
-      id: 1,
-      version: next.version,
-      items: next.items as object,
-    },
-    update: {
-      version: next.version,
-      items: next.items as object,
-    },
-  });
-  return {
-    version: row.version,
-    items: row.items as unknown[],
-  };
-}
-
-export async function getTerms(): Promise<RegistryPayload> {
-  const row = await getPrisma().termsRegistry.findUnique({ where: { id: 1 } });
-  if (!row) {
-    return { version: 0, items: [] };
-  }
-  return {
-    version: row.version,
-    items: row.items as unknown[],
-  };
-}
-
-export async function putTerms(next: RegistryPayload): Promise<RegistryPayload> {
-  const row = await getPrisma().termsRegistry.upsert({
-    where: { id: 1 },
-    create: {
-      id: 1,
-      version: next.version,
-      items: next.items as object,
-    },
-    update: {
-      version: next.version,
-      items: next.items as object,
-    },
-  });
-  return {
-    version: row.version,
-    items: row.items as unknown[],
-  };
-}
 
 function mapThreadTarget(row: {
   targetKind: string;
@@ -2178,6 +1985,11 @@ export async function createRevSet(input: {
   return { ok: true, revset: mapRevSet(row, mergeArtifactId) };
 }
 
+export type CreateThreadPostError =
+  | { code: "not_found"; message: string }
+  | { code: "invalid_type"; message: string }
+  | { code: "forbidden"; message: string };
+
 export async function createThreadPost(input: {
   post_id?: string;
   thread_id: string;
@@ -2185,15 +1997,42 @@ export async function createThreadPost(input: {
   type?: string;
   body: string;
   created_at?: string;
-}): Promise<ThreadPostRow | null> {
+}): Promise<
+  | { ok: true; post: ThreadPostRow }
+  | { ok: false; error: CreateThreadPostError }
+> {
   const thread = await getPrisma().thread.findUnique({
     where: { threadId: input.thread_id },
   });
-  if (!thread) return null;
+  if (!thread) {
+    return {
+      ok: false,
+      error: { code: "not_found", message: "Thread not found" },
+    };
+  }
 
   const type = input.type ?? "comment";
   if (!isTimelinePostType(type)) {
-    return null;
+    return {
+      ok: false,
+      error: {
+        code: "invalid_type",
+        message: `Invalid post type "${type}" (allowed: comment, finding, mitigation)`,
+      },
+    };
+  }
+
+  if (
+    isRedTeamPostType(type) &&
+    !actorMayPostTypedFindingOrMitigation(input.author_id)
+  ) {
+    return {
+      ok: false,
+      error: {
+        code: "forbidden",
+        message: "Only Red Team may post finding or mitigation types",
+      },
+    };
   }
 
   const row = await getPrisma().threadPost.create({
@@ -2206,7 +2045,7 @@ export async function createThreadPost(input: {
       createdAt: input.created_at ? new Date(input.created_at) : new Date(),
     },
   });
-  return mapThreadPost(row);
+  return { ok: true, post: mapThreadPost(row) };
 }
 
 export type SoftDeletePostError =
@@ -3784,437 +3623,35 @@ export async function promoteCandidateFinding(
   };
 }
 
-// —— CONCEPT §5.9 / §9.4 board-hide + append-only audit ——————————————
 
-function mapBoardHide(row: {
-  hideId: string;
-  subjectUserId: string;
-  hiddenBy: string;
-  reason: string;
-  createdAt: Date;
-  liftedAt: Date | null;
-  liftedBy: string | null;
-}): BoardHideRow {
-  return {
-    hide_id: row.hideId,
-    subject_user_id: row.subjectUserId,
-    subject_display_name:
-      getPrototypeUser(row.subjectUserId)?.display_name ?? null,
-    hidden_by: row.hiddenBy,
-    reason: row.reason,
-    created_at: row.createdAt.toISOString(),
-    lifted_at: row.liftedAt?.toISOString() ?? null,
-    lifted_by: row.liftedBy,
-  };
-}
+// —— Barrel re-exports (leaf modules) ————————————————————————————————
 
-function mapAuditLog(row: {
-  auditId: string;
-  action: string;
-  actorId: string;
-  subjectId: string | null;
-  payload: unknown;
-  createdAt: Date;
-}): AuditLogRow {
-  return {
-    audit_id: row.auditId,
-    action: row.action,
-    actor_id: row.actorId,
-    subject_id: row.subjectId,
-    payload: row.payload,
-    created_at: row.createdAt.toISOString(),
-  };
-}
-
-/** Append-only audit insert (never update/delete). */
-export async function appendAuditLog(input: {
-  action: AuditAction | string;
-  actor_id: string;
-  subject_id?: string | null;
-  payload?: unknown;
-}): Promise<AuditLogRow> {
-  const row = await getPrisma().auditLog.create({
-    data: {
-      auditId: `audit-${randomUUID()}`,
-      action: input.action,
-      actorId: input.actor_id,
-      subjectId: input.subject_id ?? null,
-      payload: (input.payload ?? {}) as object,
-      createdAt: new Date(),
-    },
-  });
-  return mapAuditLog(row);
-}
-
-export async function listAuditLogs(opts?: {
-  action?: string;
-  limit?: number;
-}): Promise<AuditLogRow[]> {
-  const limit = Math.min(Math.max(opts?.limit ?? 50, 1), 200);
-  const rows = await getPrisma().auditLog.findMany({
-    where: opts?.action ? { action: opts.action } : undefined,
-    orderBy: { createdAt: "desc" },
-    take: limit,
-  });
-  return rows.map(mapAuditLog);
-}
-
-export async function listActiveBoardHides(): Promise<BoardHideRow[]> {
-  const rows = await getPrisma().boardHide.findMany({
-    where: { liftedAt: null },
-    orderBy: { createdAt: "desc" },
-  });
-  return rows.map(mapBoardHide);
-}
-
-export async function listBoardHides(opts?: {
-  include_lifted?: boolean;
-}): Promise<BoardHideRow[]> {
-  const rows = await getPrisma().boardHide.findMany({
-    where: opts?.include_lifted ? undefined : { liftedAt: null },
-    orderBy: { createdAt: "desc" },
-  });
-  return rows.map(mapBoardHide);
-}
-
-export type BoardHideMutationError =
-  | { code: "not_owner"; message: string }
-  | { code: "unknown_user"; message: string }
-  | { code: "cannot_hide_self"; message: string }
-  | { code: "already_hidden"; message: string }
-  | { code: "not_hidden"; message: string }
-  | { code: "invalid_input"; message: string };
-
-export async function hideUserFromBoards(input: {
-  actor_id: string;
-  subject_user_id: string;
-  reason: string;
-}): Promise<
-  | { ok: true; hide: BoardHideRow; audit: AuditLogRow }
-  | { ok: false; error: BoardHideMutationError }
-> {
-  const check = validateBoardHide({
-    actor_id: input.actor_id,
-    subject_user_id: input.subject_user_id,
-  });
-  if (!check.ok) {
-    return { ok: false, error: { code: check.code, message: check.message } };
-  }
-
-  const reason = input.reason.trim();
-  if (!reason) {
-    return {
-      ok: false,
-      error: { code: "invalid_input", message: "Reason is required" },
-    };
-  }
-
-  const existing = await getPrisma().boardHide.findFirst({
-    where: { subjectUserId: input.subject_user_id, liftedAt: null },
-  });
-  if (existing) {
-    return {
-      ok: false,
-      error: {
-        code: "already_hidden",
-        message: `User ${input.subject_user_id} is already hidden from boards`,
-      },
-    };
-  }
-
-  const hideId = `board-hide-${randomUUID()}`;
-  const createdAt = new Date();
-  const hide = await getPrisma().boardHide.create({
-    data: {
-      hideId,
-      subjectUserId: input.subject_user_id,
-      hiddenBy: input.actor_id,
-      reason,
-      createdAt,
-    },
-  });
-
-  const audit = await appendAuditLog({
-    action: "board_hide",
-    actor_id: input.actor_id,
-    subject_id: input.subject_user_id,
-    payload: {
-      hide_id: hideId,
-      reason,
-    },
-  });
-
-  return { ok: true, hide: mapBoardHide(hide), audit };
-}
-
-export async function liftBoardHide(input: {
-  actor_id: string;
-  subject_user_id: string;
-  note?: string | null;
-}): Promise<
-  | { ok: true; hide: BoardHideRow; audit: AuditLogRow }
-  | { ok: false; error: BoardHideMutationError }
-> {
-  const check = validateBoardHideLift({
-    actor_id: input.actor_id,
-    subject_user_id: input.subject_user_id,
-  });
-  if (!check.ok) {
-    return { ok: false, error: { code: check.code, message: check.message } };
-  }
-
-  const existing = await getPrisma().boardHide.findFirst({
-    where: { subjectUserId: input.subject_user_id, liftedAt: null },
-  });
-  if (!existing) {
-    return {
-      ok: false,
-      error: {
-        code: "not_hidden",
-        message: `User ${input.subject_user_id} is not currently hidden from boards`,
-      },
-    };
-  }
-
-  const liftedAt = new Date();
-  const hide = await getPrisma().boardHide.update({
-    where: { hideId: existing.hideId },
-    data: {
-      liftedAt,
-      liftedBy: input.actor_id,
-    },
-  });
-
-  const audit = await appendAuditLog({
-    action: "board_hide_lift",
-    actor_id: input.actor_id,
-    subject_id: input.subject_user_id,
-    payload: {
-      hide_id: existing.hideId,
-      note: input.note ?? null,
-      original_reason: existing.reason,
-    },
-  });
-
-  return { ok: true, hide: mapBoardHide(hide), audit };
-}
-
-
-// ---------------------------------------------------------------------------
-// CONCEPT §8.6 — real-identity policy hooks
-// ---------------------------------------------------------------------------
-
-function parseCountryCodes(raw: unknown): string[] {
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .filter((c): c is string => typeof c === "string")
-    .map((c) => c.trim().toUpperCase())
-    .filter(Boolean);
-}
-
-function mapUserIdentity(row: {
-  userId: string;
-  verificationStatus: string;
-  countryCodes: unknown;
-  longTermTiesNote: string | null;
-  attestationKind: string;
-  verifiedBy: string | null;
-  verifiedAt: Date | null;
-  providerStub: string | null;
-  updatedAt: Date;
-}): IdentityRecord {
-  return {
-    user_id: row.userId,
-    verification_status: isVerificationStatus(row.verificationStatus)
-      ? row.verificationStatus
-      : "unverified",
-    country_codes: parseCountryCodes(row.countryCodes),
-    long_term_ties_note: row.longTermTiesNote,
-    attestation_kind: (row.attestationKind as AttestationKind) || "none",
-    verified_by: row.verifiedBy,
-    verified_at: row.verifiedAt ? row.verifiedAt.toISOString() : null,
-    provider_stub: row.providerStub,
-    updated_at: row.updatedAt.toISOString(),
-  };
-}
-
-export async function listUserIdentities(): Promise<IdentityRecord[]> {
-  const rows = await getPrisma().userIdentity.findMany({
-    orderBy: { userId: "asc" },
-  });
-  return rows.map(mapUserIdentity);
-}
-
-export async function getUserIdentity(
-  userId: string,
-): Promise<IdentityRecord | null> {
-  const row = await getPrisma().userIdentity.findUnique({
-    where: { userId },
-  });
-  return row ? mapUserIdentity(row) : null;
-}
-
-/** Resolve identity or a default unverified stub for policy checks. */
-export async function resolveUserIdentity(
-  userId: string,
-): Promise<IdentityRecord> {
-  return (await getUserIdentity(userId)) ?? defaultIdentityRecord(userId);
-}
-
-export type IdentityMutationError =
-  | { code: "not_owner"; message: string }
-  | { code: "unknown_user"; message: string }
-  | { code: "invalid_status"; message: string }
-  | { code: "invalid_input"; message: string }
-  | { code: "cannot_self_verify"; message: string };
-
-export async function requestIdentityVerification(input: {
-  actor_id: string;
-  subject_user_id: string;
-}): Promise<
-  | { ok: true; identity: IdentityRecord; audit: AuditLogRow }
-  | { ok: false; error: IdentityMutationError }
-> {
-  const check = validateIdentityRequest({
-    actor_id: input.actor_id,
-    subject_user_id: input.subject_user_id,
-  });
-  if (!check.ok) {
-    return { ok: false, error: { code: check.code, message: check.message } };
-  }
-
-  const now = new Date();
-  const existing = await getPrisma().userIdentity.findUnique({
-    where: { userId: input.subject_user_id },
-  });
-
-  const row = existing
-    ? await getPrisma().userIdentity.update({
-        where: { userId: input.subject_user_id },
-        data: {
-          verificationStatus: "pending",
-          attestationKind: "self_asserted",
-          providerStub: existing.providerStub ?? "prototype",
-          updatedAt: now,
-        },
-      })
-    : await getPrisma().userIdentity.create({
-        data: {
-          userId: input.subject_user_id,
-          verificationStatus: "pending",
-          countryCodes: [],
-          longTermTiesNote: null,
-          attestationKind: "self_asserted",
-          verifiedBy: null,
-          verifiedAt: null,
-          providerStub: "prototype",
-          updatedAt: now,
-        },
-      });
-
-  const identity = mapUserIdentity(row);
-  const audit = await appendAuditLog({
-    action: "identity_request",
-    actor_id: input.actor_id,
-    subject_id: input.subject_user_id,
-    payload: { verification_status: "pending", auth_mode: AUTH_MODE },
-  });
-  return { ok: true, identity, audit };
-}
-
-export async function attestUserIdentity(input: {
-  actor_id: string;
-  subject_user_id: string;
-  verification_status: VerificationStatus;
-  country_codes?: string[];
-  long_term_ties_note?: string | null;
-  provider_stub?: string | null;
-}): Promise<
-  | { ok: true; identity: IdentityRecord; audit: AuditLogRow }
-  | { ok: false; error: IdentityMutationError }
-> {
-  const check = validateIdentityAttestation({
-    actor_id: input.actor_id,
-    subject_user_id: input.subject_user_id,
-    verification_status: input.verification_status,
-  });
-  if (!check.ok) {
-    return { ok: false, error: { code: check.code, message: check.message } };
-  }
-
-  const countries = (input.country_codes ?? [])
-    .map((c) => normalizeCountryCode(c))
-    .filter((c): c is string => Boolean(c));
-  const ties = input.long_term_ties_note?.trim() || null;
-
-  const now = new Date();
-  const verified =
-    input.verification_status === "verified"
-      ? { verifiedBy: input.actor_id, verifiedAt: now }
-      : { verifiedBy: null as string | null, verifiedAt: null as Date | null };
-
-  const existing = await getPrisma().userIdentity.findUnique({
-    where: { userId: input.subject_user_id },
-  });
-
-  const row = existing
-    ? await getPrisma().userIdentity.update({
-        where: { userId: input.subject_user_id },
-        data: {
-          verificationStatus: input.verification_status,
-          countryCodes: countries,
-          longTermTiesNote: ties,
-          attestationKind: "owner_attested",
-          verifiedBy: verified.verifiedBy,
-          verifiedAt: verified.verifiedAt,
-          providerStub:
-            input.provider_stub ?? existing.providerStub ?? "prototype",
-          updatedAt: now,
-        },
-      })
-    : await getPrisma().userIdentity.create({
-        data: {
-          userId: input.subject_user_id,
-          verificationStatus: input.verification_status,
-          countryCodes: countries,
-          longTermTiesNote: ties,
-          attestationKind: "owner_attested",
-          verifiedBy: verified.verifiedBy,
-          verifiedAt: verified.verifiedAt,
-          providerStub: input.provider_stub ?? "prototype",
-          updatedAt: now,
-        },
-      });
-
-  const identity = mapUserIdentity(row);
-  const audit = await appendAuditLog({
-    action: "identity_attest",
-    actor_id: input.actor_id,
-    subject_id: input.subject_user_id,
-    payload: {
-      verification_status: identity.verification_status,
-      country_codes: identity.country_codes,
-      long_term_ties_note: identity.long_term_ties_note,
-      auth_mode: AUTH_MODE,
-    },
-  });
-  return { ok: true, identity, audit };
-}
-
-export async function getStewardEligibilityForUser(input: {
-  user_id: string;
-  country_code: string | null;
-}): Promise<{
-  auth_mode: typeof AUTH_MODE;
-  identity: IdentityRecord;
-  eligibility: ReturnType<typeof evaluateStewardEligibility>;
-}> {
-  const identity = await resolveUserIdentity(input.user_id);
-  const eligibility = evaluateStewardEligibility({
-    actor_id: input.user_id,
-    country_code: input.country_code,
-    identity,
-    require_manual_country: true,
-  });
-  return { auth_mode: AUTH_MODE, identity, eligibility };
-}
+export { setPrisma, getPrisma } from "./db/prisma";
+export {
+  getAttributions,
+  putAttributions,
+  getTerms,
+  putTerms,
+  type RegistryPayload,
+} from "./db/registries";
+export { searchCorpus } from "./db/search";
+export {
+  appendAuditLog,
+  listAuditLogs,
+  listActiveBoardHides,
+  listBoardHides,
+  hideUserFromBoards,
+  liftBoardHide,
+  type AuditLogRow,
+  type BoardHideRow,
+  type BoardHideMutationError,
+} from "./db/moderationDb";
+export {
+  listUserIdentities,
+  getUserIdentity,
+  resolveUserIdentity,
+  requestIdentityVerification,
+  attestUserIdentity,
+  getStewardEligibilityForUser,
+  type IdentityMutationError,
+} from "./db/identities";

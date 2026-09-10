@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T04:20Z",
+  "turn": 71,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "post-R0",
+    "issue": "Deeper server split",
+    "goal": "Leaf split done; hand off domain modules or OAuth"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Server leaf split green: 50/50 smokes + vite build",
+    "Merged tip 9faa / PR #97 onto cron 3379",
+    "Extracted db leaves + health/uploads/corpus/moderation routes"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Parallel e7a3 stack diverged at 6645e7d — reapply slices; don't merge wholesale",
+    "index.ts still needs getDossier + actorMayViewAuditLog after route extract"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Next: deeper split or OAuth / moderator polish",
+    "Keep createAcceptedRisk in server/db.ts across domain extracts"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Merge this tip; Optional: deeper server split or OAuth/IdP",
   "blockers": []
 }
