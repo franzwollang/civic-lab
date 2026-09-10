@@ -107,6 +107,19 @@ async function main() {
       throw new Error(`canon-about slug: ${about.slug}`);
     }
 
+    const faq = await prisma.artifact.findUnique({
+      where: { artifactId: "canon-faq" },
+    });
+    if (!faq || faq.dossierId !== "canon-governance-1") {
+      throw new Error("canon-faq should belong to canon-governance-1");
+    }
+    if (!faq.ownerMergeOnly) {
+      throw new Error("canon-faq must be owner_merge_only");
+    }
+    if (faq.slug !== "faq") {
+      throw new Error(`canon-faq slug: ${faq.slug}`);
+    }
+
     const underUsVoting = await prisma.artifact.findMany({
       where: { dossierId: "us-voting-1" },
       orderBy: { slug: "asc" },

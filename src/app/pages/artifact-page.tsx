@@ -31,6 +31,7 @@ import { useActingUser } from "../lib/acting-user";
 import { userHasCapability } from "../lib/role-affordances";
 import { CHARTER_ARTIFACT_ID } from "@/lib/charter";
 import { ABOUT_ARTIFACT_ID } from "@/lib/about";
+import { FAQ_ARTIFACT_ID } from "@/lib/faq";
 
 export function ArtifactPage() {
   const { dossierId, artifactId } = useParams();
@@ -104,6 +105,9 @@ export function ArtifactPage() {
   const isAbout =
     doc.status === "ready" &&
     artifactIdOf(doc.artifact) === ABOUT_ARTIFACT_ID;
+  const isFaq =
+    doc.status === "ready" &&
+    artifactIdOf(doc.artifact) === FAQ_ARTIFACT_ID;
 
   const relatedFiltered = useMemo(() => {
     const currentSlug =
@@ -197,7 +201,9 @@ export function ArtifactPage() {
                         ? "Charter · Owner merge only"
                         : isAbout
                           ? "About · Owner merge only"
-                          : "Owner merge only"}
+                          : isFaq
+                            ? "FAQ · Owner merge only"
+                            : "Owner merge only"}
                     </Badge>
                   )}
                 </div>
@@ -352,6 +358,7 @@ export function ArtifactPage() {
                           Owner only (`owner_merge_only`)
                           {isCharter ? " · living Charter" : ""}
                           {isAbout ? " · living About" : ""}
+                          {isFaq ? " · living FAQ" : ""}
                         </div>
                       </div>
                     )}

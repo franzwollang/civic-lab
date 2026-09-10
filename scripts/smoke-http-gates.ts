@@ -131,6 +131,25 @@ async function main() {
       throw new Error(`canon-about payload: ${JSON.stringify(aboutBody)}`);
     }
 
+    const faq = await json(await app.request("/api/artifacts/canon-faq"));
+    if (faq.status !== 200) {
+      throw new Error(`canon-faq GET failed: ${faq.status}`);
+    }
+    const faqBody = faq.body as {
+      artifact_id?: string;
+      slug?: string;
+      owner_merge_only?: boolean;
+      dossier_id?: string;
+    };
+    if (
+      faqBody.artifact_id !== "canon-faq" ||
+      faqBody.slug !== "faq" ||
+      faqBody.owner_merge_only !== true ||
+      faqBody.dossier_id !== "canon-governance-1"
+    ) {
+      throw new Error(`canon-faq payload: ${JSON.stringify(faqBody)}`);
+    }
+
     console.log("smoke-http-gates: ok");
   } finally {
     await prisma.$disconnect();
