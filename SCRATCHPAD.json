@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T05:20Z",
-  "turn": 77,
+  "updated_at": "2026-09-10T05:12Z",
+  "turn": 78,
   "focus": {
     "milestone": "post-R0",
-    "issue": null,
-    "goal": "Mod queue done; next deferred Manuals globe / forecast / OIDC"
+    "issue": "Model→forecast implication links MVP",
+    "goal": "Port implies_forecast MVP onto tip; smoke 55/55"
   },
   "recent": [
-    "Merged tip 1f3e / PR #103 role-change stack",
-    "Ported mod queue UI from e7a3 onto tip (session auth)",
-    "/mod + header + smoke-mod-queue; suite 54/54"
+    "Merged tip 9db6 / PR #104 onto cron branch",
+    "Ported claimImplications MVP from parallel 0ffe",
+    "Seed claim-canon-enp-model + composer/list + smoke"
   ],
   "discoveries": [
     "Cron at main must merge furthest tip before new work",
-    "Reapply e7a3 mod-queue files; do not merge e7a3 wholesale"
+    "Reapply parallel optional slices; do not merge old stacks wholesale"
   ],
   "open_threads": [
     "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
-    "Model→forecast graph deferred; external OIDC optional"
+    "Implication DAG/scoring + external OIDC optional"
   ],
-  "next_step": "Optional: Manuals globe, model→forecast graph, or external OIDC — or stop if product-blocked",
+  "next_step": "Optional: Manuals globe, implication DAG/scoring, or external OIDC — or stop",
   "blockers": []
 }

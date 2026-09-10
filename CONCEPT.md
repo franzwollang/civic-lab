@@ -225,9 +225,11 @@ There is **no Requirements Matrix entity** and no parallel “alignment checklis
 | **`requirement`** | Locally interpreted Canon-linked obligations / alignment steps | No — quality metrics only |
 
 ### 5.2 Empirical claims
-Types: fact | forecast | model (implication graph deferred).
+Types: fact | forecast | model.
 
 Fields: `text`, `type`, `as_of` XOR `deadline`, `probability` (required for scored forecasts), `resolution_criteria`, `preferred_sources`, `adjudication_rule`, `status` (`open | resolved_true | resolved_false | ambiguous | invalidated | source_conflict`), `links`. Canon: `scope` (`global | regional`).
+
+**Model→forecast implications (MVP):** model claims may carry `links` entries `{ kind: "implies_forecast", claim_id }` pointing at empirical forecast claims. Create/update rejects those links on non-model types and when the target is missing or not a forecast. Richer DAG UI / scoring propagation remains deferred.
 
 ### 5.3 Requirement claims
 Fields: `text`, required **`canon_citations`**, optional deps / expected time-to-effect / confidence, `resolution_criteria`, `status` (`open | accepted | satisfied | failed | superseded | invalidated | disputed`), `links`.
@@ -424,7 +426,7 @@ Formerly open design questions — **defaults adopted** (revisit only with cause
 | Manual promote | Stewards only (not Canon editors) |
 | Moderation / audit | Append-only audit; soft-delete posts; stewards local, owner global |
 | Observer “react” | Lightweight post reactions; no score weight |
-| Model→forecast graph | Still deferred (post claim UX) |
+| Model→forecast graph | MVP links shipped (`implies_forecast`); DAG UI / scoring propagation deferred |
 
 ---
 

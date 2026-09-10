@@ -44,7 +44,10 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Moderator polish (remaining)** — mod queue UI done (`/mod` page;
   soft-deleted posts audit feed with steward Canon filter; open findings;
   adjudication tab; header link; `smoke-mod-queue`; suite **54/54**)
-- [ ] **Model→forecast implication graph** — deferred
+- [x] **Model→forecast implication graph** — MVP links done (`implies_forecast`
+  on model claims; seed `claim-canon-enp-model`; composer + list UI;
+  `smoke-claim-implications`; suite **55/55**). DAG UI / scoring propagation
+  remain deferred.
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
@@ -69,7 +72,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~54 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~55 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

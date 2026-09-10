@@ -73,7 +73,7 @@ lives in `SCRATCHPAD.json`.
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
 R0 marathon (About/FAQ → CONCEPT rewrite) landed. Canon revert + role-change +
-mod queue UI landed.
+mod queue UI + model→forecast implication MVP landed.
 
 ---
 
@@ -127,7 +127,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
     `smoke-role-change`; suite **53/53**)
 17. ~~**Mod queue UI**~~ (**done** — `/mod` soft-deletes + open findings +
     adjudication; steward Canon filter; `smoke-mod-queue`; suite **54/54**)
-18. **Optional / deferred next:** Manuals globe, model→forecast graph,
+18. ~~**Model→forecast implication links MVP**~~ (**done** — `implies_forecast`
+    links; seed `claim-canon-enp-model`; composer + list; `smoke-claim-implications`;
+    suite **55/55**)
+19. **Optional / deferred next:** Manuals globe, implication DAG/scoring,
     external OIDC
 
 **Agent rules of thumb**
@@ -143,11 +146,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
-split + IdP-lite session→actor + Canon revert + role-change + mod queue done —
-see remaining `OPEN_ISSUES.md` **Optional / deferred** (Manuals globe /
-model→forecast / external OIDC). No architecture blockers. Known debt:
-client→server import of prototype-users, tsc not covering `server/` (Vite/smoke
-are the gates today).
+split + IdP-lite session→actor + Canon revert + role-change + mod queue +
+model→forecast implication MVP done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred** (Manuals globe / implication DAG·scoring / external
+OIDC). No architecture blockers. Known debt: client→server import of
+prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -156,4 +159,4 @@ are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Mod queue UI** (soft-deleted posts + findings/adjudication queue).
+- Next: **Optional** Manuals 3D globe, implication DAG/scoring, or external OIDC — or stop.
