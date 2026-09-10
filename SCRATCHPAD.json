@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-09-10T14:15Z",
-  "turn": 129,
+  "updated_at": "2026-09-10T14:25Z",
+  "turn": 130,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Cron b025 at stale main: FF-merged tip ff6f (PR #155 stack)",
-    "Tip has R0 + optionals done; only globe + reputation rollup gated",
+    "Cron 27b7 at stale tip: FF-merged progression b025 (PR #156 stack)",
+    "Verified suite 58/58; only globe + reputation rollup product-gated",
     "Prefer stop; do not invent AC for deferred Optionals",
-    "In-repo main still lags tip — always merge furthest progression first"
+    "In-repo main lags tip — always merge furthest progression first"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
