@@ -70,3 +70,4 @@
 {"ts":"2026-09-10T04:10Z","focus":"Fumadocs unpin","summary":"Merged tip 1cb7; Tailwind 4.3.3 + fumadocs 16.14; smoke-fumadocs; 49/49","next":"server split or OAuth / moderator polish"}
 {"ts":"2026-09-10T04:20Z","focus":"server-split leaf","summary":"Merged tip 9faa; extracted db leaves + route registrars; smoke 50/50 + vite build","next":"deeper server split or OAuth / moderator polish"}
 {"ts":"2026-09-10T04:25Z","focus":"domain route registrars","summary":"Merged tip 3379; extracted artifacts/threads/claims/findings routes; smoke 50/50","next":"domain db modules or OAuth / moderator polish"}
+{"ts":"2026-09-10T04:40Z","focus":"domain db modules","summary":"Merged tip e8c6; extracted *Db.ts domain modules; smoke 50/50 + vite build","next":"OAuth/IdP or moderator polish"}

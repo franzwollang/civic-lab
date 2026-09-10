@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T04:25Z",
-  "turn": 72,
+  "updated_at": "2026-09-10T04:40Z",
+  "turn": 73,
   "focus": {
     "milestone": "post-R0",
-    "issue": "Domain db module extract",
-    "goal": "Route registrars done; extract *Db.ts next"
+    "issue": "OAuth / IdP or moderator polish",
+    "goal": "Domain db extract done; next Optional"
   },
   "recent": [
-    "Domain route registrars: artifacts/threads/claims/findings; index 64 lines",
-    "Merged tip 3379 / PR #98 onto cron e8c6",
-    "Smoke 50/50 + vite build green"
+    "Extracted artifactsDb/threadsDb/claimsDb/findingsDb/corpusDb",
+    "createAcceptedRisk stays in server/db.ts; no Canon revert",
+    "Merged tip e8c6 / PR #99; smoke 50/50 + vite build"
   ],
   "discoveries": [
-    "Do not copy e827 revertCanon route — Canon revert not on tip",
-    "Smokes that grep index.ts need retarget to routes/*.ts"
+    "e827 domain modules OK if revert + role-change exports stripped",
+    "smoke-editor-mvp must grep threadsDb for merge-strict gate"
   ],
   "open_threads": [
-    "Next: artifactsDb/threadsDb/claimsDb/findingsDb (+ corpusDb)",
-    "Keep createAcceptedRisk in server/db.ts; reapply e827 carefully"
+    "Next: OAuth/IdP or moderator polish (Canon revert / role audit)",
+    "Manuals 3D globe still deferred"
   ],
-  "next_step": "Merge this tip; Optional: domain db modules or OAuth/IdP",
+  "next_step": "Merge this tip; Optional: OAuth/IdP or moderator polish",
   "blockers": []
 }
