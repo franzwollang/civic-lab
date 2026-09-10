@@ -11,6 +11,7 @@ import {
   isExternalArtifactEmpty,
   validateExternalArtifact,
 } from "../lib/externalArtifact";
+import { checkImageSrc, imageSrcErrorMessage } from "../lib/imageSrc";
 
 type SlateBlock = Record<string, unknown> & { type?: string; id?: string };
 
@@ -141,6 +142,76 @@ const createStructuralSchema = (registry?: StructuralValidationRegistry) =>
           });
         }
         lastHeadingLevel = headingLevel;
+      }
+
+      if (node.type === "table") {
+        const rows = Array.isArray(node.children) ? node.children : [];
+        if (rows.length === 0) {
+          ctx.addIssue({
+            code: ZodIssueCode.custom,
+            message: "Table must contain at least one row.",
+            path: [index, "children"],
+            params: { rule: "table-empty" },
+          });
+        }
+        rows.forEach((row, rowIndex) => {
+          if (!row || typeof row !== "object") {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: "Table children must be row elements.",
+              path: [index, "children", rowIndex],
+              params: { rule: "table-row-type" },
+            });
+            return;
+          }
+          const rowNode = row as SlateBlock;
+          if (rowNode.type !== "tr") {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: "Table children must be `tr` rows.",
+              path: [index, "children", rowIndex, "type"],
+              params: { rule: "table-row-type", expected: "tr" },
+            });
+            return;
+          }
+          const cells = Array.isArray(rowNode.children) ? rowNode.children : [];
+          if (cells.length === 0) {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: "Table row must contain at least one cell.",
+              path: [index, "children", rowIndex, "children"],
+              params: { rule: "table-row-empty" },
+            });
+          }
+          cells.forEach((cell, cellIndex) => {
+            if (!cell || typeof cell !== "object") {
+              ctx.addIssue({
+                code: ZodIssueCode.custom,
+                message: "Table row children must be cells.",
+                path: [index, "children", rowIndex, "children", cellIndex],
+                params: { rule: "table-cell-type" },
+              });
+              return;
+            }
+            const cellType = (cell as SlateBlock).type;
+            if (cellType !== "td" && cellType !== "th") {
+              ctx.addIssue({
+                code: ZodIssueCode.custom,
+                message: "Table cells must be `td` or `th`.",
+                path: [
+                  index,
+                  "children",
+                  rowIndex,
+                  "children",
+                  cellIndex,
+                  "type",
+                ],
+                params: { rule: "table-cell-type", expected: "td|th" },
+              });
+            }
+          });
+        });
+        return;
       }
 
       if (node.type === "data_block") {
@@ -298,22 +369,20 @@ const createStructuralSchema = (registry?: StructuralValidationRegistry) =>
           typeof (node as { src?: unknown }).src === "string"
             ? (node as { src: string }).src
             : "";
-        const trimmed = src.trim();
-        const isWebp =
-          /\.webp(\?.*)?$/i.test(trimmed) ||
-          /^data:image\/webp/i.test(trimmed);
-        if (!src.trim()) {
-          warn("Image block is missing a source URL.", [index, "src"], {
-            rule: "image-src",
-          });
-        } else if (!isWebp) {
-          ctx.addIssue({
-            code: ZodIssueCode.custom,
-            message:
-              "Image source must be a .webp URL for now. Other formats will be auto-converted after the Next.js migration.",
-            path: [index, "src"],
-            params: { rule: "image-webp-only" },
-          });
+        const check = checkImageSrc(src);
+        if (!check.ok) {
+          if (check.reason === "empty") {
+            warn(imageSrcErrorMessage("empty"), [index, "src"], {
+              rule: "image-src",
+            });
+          } else {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: imageSrcErrorMessage("unsupported"),
+              path: [index, "src"],
+              params: { rule: "image-format" },
+            });
+          }
         }
         return;
       }
