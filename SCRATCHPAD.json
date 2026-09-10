@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-10T13:15Z",
-  "turn": 125,
+  "updated_at": "2026-09-10T13:30Z",
+  "turn": 126,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Cron acfa at stale main: FF-merged tip 5dda (PR #151 stack)",
+    "Cron b229 at stale main: FF-merged tip acfa (PR #152 stack)",
     "Verified tip suite 58/58 after merge + pnpm install",
     "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)",
     "Prefer stop; do not invent AC for deferred Optionals"
