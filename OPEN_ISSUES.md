@@ -9,6 +9,7 @@ reputation `deletedAt` filter, board-hide on claim metrics, HTTP smoke).
 About + FAQ living Canon artifacts are **done** (`canon-about`, `canon-faq`).
 Fixture descriptive + Red Team demo pages are **retired**.
 Typed finding/mitigation ThreadPost types are **done** (RT-gated create + smoke).
+Plate tables MVP is **done** (`@platejs/table@52`, Inserts → Table, reader/export/smoke).
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
@@ -17,17 +18,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ## Marathon queue (ordered)
 
-### 1. Editor tables (defer images if needed)
-
-- [ ] **Plate tables MVP**
-  - **Scope:** add table plugin compatible with Plate 52; toolbar insert;
-    DocumentReader + plainTextExport; structural validation allowlist
-  - **Done when:** insert/edit simple table in `/test/editor`; round-trip save;
-    smoke on content_json shape
-  - **Out of scope:** image upload pipeline (separate); keep `.webp`-only until
-    upload exists
-
-### 2. Home / About CONCEPT alignment
+### 1. Home / About CONCEPT alignment
 
 - [ ] **Home preamble links to live exemplars**
   - **Scope:** `src/app/pages/home.tsx`
@@ -36,7 +27,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
     `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
   - **Verify:** manual; no new smoke required if copy-only
 
-### 3. CONCEPT.md rewrite pass
+### 2. CONCEPT.md rewrite pass
 
 - [ ] **Editorial pass (human-facing)**
   - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
@@ -66,7 +57,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~43 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~44 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

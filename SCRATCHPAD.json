@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-09-10T02:43Z",
-  "turn": 63,
+  "updated_at": "2026-09-10T03:10Z",
+  "turn": 64,
   "focus": {
     "milestone": "R0",
-    "issue": "Plate tables MVP",
-    "goal": "Plate 52 table plugin + toolbar + reader/export smoke"
+    "issue": "Home preamble live exemplars",
+    "goal": "Home CONCEPT copy with deep links to live corpus"
   },
   "recent": [
-    "Typed finding/mitigation posts; RT gate; smoke-typed-posts; 43/43",
-    "Merged tip 389a (About+FAQ+fixtures) onto cron branch before work",
-    "Retired descriptive-artifact + red-team-review; smoke-fixture-retirement",
-    "Migrated FAQ → canon-faq; /faq hash redirect; smoke-faq",
-    "Migrated About → canon-about; DocumentReader headingDomId"
+    "Plate tables MVP; @platejs/table@52; smoke-editor-tables; 44/44",
+    "Merged tip 7967 (About+FAQ+fixtures+typed posts) onto cron branch",
+    "Typed finding/mitigation posts; RT gate; smoke-typed-posts",
+    "Retired descriptive-artifact + red-team-review demos",
+    "Migrated About + FAQ → living Canon artifacts"
   ],
   "discoveries": [
-    "Cron at main: merge furthest sequential tip (389a) before new R0 work",
-    "createThreadPost returns Result; update callers to .ok / .error.code"
+    "Cron at main: merge furthest tip (7967) before new R0 work",
+    "Prior tables PR #50 cherry-picks cleanly onto tip after typed posts"
   ],
   "open_threads": [
-    "Plate tables MVP next",
-    "Home preamble; CONCEPT rewrite"
+    "Home preamble next; prior PR #51 / a831 may cherry-pick",
+    "CONCEPT.md rewrite after home"
   ],
-  "next_step": "Plate tables: plugin + toolbar insert + DocumentReader/export + smoke",
+  "next_step": "Home preamble: live exemplar links (Canon/Manuals/thread/RFC/RT)",
   "blockers": []
 }

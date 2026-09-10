@@ -88,7 +88,7 @@ lives in `SCRATCHPAD.json`.
 | **M7 — Red Team** | `done` | Findings; AR + Critical gate; Candidate→Finding |
 | **M8 — Discovery** | `done` | Search; breadcrumbs; impersonation chrome |
 | **M9 — Policy** | `done` | Charter; reputation; board-hide; identity hooks |
-| **R0 — Residual polish** | `in progress` | Tables; CONCEPT/home copy |
+| **R0 — Residual polish** | `in progress` | Home CONCEPT links; CONCEPT rewrite |
 
 ---
 
@@ -96,9 +96,8 @@ lives in `SCRATCHPAD.json`.
 
 Optimize for **observable slices** with smokes. Prefer this order:
 
-1. **Plate tables** (editor depth)  
-2. **Home CONCEPT links** / CONCEPT rewrite (docs-heavy)  
-3. Only then: image upload, Fumadocs unpin, server split, OAuth
+1. **Home CONCEPT links** / CONCEPT rewrite (docs-heavy)  
+2. Only then: image upload, Fumadocs unpin, server split, OAuth
 
 **Agent rules of thumb**
 
@@ -123,4 +122,4 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Plate tables MVP** (OPEN_ISSUES §1; typed posts done).
+- Next: **Home preamble live exemplar links** (OPEN_ISSUES §1; Plate tables done).
