@@ -1,20 +1,21 @@
 /**
  * CONCEPT §8.6 — Real-identity / stewardship legitimacy policy hooks.
  *
- * Prototype still uses seed-user impersonation as the session source. These
- * hooks record verification + country / long-term-ties attestations so Manual
- * steward powers can be gated without implementing full OAuth yet. A future
- * provider (OIDC / government ID) plugs in via `attestation_kind: provider_stub`
- * → real provider ids without changing eligibility rules.
+ * Session binds actor via prototype IdP-lite (`POST /api/auth/login`) or
+ * optional external OIDC (`/api/auth/oidc/*` when env-configured). These hooks
+ * record verification + country / long-term-ties attestations so Manual steward
+ * powers can be gated. Provider attestations use `attestation_kind:
+ * provider_stub` → real provider ids without changing eligibility rules.
  */
 
 import {
   getPrototypeUser,
   type PrototypeUser,
 } from "../app/lib/prototype-users";
+import { SESSION_AUTH_MODE } from "./sessionAuth";
 
-/** Session/auth mode for the prototype (not a full IdP). */
-export const AUTH_MODE = "impersonation_with_identity_hooks" as const;
+/** Session/auth mode — cookie session binds actor; identity hooks remain. */
+export const AUTH_MODE = SESSION_AUTH_MODE;
 
 export type VerificationStatus =
   | "unverified"
