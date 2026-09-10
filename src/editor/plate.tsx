@@ -33,6 +33,7 @@ import {
   ListPluginConfigured,
   listItemStyle,
 } from "./listLinkPlugins";
+import { tablePlugins } from "./tablePlugins";
 
 export { CollapseProvider } from "./collapse";
 
@@ -162,6 +163,7 @@ export const editorPlugins = [
   IndentListPluginConfigured,
   ListPluginConfigured,
   LinkPluginConfigured,
+  ...tablePlugins,
   MathInlinePlugin,
   MathBlockPlugin,
   CitationInlinePlugin,

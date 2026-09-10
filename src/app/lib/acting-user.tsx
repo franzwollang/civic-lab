@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { loginSession } from "@/api/client";
 import {
   ACTING_USER_CHANGED_EVENT,
   DEFAULT_PROTOTYPE_USER_ID,
@@ -24,12 +25,20 @@ type ActingUserContextValue = {
   user: PrototypeUser;
   affordances: RoleAffordanceSummary;
   setActingUserId: (id: string) => void;
+  sessionReady: boolean;
+  sessionError: string | null;
 };
 
 const ActingUserContext = createContext<ActingUserContextValue | null>(null);
 
+async function syncServerSession(userId: string): Promise<void> {
+  await loginSession(userId);
+}
+
 export function ActingUserProvider({ children }: { children: ReactNode }) {
   const [userId, setUserId] = useState(DEFAULT_PROTOTYPE_USER_ID);
+  const [sessionReady, setSessionReady] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
 
   useEffect(() => {
     setUserId(readActingUserId());
@@ -42,6 +51,28 @@ export function ActingUserProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Bind cookie session whenever the acting user changes (prototype IdP-lite).
+  useEffect(() => {
+    let cancelled = false;
+    setSessionReady(false);
+    setSessionError(null);
+    syncServerSession(userId)
+      .then(() => {
+        if (!cancelled) setSessionReady(true);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setSessionError(
+            err instanceof Error ? err.message : "Session login failed",
+          );
+          setSessionReady(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
   const value = useMemo<ActingUserContextValue>(() => {
     const user =
       getPrototypeUser(userId) ??
@@ -50,6 +81,8 @@ export function ActingUserProvider({ children }: { children: ReactNode }) {
       userId: user.id,
       user,
       affordances: summarizeRoleAffordances(user),
+      sessionReady,
+      sessionError,
       setActingUserId: (id: string) => {
         writeActingUserId(id);
         // writeActingUserId dispatches; sync listener updates state. Set eagerly
@@ -57,7 +90,7 @@ export function ActingUserProvider({ children }: { children: ReactNode }) {
         if (getPrototypeUser(id)) setUserId(id);
       },
     };
-  }, [userId]);
+  }, [userId, sessionReady, sessionError]);
 
   return (
     <ActingUserContext.Provider value={value}>
@@ -103,6 +136,8 @@ export function useActingUserOptional(): ActingUserContextValue {
       userId: user.id,
       user,
       affordances: summarizeRoleAffordances(user),
+      sessionReady: false,
+      sessionError: null,
       setActingUserId: (id: string) => {
         writeActingUserId(id);
         if (getPrototypeUser(id)) setFallbackId(id);
