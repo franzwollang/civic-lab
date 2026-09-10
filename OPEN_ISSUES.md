@@ -39,8 +39,12 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
   `smoke-fumadocs`; `-inset-s-4` compiles)
-- [ ] **Split `server/index.ts` / `server/db.ts`** — quality debt; do only if a
-  feature turn is blocked by file size
+- [x] **Split leaf modules + route registrars** — done
+  (`server/db/{prisma,registries,search,moderationDb,identities}`;
+  `server/routes/{health,uploads,corpus,moderation}`; barrels stable;
+  `smoke-server-split`; suite **50/50**)
+- [ ] **Deeper server split** — extract threads/claims/findings/artifacts route
+  registrars + domain db modules; keep `createAcceptedRisk` in `server/db.ts`
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 
 ---
@@ -50,7 +54,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~49 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~50 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

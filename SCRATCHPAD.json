@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T04:10Z",
-  "turn": 70,
+  "updated_at": "2026-09-10T04:20Z",
+  "turn": 71,
   "focus": {
     "milestone": "post-R0",
-    "issue": null,
-    "goal": "Fumadocs unpin done; hand off server split or OAuth"
+    "issue": "Deeper server split",
+    "goal": "Leaf split done; hand off domain modules or OAuth"
   },
   "recent": [
-    "Fumadocs unpin green: 49/49 smokes + vite build",
-    "Merged tip 1cb7 / PR #96 onto cron 9faa",
-    "Tailwind 4.3.3 + fumadocs-ui/core 16.14.0; mdx 14.2.7"
+    "Server leaf split green: 50/50 smokes + vite build",
+    "Merged tip 9faa / PR #97 onto cron 3379",
+    "Extracted db leaves + health/uploads/corpus/moderation routes"
   ],
   "discoveries": [
-    "Keep fumadocs-mdx 14.x on Vite 6; 15+ peers Vite 7+",
-    "Avoid fumadocs-ui 17 until separately validated"
+    "Parallel e7a3 stack diverged at 6645e7d — reapply slices; don't merge wholesale",
+    "index.ts still needs getDossier + actorMayViewAuditLog after route extract"
   ],
   "open_threads": [
-    "Next: server split or OAuth / moderator polish",
-    "Parallel PR #55 / 86b6 was older stack — reapplied on tip"
+    "Next: deeper split or OAuth / moderator polish",
+    "Keep createAcceptedRisk in server/db.ts across domain extracts"
   ],
-  "next_step": "Merge this tip; Optional: split server/index.ts+db.ts or OAuth",
+  "next_step": "Merge this tip; Optional: deeper server split or OAuth/IdP",
   "blockers": []
 }

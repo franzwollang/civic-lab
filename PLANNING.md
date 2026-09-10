@@ -108,7 +108,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
 9. ~~**`dist/` gitignore**~~ (**done** — stop tracking Vite build output; `smoke-dist-gitignore`)
 10. ~~**Fumadocs unpin**~~ (**done** — Tailwind 4.3.3; fumadocs 16.14.0; `smoke-fumadocs`)
-11. **Optional / deferred next:** server split, OAuth / IdP, moderator polish, Manuals globe
+11. ~~**Server split (leaf + registrars)**~~ (**done** — `server/db/*` leaves +
+    `server/routes/{health,uploads,corpus,moderation}`; `smoke-server-split`)
+12. **Optional / deferred next:** deeper server split (threads/claims/findings/
+    artifacts modules), OAuth / IdP, moderator polish, Manuals globe
 
 **Agent rules of thumb**
 
@@ -122,10 +125,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin done — see
-remaining `OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers.
-Known debt: server monolith size, client→server import of prototype-users, tsc
-not covering `server/` (Vite/smoke are the gates today).
+R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + server leaf
+split done — see remaining `OPEN_ISSUES.md` **Optional / deferred**. No
+architecture blockers. Known debt: deeper `db.ts` domain modules still large,
+client→server import of prototype-users, tsc not covering `server/` (Vite/smoke
+are the gates today).
 
 ---
 
@@ -134,5 +138,5 @@ not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **server split** (`server/index.ts` / `server/db.ts`) or **OAuth / IdP** /
-  moderator polish — prefer actionable Optional items with clear AC.
+- Next: **deeper server split** (threads/claims/findings/artifacts modules) or
+  **OAuth / IdP** / moderator polish — prefer actionable Optional items with AC.

@@ -68,3 +68,4 @@
 {"ts":"2026-09-10T03:55Z","focus":"dist/ gitignore","summary":"Merged tip aea1; untracked dist/; smoke-dist-gitignore; continuity updated","next":"Fumadocs unpin (Tailwind≥4.3.2) or server split"}
 {"ts":"2026-09-10T04:00Z","focus":"dist/ gitignore","summary":"48/48 smoke + vite build; dist untracked; handoff Fumadocs/server split","next":"Fumadocs unpin (Tailwind≥4.3.2) or server split"}
 {"ts":"2026-09-10T04:10Z","focus":"Fumadocs unpin","summary":"Merged tip 1cb7; Tailwind 4.3.3 + fumadocs 16.14; smoke-fumadocs; 49/49","next":"server split or OAuth / moderator polish"}
+{"ts":"2026-09-10T04:20Z","focus":"server-split leaf","summary":"Merged tip 9faa; extracted db leaves + route registrars; smoke 50/50 + vite build","next":"deeper server split or OAuth / moderator polish"}
