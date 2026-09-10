@@ -62,3 +62,4 @@
 {"ts":"2026-09-10T02:50Z","focus":"R0 fixture retirement","summary":"Merged tip 5fa3; retired demo pages; smoke 42/42; handoff typed posts","next":"typed finding/mitigation posts on thread timeline"}
 {"ts":"2026-09-10T02:43Z","focus":"R0 typed posts","summary":"Merged tip 389a; typed finding/mitigation posts; smoke 43/43; handoff Plate tables","next":"Plate tables MVP"}
 {"ts":"2026-09-10T03:10Z","focus":"R0 Plate tables","summary":"Merged tip 7967; cherry-picked tables MVP; smoke 44/44; handoff home preamble","next":"Home preamble live exemplar links"}
+{"ts":"2026-09-10T03:20Z","focus":"home preamble exemplars","summary":"Merged 9c79 tip; cherry-picked a831 home preamble; 45/45 + continuity","next":"CONCEPT.md rewrite pass"}

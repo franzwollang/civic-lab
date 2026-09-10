@@ -10,6 +10,8 @@ About + FAQ living Canon artifacts are **done** (`canon-about`, `canon-faq`).
 Fixture descriptive + Red Team demo pages are **retired**.
 Typed finding/mitigation ThreadPost types are **done** (RT-gated create + smoke).
 Plate tables MVP is **done** (`@platejs/table@52`, Inserts → Table, reader/export/smoke).
+Home preamble live exemplars are **done** (`#what-is-this` + `HOME_EXEMPLARS` +
+`smoke-home-preamble`).
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
@@ -18,21 +20,14 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ## Marathon queue (ordered)
 
-### 1. Home / About CONCEPT alignment
-
-- [ ] **Home preamble links to live exemplars**
-  - **Scope:** `src/app/pages/home.tsx`
-  - **Done when:** explicit Canon vs Manuals + thread-first + claims + Red Team
-    copy with deep links to e.g. `/collection/collection-us`,
-    `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
-  - **Verify:** manual; no new smoke required if copy-only
-
-### 2. CONCEPT.md rewrite pass
+### 1. CONCEPT.md rewrite pass
 
 - [ ] **Editorial pass (human-facing)**
   - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
     claims abstraction; bridge soft-label; parent/sub-RFC; evidence section;
     fix dupes/numbering. Not a code milestone — land as a docs PR slice.
+  - **Note:** Prior work may exist on PR #52 / `cursor/next-task-progression-3148`
+    — cherry-pick candidate after merging this tip.
 
 ---
 
@@ -57,7 +52,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~44 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~45 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

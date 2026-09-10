@@ -1,26 +1,25 @@
 {
-  "updated_at": "2026-09-10T03:10Z",
-  "turn": 64,
+  "updated_at": "2026-09-10T03:20Z",
+  "turn": 65,
   "focus": {
     "milestone": "R0",
-    "issue": "Home preamble live exemplars",
-    "goal": "Home CONCEPT copy with deep links to live corpus"
+    "issue": "CONCEPT.md rewrite pass",
+    "goal": "Editorial CONCEPT pass for hierarchy/claims/lanes"
   },
   "recent": [
-    "Plate tables MVP; @platejs/table@52; smoke-editor-tables; 44/44",
-    "Merged tip 7967 (About+FAQ+fixtures+typed posts) onto cron branch",
-    "Typed finding/mitigation posts; RT gate; smoke-typed-posts",
-    "Retired descriptive-artifact + red-team-review demos",
-    "Migrated About + FAQ → living Canon artifacts"
+    "Home preamble + HOME_EXEMPLARS; smoke-home-preamble; 45/45",
+    "Merged tip 9c79 (About→tables) onto cron branch b2f6",
+    "Plate tables MVP; typed posts; fixture retirement",
+    "Living About/FAQ artifacts"
   ],
   "discoveries": [
-    "Cron at main: merge furthest tip (7967) before new R0 work",
-    "Prior tables PR #50 cherry-picks cleanly onto tip after typed posts"
+    "Cron at main: merge furthest tip (9c79) before new R0 work",
+    "HOME_EXEMPLARS centralizes seeded tour hrefs for smoke"
   ],
   "open_threads": [
-    "Home preamble next; prior PR #51 / a831 may cherry-pick",
-    "CONCEPT.md rewrite after home"
+    "CONCEPT rewrite next; PR #52 / 3148 may cherry-pick",
+    "Optional: image upload / Fumadocs unpin"
   ],
-  "next_step": "Home preamble: live exemplar links (Canon/Manuals/thread/RFC/RT)",
+  "next_step": "CONCEPT.md editorial rewrite (OPEN_ISSUES §1)",
   "blockers": []
 }
