@@ -143,8 +143,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
     `smoke-oidc`; suite **58/58**)
 22. ~~**OIDC JWKS id_token verify**~~ (**done** — reapplied from `0004`;
     jose JWKS + iss/aud/exp/nonce; `OIDC_JWKS_URI`/discovery; `smoke-oidc`)
-23. **Optional / deferred next:** Manuals 3D globe (SVG satisfies CONCEPT),
-    reputation-board implication rollup — or **stop**
+23. ~~**OIDC JWKS**~~ done — see item 22.
+24. **Stop (default):** remaining Optional items are product-gated — do **not**
+    invent AC for reputation rollup or ship a 3D globe while SVG satisfies
+    CONCEPT §1.2. Resume only after explicit product direction.
 
 **Agent rules of thumb**
 
@@ -152,19 +154,18 @@ Optimize for **observable slices** with smokes. Prefer this order:
 - Merge tip-of-stack PRs; don’t reopen M0–M9 exit criteria  
 - New routes ⇒ extend `smoke-http-gates` or add HTTP assertions  
 - Cron branches that start at `main`: merge latest progression tip first  
-- Never weaken smokes to pass; never force-push
+- Never weaken smokes to pass; never force-push  
+- When only product-gated Optionals remain: **stop** (docs handoff OK)
 
 ---
 
 ## Still open
 
-R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
-split + IdP-lite session→actor + Canon revert + role-change + mod queue +
-model→forecast implication MVP + DAG UI + score propagation + external OIDC
-swap-in + OIDC JWKS verify done — see remaining `OPEN_ISSUES.md` **Optional /
-deferred** (Manuals globe / reputation implication rollup). No architecture
-blockers. Known debt: client→server import of prototype-users, tsc not covering
-`server/` (Vite/smoke are the gates today).
+All actionable marathon / optional engineering slices through OIDC JWKS are
+**done**. Remaining `OPEN_ISSUES.md` Optionals (Manuals 3D globe; reputation
+implication rollup) need product decisions — not agent invention. Known debt:
+client→server import of prototype-users, tsc not covering `server/` (Vite/smoke
+are the gates today).
 
 ---
 
@@ -173,5 +174,5 @@ blockers. Known debt: client→server import of prototype-users, tsc not coverin
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Optional** reputation implication rollup — or **stop** (Manuals 3D
-  globe remains product-gated).
+- Next: **stop** until product unblocks Manuals globe or reputation-board
+  implication rollup design. Fresh crons: merge furthest tip, confirm stop, exit.

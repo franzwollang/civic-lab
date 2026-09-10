@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T06:10Z",
-  "turn": 82,
+  "updated_at": "2026-09-10T06:20Z",
+  "turn": 83,
   "focus": {
     "milestone": "post-R0",
-    "issue": "OIDC JWKS id_token verify",
-    "goal": "Wire jose JWKS verify + claim checks on tip"
+    "issue": null,
+    "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Merged tip 7194 (OIDC swap-in / PR #108) onto fresh cron",
-    "Cherry-picked bc48480 JWKS from 0004; .env.example OIDC_JWKS_URI",
-    "smoke-oidc RSA + bad-sig + nonce; suite 58/58; vite build green"
+    "Fresh cron at main: fast-forward merged tip 3b8d (OIDC JWKS / PR #109)",
+    "Confirmed OPEN_ISSUES: only Manuals globe + reputation rollup remain",
+    "Both deferred (SVG satisfies CONCEPT; rollup needs design) — prefer stop"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
-    "jose createLocalJWKSet + token-endpoint hook keeps JWKS smoke offline"
+    "In-repo SCRATCHPAD on main can lag tip by many turns — trust tip after merge"
   ],
   "open_threads": [
     "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
-    "Reputation-board implication rollup deferred"
+    "Reputation-board implication rollup deferred (needs product design)"
   ],
-  "next_step": "Optional: reputation implication rollup — or stop",
+  "next_step": "Stop until product unblocks globe or reputation rollup design",
   "blockers": []
 }

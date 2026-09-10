@@ -64,9 +64,11 @@ that is actionable, or stop if blocked on product decisions.
   Brier/log/skill from resolved implied forecasts; DAG summary + per-edge
   contrib; n≥20 public-board gate; `smoke-claim-implication-scores`; suite
   **57/57**). Reputation-board rollup of implication scores still deferred.
-- [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
+- [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT §1.2;
+  **product-gated** (do not implement unless product asks)
 - [ ] **Reputation-board implication rollup** — deferred (design: how/whether
-  advisory model scores feed public reputation boards)
+  advisory model scores feed public reputation boards); **blocked on product
+  decision** — do not invent AC or ship speculative board wiring
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
   `smoke-fumadocs`; `-inset-s-4` compiles)
