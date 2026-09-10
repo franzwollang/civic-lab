@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { createThreadPost } from "../../api/client";
 import type { ThreadPostRow } from "../../doc/types";
+import type { TimelinePostType } from "../../lib/candidateFindings";
 import { useActingUserOptional } from "../lib/acting-user";
 import { getPrototypeUser } from "../lib/prototype-users";
 import { ActingAsHint } from "./acting-as-hint";
@@ -21,19 +22,37 @@ type ReplyComposerProps = {
   /** When false, hide/disable (e.g. thread still loading). Default true. */
   enabled?: boolean;
   onPosted?: (post: ThreadPostRow) => void;
-  /** CONCEPT §7.5 — allow mitigation response type (default false). */
+  /**
+   * CONCEPT §7 — allow Red Team typed finding / mitigation posts
+   * (default false → comments only).
+   */
+  allowTypedPosts?: boolean;
+  /** @deprecated Prefer allowTypedPosts */
   allowMitigation?: boolean;
 };
+
+function placeholderFor(type: TimelinePostType): string {
+  switch (type) {
+    case "finding":
+      return "Write a typed finding note…";
+    case "mitigation":
+      return "Write a mitigation response…";
+    default:
+      return "Write a reply…";
+  }
+}
 
 export function ReplyComposer({
   threadId,
   enabled = true,
   onPosted,
+  allowTypedPosts,
   allowMitigation = false,
 }: ReplyComposerProps) {
+  const typedEnabled = allowTypedPosts ?? allowMitigation;
   const { userId: authorId, user: actingUser } = useActingUserOptional();
   const [body, setBody] = useState("");
-  const [postType, setPostType] = useState<"comment" | "mitigation">("comment");
+  const [postType, setPostType] = useState<TimelinePostType>("comment");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,9 +67,10 @@ export function ReplyComposer({
       const post = await createThreadPost(threadId, {
         author_id: authorId,
         body: trimmed,
-        type: allowMitigation ? postType : "comment",
+        type: typedEnabled ? postType : "comment",
       });
       setBody("");
+      setPostType("comment");
       onPosted?.(post);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to post reply");
@@ -59,7 +79,7 @@ export function ReplyComposer({
     }
   }
 
-  const canMitigate = Boolean(actingUser?.roles.includes("red_team"));
+  const canTypeFindings = Boolean(actingUser?.roles.includes("red_team"));
   const canSubmit = enabled && !submitting && body.trim().length > 0;
 
   return (
@@ -67,8 +87,8 @@ export function ReplyComposer({
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <ActingAsHint className="min-w-[220px] flex-1 text-xs text-neutral-500" />
-          {allowMitigation && canMitigate && (
-            <div className="min-w-[160px] space-y-1.5">
+          {typedEnabled && canTypeFindings && (
+            <div className="min-w-[180px] space-y-1.5">
               <Label
                 htmlFor="reply-type"
                 className="text-xs uppercase tracking-wider text-neutral-500"
@@ -77,9 +97,11 @@ export function ReplyComposer({
               </Label>
               <Select
                 value={postType}
-                onValueChange={(v) =>
-                  setPostType(v === "mitigation" ? "mitigation" : "comment")
-                }
+                onValueChange={(v) => {
+                  if (v === "finding" || v === "mitigation" || v === "comment") {
+                    setPostType(v);
+                  }
+                }}
                 disabled={!enabled || submitting}
               >
                 <SelectTrigger id="reply-type" className="w-full bg-white">
@@ -87,6 +109,7 @@ export function ReplyComposer({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="comment">Comment</SelectItem>
+                  <SelectItem value="finding">Finding note</SelectItem>
                   <SelectItem value="mitigation">Mitigation response</SelectItem>
                 </SelectContent>
               </Select>
@@ -102,11 +125,7 @@ export function ReplyComposer({
             id="reply-body"
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            placeholder={
-              postType === "mitigation"
-                ? "Write a mitigation response…"
-                : "Write a reply…"
-            }
+            placeholder={placeholderFor(postType)}
             rows={4}
             disabled={!enabled || submitting}
             className="bg-white"
@@ -121,7 +140,13 @@ export function ReplyComposer({
 
         <div className="flex items-center justify-end gap-3">
           <Button type="submit" size="sm" disabled={!canSubmit}>
-            {submitting ? "Posting…" : "Post reply"}
+            {submitting
+              ? "Posting…"
+              : postType === "finding"
+                ? "Post finding note"
+                : postType === "mitigation"
+                  ? "Post mitigation"
+                  : "Post reply"}
           </Button>
         </div>
       </form>
