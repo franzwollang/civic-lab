@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T04:55Z",
+  "turn": 75,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "post-R0",
+    "issue": "Moderator polish — role-change audit",
+    "goal": "Canon revert done; next Owner role appointment + audit"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Merged tip 7663 / PR #101 IdP-lite session",
+    "Canon revert: artifactsDb + session route + Owner UI + smoke",
+    "Suite 52/52; smoke-server-split requires revertCanonArtifact"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Port Canon revert without effectiveUsers until role-change lands",
+    "Client revert body need not send actor_id (session-bound)"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Next: role-change audit, then mod queue UI",
+    "Manuals 3D globe / model→forecast / external OIDC deferred"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Merge this tip; Optional: role-change audit (UserRoleAssignment + appoint UI)",
   "blockers": []
 }
