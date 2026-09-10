@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T04:25Z",
+  "turn": 72,
   "focus": {
-    "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "milestone": "post-R0",
+    "issue": "Domain db module extract",
+    "goal": "Route registrars done; extract *Db.ts next"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Domain route registrars: artifacts/threads/claims/findings; index 64 lines",
+    "Merged tip 3379 / PR #98 onto cron e8c6",
+    "Smoke 50/50 + vite build green"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Do not copy e827 revertCanon route — Canon revert not on tip",
+    "Smokes that grep index.ts need retarget to routes/*.ts"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Next: artifactsDb/threadsDb/claimsDb/findingsDb (+ corpusDb)",
+    "Keep createAcceptedRisk in server/db.ts; reapply e827 carefully"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Merge this tip; Optional: domain db modules or OAuth/IdP",
   "blockers": []
 }
