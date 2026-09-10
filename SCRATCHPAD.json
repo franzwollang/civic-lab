@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-10T08:45Z",
-  "turn": 98,
+  "updated_at": "2026-09-10T08:52Z",
+  "turn": 99,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Cron 6048 at stale main: FF-merged tip b1f4 (PR #124 stack)",
+    "Cron d412 at stale main: FF-merged tip 6048 (PR #125 stack)",
     "Verified suite 58/58 green after tip merge",
     "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)"
   ],
