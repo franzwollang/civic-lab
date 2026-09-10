@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-09-10T10:43Z",
-  "turn": 110,
+  "updated_at": "2026-09-10T10:50Z",
+  "turn": 111,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Cron b3ef at stale main: FF-merged tip 3d20 (PR #136 stack)",
-    "Verified suite 58/58 green after tip merge",
-    "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)"
+    "Cron 05af at stale main: FF-merged tip b3ef (PR #137 stack)",
+    "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)",
+    "Prefer stop; do not invent AC for deferred Optionals"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
