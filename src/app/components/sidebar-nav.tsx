@@ -3,10 +3,22 @@ import { Home, FileText, MessageSquare, GitBranch, Shield } from "lucide-react";
 
 interface SidebarNavProps {
   dossierId?: string;
+  /** When set, Red Team links to the live Collection §11 dashboard. */
+  collectionId?: string;
   currentPage?: "dossier" | "artifact" | "thread" | "rfc" | "red-team";
 }
 
-export function SidebarNav({ dossierId, currentPage }: SidebarNavProps) {
+export function SidebarNav({
+  dossierId,
+  collectionId,
+  currentPage,
+}: SidebarNavProps) {
+  const redTeamTo = collectionId
+    ? `/collection/${collectionId}`
+    : dossierId
+      ? `/dossier/${dossierId}`
+      : "/";
+
   return (
     <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r border-neutral-200 bg-white">
       <div className="p-6">
@@ -50,7 +62,7 @@ export function SidebarNav({ dossierId, currentPage }: SidebarNavProps) {
                 <span>RFCs</span>
               </Link>
               <Link
-                to={`/dossier/${dossierId}/red-team/1`}
+                to={redTeamTo}
                 className={`flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors ${
                   currentPage === "red-team"
                     ? "bg-neutral-900 text-white"
