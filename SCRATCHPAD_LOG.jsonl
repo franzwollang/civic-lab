@@ -79,3 +79,4 @@
 {"ts":"2026-09-10T05:30Z","focus":"implication DAG UI","summary":"merged tip 07af; reapplied artifact-scoped ClaimImplicationGraph from bae4","next":"optional scoring / OIDC / globe or stop"}
 {"ts":"2026-09-10T05:40Z","focus":"implication score propagation","summary":"merged tip cca8; reapplied scoreModelImplications + smoke from d369","next":"optional Manuals globe / external OIDC or stop"}
 {"ts":"2026-09-10T05:55Z","focus":"external OIDC swap-in","summary":"Cherry-picked b1c5 OIDC onto tip 03b7; cookieHeaderFromResponse smoke fix","next":"optional OIDC JWKS / reputation rollup / stop"}
+{"ts":"2026-09-10T06:10Z","focus":"OIDC JWKS id_token verify","summary":"Merged tip 7194; cherry-picked bc48480 JWKS verify; smoke 58/58","next":"optional reputation rollup or stop"}

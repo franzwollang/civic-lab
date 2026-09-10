@@ -38,8 +38,12 @@ that is actionable, or stop if blocked on product decisions.
   `OIDC_ISSUER`/`CLIENT_ID`/`CLIENT_SECRET`/`REDIRECT_URI` +
   `OIDC_SUBJECT_MAP`; `OIDC_MOCK=1` for local/smoke; session
   `provider: "oidc"`; same cookie + `requireSessionActor`;
-  `smoke-oidc`; suite **58/58**). JWKS signature verify / real IdP deploy
-  remain ops follow-up.
+  `smoke-oidc`; suite **58/58**).
+- [x] **OIDC JWKS id_token verify** — done
+  (`server/auth/oidcJwks.ts` + `src/lib/oidcJwks.ts`; jose RS/ES verify;
+  `OIDC_JWKS_URI` or discovery `jwks_uri`; iss/aud/exp/nonce checks;
+  non-mock token path; `smoke-oidc` local RSA + bad-sig + nonce mismatch;
+  suite **58/58**). Real IdP deploy remains ops.
 - [x] **Canon revert audit** — done (Owner-only; Canon-only; restore prior
   revision; append-only `revert` audit; `POST /api/artifacts/:id/revert`
   session-bound; artifact page Revert button; `smoke-canon-revert`; suite
@@ -61,8 +65,8 @@ that is actionable, or stop if blocked on product decisions.
   contrib; n≥20 public-board gate; `smoke-claim-implication-scores`; suite
   **57/57**). Reputation-board rollup of implication scores still deferred.
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
-- [ ] **OIDC JWKS verify** — optional ops hardening after swap-in (parallel
-  `0004` / `jose`); mock OIDC does not need network JWKS
+- [ ] **Reputation-board implication rollup** — deferred (design: how/whether
+  advisory model scores feed public reputation boards)
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
   `smoke-fumadocs`; `-inset-s-4` compiles)
@@ -87,7 +91,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~58 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (58 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

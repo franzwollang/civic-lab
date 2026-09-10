@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-09-10T05:55Z",
-  "turn": 81,
+  "updated_at": "2026-09-10T06:10Z",
+  "turn": 82,
   "focus": {
     "milestone": "post-R0",
-    "issue": "External OIDC swap-in",
-    "goal": "Env-gated OIDC binds same session cookie as IdP-lite"
+    "issue": "OIDC JWKS id_token verify",
+    "goal": "Wire jose JWKS verify + claim checks on tip"
   },
   "recent": [
-    "On tip 03b7 (implication scores / PR #107)",
-    "Cherry-picked OIDC from b1c5; fixed smoke cookie helper",
-    "smoke-oidc + continuity; suite target 58/58"
+    "Merged tip 7194 (OIDC swap-in / PR #108) onto fresh cron",
+    "Cherry-picked bc48480 JWKS from 0004; .env.example OIDC_JWKS_URI",
+    "smoke-oidc RSA + bad-sig + nonce; suite 58/58; vite build green"
   ],
   "discoveries": [
-    "Reapply parallel optional slices; do not merge old stacks wholesale",
-    "OIDC smoke must use cookieHeaderFromResponse (not value-only cookieFrom)"
+    "Fresh cron at main must merge furthest progression tip first",
+    "jose createLocalJWKSet + token-endpoint hook keeps JWKS smoke offline"
   ],
   "open_threads": [
     "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
-    "OIDC JWKS verify optional (parallel 0004)",
     "Reputation-board implication rollup deferred"
   ],
-  "next_step": "Optional: OIDC JWKS (reapply 0004) or reputation rollup — or stop",
+  "next_step": "Optional: reputation implication rollup — or stop",
   "blockers": []
 }

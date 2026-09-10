@@ -68,7 +68,7 @@ lives in `SCRATCHPAD.json`.
 | Product UI | Data-driven corpus; Collection splash = live dashboard; fixture dossier dashboard redirected |
 | Editor | Plate lists/links/blockquotes/evidence/external_artifact/tables/images (upload) |
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
-| Auth | Impersonation + IdP-lite cookie session (`requireSessionActor`) |
+| Auth | IdP-lite cookie session + optional OIDC with JWKS id_token verify |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
@@ -141,8 +141,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 21. ~~**External OIDC provider swap-in**~~ (**done** — reapplied from b1c5;
     `GET /api/auth/oidc/status|start|callback`; `OIDC_MOCK` + subject map;
     `smoke-oidc`; suite **58/58**)
-22. **Optional / deferred next:** Manuals 3D globe (SVG satisfies CONCEPT),
-    OIDC JWKS verify (ops), reputation-board implication rollup
+22. ~~**OIDC JWKS id_token verify**~~ (**done** — reapplied from `0004`;
+    jose JWKS + iss/aud/exp/nonce; `OIDC_JWKS_URI`/discovery; `smoke-oidc`)
+23. **Optional / deferred next:** Manuals 3D globe (SVG satisfies CONCEPT),
+    reputation-board implication rollup — or **stop**
 
 **Agent rules of thumb**
 
@@ -159,8 +161,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
 split + IdP-lite session→actor + Canon revert + role-change + mod queue +
 model→forecast implication MVP + DAG UI + score propagation + external OIDC
-swap-in done — see remaining `OPEN_ISSUES.md` **Optional / deferred**
-(Manuals globe / OIDC JWKS / reputation implication rollup). No architecture
+swap-in + OIDC JWKS verify done — see remaining `OPEN_ISSUES.md` **Optional /
+deferred** (Manuals globe / reputation implication rollup). No architecture
 blockers. Known debt: client→server import of prototype-users, tsc not covering
 `server/` (Vite/smoke are the gates today).
 
@@ -171,5 +173,5 @@ blockers. Known debt: client→server import of prototype-users, tsc not coverin
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Optional** OIDC JWKS (reapply `0004`) or reputation implication rollup
-  — or stop (Manuals 3D globe remains product-gated).
+- Next: **Optional** reputation implication rollup — or **stop** (Manuals 3D
+  globe remains product-gated).
