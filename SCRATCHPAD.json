@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-09-10T13:51Z",
-  "turn": 128,
+  "updated_at": "2026-09-10T14:15Z",
+  "turn": 129,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Cron ff6f at stale main: FF-merged tip 53ea (PR #154 stack)",
-    "Verified tip suite 58/58 after merge + pnpm install",
-    "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)",
-    "Prefer stop; do not invent AC for deferred Optionals"
+    "Cron b025 at stale main: FF-merged tip ff6f (PR #155 stack)",
+    "Tip has R0 + optionals done; only globe + reputation rollup gated",
+    "Prefer stop; do not invent AC for deferred Optionals",
+    "In-repo main still lags tip — always merge furthest progression first"
   ],
   "discoveries": [
     "Fresh cron at main must merge furthest progression tip first",
