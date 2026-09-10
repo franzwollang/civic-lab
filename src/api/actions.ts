@@ -3,7 +3,7 @@ import { artifactIdOf } from "@/doc/types";
 
 import { saveRevisionInput, type SaveRevisionInput } from "./schemas";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
+const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
 export type ActionResult<T> =
   | { ok: true; data: T }
@@ -50,6 +50,7 @@ export async function saveRevision(
       await fetch(`${API_BASE}/artifacts/${artifactId}/revisions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(revision),
       }),
     );
@@ -58,6 +59,7 @@ export async function saveRevision(
       await fetch(`${API_BASE}/artifacts/${artifactId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ current_revision_id: nextCurrentRevisionId }),
       }),
     );
