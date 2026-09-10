@@ -6,6 +6,7 @@ Roadmap/sequencing → `PLANNING.md`. Product reference → `CONCEPT.md`.
 M0–M9 prototype milestones are **done**. §K post-tip hardening is **done**
 (soft-delete pre-check, §8.6 eligibility, audit/`include_deleted` gates,
 reputation `deletedAt` filter, board-hide on claim metrics, HTTP smoke).
+About + FAQ living Canon artifacts are **done** (`canon-about`, `canon-faq`).
 
 Cloud agents: pick the **highest** unchecked item below that has acceptance
 criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
@@ -14,22 +15,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 
 ## Marathon queue (ordered)
 
-### 1. FAQ → living artifact
-
-- [ ] **Migrate FAQ into Canon artifact**
-  - **Scope:** `src/app/pages/faq.tsx`; seeds under `prisma/seed/pages.json` +
-    `page_revisions.json`; dossier `canon-governance-1` under `collection-canon`
-    (same pattern as Charter + About).
-  - **Done when:**
-    - Seeded `canon-faq` (or similar) with Plate `content_json` mirroring FAQ prose
-    - `/faq` redirects (hash-preserving) to the artifact
-    - Heading block ids preserve FAQ `#` anchors (`do-i-need-math`, …)
-    - Owner/`owner_merge_only` if Charter-like; smoke asserts artifact + redirect
-  - **Verify:** `pnpm test:smoke` + manual `/faq`
-  - **Out of scope:** home explainer; legal boilerplate
-  - **Note:** About already migrated (`canon-about`); `/about` redirects there
-
-### 2. Fixture retirement
+### 1. Fixture retirement
 
 - [ ] **Retire remaining hardcoded dossier/artifact demo panels**
   - **Scope:** grep `FIXTURE` / hardcoded US-voting copy under
@@ -40,7 +26,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
   - **Verify:** `pnpm test:smoke`; spot-check dossier + thread pages
   - **Note:** `/dossier/:id/dashboard` already redirects to Collection splash
 
-### 3. Typed Finding / Mitigation posts
+### 2. Typed Finding / Mitigation posts
 
 - [ ] **First-class typed posts on thread timeline**
   - **Scope:** `ThreadPost.type` values `finding` | `mitigation` (and existing);
@@ -51,7 +37,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
   - **Verify:** extend `smoke-candidate-findings` or new smoke
   - **Out of scope:** full Findings queue productization
 
-### 4. Editor tables (defer images if needed)
+### 3. Editor tables (defer images if needed)
 
 - [ ] **Plate tables MVP**
   - **Scope:** add table plugin compatible with Plate 52; toolbar insert;
@@ -61,7 +47,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
   - **Out of scope:** image upload pipeline (separate); keep `.webp`-only until
     upload exists
 
-### 5. Home / About CONCEPT alignment
+### 4. Home / About CONCEPT alignment
 
 - [ ] **Home preamble links to live exemplars**
   - **Scope:** `src/app/pages/home.tsx`
@@ -70,7 +56,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
     `/dossier/us-voting-1`, a live RFC thread, Collection dashboard
   - **Verify:** manual; no new smoke required if copy-only
 
-### 6. CONCEPT.md rewrite pass
+### 5. CONCEPT.md rewrite pass
 
 - [ ] **Editorial pass (human-facing)**
   - Checklist: Area/Collection hierarchy; kill Requirements Matrix framing;
@@ -100,7 +86,7 @@ criteria; one issue per turn when possible; keep `pnpm test:smoke` green.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~40 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~41 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
@@ -116,5 +102,5 @@ pnpm db:reset            # wipe + reseed local SQLite
 ## Notes
 
 - Lane hygiene and separation of powers remain load-bearing CONCEPT constraints.
-- Three content systems: Fumadocs `/docs`, static FAQ (until migrated; About is
-  now living Canon artifact `canon-about`), artifact editor — unify deliberately.
+- Three content systems: Fumadocs `/docs`, living site artifacts (Charter /
+  About / FAQ under `canon-governance-1`), artifact editor — unify deliberately.

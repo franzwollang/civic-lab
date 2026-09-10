@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-08-02T12:55Z",
-  "turn": 60,
+  "updated_at": "2026-09-10T02:35Z",
+  "turn": 61,
   "focus": {
     "milestone": "R0",
-    "issue": "Migrate FAQ into Canon artifact",
-    "goal": "Seed FAQ artifact + /faq redirect; smoke"
+    "issue": "Retire remaining hardcoded dossier/artifact demo panels",
+    "goal": "Replace FIXTURE/demo panels with API data or remove"
   },
   "recent": [
-    "Migrated About → canon-about; /about hash redirect; smoke-about; 40/40",
+    "Migrated FAQ → canon-faq; /faq hash redirect; smoke-faq; 41/41",
+    "Merged About tip 210a; Migrated About → canon-about",
     "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted",
     "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Retired fixture dossier dashboard → Collection splash"
   ],
   "discoveries": [
-    "DocumentReader headingDomId preserves /about# section deep links",
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP"
+    "Cron at main: merge furthest About tip before FAQ to avoid dual About seeds",
+    "DocumentReader headingDomId preserves /about# and /faq# deep links"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
+    "Fixture retirement next; typed finding/mitigation posts",
     "Plate tables; Fumadocs unpin; dist/ gitignore optional"
   ],
-  "next_step": "Migrate FAQ page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Grep FIXTURE/demo panels under dossier/thread/rfc/artifact pages; retire or wire to API",
   "blockers": []
 }
