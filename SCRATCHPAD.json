@@ -1,25 +1,26 @@
 {
-  "updated_at": "2026-08-01T16:30Z",
-  "turn": 59,
+  "updated_at": "2026-09-10T03:10Z",
+  "turn": 64,
   "focus": {
     "milestone": "R0",
-    "issue": "Migrate About into Canon artifact",
-    "goal": "Seed About artifact + /about redirect; smoke"
+    "issue": "Home preamble live exemplars",
+    "goal": "Home CONCEPT copy with deep links to live corpus"
   },
   "recent": [
-    "§K hardening: soft-delete pre-check, §8.6 gate, audit/include_deleted, reputation deletedAt, board-hide metrics",
-    "smoke-http-gates + /api/health; export app for HTTP tests",
-    "Retired fixture dossier dashboard → Collection splash",
-    "OPEN_ISSUES marathon queue with AC; PLANNING R0 phase"
+    "Plate tables MVP; @platejs/table@52; smoke-editor-tables; 44/44",
+    "Merged tip 7967 (About+FAQ+fixtures+typed posts) onto cron branch",
+    "Typed finding/mitigation posts; RT gate; smoke-typed-posts",
+    "Retired descriptive-artifact + red-team-review demos",
+    "Migrated About + FAQ → living Canon artifacts"
   ],
   "discoveries": [
-    "DB-only smokes miss route gate bugs — prefer app.request for HTTP",
-    "Cron tips must merge latest progression PR when starting from main"
+    "Cron at main: merge furthest tip (7967) before new R0 work",
+    "Prior tables PR #50 cherry-picks cleanly onto tip after typed posts"
   ],
   "open_threads": [
-    "FAQ after About; typed finding/mitigation posts",
-    "Plate tables; Fumadocs unpin; dist/ gitignore optional"
+    "Home preamble next; prior PR #51 / a831 may cherry-pick",
+    "CONCEPT.md rewrite after home"
   ],
-  "next_step": "Migrate About page into seeded Canon artifact with redirect + smoke",
+  "next_step": "Home preamble: live exemplar links (Canon/Manuals/thread/RFC/RT)",
   "blockers": []
 }
