@@ -475,7 +475,11 @@ function TestEditorInner() {
     <div className="min-h-screen bg-neutral-50">
       <Header />
       {inProductChrome && (
-        <SidebarNav dossierId={dossierId} currentPage="artifact" />
+        <SidebarNav
+          dossierId={dossierId}
+          collectionId={dossier?.collection_id}
+          currentPage="artifact"
+        />
       )}
 
       <TermSearchDialog
