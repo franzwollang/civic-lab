@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-09-10T05:30Z",
-  "turn": 79,
+  "updated_at": "2026-09-10T05:45Z",
+  "turn": 80,
   "focus": {
     "milestone": "post-R0",
-    "issue": "Implication DAG UI",
-    "goal": "Artifact-scoped model→forecast DAG on claims panel"
+    "issue": "Implication score propagation",
+    "goal": "Advisory Brier/log/skill from resolved implies_forecast edges"
   },
   "recent": [
-    "Merged tip 07af / PR #105 onto cron branch",
-    "Reapplied implication DAG UI from parallel bae4",
-    "smoke-claim-implication-graph; suite 56/56; vite build green"
+    "Merged tip cca8 / PR #106 onto cron branch",
+    "Reapplied scoreModelImplications + DAG score UI from d369",
+    "smoke-claim-implication-scores; continuity updated"
   ],
   "discoveries": [
     "Cron at main must merge furthest tip before new work",
@@ -17,8 +17,8 @@
   ],
   "open_threads": [
     "Manuals 3D globe deferred (SVG satisfies CONCEPT)",
-    "Implication scoring + external OIDC optional"
+    "External OIDC optional (parallel b1c5/JWKS not on tip)"
   ],
-  "next_step": "Optional: implication scoring, external OIDC, or Manuals globe — or stop",
+  "next_step": "Optional: external OIDC (reapply b1c5) or Manuals globe — or stop",
   "blockers": []
 }
