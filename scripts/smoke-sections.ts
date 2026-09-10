@@ -58,9 +58,11 @@ assert.match(clientSrc, /export async function getArtifact/);
 assert.match(clientSrc, /\/artifacts/);
 assert.match(clientSrc, /getArtifactSections/);
 
-const serverSrc = readFileSync("server/index.ts", "utf8");
+const serverSrc = readFileSync("server/routes/artifacts.ts", "utf8");
 assert.match(serverSrc, /\/api\/artifacts/);
 assert.match(serverSrc, /\/api\/artifacts\/:artifactId\/sections/);
+const indexSrc = readFileSync("server/index.ts", "utf8");
+assert.match(indexSrc, /registerArtifactRoutes/);
 
 const schemaSrc = readFileSync("prisma/schema.prisma", "utf8");
 assert.match(schemaSrc, /model Section/);
