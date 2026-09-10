@@ -1,6 +1,7 @@
 /**
  * HTTP-layer smoke: exercise Hono routes via app.request (not server/db only).
- * Covers §K gates: health, audit-logs auth, include_deleted auth, soft-delete thread pre-check.
+ * Covers §K gates + session auth: health, audit-logs auth, include_deleted auth,
+ * soft-delete thread pre-check.
  * Run: DATABASE_URL="file:./smoke-http-gates.db" pnpm exec tsx scripts/smoke-http-gates.ts
  */
 import { promises as fs } from "fs";
@@ -11,6 +12,8 @@ import { promisify } from "util";
 import { seedIfEmpty } from "../prisma/seed";
 import { setPrisma } from "../server/db";
 import { app } from "../server/index";
+import { clearAllSessionsForTests } from "../server/auth/session";
+import { loginAs, withSession } from "./session-smoke-helper";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
@@ -38,6 +41,7 @@ async function main() {
   );
 
   const prisma = new PrismaClient();
+  clearAllSessionsForTests();
   try {
     const seeded = await seedIfEmpty(prisma);
     if (seeded !== "seeded") throw new Error(`expected seeded, got ${seeded}`);
@@ -49,19 +53,22 @@ async function main() {
     }
 
     const auditAnon = await json(await app.request("/api/audit-logs"));
-    if (auditAnon.status !== 403) {
-      throw new Error(`audit anon expected 403, got ${auditAnon.status}`);
+    if (auditAnon.status !== 401) {
+      throw new Error(`audit anon expected 401, got ${auditAnon.status}`);
     }
 
+    const eveCookie = await loginAs("user-eve");
+    const bobCookie = await loginAs("user-bob");
+
     const auditOk = await json(
-      await app.request("/api/audit-logs?actor_id=user-eve&limit=5"),
+      await app.request("/api/audit-logs?limit=5", withSession(eveCookie)),
     );
     if (auditOk.status !== 200 || !Array.isArray(auditOk.body)) {
       throw new Error(`audit owner expected 200 array, got ${auditOk.status}`);
     }
 
     const auditContributor = await json(
-      await app.request("/api/audit-logs?actor_id=user-bob"),
+      await app.request("/api/audit-logs", withSession(bobCookie)),
     );
     if (auditContributor.status !== 403) {
       throw new Error(`audit contributor expected 403, got ${auditContributor.status}`);
@@ -71,13 +78,14 @@ async function main() {
     const includeAnon = await json(
       await app.request(`/api/threads/${threadId}?include_deleted=1`),
     );
-    if (includeAnon.status !== 403) {
-      throw new Error(`include_deleted anon expected 403, got ${includeAnon.status}`);
+    if (includeAnon.status !== 401) {
+      throw new Error(`include_deleted anon expected 401, got ${includeAnon.status}`);
     }
 
     const includeOk = await json(
       await app.request(
-        `/api/threads/${threadId}?include_deleted=1&actor_id=user-eve`,
+        `/api/threads/${threadId}?include_deleted=1`,
+        withSession(eveCookie),
       ),
     );
     if (includeOk.status !== 200) {
@@ -93,11 +101,14 @@ async function main() {
     const postId = posts[0].postId;
 
     const wrongThread = await json(
-      await app.request(`/api/threads/thread-us-multi-open/posts/${postId}/soft-delete`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ actor_id: "user-eve", reason: "smoke" }),
-      }),
+      await app.request(
+        `/api/threads/thread-us-multi-open/posts/${postId}/soft-delete`,
+        withSession(eveCookie, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ reason: "smoke" }),
+        }),
+      ),
     );
     if (wrongThread.status !== 404) {
       throw new Error(`wrong-thread soft-delete expected 404, got ${wrongThread.status}`);

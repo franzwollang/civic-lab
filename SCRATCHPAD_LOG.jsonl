@@ -71,3 +71,4 @@
 {"ts":"2026-09-10T04:20Z","focus":"server-split leaf","summary":"Merged tip 9faa; extracted db leaves + route registrars; smoke 50/50 + vite build","next":"deeper server split or OAuth / moderator polish"}
 {"ts":"2026-09-10T04:25Z","focus":"domain route registrars","summary":"Merged tip 3379; extracted artifacts/threads/claims/findings routes; smoke 50/50","next":"domain db modules or OAuth / moderator polish"}
 {"ts":"2026-09-10T04:40Z","focus":"domain db modules","summary":"Merged tip e8c6; extracted *Db.ts domain modules; smoke 50/50 + vite build","next":"OAuth/IdP or moderator polish"}
+{"ts":"2026-09-10T04:50Z","focus":"OAuth IdP-lite session→actor","summary":"Merged tip 088c; ported cookie session auth without mod-polish deps; 51/51 smokes","next":"Canon revert audit (moderator polish)"}

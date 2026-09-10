@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T04:40Z",
-  "turn": 73,
+  "updated_at": "2026-09-10T04:50Z",
+  "turn": 74,
   "focus": {
     "milestone": "post-R0",
-    "issue": "OAuth / IdP or moderator polish",
-    "goal": "Domain db extract done; next Optional"
+    "issue": "Moderator polish — Canon revert",
+    "goal": "IdP-lite session done; next Canon revert audit"
   },
   "recent": [
-    "Extracted artifactsDb/threadsDb/claimsDb/findingsDb/corpusDb",
-    "createAcceptedRisk stays in server/db.ts; no Canon revert",
-    "Merged tip e8c6 / PR #99; smoke 50/50 + vite build"
+    "Merged tip 088c / PR #100 domain db modules",
+    "Ported IdP-lite session→actor (no e7a3 mod-polish deps)",
+    "smoke-session-actor + HTTP gates; suite 51/51"
   ],
   "discoveries": [
-    "e827 domain modules OK if revert + role-change exports stripped",
-    "smoke-editor-mvp must grep threadsDb for merge-strict gate"
+    "Helpers must not be named smoke-*.ts (use session-smoke-helper)",
+    "Port OAuth without Canon revert/role-change routes on tip"
   ],
   "open_threads": [
-    "Next: OAuth/IdP or moderator polish (Canon revert / role audit)",
-    "Manuals 3D globe still deferred"
+    "Next: Canon revert audit, then role-change, mod queue UI",
+    "Manuals 3D globe / model→forecast / external OIDC deferred"
   ],
-  "next_step": "Merge this tip; Optional: OAuth/IdP or moderator polish",
+  "next_step": "Merge this tip; Optional: Canon revert (Owner + audit) first polish slice",
   "blockers": []
 }

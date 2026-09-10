@@ -11,24 +11,25 @@ import {
   listUserIdentities,
   requestIdentityVerification,
 } from "../db";
+import { requireSessionActor } from "../auth/session";
 import { actorMayViewAuditLog } from "../../src/lib/moderation";
 
 /** CONCEPT §5.9 — Owner board-hide for abuse. */
 const boardHideBodySchema = z.object({
-  actor_id: z.string().min(1),
+  actor_id: z.string().min(1).optional(),
   subject_user_id: z.string().min(1),
   reason: z.string().min(1),
 });
 
 const boardHideLiftBodySchema = z.object({
-  actor_id: z.string().min(1),
+  actor_id: z.string().min(1).optional(),
   subject_user_id: z.string().min(1),
   note: z.string().nullable().optional(),
 });
 
 /** CONCEPT §8.6 — Owner identity attestation. */
 const identityAttestBodySchema = z.object({
-  actor_id: z.string().min(1),
+  actor_id: z.string().min(1).optional(),
   verification_status: z.enum([
     "unverified",
     "pending",
@@ -41,7 +42,7 @@ const identityAttestBodySchema = z.object({
 });
 
 const identityRequestBodySchema = z.object({
-  actor_id: z.string().min(1),
+  actor_id: z.string().min(1).optional(),
 });
 
 export function registerModerationRoutes(app: Hono): void {
@@ -52,13 +53,18 @@ export function registerModerationRoutes(app: Hono): void {
   });
 
   app.post("/api/board-hides", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = boardHideBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
     if (!parsed.success) {
       return c.json({ error: "Invalid board-hide payload" }, 400);
     }
-    const result = await hideUserFromBoards(parsed.data);
+    const result = await hideUserFromBoards({
+      ...parsed.data,
+      actor_id: actor,
+    });
     if (!result.ok) {
       const status =
         result.error.code === "not_owner" ||
@@ -75,13 +81,18 @@ export function registerModerationRoutes(app: Hono): void {
   });
 
   app.post("/api/board-hides/lift", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = boardHideLiftBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
     if (!parsed.success) {
       return c.json({ error: "Invalid board-hide lift payload" }, 400);
     }
-    const result = await liftBoardHide(parsed.data);
+    const result = await liftBoardHide({
+      ...parsed.data,
+      actor_id: actor,
+    });
     if (!result.ok) {
       const status =
         result.error.code === "not_owner"
@@ -96,13 +107,14 @@ export function registerModerationRoutes(app: Hono): void {
   });
 
   app.get("/api/audit-logs", async (c) => {
-    const actorId = c.req.query("actor_id")?.trim();
-    if (!actorId || !actorMayViewAuditLog(actorId)) {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
+    if (!actorMayViewAuditLog(actor)) {
       return c.json(
         {
           error: {
             code: "forbidden",
-            message: "Audit log requires steward or Owner (actor_id query)",
+            message: "Audit log requires steward or Owner (session actor)",
           },
         },
         403,
@@ -119,7 +131,7 @@ export function registerModerationRoutes(app: Hono): void {
     );
   });
 
-  /** CONCEPT §8.6 — real-identity policy hooks (impersonation session + attestation). */
+  /** CONCEPT §8.6 — real-identity policy hooks (session + attestation). */
   app.get("/api/identities", async (c) => c.json(await listUserIdentities()));
 
   app.get("/api/identities/:userId", async (c) => {
@@ -141,6 +153,8 @@ export function registerModerationRoutes(app: Hono): void {
   });
 
   app.post("/api/identities/:userId/request", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = identityRequestBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -148,7 +162,7 @@ export function registerModerationRoutes(app: Hono): void {
       return c.json({ error: "Invalid identity request payload" }, 400);
     }
     const result = await requestIdentityVerification({
-      actor_id: parsed.data.actor_id,
+      actor_id: actor,
       subject_user_id: c.req.param("userId"),
     });
     if (!result.ok) {
@@ -164,6 +178,8 @@ export function registerModerationRoutes(app: Hono): void {
   });
 
   app.post("/api/identities/:userId/attest", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = identityAttestBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -171,7 +187,7 @@ export function registerModerationRoutes(app: Hono): void {
       return c.json({ error: "Invalid identity attest payload" }, 400);
     }
     const result = await attestUserIdentity({
-      actor_id: parsed.data.actor_id,
+      actor_id: actor,
       subject_user_id: c.req.param("userId"),
       verification_status: parsed.data.verification_status,
       country_codes: parsed.data.country_codes,

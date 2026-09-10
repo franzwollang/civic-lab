@@ -28,14 +28,14 @@ that is actionable, or stop if blocked on product decisions.
 
 ## Optional / deferred
 
-- [x] **Image upload pipeline** — done (`POST /api/uploads/images`;
-  `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
-  `smoke-image-upload`; CONCEPT Appendix C residual cleared)
-- [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
-- [ ] **Full OAuth / IdP** — bind session→server actor; body `actor_id` trust
-  remains until then (explicit)
+- [x] **Full OAuth / IdP** — done (prototype IdP-lite: cookie session via
+  `POST /api/auth/login`; `requireSessionActor` on mutations + gated reads;
+  body/query `actor_id` no longer authorizes; header switcher syncs session;
+  `AUTH_MODE = session_with_identity_hooks`; `smoke-session-actor`; suite
+  **51/51**). External OIDC provider swap-in remains optional later.
 - [ ] **Moderator polish** — Canon revert audit; role-change audit; mod queue UI
 - [ ] **Model→forecast implication graph** — deferred
+- [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
   `smoke-fumadocs`; `-inset-s-4` compiles)
@@ -49,6 +49,9 @@ that is actionable, or stop if blocked on product decisions.
   Canon `revertCanonArtifact` omitted; `smoke-server-split` + retargeted
   `smoke-editor-mvp`; suite **50/50**)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
+- [x] **Image upload pipeline** — done (`POST /api/uploads/images`;
+  `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
+  `smoke-image-upload`; CONCEPT Appendix C residual cleared)
 
 ---
 
@@ -57,7 +60,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~50 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~51 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

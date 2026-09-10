@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import { bootstrapDatabase } from "./bootstrap";
 import { setPrisma } from "./db";
 import { registerArtifactRoutes } from "./routes/artifacts";
+import { registerAuthRoutes } from "./routes/auth";
 import { registerClaimRoutes } from "./routes/claims";
 import { registerCorpusRoutes } from "./routes/corpus";
 import { registerFindingRoutes } from "./routes/findings";
@@ -21,7 +22,14 @@ const BODY_LIMIT = 2 * 1024 * 1024;
 /** Exported for HTTP smokes via `app.request` (avoids only testing server/db). */
 export const app = new Hono();
 
-app.use("*", cors());
+// Credentials required for session cookie (Vite :5173 ↔ API :8787, or same-origin /api).
+app.use(
+  "*",
+  cors({
+    origin: (origin) => origin || "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(
   "*",
   bodyLimit({
@@ -30,6 +38,7 @@ app.use(
   }),
 );
 
+registerAuthRoutes(app);
 registerArtifactRoutes(app);
 registerCorpusRoutes(app);
 registerThreadRoutes(app);

@@ -11,18 +11,20 @@ import {
   promoteThreadToRfc,
   softDeleteThreadPost,
 } from "../db";
+import { requireSessionActor } from "../auth/session";
 import { actorMayViewAuditLog } from "../../src/lib/moderation";
 
 const threadPostBodySchema = z.object({
   post_id: z.string().min(1).optional(),
-  author_id: z.string().min(1),
+  /** Ignored when session is bound — author comes from session. */
+  author_id: z.string().min(1).optional(),
   type: z.enum(["comment", "finding", "mitigation"]).optional(),
   body: z.string().min(1),
   created_at: z.string().optional(),
 });
 
 const softDeletePostBodySchema = z.object({
-  actor_id: z.string().min(1),
+  actor_id: z.string().min(1).optional(),
   reason: z.string().optional().nullable(),
 });
 
@@ -33,7 +35,7 @@ const promoteBodySchema = z.object({
 
 const revSetBodySchema = z
   .object({
-    author_id: z.string().min(1),
+    author_id: z.string().min(1).optional(),
     summary: z.string().nullable().optional(),
     content_json: z.unknown().optional(),
     artifact_revision_id: z.string().min(1).optional(),
@@ -62,14 +64,15 @@ export function registerThreadRoutes(app: Hono): void {
     const wantDeleted = c.req.query("include_deleted") === "1";
     let includeDeleted = false;
     if (wantDeleted) {
-      const actorId = c.req.query("actor_id")?.trim();
-      if (!actorId || !actorMayViewAuditLog(actorId)) {
+      const actor = requireSessionActor(c);
+      if (actor instanceof Response) return actor;
+      if (!actorMayViewAuditLog(actor)) {
         return c.json(
           {
             error: {
               code: "forbidden",
               message:
-                "include_deleted requires steward or Owner (actor_id query)",
+                "include_deleted requires steward or Owner (session actor)",
             },
           },
           403,
@@ -97,6 +100,8 @@ export function registerThreadRoutes(app: Hono): void {
   });
 
   app.post("/api/threads/:threadId/posts", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = threadPostBodySchema.safeParse(
       await c.req.json().catch(() => null),
     );
@@ -105,6 +110,7 @@ export function registerThreadRoutes(app: Hono): void {
     }
     const created = await createThreadPost({
       ...parsed.data,
+      author_id: actor,
       thread_id: c.req.param("threadId"),
     });
     if (!created.ok) {
@@ -127,6 +133,8 @@ export function registerThreadRoutes(app: Hono): void {
 
   /** CONCEPT §9.4 — soft-delete ordinary post (steward Manual / Owner global). */
   app.post("/api/threads/:threadId/posts/:postId/soft-delete", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = softDeletePostBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -138,7 +146,7 @@ export function registerThreadRoutes(app: Hono): void {
     const result = await softDeleteThreadPost({
       post_id: postId,
       thread_id: threadId,
-      actor_id: parsed.data.actor_id,
+      actor_id: actor,
       reason: parsed.data.reason,
     });
     if (!result.ok) {
@@ -161,6 +169,8 @@ export function registerThreadRoutes(app: Hono): void {
   });
 
   app.post("/api/threads/:threadId/promote", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = promoteBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -169,7 +179,8 @@ export function registerThreadRoutes(app: Hono): void {
     }
     const result = await promoteThreadToRfc({
       thread_id: c.req.param("threadId"),
-      ...parsed.data,
+      merge_artifact_id: parsed.data.merge_artifact_id,
+      author_id: actor,
     });
     if (!result.ok) {
       const status =
@@ -192,6 +203,8 @@ export function registerThreadRoutes(app: Hono): void {
   });
 
   app.post("/api/threads/:threadId/revsets", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = revSetBodySchema.safeParse(
       await c.req.json().catch(() => null),
     );
@@ -201,6 +214,7 @@ export function registerThreadRoutes(app: Hono): void {
     const result = await createRevSet({
       thread_id: c.req.param("threadId"),
       ...parsed.data,
+      author_id: actor,
     });
     if (!result.ok) {
       const status = result.error.code === "not_found" ? 404 : 400;
@@ -210,6 +224,8 @@ export function registerThreadRoutes(app: Hono): void {
   });
 
   app.post("/api/threads/:threadId/decide", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
     const parsed = decideBodySchema.safeParse(
       (await c.req.json().catch(() => ({}))) ?? {},
     );
@@ -218,7 +234,9 @@ export function registerThreadRoutes(app: Hono): void {
     }
     const result = await decideThread({
       thread_id: c.req.param("threadId"),
-      ...parsed.data,
+      outcome: parsed.data.outcome,
+      revset_version: parsed.data.revset_version,
+      author_id: actor,
     });
     if (!result.ok) {
       const status =

@@ -115,7 +115,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 13. ~~**Domain db modules**~~ (**done** — `artifactsDb` / `threadsDb` /
     `claimsDb` / `findingsDb` / `corpusDb`; `createAcceptedRisk` in barrel;
     no Canon revert; suite **50/50**)
-14. **Optional / deferred next:** OAuth / IdP, moderator polish, Manuals globe
+14. ~~**OAuth / IdP-lite session→actor**~~ (**done** — cookie login;
+    `requireSessionActor`; body `actor_id` no longer authorizes;
+    `smoke-session-actor`; suite **51/51**)
+15. **Optional / deferred next:** moderator polish (Canon revert / role-change /
+    mod queue), Manuals globe, model→forecast graph, external OIDC
 
 **Agent rules of thumb**
 
@@ -130,10 +134,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
-split (leaf + domain routes + domain db modules) done — see remaining
-`OPEN_ISSUES.md` **Optional / deferred**. No architecture blockers. Known debt:
-client→server import of prototype-users, tsc not covering `server/` (Vite/smoke
-are the gates today).
+split + IdP-lite session→actor done — see remaining `OPEN_ISSUES.md`
+**Optional / deferred** (moderator polish first). No architecture blockers.
+Known debt: client→server import of prototype-users, tsc not covering `server/`
+(Vite/smoke are the gates today).
 
 ---
 
@@ -142,5 +146,4 @@ are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **OAuth / IdP** or **moderator polish** (Canon revert / role-change audit /
-  mod queue UI) — prefer actionable Optional items with AC.
+- Next: **Moderator polish** — Canon revert audit (then role-change / mod queue).
