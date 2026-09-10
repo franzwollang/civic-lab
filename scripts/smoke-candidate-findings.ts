@@ -44,7 +44,10 @@ async function main() {
   if (
     !findingMatchesTimelineFilter("findings") ||
     postMatchesTimelineFilter("comment", "findings") ||
+    !postMatchesTimelineFilter("finding", "findings") ||
     !postMatchesTimelineFilter("mitigation", "findings_responses") ||
+    !postMatchesTimelineFilter("finding", "findings_responses") ||
+    postMatchesTimelineFilter("mitigation", "findings") ||
     !postMatchesTimelineFilter("comment", "all")
   ) {
     throw new Error("timeline filter helpers wrong");
@@ -80,14 +83,15 @@ async function main() {
     }
 
     // Flag a fresh post on the multi-artifact open thread.
-    const post = await createThreadPost({
+    const postResult = await createThreadPost({
       thread_id: "thread-us-multi-open",
       author_id: "user-carol",
       type: "comment",
       body: "Fresh discussion point for candidate flagging smoke.",
       post_id: "post-smoke-candidate-1",
     });
-    if (!post) throw new Error("createThreadPost failed");
+    if (!postResult.ok) throw new Error("createThreadPost failed");
+    const post = postResult.post;
 
     const flagged = await flagCandidateFinding({
       candidate_id: "candidate-smoke-1",
@@ -164,15 +168,25 @@ async function main() {
       throw new Error("re-promote must be not_open");
     }
 
-    // Mitigation post type accepted.
+    // Mitigation post type accepted for Red Team only.
     const mit = await createThreadPost({
       thread_id: "thread-us-voter-reg-rfc",
-      author_id: "user-alice",
+      author_id: "user-dave",
       type: "mitigation",
       body: "Smoke mitigation response.",
     });
-    if (!mit || mit.type !== "mitigation") {
+    if (!mit.ok || mit.post.type !== "mitigation") {
       throw new Error("mitigation post create failed");
+    }
+
+    const mitDenied = await createThreadPost({
+      thread_id: "thread-us-voter-reg-rfc",
+      author_id: "user-alice",
+      type: "mitigation",
+      body: "Steward must not post mitigation type.",
+    });
+    if (mitDenied.ok || mitDenied.error.code !== "forbidden") {
+      throw new Error("non-RT mitigation must be forbidden");
     }
 
     console.log("smoke-candidate-findings: ok");
