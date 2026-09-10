@@ -10,6 +10,7 @@ import {
   getPrototypeUser,
   type PrototypeUser,
 } from "../app/lib/prototype-users";
+import { getEffectivePrototypeUser } from "./effectiveUsers";
 
 /** Audit action kinds recorded for board-hide (CONCEPT §9.4). */
 export type BoardHideAuditAction = "board_hide" | "board_hide_lift";
@@ -45,7 +46,7 @@ export function actorIsOwner(
   const catalog = users.length > 0 ? users : null;
   const user = catalog
     ? catalog.find((u) => u.id === actorId)
-    : getPrototypeUser(actorId);
+    : getEffectivePrototypeUser(actorId) ?? getPrototypeUser(actorId);
   return Boolean(user?.roles.includes("owner"));
 }
 
