@@ -10,6 +10,7 @@ import {
   isExternalArtifactEmpty,
   validateExternalArtifact,
 } from "../lib/externalArtifact";
+import { checkImageSrc, imageSrcErrorMessage } from "../lib/imageSrc";
 
 type SlateBlock = Record<string, unknown> & { type?: string; id?: string };
 
@@ -343,22 +344,20 @@ const createDocumentSchema = (
 
       if (node.type === "image_block") {
         const src = typeof (node as any).src === "string" ? (node as any).src : "";
-        const trimmed = src.trim();
-        const isWebp =
-          /\.webp(\?.*)?$/i.test(trimmed) ||
-          /^data:image\/webp/i.test(trimmed);
-        if (!src.trim()) {
-          warn("Image block is missing a source URL.", [index, "src"], {
-            rule: "image-src",
-          });
-        } else if (!isWebp) {
-          ctx.addIssue({
-            code: ZodIssueCode.custom,
-            message:
-              "Image source must be a .webp URL for now. Other formats will be auto-converted after the Next.js migration.",
-            path: [index, "src"],
-            params: { rule: "image-webp-only" },
-          });
+        const check = checkImageSrc(src);
+        if (!check.ok) {
+          if (check.reason === "empty") {
+            warn(imageSrcErrorMessage("empty"), [index, "src"], {
+              rule: "image-src",
+            });
+          } else {
+            ctx.addIssue({
+              code: ZodIssueCode.custom,
+              message: imageSrcErrorMessage("unsupported"),
+              path: [index, "src"],
+              params: { rule: "image-format" },
+            });
+          }
         }
         return;
       }
