@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-09-10T05:12Z",
+  "updated_at": "2026-09-10T05:15Z",
   "turn": 78,
   "focus": {
     "milestone": "post-R0",
-    "issue": "Model→forecast implication links MVP",
-    "goal": "Port implies_forecast MVP onto tip; smoke 55/55"
+    "issue": null,
+    "goal": "Implication MVP done; next deferred globe / DAG / OIDC"
   },
   "recent": [
     "Merged tip 9db6 / PR #104 onto cron branch",
     "Ported claimImplications MVP from parallel 0ffe",
-    "Seed claim-canon-enp-model + composer/list + smoke"
+    "smoke-claim-implications; suite 55/55; vite build green"
   ],
   "discoveries": [
     "Cron at main must merge furthest tip before new work",
