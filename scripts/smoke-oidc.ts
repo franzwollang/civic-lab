@@ -15,13 +15,13 @@ import {
   clearOidcPendingForTests,
   setOidcTokenExchangeForTests,
 } from "../server/auth/oidc";
-import { SESSION_AUTH_MODE, SESSION_COOKIE_NAME } from "../src/lib/sessionAuth";
+import { SESSION_AUTH_MODE } from "../src/lib/sessionAuth";
 import {
   DEFAULT_OIDC_SCOPES,
   OIDC_AUTH_PROVIDER,
   OIDC_ENV,
 } from "../src/lib/oidcAuth";
-import { withSession } from "./session-smoke-helper";
+import { cookieHeaderFromResponse, withSession } from "./session-smoke-helper";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
@@ -34,13 +34,6 @@ async function json(res: Response) {
   } catch {
     return { status: res.status, body: text };
   }
-}
-
-function cookieFrom(res: Response): string {
-  const raw = res.headers.get("set-cookie") ?? "";
-  const match = raw.match(new RegExp(`${SESSION_COOKIE_NAME}=([^;]+)`));
-  if (!match) throw new Error(`missing ${SESSION_COOKIE_NAME} cookie`);
-  return match[1];
 }
 
 function applyOidcEnv(): void {
@@ -179,7 +172,8 @@ async function main() {
     ) {
       throw new Error(`OIDC callback failed: ${JSON.stringify(cb)}`);
     }
-    const aliceCookie = cookieFrom(callback);
+    const aliceCookie = cookieHeaderFromResponse(callback);
+    if (!aliceCookie) throw new Error("OIDC callback missing session cookie");
 
     const me = await json(
       await app.request("/api/auth/me", withSession(aliceCookie)),
@@ -235,7 +229,8 @@ async function main() {
     ) {
       throw new Error(`Eve OIDC login failed: ${JSON.stringify(eveJson)}`);
     }
-    const eveCookie = cookieFrom(eveCb);
+    const eveCookie = cookieHeaderFromResponse(eveCb);
+    if (!eveCookie) throw new Error("Eve OIDC callback missing session cookie");
     const eveAudit = await json(
       await app.request("/api/audit-logs?limit=3", withSession(eveCookie)),
     );

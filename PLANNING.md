@@ -138,8 +138,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
     `scoreModelImplications`; advisory Brier/log/skill on models from resolved
     implied forecasts; DAG summary + per-edge contrib;
     `smoke-claim-implication-scores`; suite **57/57**)
-21. **Optional / deferred next:** Manuals 3D globe (SVG satisfies CONCEPT),
-    external OIDC swap-in
+21. ~~**External OIDC provider swap-in**~~ (**done** — reapplied from b1c5;
+    `GET /api/auth/oidc/status|start|callback`; `OIDC_MOCK` + subject map;
+    `smoke-oidc`; suite **58/58**)
+22. **Optional / deferred next:** Manuals 3D globe (SVG satisfies CONCEPT),
+    OIDC JWKS verify (ops), reputation-board implication rollup
 
 **Agent rules of thumb**
 
@@ -155,10 +158,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
 split + IdP-lite session→actor + Canon revert + role-change + mod queue +
-model→forecast implication MVP + DAG UI + score propagation done — see
-remaining `OPEN_ISSUES.md` **Optional / deferred** (Manuals globe / external
-OIDC). No architecture blockers. Known debt: client→server import of
-prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
+model→forecast implication MVP + DAG UI + score propagation + external OIDC
+swap-in done — see remaining `OPEN_ISSUES.md` **Optional / deferred**
+(Manuals globe / OIDC JWKS / reputation implication rollup). No architecture
+blockers. Known debt: client→server import of prototype-users, tsc not covering
+`server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -167,4 +171,5 @@ prototype-users, tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Optional** Manuals 3D globe or external OIDC — or stop (product-gated).
+- Next: **Optional** OIDC JWKS (reapply `0004`) or reputation implication rollup
+  — or stop (Manuals 3D globe remains product-gated).

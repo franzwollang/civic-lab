@@ -78,3 +78,4 @@
 {"ts":"2026-09-10T05:12Z","focus":"model→forecast implication MVP","summary":"Merged tip #104; ported implies_forecast MVP from 0ffe onto tip","next":"Optional Manuals globe / implication DAG·scoring / external OIDC or stop"}
 {"ts":"2026-09-10T05:30Z","focus":"implication DAG UI","summary":"merged tip 07af; reapplied artifact-scoped ClaimImplicationGraph from bae4","next":"optional scoring / OIDC / globe or stop"}
 {"ts":"2026-09-10T05:40Z","focus":"implication score propagation","summary":"merged tip cca8; reapplied scoreModelImplications + smoke from d369","next":"optional Manuals globe / external OIDC or stop"}
+{"ts":"2026-09-10T05:55Z","focus":"external OIDC swap-in","summary":"Cherry-picked b1c5 OIDC onto tip 03b7; cookieHeaderFromResponse smoke fix","next":"optional OIDC JWKS / reputation rollup / stop"}

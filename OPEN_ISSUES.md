@@ -32,7 +32,14 @@ that is actionable, or stop if blocked on product decisions.
   `POST /api/auth/login`; `requireSessionActor` on mutations + gated reads;
   body/query `actor_id` no longer authorizes; header switcher syncs session;
   `AUTH_MODE = session_with_identity_hooks`; `smoke-session-actor`; suite
-  **51/51**). External OIDC provider swap-in remains optional later.
+  **51/51**).
+- [x] **External OIDC provider swap-in** — done
+  (`GET /api/auth/oidc/status|start|callback`; env
+  `OIDC_ISSUER`/`CLIENT_ID`/`CLIENT_SECRET`/`REDIRECT_URI` +
+  `OIDC_SUBJECT_MAP`; `OIDC_MOCK=1` for local/smoke; session
+  `provider: "oidc"`; same cookie + `requireSessionActor`;
+  `smoke-oidc`; suite **58/58**). JWKS signature verify / real IdP deploy
+  remain ops follow-up.
 - [x] **Canon revert audit** — done (Owner-only; Canon-only; restore prior
   revision; append-only `revert` audit; `POST /api/artifacts/:id/revert`
   session-bound; artifact page Revert button; `smoke-canon-revert`; suite
@@ -54,7 +61,8 @@ that is actionable, or stop if blocked on product decisions.
   contrib; n≥20 public-board gate; `smoke-claim-implication-scores`; suite
   **57/57**). Reputation-board rollup of implication scores still deferred.
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
-- [ ] **External OIDC provider swap-in** — IdP-lite done; real OIDC optional
+- [ ] **OIDC JWKS verify** — optional ops hardening after swap-in (parallel
+  `0004` / `jose`); mock OIDC does not need network JWKS
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
   `fumadocs-ui`/`fumadocs-core` **16.14.0**; `fumadocs-mdx` **14.2.7** for Vite 6;
   `smoke-fumadocs`; `-inset-s-4` compiles)
@@ -79,7 +87,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~57 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~58 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 
