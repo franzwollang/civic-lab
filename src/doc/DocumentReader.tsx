@@ -504,17 +504,28 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
       : null;
     const type = typeof node.type === "string" ? node.type : "";
 
+    const headingDomId =
+      typeof node.id === "string" && node.id.length > 0 ? node.id : undefined;
+
     switch (type) {
       case ELEMENT_TYPES.H2:
       case "h1":
         return (
-          <h2 key={key} className="mb-3 text-2xl font-semibold text-neutral-900">
+          <h2
+            key={key}
+            id={headingDomId}
+            className="mb-3 text-2xl font-semibold text-neutral-900"
+          >
             {children}
           </h2>
         );
       case ELEMENT_TYPES.H3:
         return (
-          <h3 key={key} className="mb-2 text-lg font-semibold text-neutral-900">
+          <h3
+            key={key}
+            id={headingDomId}
+            className="mb-2 text-lg font-semibold text-neutral-900"
+          >
             {children}
           </h3>
         );
@@ -522,6 +533,7 @@ function renderNodes(nodes: ReaderNode[], ctx: RenderCtx): ReactNode[] {
         return (
           <h4
             key={key}
+            id={headingDomId}
             className="mb-2 text-base font-semibold text-neutral-900"
           >
             {children}
