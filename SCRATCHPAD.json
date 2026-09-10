@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-09-10T07:55Z",
-  "turn": 93,
+  "updated_at": "2026-09-10T08:05Z",
+  "turn": 94,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
     "goal": "Stop — no actionable AC without product decision"
   },
   "recent": [
-    "Cron cf36 at main: merged tip aed9 (PR #119 stack)",
+    "Cron aa8b at main: merged tip cf36 (PR #120 stack)",
     "Verified suite 58/58 green after tip merge",
     "OPEN_ISSUES: only Manuals globe + reputation rollup (product-gated)"
   ],
