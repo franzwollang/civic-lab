@@ -33,7 +33,11 @@ that is actionable, or stop if blocked on product decisions.
   body/query `actor_id` no longer authorizes; header switcher syncs session;
   `AUTH_MODE = session_with_identity_hooks`; `smoke-session-actor`; suite
   **51/51**). External OIDC provider swap-in remains optional later.
-- [ ] **Moderator polish** — Canon revert audit; role-change audit; mod queue UI
+- [x] **Canon revert audit** — done (Owner-only; Canon-only; restore prior
+  revision; append-only `revert` audit; `POST /api/artifacts/:id/revert`
+  session-bound; artifact page Revert button; `smoke-canon-revert`; suite
+  **52/52**)
+- [ ] **Moderator polish (remaining)** — role-change audit; mod queue UI
 - [ ] **Model→forecast implication graph** — deferred
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
@@ -46,8 +50,7 @@ that is actionable, or stop if blocked on product decisions.
 - [x] **Deeper server split (domain db modules)** — done
   (`server/db/{artifactsDb,threadsDb,claimsDb,findingsDb,corpusDb}`;
   slim `server/db.ts` barrel; `createAcceptedRisk` stays in barrel;
-  Canon `revertCanonArtifact` omitted; `smoke-server-split` + retargeted
-  `smoke-editor-mvp`; suite **50/50**)
+  `smoke-server-split` + retargeted `smoke-editor-mvp`; suite **50/50**)
 - [x] **`dist/` gitignore** — done (`.gitignore` + untrack; `smoke-dist-gitignore`)
 - [x] **Image upload pipeline** — done (`POST /api/uploads/images`;
   `GET /uploads/images/:file`; editor Choose image; webp/png/jpeg/gif;
@@ -60,7 +63,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~51 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~52 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

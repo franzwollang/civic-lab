@@ -295,6 +295,7 @@ export {
   createArtifact,
   updateArtifact,
   updatePage,
+  revertCanonArtifact,
   listArtifactRevisions,
   listRevisions,
   syncSectionsForArtifact,
@@ -309,6 +310,7 @@ export {
   type SectionRow,
   type CreateArtifactError,
   type UpdateArtifactError,
+  type RevertCanonArtifactError,
 } from "./db/artifactsDb";
 export {
   listThreads,

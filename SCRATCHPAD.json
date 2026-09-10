@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T04:50Z",
-  "turn": 74,
+  "updated_at": "2026-09-10T04:55Z",
+  "turn": 75,
   "focus": {
     "milestone": "post-R0",
-    "issue": "Moderator polish — Canon revert",
-    "goal": "IdP-lite session done; next Canon revert audit"
+    "issue": "Moderator polish — role-change audit",
+    "goal": "Canon revert done; next Owner role appointment + audit"
   },
   "recent": [
-    "Merged tip 088c / PR #100 domain db modules",
-    "Ported IdP-lite session→actor (no e7a3 mod-polish deps)",
-    "smoke-session-actor + HTTP gates; suite 51/51"
+    "Merged tip 7663 / PR #101 IdP-lite session",
+    "Canon revert: artifactsDb + session route + Owner UI + smoke",
+    "Suite 52/52; smoke-server-split requires revertCanonArtifact"
   ],
   "discoveries": [
-    "Helpers must not be named smoke-*.ts (use session-smoke-helper)",
-    "Port OAuth without Canon revert/role-change routes on tip"
+    "Port Canon revert without effectiveUsers until role-change lands",
+    "Client revert body need not send actor_id (session-bound)"
   ],
   "open_threads": [
-    "Next: Canon revert audit, then role-change, mod queue UI",
+    "Next: role-change audit, then mod queue UI",
     "Manuals 3D globe / model→forecast / external OIDC deferred"
   ],
-  "next_step": "Merge this tip; Optional: Canon revert (Owner + audit) first polish slice",
+  "next_step": "Merge this tip; Optional: role-change audit (UserRoleAssignment + appoint UI)",
   "blockers": []
 }

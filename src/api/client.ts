@@ -191,6 +191,28 @@ export async function updateArtifact(
 }
 
 /**
+ * CONCEPT §9.3 / §9.4 — Owner Canon revert (session-bound; body actor ignored).
+ */
+export async function revertCanonArtifact(
+  artifactId: string,
+  input?: { target_revision_id?: string },
+): Promise<{
+  artifact: ArtifactRow;
+  from_revision_id: string;
+  to_revision_id: string;
+  audit: AuditLogRow;
+}> {
+  const response = await apiFetch(
+    `${API_BASE}/artifacts/${artifactId}/revert`,
+    {
+      method: "POST",
+      body: JSON.stringify(input ?? {}),
+    },
+  );
+  return handleResponse(response);
+}
+
+/**
  * Resolve a route param that may be an artifact id or a slug
  * (e.g. `page-001` or `voting-systems`).
  */

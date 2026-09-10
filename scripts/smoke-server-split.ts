@@ -146,14 +146,11 @@ async function main() {
     !artifactsSrc.includes("export async function listArtifacts") ||
     !artifactsSrc.includes("export async function getArtifact") ||
     !artifactsSrc.includes("export async function createArtifact") ||
+    !artifactsSrc.includes("export async function revertCanonArtifact") ||
     !artifactsSrc.includes("export async function syncSectionsForArtifact") ||
     !artifactsSrc.includes("export async function createArtifactRevision")
   ) {
     throw new Error("artifactsDb.ts must own Artifact/revision/section accessors");
-  }
-  // Canon revert is moderator-polish deferred — must not land via e827 reapply.
-  if (artifactsSrc.includes("export async function revertCanonArtifact")) {
-    throw new Error("revertCanonArtifact is out of scope for this tip; omit from artifactsDb");
   }
   const threadsSrc = await fs.readFile(
     path.join(ROOT, "server/db/threadsDb.ts"),

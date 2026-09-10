@@ -68,11 +68,11 @@ lives in `SCRATCHPAD.json`.
 | Product UI | Data-driven corpus; Collection splash = live dashboard; fixture dossier dashboard redirected |
 | Editor | Plate lists/links/blockquotes/evidence/external_artifact/tables/images (upload) |
 | Persistence | SQLite + Prisma; rich M4–M9 seeds |
-| Auth | Impersonation + identity hooks; body `actor_id` until IdP |
+| Auth | Impersonation + IdP-lite cookie session (`requireSessionActor`) |
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
-R0 marathon (About/FAQ → CONCEPT rewrite) landed.
+R0 marathon (About/FAQ → CONCEPT rewrite) landed. Canon revert polish landed.
 
 ---
 
@@ -114,12 +114,15 @@ Optimize for **observable slices** with smokes. Prefer this order:
     `claims` / `findings`; slim `index.ts`; suite **50/50**)
 13. ~~**Domain db modules**~~ (**done** — `artifactsDb` / `threadsDb` /
     `claimsDb` / `findingsDb` / `corpusDb`; `createAcceptedRisk` in barrel;
-    no Canon revert; suite **50/50**)
+    suite **50/50**)
 14. ~~**OAuth / IdP-lite session→actor**~~ (**done** — cookie login;
     `requireSessionActor`; body `actor_id` no longer authorizes;
     `smoke-session-actor`; suite **51/51**)
-15. **Optional / deferred next:** moderator polish (Canon revert / role-change /
-    mod queue), Manuals globe, model→forecast graph, external OIDC
+15. ~~**Canon revert audit**~~ (**done** — Owner/Canon-only; parent tip restore;
+    append-only `revert` audit; session-bound route; `smoke-canon-revert`;
+    suite **52/52**)
+16. **Optional / deferred next:** role-change audit, mod queue UI, Manuals
+    globe, model→forecast graph, external OIDC
 
 **Agent rules of thumb**
 
@@ -134,10 +137,10 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
-split + IdP-lite session→actor done — see remaining `OPEN_ISSUES.md`
-**Optional / deferred** (moderator polish first). No architecture blockers.
-Known debt: client→server import of prototype-users, tsc not covering `server/`
-(Vite/smoke are the gates today).
+split + IdP-lite session→actor + Canon revert done — see remaining
+`OPEN_ISSUES.md` **Optional / deferred** (role-change audit next). No
+architecture blockers. Known debt: client→server import of prototype-users,
+tsc not covering `server/` (Vite/smoke are the gates today).
 
 ---
 
@@ -146,4 +149,4 @@ Known debt: client→server import of prototype-users, tsc not covering `server/
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Moderator polish** — Canon revert audit (then role-change / mod queue).
+- Next: **Role-change audit** (then mod queue UI).

@@ -20,7 +20,8 @@ export type RoleCapability =
   | "board_hide"
   | "attest_identity"
   | "moderate_posts"
-  | "view_audit";
+  | "view_audit"
+  | "revert_canon";
 
 const CAPABILITY_LABEL: Record<RoleCapability, string> = {
   discuss: "Discuss / reply",
@@ -37,6 +38,7 @@ const CAPABILITY_LABEL: Record<RoleCapability, string> = {
   attest_identity: "Attest real-identity / country ties",
   moderate_posts: "Soft-delete ordinary posts",
   view_audit: "View append-only audit log",
+  revert_canon: "Revert Canon revisions",
 };
 
 const ROLE_CAPABILITIES: Record<PrototypeRole, readonly RoleCapability[]> = {
@@ -69,6 +71,7 @@ const ROLE_CAPABILITIES: Record<PrototypeRole, readonly RoleCapability[]> = {
     "attest_identity",
     "moderate_posts",
     "view_audit",
+    "revert_canon",
   ],
   red_team: ["discuss", "author_claims", "propose_revsets", "create_findings"],
   adjudicator: [
@@ -141,7 +144,7 @@ export function summarizeRoleAffordances(
   const role_labels = user.roles.map(roleShortLabel);
   const headline =
     primary === "owner"
-      ? "Owner — restricted Canon merge + board-hide + post moderation"
+      ? "Owner — restricted Canon merge/revert + board-hide + post moderation"
       : primary === "editor"
         ? "Editor — routine Canon merge"
         : primary === "steward"
