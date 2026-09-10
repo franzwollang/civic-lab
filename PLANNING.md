@@ -104,7 +104,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 5. ~~**Plate tables**~~ (**done** — `@platejs/table@52`; reader/export; `smoke-editor-tables`)
 6. ~~**Home CONCEPT links**~~ (**done** — `#what-is-this` + live exemplars; `smoke-home-preamble`)
 7. ~~**CONCEPT.md rewrite**~~ (**done** — hierarchy/claims/lanes/RFC/evidence; `smoke-concept`)
-8. **Optional / deferred:** image upload, Fumadocs unpin, server split, OAuth
+8. ~~**Image upload pipeline**~~ (**done** — `/api/uploads/images`; editor insert; formats beyond webp; `smoke-image-upload`)
+9. **Optional / deferred next:** Fumadocs unpin, server split, OAuth, `dist/` gitignore
 
 **Agent rules of thumb**
 
@@ -118,10 +119,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 
 ## Still open
 
-R0 marathon queue cleared — see `OPEN_ISSUES.md` **Optional / deferred**.
-No architecture blockers. Known debt: server monolith size, tracked `dist/`,
-client→server import of prototype-users, tsc not covering `server/`
-(Vite/smoke are the gates today).
+R0 marathon + image upload done — see `OPEN_ISSUES.md` **Optional / deferred**
+(Fumadocs unpin, `dist/` gitignore, server split, OAuth). No architecture
+blockers. Known debt: server monolith size, tracked `dist/`, client→server
+import of prototype-users, tsc not covering `server/` (Vite/smoke are the
+gates today).
 
 ---
 
@@ -130,5 +132,5 @@ client→server import of prototype-users, tsc not covering `server/`
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Image upload pipeline** (first actionable Optional item) unless product
-  redirects; else Fumadocs unpin / server split / OAuth.
+- Next: **Fumadocs unpin** / **`dist/` gitignore** / server split / OAuth
+  (image upload pipeline done).

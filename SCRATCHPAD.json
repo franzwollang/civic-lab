@@ -1,25 +1,24 @@
 {
-  "updated_at": "2026-09-10T03:25Z",
-  "turn": 66,
+  "updated_at": "2026-09-10T03:45Z",
+  "turn": 67,
   "focus": {
-    "milestone": "R0",
+    "milestone": "post-R0",
     "issue": null,
-    "goal": "R0 done; hand off to optional image upload"
+    "goal": "Image upload done; hand off Fumadocs unpin or dist/ gitignore"
   },
   "recent": [
-    "CONCEPT rewrite + smoke-concept; R0 done (cherry-pick 3148)",
-    "Merged tip b2f6 (About→home preamble) onto cron 3b21",
-    "Home preamble + HOME_EXEMPLARS; 45/45 before CONCEPT",
-    "Plate tables; typed posts; fixture retirement; About/FAQ"
+    "Image upload green: 47/47 smokes + vite build",
+    "Cherry-picked fb083ce onto tip 3b21 (PR #94 stack)",
+    "Merged tip 3b21 / R0 CONCEPT done onto cron aea1"
   ],
   "discoveries": [
-    "Cron at main: merge furthest tip (b2f6) before new work",
-    "R0 marathon cleared — Optional/deferred next"
+    "Parallel 02aa/PR#53 had image upload — cherry-pick onto tip",
+    "Cron at main: merge furthest tip before Optional work"
   ],
   "open_threads": [
-    "Next: image upload pipeline (Optional)",
-    "Fumadocs unpin / server split / OAuth still deferred"
+    "Next: Fumadocs unpin or dist/ gitignore",
+    "OAuth / server split still deferred"
   ],
-  "next_step": "Image upload pipeline (OPEN_ISSUES Optional) or product redirect",
+  "next_step": "Fumadocs unpin (inset-s) or dist/ gitignore optional cleanup",
   "blockers": []
 }

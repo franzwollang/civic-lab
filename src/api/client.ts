@@ -750,3 +750,23 @@ export async function putTerms(registry: TermRegistry): Promise<TermRegistry> {
   });
   return handleResponse<TermRegistry>(response);
 }
+
+export type UploadedImage = {
+  url: string;
+  filename: string;
+  mime: string;
+  bytes: number;
+};
+
+/** Upload a raster image (webp/png/jpeg/gif) to the prototype filesystem store. */
+export async function uploadImage(file: File | Blob): Promise<UploadedImage> {
+  const form = new FormData();
+  const name =
+    file instanceof File && file.name ? file.name : "upload.bin";
+  form.append("file", file, name);
+  const response = await fetch(`${API_BASE}/uploads/images`, {
+    method: "POST",
+    body: form,
+  });
+  return handleResponse<UploadedImage>(response);
+}

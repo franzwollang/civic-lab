@@ -9,6 +9,7 @@ import { useMathJaxTick } from "@/editor/useMathJaxTick";
 import { useMermaidTick } from "@/editor/useMermaidTick";
 import { usePrismHighlight } from "@/editor/usePrism";
 import { truncateForAria } from "@/editor/voidA11y";
+import { resolveImageSrc } from "@/lib/imageSrc";
 
 export type ReaderNode = {
   type?: string;
@@ -318,6 +319,7 @@ function ImageBlockRead({
   alt?: string;
   caption?: string;
 }) {
+  const resolved = resolveImageSrc(src);
   return (
     <figure
       className="my-3 rounded border border-neutral-200 bg-neutral-50 px-3 py-2"
@@ -333,7 +335,7 @@ function ImageBlockRead({
       <div className="mt-2 rounded border border-neutral-200 bg-white p-2">
         {src ? (
           <img
-            src={src}
+            src={resolved}
             alt={alt || ""}
             className="max-h-[320px] w-auto max-w-full rounded"
           />
