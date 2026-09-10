@@ -354,6 +354,18 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+/// CONCEPT §9.1 / §9.4 — Owner-appointed role overrides (seed catalog remains
+/// the user directory; empty table ⇒ seed defaults). Never grants unknown users.
+model UserRoleAssignment {
+  userId    String   @id @map("user_id")
+  /// JSON array of PrototypeRole strings.
+  roles     Json
+  updatedBy String   @map("updated_by")
+  updatedAt DateTime @map("updated_at")
+
+  @@map("user_role_assignments")
+}
+
 /// CONCEPT §8.6 — real-identity + country / long-term-ties attestation hooks.
 /// Session remains impersonation; this gates Manual steward legitimacy.
 model UserIdentity {
