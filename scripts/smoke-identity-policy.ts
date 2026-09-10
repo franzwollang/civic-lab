@@ -36,7 +36,7 @@ const ROOT = process.cwd();
 const DB_PATH = path.join(ROOT, "prisma", "smoke-identity-policy.db");
 
 async function main() {
-  if (AUTH_MODE !== "impersonation_with_identity_hooks") {
+  if (AUTH_MODE !== "session_with_identity_hooks") {
     throw new Error("AUTH_MODE mismatch");
   }
   if (!actorIsOwner("user-eve")) throw new Error("Eve should be owner");
