@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T03:45Z",
-  "turn": 67,
+  "updated_at": "2026-09-10T04:00Z",
+  "turn": 69,
   "focus": {
     "milestone": "post-R0",
     "issue": null,
-    "goal": "Image upload done; hand off Fumadocs unpin or dist/ gitignore"
+    "goal": "dist/ gitignore done; hand off Fumadocs or server split"
   },
   "recent": [
-    "Image upload green: 47/47 smokes + vite build",
-    "Cherry-picked fb083ce onto tip 3b21 (PR #94 stack)",
-    "Merged tip 3b21 / R0 CONCEPT done onto cron aea1"
+    "dist/gitignore green: 48/48 smokes + vite build",
+    "Merged tip aea1 / PR #95 onto cron 1cb7",
+    "Untracked dist/; smoke-dist-gitignore"
   ],
   "discoveries": [
-    "Parallel 02aa/PR#53 had image upload — cherry-pick onto tip",
-    "Cron at main: merge furthest tip before Optional work"
+    "Fumadocs inset-s unblock: Tailwind ≥4.3.2 (still 4.1.12)",
+    "Parallel 74f7/PR#54 / 86b6/PR#55 already have dist+Fumadocs — cherry-pick onto tip"
   ],
   "open_threads": [
-    "Next: Fumadocs unpin or dist/ gitignore",
-    "OAuth / server split still deferred"
+    "Next: Fumadocs unpin (Tailwind≥4.3.2) or server split",
+    "OAuth / moderator polish still deferred"
   ],
-  "next_step": "Fumadocs unpin (inset-s) or dist/ gitignore optional cleanup",
+  "next_step": "Merge this tip; Fumadocs unpin after Tailwind≥4.3.2 (or cherry-pick 86b6)",
   "blockers": []
 }

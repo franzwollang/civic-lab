@@ -65,3 +65,5 @@
 {"ts":"2026-09-10T03:20Z","focus":"home preamble exemplars","summary":"Merged 9c79 tip; cherry-picked a831 home preamble; 45/45 + continuity","next":"CONCEPT.md rewrite pass"}
 {"ts":"2026-09-10T03:25Z","focus":"CONCEPT rewrite","summary":"Merged b2f6 tip; cherry-picked CONCEPT rewrite from 3148; smoke-concept; R0 done","next":"Image upload pipeline (Optional)"}
 {"ts": "2026-09-10T03:45Z", "focus": "image upload pipeline", "summary": "Merged tip 3b21; cherry-picked fb083ce; smoke 47/47 + vite build; CONCEPT Appendix C cleared", "next": "Fumadocs unpin or dist/ gitignore"}
+{"ts":"2026-09-10T03:55Z","focus":"dist/ gitignore","summary":"Merged tip aea1; untracked dist/; smoke-dist-gitignore; continuity updated","next":"Fumadocs unpin (Tailwind≥4.3.2) or server split"}
+{"ts":"2026-09-10T04:00Z","focus":"dist/ gitignore","summary":"48/48 smoke + vite build; dist untracked; handoff Fumadocs/server split","next":"Fumadocs unpin (Tailwind≥4.3.2) or server split"}
