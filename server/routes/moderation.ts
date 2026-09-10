@@ -2,13 +2,16 @@ import type { Hono } from "hono";
 import { z } from "zod";
 import {
   attestUserIdentity,
+  changeUserRoles,
   getStewardEligibilityForUser,
   getUserIdentity,
   hideUserFromBoards,
   liftBoardHide,
   listAuditLogs,
   listBoardHides,
+  listEffectiveUsers,
   listUserIdentities,
+  reloadRoleOverrides,
   requestIdentityVerification,
 } from "../db";
 import { requireSessionActor } from "../auth/session";
@@ -43,6 +46,13 @@ const identityAttestBodySchema = z.object({
 
 const identityRequestBodySchema = z.object({
   actor_id: z.string().min(1).optional(),
+});
+
+/** CONCEPT §9.1 — Owner role appointment (full replacement set). */
+const roleChangeBodySchema = z.object({
+  actor_id: z.string().min(1).optional(),
+  roles: z.array(z.string()).min(1),
+  rationale: z.string().nullable().optional(),
 });
 
 export function registerModerationRoutes(app: Hono): void {
@@ -129,6 +139,42 @@ export function registerModerationRoutes(app: Hono): void {
         limit: Number.isFinite(limit) ? limit : undefined,
       }),
     );
+  });
+
+  // CONCEPT §9.1 / §9.4 — Owner role appointment + audit
+  app.get("/api/users", async (c) => {
+    await reloadRoleOverrides();
+    return c.json(await listEffectiveUsers());
+  });
+
+  app.post("/api/users/:userId/roles", async (c) => {
+    const actor = requireSessionActor(c);
+    if (actor instanceof Response) return actor;
+    const parsed = roleChangeBodySchema.safeParse(
+      (await c.req.json().catch(() => ({}))) ?? {},
+    );
+    if (!parsed.success) {
+      return c.json({ error: "Invalid role-change payload" }, 400);
+    }
+    const result = await changeUserRoles({
+      actor_id: actor,
+      subject_user_id: c.req.param("userId"),
+      roles: parsed.data.roles,
+      rationale: parsed.data.rationale,
+    });
+    if (!result.ok) {
+      const status =
+        result.error.code === "not_owner"
+          ? 403
+          : result.error.code === "unknown_user" ||
+              result.error.code === "unknown_actor"
+            ? 404
+            : result.error.code === "no_change"
+              ? 409
+              : 400;
+      return c.json({ error: result.error }, status);
+    }
+    return c.json({ user: result.user, audit: result.audit });
   });
 
   /** CONCEPT §8.6 — real-identity policy hooks (session + attestation). */

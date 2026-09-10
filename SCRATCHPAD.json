@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-10T04:55Z",
-  "turn": 75,
+  "updated_at": "2026-09-10T05:10Z",
+  "turn": 76,
   "focus": {
     "milestone": "post-R0",
-    "issue": "Moderator polish — role-change audit",
-    "goal": "Canon revert done; next Owner role appointment + audit"
+    "issue": "Moderator polish — mod queue UI",
+    "goal": "Role-change done; next soft-delete/findings mod queue"
   },
   "recent": [
-    "Merged tip 7663 / PR #101 IdP-lite session",
-    "Canon revert: artifactsDb + session route + Owner UI + smoke",
-    "Suite 52/52; smoke-server-split requires revertCanonArtifact"
+    "Merged tip 0f0a / PR #102 Canon revert stack",
+    "Role-change: UserRoleAssignment + effective users + session API",
+    "Collection Role appointment panel; smoke-role-change"
   ],
   "discoveries": [
-    "Port Canon revert without effectiveUsers until role-change lands",
-    "Client revert body need not send actor_id (session-bound)"
+    "Port role-change onto tip with requireSessionActor (not body actor_id)",
+    "Keep changeUserRoles in moderationDb; bind reload via prisma.ts"
   ],
   "open_threads": [
-    "Next: role-change audit, then mod queue UI",
+    "Next: mod queue UI",
     "Manuals 3D globe / model→forecast / external OIDC deferred"
   ],
-  "next_step": "Merge this tip; Optional: role-change audit (UserRoleAssignment + appoint UI)",
+  "next_step": "Optional: mod queue UI for soft-deleted posts + findings/adjudication",
   "blockers": []
 }

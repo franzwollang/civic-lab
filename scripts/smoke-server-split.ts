@@ -30,6 +30,9 @@ import {
   listUserIdentities,
   searchCorpus,
   setPrisma,
+  changeUserRoles,
+  listEffectiveUsers,
+  reloadRoleOverrides,
 } from "../server/db";
 import { registerArtifactRoutes } from "../server/routes/artifacts";
 import { registerAuthRoutes } from "../server/routes/auth";
@@ -85,6 +88,33 @@ async function main() {
   }
   if (typeof appendAuditLog !== "function" || typeof listUserIdentities !== "function") {
     throw new Error("moderation/identity barrel exports missing");
+  }
+  if (
+    typeof changeUserRoles !== "function" ||
+    typeof listEffectiveUsers !== "function" ||
+    typeof reloadRoleOverrides !== "function"
+  ) {
+    throw new Error("role-change barrel exports missing");
+  }
+  const moderationSrc = await fs.readFile(
+    path.join(ROOT, "server/db/moderationDb.ts"),
+    "utf8",
+  );
+  if (
+    !moderationSrc.includes("export async function changeUserRoles") ||
+    !moderationSrc.includes("export async function reloadRoleOverrides")
+  ) {
+    throw new Error("moderationDb.ts must own role-change accessors");
+  }
+  const moderationRoutesSrc = await fs.readFile(
+    path.join(ROOT, "server/routes/moderation.ts"),
+    "utf8",
+  );
+  if (
+    !moderationRoutesSrc.includes("/api/users") ||
+    !moderationRoutesSrc.includes("/api/users/:userId/roles")
+  ) {
+    throw new Error("moderation routes must register /api/users role APIs");
   }
   if (typeof listFindings !== "function" || typeof createFinding !== "function") {
     throw new Error("findingsDb barrel exports missing");

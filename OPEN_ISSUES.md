@@ -37,7 +37,11 @@ that is actionable, or stop if blocked on product decisions.
   revision; append-only `revert` audit; `POST /api/artifacts/:id/revert`
   session-bound; artifact page Revert button; `smoke-canon-revert`; suite
   **52/52**)
-- [ ] **Moderator polish (remaining)** — role-change audit; mod queue UI
+- [x] **Role-change audit** — done (`UserRoleAssignment` overrides; effective
+  users feed merge/moderation/Owner gates; `GET /api/users` + session
+  `POST /api/users/:id/roles`; last-Owner guard; Collection Role appointment
+  panel; `smoke-role-change`; suite **53/53**)
+- [ ] **Moderator polish (remaining)** — mod queue UI
 - [ ] **Model→forecast implication graph** — deferred
 - [ ] **Manuals 3D globe** — SVG map+list already satisfies CONCEPT
 - [x] **Fumadocs unpin** — done (Tailwind/`@tailwindcss/vite` **4.3.3**;
@@ -63,7 +67,7 @@ that is actionable, or stop if blocked on product decisions.
 ```bash
 pnpm install
 pnpm run build
-pnpm test:smoke          # must stay green (~52 scripts incl. HTTP gates)
+pnpm test:smoke          # must stay green (~53 scripts incl. HTTP gates)
 pnpm db:reset            # wipe + reseed local SQLite
 ```
 

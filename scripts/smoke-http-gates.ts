@@ -161,6 +161,29 @@ async function main() {
       throw new Error(`canon-faq payload: ${JSON.stringify(faqBody)}`);
     }
 
+    const users = await json(await app.request("/api/users"));
+    if (users.status !== 200 || !Array.isArray(users.body)) {
+      throw new Error(`GET /api/users expected 200 array, got ${users.status}`);
+    }
+    if (
+      !(users.body as Array<{ user_id?: string }>).some(
+        (u) => u.user_id === "user-eve",
+      )
+    ) {
+      throw new Error("GET /api/users missing Owner eve");
+    }
+
+    const roleAnon = await json(
+      await app.request("/api/users/user-bob/roles", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ roles: ["contributor"] }),
+      }),
+    );
+    if (roleAnon.status !== 401) {
+      throw new Error(`role-change anon expected 401, got ${roleAnon.status}`);
+    }
+
     console.log("smoke-http-gates: ok");
   } finally {
     await prisma.$disconnect();

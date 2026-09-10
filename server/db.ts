@@ -350,10 +350,18 @@ export {
   listBoardHides,
   hideUserFromBoards,
   liftBoardHide,
+  reloadRoleOverrides,
+  listEffectiveUsers,
+  changeUserRoles,
   type AuditLogRow,
   type BoardHideRow,
   type BoardHideMutationError,
+  type EffectiveUserRow,
+  type RoleChangeMutationError,
 } from "./db/moderationDb";
+import { reloadRoleOverrides as reloadRoleOverridesImpl } from "./db/moderationDb";
+import { bindRoleOverrideReloader } from "./db/prisma";
+bindRoleOverrideReloader(reloadRoleOverridesImpl);
 export {
   listUserIdentities,
   getUserIdentity,

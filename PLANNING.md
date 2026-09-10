@@ -72,7 +72,8 @@ lives in `SCRATCHPAD.json`.
 | Toolchain | pnpm 9; Hono `:8787`; smokes include HTTP gates |
 
 **Phase:** **Post-R0 optional / deferred** after M0–M9 + residual polish.
-R0 marathon (About/FAQ → CONCEPT rewrite) landed. Canon revert polish landed.
+R0 marathon (About/FAQ → CONCEPT rewrite) landed. Canon revert + role-change
+appointment polish landed.
 
 ---
 
@@ -121,8 +122,11 @@ Optimize for **observable slices** with smokes. Prefer this order:
 15. ~~**Canon revert audit**~~ (**done** — Owner/Canon-only; parent tip restore;
     append-only `revert` audit; session-bound route; `smoke-canon-revert`;
     suite **52/52**)
-16. **Optional / deferred next:** role-change audit, mod queue UI, Manuals
-    globe, model→forecast graph, external OIDC
+16. ~~**Role-change audit**~~ (**done** — `UserRoleAssignment`; effective users;
+    session `POST /api/users/:id/roles`; Collection appoint UI;
+    `smoke-role-change`; suite **53/53**)
+17. **Optional / deferred next:** mod queue UI, Manuals globe,
+    model→forecast graph, external OIDC
 
 **Agent rules of thumb**
 
@@ -137,8 +141,8 @@ Optimize for **observable slices** with smokes. Prefer this order:
 ## Still open
 
 R0 marathon + image upload + `dist/` gitignore + Fumadocs unpin + full server
-split + IdP-lite session→actor + Canon revert done — see remaining
-`OPEN_ISSUES.md` **Optional / deferred** (role-change audit next). No
+split + IdP-lite session→actor + Canon revert + role-change done — see remaining
+`OPEN_ISSUES.md` **Optional / deferred** (mod queue UI next). No
 architecture blockers. Known debt: client→server import of prototype-users,
 tsc not covering `server/` (Vite/smoke are the gates today).
 
@@ -149,4 +153,4 @@ tsc not covering `server/` (Vite/smoke are the gates today).
 - CONCEPT = product reference; PLANNING = sequencing; OPEN_ISSUES = actionable AC;
   SCRATCHPAD = session snapshot.
 - When an issue lands: resolve in OPEN_ISSUES + log line + advance SCRATCHPAD `next_step`.
-- Next: **Role-change audit** (then mod queue UI).
+- Next: **Mod queue UI** (soft-deleted posts + findings/adjudication queue).

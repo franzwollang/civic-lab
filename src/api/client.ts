@@ -680,6 +680,39 @@ export async function liftBoardHide(body: {
   return handleResponse(response);
 }
 
+export type EffectiveUserRow = {
+  user_id: string;
+  display_name: string;
+  roles: string[];
+  roles_source: "seed" | "override";
+};
+
+/** CONCEPT §9.1 — seed users with effective (seed|override) roles. */
+export async function getUsers(): Promise<EffectiveUserRow[]> {
+  const response = await apiFetch(`${API_BASE}/users`);
+  return handleResponse<EffectiveUserRow[]>(response);
+}
+
+/** CONCEPT §9.1 / §9.4 — Owner appoints roles; append-only `role_change` audit. */
+export async function changeUserRoles(
+  userId: string,
+  body: {
+    roles: string[];
+    rationale?: string | null;
+    /** Ignored — session cookie binds actor (kept for call-site continuity). */
+    actor_id?: string;
+  },
+): Promise<{ user: EffectiveUserRow; audit: AuditLogRow }> {
+  const response = await apiFetch(`${API_BASE}/users/${userId}/roles`, {
+    method: "POST",
+    body: JSON.stringify({
+      roles: body.roles,
+      rationale: body.rationale,
+    }),
+  });
+  return handleResponse(response);
+}
+
 export async function getAuditLogs(opts?: {
   action?: string;
   limit?: number;
